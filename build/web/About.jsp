@@ -823,7 +823,7 @@
                         </li>
                     </ul>
                 </div>
-                <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
+                S<nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
                      id="navbar-vertical" style="z-index: 9; width: 600px; top: 100%; left: 0;">
                     <div class="d-flex w-100">
                         <div class="navbar-nav" style="width: 250px; display: flex; flex-wrap: wrap;">
