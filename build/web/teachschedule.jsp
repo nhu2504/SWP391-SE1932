@@ -187,12 +187,13 @@
                     top: auto !important; /* Vô hiệu hóa top */
                 }
             }
-            /* Phần header - top bar */
             .top-header {
-                background-color: #FFF1F1; /* Hồng nhạt */
+                background-color: #FFF1F1;
                 color: #000 !important;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 50px 0; /* tăng chiều cao header */
             }
+
 
             /* Màu đỏ cho biểu tượng */
             .top-header i.text-primary {
@@ -271,7 +272,7 @@
                         <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Our Office</h6>
-                            <small>123 Street, New York, USA</small>
+                            
                         </div>
                     </div>
                 </div>
@@ -280,7 +281,7 @@
                         <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email Us</h6>
-                            <small>info@example.com</small>
+                            
                         </div>
                     </div>
                 </div>
@@ -289,7 +290,7 @@
                         <i class="fa fa-2x fa-phone text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Call Us</h6>
-                            <small>+012 345 6789</small>
+                            
                         </div>
                     </div>
                 </div>
@@ -311,7 +312,6 @@
                             <select name="time" required>
                                 <option value="">--Chọn tuần--</option>
                                 <option value="week1">Tuần 1</option>
-
                                 <option value="week2">Tuần 2</option>
                                 <option value="week3">Tuần 3</option>
                                 <option value="week4">Tuần 4</option>

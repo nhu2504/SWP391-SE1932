@@ -191,6 +191,7 @@
                 background-color: #FFF1F1; /* Hồng nhạt */
                 color: #000 !important;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 30px 0;
             }
 
             /* Màu đỏ cho biểu tượng */
@@ -202,11 +203,12 @@
             .top-header h1 span.text-primary {
                 color: #EC6F69 !important;
                 font-weight: 700;
+                font-size: 60px;
             }
 
             /* Chữ còn lại của logo */
             .top-header h1 {
-                font-size: 36px;
+                font-size: 50px;
                 color: #000;
                 font-weight: 700;
             }
@@ -214,6 +216,7 @@
             /* Căn chỉnh icon và text sát nhau */
             .top-header .d-inline-flex i {
                 margin-right: 12px;
+                font-size: 50px;
             }
 
             .top-header small {
@@ -223,6 +226,7 @@
 
             .top-header h6 {
                 font-weight: 600;
+                font-size:20px;
                 margin-bottom: 4px;
             }
             /* Style cho navbar nền xám nhạt */
@@ -252,21 +256,170 @@
             .navbar{
                 margin-bottom: 30px;
             }
-
-            .dashboard-title {
-                display: flex;
-                text-align: center;
-                color: palevioletred;
-                font-size: 32px;
-                font-weight: bold;
-
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                background-color: #f5f5f5;
             }
-            .dashboard-title-container {
+
+            .sidebar {
+                background-color: #fdeaf3;
+                height: 100%;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .avatar {
+                font-size: 60px;
+                margin-bottom: 10px;
+            }
+
+            .username {
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .sidebar a {
+                display: block;
+                color: #000;
+                text-decoration: none;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+
+            .main h1 {
+                text-align: center;
+                margin: 30px 0;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 0 20px 40px;
+            }
+
+            .card {
+                background-color: #fef1f6;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: 0.3s ease;
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .card:hover {
+                background-color: #fcd9e6;
+            }
+
+            .card i {
+                font-size: 28px;
+            }
+
+            .highlight {
+                border-color: #a58cf5;
+            }
+            body {
+                background-color: #f5f5f5;
+                font-family: Arial, sans-serif;
+            }
+
+            .sidebar {
+                background-color: #ffeef8;
+                padding: 30px 20px;
+                min-height: 70vh;
+                text-align: center;
+            }
+
+            .sidebar .avatar {
+                font-size: 80px;
+                margin-bottom: 5px;
+            }
+
+            .sidebar .username {
+
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 18px;
+                padding: 15px 0;
+                color: #000;
+                text-decoration: none;
+                text-align: left;
+                padding-left: 40px;
+                transition: background 0.3s;
+            }
+
+            .sidebar a i {
+                margin-right: 10px;
+            }
+
+            .sidebar a:hover {
+                background-color: #ffd8eb;
+                border-radius: 10px;
+            }
+
+            .main .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 40px;
+            }
+
+            .main .card {
+                background-color: #ffeef8;
+                padding: 40px;
+                text-align: center;
+                font-size: 20px;
+                border-radius: 20px;
+                font-weight: 500;
+                transition: transform 0.2s;
+            }
+
+            .main .card i {
+                font-size: 30px;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .main .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+
+            h1.dashboard-title {
+                text-align: center;
+                background-color: #f0f0f0;
+                padding: 20px;
+                font-size: 28px;
+                margin-top: 0;
+                font-weight: bold;
+            }
+            .avatar {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 100px;
+                margin: 20px 0;
             }
+
+            .avatar-img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%; /* bo tròn ảnh */
+                object-fit: cover;   /* đảm bảo ảnh không bị méo */
+                border: 2px solid #ccc;
+            }
+
+
+
+
 
         </style>
     </head>
@@ -275,7 +428,7 @@
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-4 px-xl-5">
                 <div class="col-lg-3">
-                    <a href="" class="text-decoration-none">
+                    <a href="Home.jsp" class="text-decoration-none">
                         <h1 class="m-0"><span class="text-primary">E</span>DURA</h1>
                     </a>
                 </div>
@@ -283,8 +436,7 @@
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Our Office</h6>
-                            <small>123 Street, New York, USA</small>
+                            <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
                         </div>
                     </div>
                 </div>
@@ -292,8 +444,7 @@
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Email Us</h6>
-                            <small>info@example.com</small>
+                            <h6 class="font-weight-semi-bold mb-1">Email</h6>
                         </div>
                     </div>
                 </div>
@@ -301,96 +452,118 @@
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-phone text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Call Us</h6>
-                            <small>+012 345 6789</small>
+                            <h6 class="font-weight-semi-bold mb-1">Liên hệ</h6>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 style="text-align: center; background-color: #f0f0f0; padding: 15px; font-size: 50px">Bảng Điều Khiển</h1>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 sidebar">
+
+
+                    <%
+        String userName = (String) session.getAttribute("userName");
+        String userAvatar = (String) session.getAttribute("userAvatar");
+        if (userAvatar == null || userAvatar.isEmpty()) {
+            userAvatar = "default-avatar.jpg";
+        }
+        if (userName == null || userName.isEmpty()) {
+            userName = "Tên người dùng";
+        }
+                    %>
+
+                    <div class="avatar">
+                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
+                    </div>
+                    <div class="username"><%= userName %></div>
+
+                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
+                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                </div>
+
+                <!-- Main -->
+                <div class="col-md-9 main">
+                    <div class="grid">
+                        <a href="teachschedule.jsp"><div class="card"><i class="fas fa-calendar-alt"></i> Lịch Dạy</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-calendar-check"></i> Điểm Danh</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-users"></i> Danh sách lớp</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-arrow-right"></i> Nhập điểm</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-folder-plus"></i> Tạo bài tập<br>về nhà</div></a>
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <div class="container-fluid dashboard-title-container navbar">
 
-            <h3 class="dashboard-title">Bảng Điều Khiển của Giáo Viên</h3>
-
-        </div>
-
-
-        <div class="dashboard-container">
-            <a href="teachschedule.jsp" class="dashboard-button text-center">Lịch dạy</a>
-            <a href="#" class="dashboard-button text-center">Điểm danh</a>
-            <a href="#" class="dashboard-button text-center">Danh sách lớp</a>
-            <a href="#" class="dashboard-button text-center">Tải tài liệu lên</a>
-            <a href="#" class="dashboard-button text-center">Nhập điểm</a>
-            <a href="#" class="dashboard-button text-center">Tạo Bài tập về nhà</a>
-        </div>
-
-    </div>
-
-
-
-    <footer class="site-footer">
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
-            <div class="row pt-5">
-                <div class="col-lg-7 col-md-12">
-                    <div class="row">
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
-                            <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                            <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                            <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+        <footer class="site-footer">
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
+                <div class="row pt-5">
+                    <div class="col-lg-7 col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
+                                <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
+                                <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                                <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                                <div class="d-flex justify-content-start mt-4">
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
-                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
-                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
-                                <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
-                                <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
+                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
+                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
+                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
+                                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-5 col-md-12 mb-5">
-                    <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
-                    <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
-                    <div class="w-100">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary px-4">Sign Up거리</button>
-                            </div>
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
+                        <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
+                        <div class="w-100">
+                            <div class="input-group">
+                                <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary px-4">Sign Up거리</button>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>
+            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </div>
-        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
-
-    </footer>
+        </footer>
 
 
-    <!-- JAVASCRIPT FILES -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- <script src="js/owl.carousel.min.js"></script>
-    <!-- <script src="js/counter.js"></script> -->
-    <!-- <script src="js/custom.js"></script> -->
+        <!-- JAVASCRIPT FILES -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- <script src="js/owl.carousel.min.js"></script>
+        <!-- <script src="js/counter.js"></script> -->
+        <!-- <script src="js/custom.js"></script> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
+    </body>
 </html>

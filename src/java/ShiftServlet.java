@@ -4,7 +4,6 @@
  */
 
 
-
 import dal.ShiftDAO;
 import entity.Shift;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.List;
 
 /**
  *
- * @author DO NGOC ANH HE180661
+ * @author NGOC ANH
  */
 public class ShiftServlet extends HttpServlet {
    

@@ -5,7 +5,9 @@
 
 
 import dal.loginDAO;
+import dal.roleDAO;
 import entity.account;
+import entity.roles;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  *
@@ -39,10 +42,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");  
+            out.println("<title>Servlet RegisterServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,9 +64,11 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String email = request.getParameter("loginEmail");
         String pass = request.getParameter("loginPassword");
         String role = request.getParameter("role");
+        
         int ro = 0;
 
         if (role.equals("admin")) {
@@ -77,7 +82,7 @@ public class LoginServlet extends HttpServlet {
         } else if (role.equals("manager")) {
             ro = 5;
         } else {
-            
+
             request.getRequestDispatcher("login_register.jsp").forward(request, response);
             return;
         }
@@ -91,9 +96,9 @@ public class LoginServlet extends HttpServlet {
         } else {
             HttpSession session = request.getSession();
             session.setAttribute("account", acc);
-            session.setAttribute("email", email);
-            response.sendRedirect("teacherdashboard.jsp");
-
+            session.setAttribute("userName", acc.getName());
+            session.setAttribute("userAvatar", acc.getAvatar());
+            
             // Điều hướng theo vai trò
             String roleName = acc.getRole().getRole();
             switch (roleName.toLowerCase()) {
@@ -117,7 +122,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("Home.jsp");
             }
         }
-        
+
     }
 
     /**

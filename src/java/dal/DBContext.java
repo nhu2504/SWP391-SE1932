@@ -17,18 +17,12 @@ import java.util.logging.Logger;
  */
 public class DBContext {
     public Connection connection;
-    public DBContext()
-    {
-        //@Students: You are allowed to edit user, pass, url variables to fit 
-        //your system configuration
-        //You can also add more methods for Database Interaction tasks. 
-        //But we recommend you to do it in another class
-        // For example : StudentDBContext extends DBContext , 
-        //where StudentDBContext is located in dal package, 
+    public DBContext(){
+     
         try {
             String user = "na";
             String pass = "123";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=edura;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=edurafinal;encrypt=true;trustServerCertificate=true";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException | SQLException ex) {

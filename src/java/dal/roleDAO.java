@@ -8,6 +8,8 @@ import entity.roles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,18 +30,43 @@ public class roleDAO {
                             rs.getString(2));
                 }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
+    
+    public List<roles> getAllRoles(){
+        List<roles> list = new ArrayList<>();
+        String query = "select * from roles";
+        
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                roles r = new roles();
+                r.setId(rs.getInt("roleID"));
+                r.setRole(rs.getString("roleName"));
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     public static void main(String[] args) {
         roleDAO r = new roleDAO();
-        
-        int roleID = 2; 
-    roles role = r.getRoleByID(roleID);
-    if (role != null) {
-        System.out.println("Sản phẩm tìm thấy: " + role.toString());
-    } else {
-        System.out.println("Không tìm thấy sản phẩm với ID: " + roleID);
-    }
+        List<roles> rolesList = r.getAllRoles();
+for (roles role : rolesList) {
+    System.out.println(role.toString());
+}
+       
+//        int roleID = 2; 
+//    roles role = r.getRoleByID(roleID);
+//    if (role != null) {
+//        System.out.println("Sản phẩm tìm thấy: " + role.toString());
+//    } else {
+//        System.out.println("Không tìm thấy sản phẩm với ID: " + roleID);
+//    }
     }
 }

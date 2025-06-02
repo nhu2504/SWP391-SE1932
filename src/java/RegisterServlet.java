@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import java.time.format.DateTimeParseException;
  * @author DO NGOC ANH HE180661
  */
 @MultipartConfig
+@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
 public class RegisterServlet extends HttpServlet {
 
     /**
@@ -78,7 +80,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String mess1 = "";
+        String mess = "";
         try {
             String fName = request.getParameter("fullName");
             String email = request.getParameter("email");
@@ -91,7 +93,7 @@ public class RegisterServlet extends HttpServlet {
             String parentPhone = request.getParameter("phonepar");
             String parentEmail = request.getParameter("emailpar");
             boolean confirm = request.getParameter("verifi") != null;
-
+            
             Part avtPart = request.getPart("avatar");
             String avtName = Paths.get(avtPart.getSubmittedFileName()).getFileName().toString();
             String uploadPath = getServletContext().getRealPath("/uploads");
@@ -108,27 +110,27 @@ public class RegisterServlet extends HttpServlet {
             } else {
                 birthDate = Date.valueOf(birth);
             }
-            if (email == null || !email.matches("^[A-Za-z0-9]+@(.+)$")) {
-                mess1 = "Email không hợp lệ";
-            } else if (phone == null || !phone.matches("^0\\d{9}$")) {
-                mess1 = "Số điện thoại không hợp lệ";
-            } else if (parentEmail == null || !parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
-                mess1 = "Email không hợp lệ";
-            } else if (parentPhone == null || !parentPhone.matches("^0\\d{9}$")) {
-                mess1 = "Số điện thoại không hợp lệ";
+            if (!email.matches("^[A-Za-z0-9]+@(.+)$")) {
+                mess = "Email không hợp lệ";
+            } else if (!phone.matches("^0\\d{9}$")) {
+                mess = "Số điện thoại không hợp lệ";
+            } else if (!parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
+                mess = "Email không hợp lệ";
+            } else if (!parentPhone.matches("^0\\d{9}$")) {
+                mess = "Số điện thoại không hợp lệ";
             }
             try {
                 LocalDate birthDate1 = LocalDate.parse(birth);
                 LocalDate today = LocalDate.now();
                 if(!birthDate1.isBefore(today)){
-                    mess1 ="Ngày sinh không hợp lệ";
+                    mess ="Ngày sinh không hợp lệ";
                 }
             } catch (DateTimeParseException  e) {
-                mess1 = "Ngày sinh không hợp lệ";
+                mess = "Ngày sinh không hợp lệ";
             }
 
-            if (!mess1.isEmpty()) {
-                request.setAttribute("error1", mess1);
+            if (!mess.isEmpty()) {
+                request.setAttribute("error1", mess);
                 request.getRequestDispatcher("login_register.jsp").forward(request, response);
                 return;
             }
@@ -149,7 +151,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
     }
-
+    
     /**
      * Returns a short description of the servlet.
      *

@@ -19,10 +19,11 @@ public class loginDAO {
     public account login(String email, String password, int roleid) {
         String query = "select * from [User]\n"
                 + "where email = ?\n"
-                + "and password = ? \n"
+                + "and pass = ? \n"
                 + "and roleID = ?";
         roleDAO rd = new roleDAO();
-        
+        SchoolDAO sd = new SchoolDAO();
+        SchoolClassDAO scd = new SchoolClassDAO();
         try {
               Connection conn = new DBContext().connection;
                 PreparedStatement ps = conn.prepareStatement(query); 
@@ -31,9 +32,23 @@ public class loginDAO {
                 ps.setInt(3, roleid);
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
-                    return new account(rs.getString("email"),
-                            rs.getString("password"),
-                            rd.getRoleByID(rs.getInt("roleid")));
+                    return new account(rs.getInt("UserID"),
+                            rs.getString("FullName"),
+                            rs.getString("Gender"),
+                            rs.getDate("BirthDate"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getString("pass"),
+                            rs.getString("avatar"),
+                            rs.getInt("onlineStatus"),
+                            rs.getDate("created_at"),
+                            rs.getString("Certi"), 
+                            rs.getString("Descrip"), 
+                            sd.getSchoolByID(rs.getInt("SchoolID")),
+                            scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
+                            rd.getRoleByID(rs.getInt("roleID")), 
+                            rs.getString("ParentEmail"),
+                            rs.getString("ParentPhone"));
                 }
         } catch (Exception e) {
             e.printStackTrace();

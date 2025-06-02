@@ -5,7 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="dal.loginDAO"%>
+<%@page import="dal.roleDAO"%>
+<%@page import="entity.account"%>
+<%@page import="entity.roles"%>
+<%@page import="java.util.*"%>
 <%@taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -122,6 +129,7 @@
         </style>
     </head>
     <body>
+       
         <div class="wrapper">
             <!-- Đăng nhập -->
             <div class="form-container">
@@ -136,10 +144,10 @@
                         <input type="password" name="loginPassword" required />
                     </div>
                     <div class="form-group">
+                        <%-- Thêm debug ngay trước select --%>
                         <select name="role" required>
                             <option value="">--Chọn vai trò--</option>
                             <option value="admin">Quản trị viên</option>
-
                             <option value="teacher">Giáo viên</option>
                             <option value="Studentt">Học sinh</option>
                             <option value="parent">Phụ huynh</option>

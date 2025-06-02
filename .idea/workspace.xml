@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="421b5706-a8cb-4ba9-8fa7-d1cb34ce90e8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/SWP391Team6" beforeDir="false" afterPath="$PROJECT_DIR$/SWP391Team6" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/Home.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/newjsp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/newjsp.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/LoginServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/LogoServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/LogoServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/RegisterServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/RegisterServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/ShiftServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/ShiftServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/DBContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/DBContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/loginDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/loginDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/roleDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/roleDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/account.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/account.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/login_register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/login_register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/teacherdashboard.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/teacherdashboard.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/teachschedule.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/teachschedule.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/WebApplication3.war" beforeDir="false" afterPath="$PROJECT_DIR$/dist/WebApplication3.war" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/Home.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/newjsp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/newjsp.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/build-impl.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/build-impl.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/genfiles.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/genfiles.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/project.properties" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/project.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nbproject/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nbproject/project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/LogoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/LogoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/RegisterServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/RegisterServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/ShiftServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/ShiftServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/dal/DBContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/dal/DBContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/dal/loginDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/dal/loginDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/dal/roleDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/dal/roleDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/entity/account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/entity/account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/login_register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/login_register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/teacherdashboard.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/teacherdashboard.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/teachschedule.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/teachschedule.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,25 +45,30 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2xhnFBWB5dLUITeBQTu8YJWbikf" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "NhuVT",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/swp/WebApplication3",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ngocanh&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/SWP391/SWP391Team6/SWP391-SE1932&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -52,6 +85,11 @@
       <option name="presentableId" value="Default" />
       <updated>1748399066504</updated>
       <workItem from="1748399067684" duration="70000" />
+      <workItem from="1748708581115" duration="124000" />
+      <workItem from="1748736672544" duration="18000" />
+      <workItem from="1748794547090" duration="649000" />
+      <workItem from="1748834781628" duration="343000" />
+      <workItem from="1748835276859" duration="660000" />
     </task>
     <servers />
   </component>
