@@ -4,11 +4,12 @@
  */
 
 
-import dal.ShiftDAO;
+import dal.ShiftlearnDAO;
 import entity.Shift;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import java.util.List;
  *
  * @author NGOC ANH
  */
+
 public class ShiftServlet extends HttpServlet {
    
     /** 
@@ -55,10 +57,9 @@ public class ShiftServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        ShiftDAO sd = new ShiftDAO();
-        List<Shift> list = sd.getAllShift();
-        request.setAttribute("SHIFT", list);
-        request.getRequestDispatcher("teachschedule.jsp").forward(request, response);
+        ShiftlearnDAO sd = new ShiftlearnDAO();
+        List<Shift> list = sd.getAllShifts();
+        
     } 
 
     /** 

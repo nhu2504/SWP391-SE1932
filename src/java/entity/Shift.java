@@ -10,21 +10,25 @@ import java.sql.Time;
  */
 public class Shift {
     private int id;
-    private Time startTime;
-    private Time endTime;
+    private String startTime;
+    private String endTime;
 
     public Shift() {
     }
 
-    public Shift(int id, Time startTime, Time endTime) {
+    public Shift(int id, String startTime, String endTime) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
     }
- 
-    public Shift(Time startTime, Time endTime) {
+
+    public Shift(String startTime, String endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public Shift(int id) {
+        this.id = id;
     }
 
     public int getId() {
@@ -35,19 +39,19 @@ public class Shift {
         this.id = id;
     }
 
-    public Time getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -56,6 +60,7 @@ public class Shift {
         return "Shift{" + "id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + '}';
     }
 
+    
     
     
 }

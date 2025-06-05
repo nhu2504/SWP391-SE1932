@@ -20,6 +20,10 @@
         <servlet-name>ShiftServlet</servlet-name>
         <servlet-class>ShiftServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TeacherScheduleServlet</servlet-name>
+        <servlet-class>TeacherScheduleServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -55,4 +59,12 @@
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
+    <servlet-mapping>
+        <servlet-name>TeacherScheduleServlet</servlet-name>
+        <url-pattern>/teacherscheduleservlet</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>60</session-timeout>
+        <!-- timeout 60 phút -->
+    </session-config>
 </web-app>

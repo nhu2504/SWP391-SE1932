@@ -1,6 +1,12 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.List" %>
+<%@ page import="entity.Subject" %>
+
 <!DOCTYPE html>
 <!-- Văn Thị Như - HE181329 -->
 <html lang="en">
@@ -751,9 +757,9 @@
                 <!-- Logo -->
                 <div class="col-lg-3 text-center">
                     <a href="" class="text-decoration-none">
-
                         <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image" onerror="this.src='/images/fallback.png';" />
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
                         </div>
 
                     </a>
@@ -761,7 +767,7 @@
                 <!-- Địa chỉ -->
                 <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
-                        <i class="fa fa-3x fa-map-marker-alt text-primary mr-3"></i>
+                        <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
                             <small>${address}</small>
@@ -771,7 +777,7 @@
                 <!-- Email -->
                 <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
-                        <i class="fa fa-3x fa-envelope text-primary mr-3"></i>
+                        <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email</h6>
                             <small>${email}</small>
@@ -781,7 +787,7 @@
                 <!-- Số điện thoại -->
                 <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
-                        <i class="fa fa-3x fa-phone text-primary mr-3"></i>
+                        <i class="fa fa-2x fa-phone text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Điện thoại</h6>
                             <small>${phone}</small>
@@ -809,10 +815,10 @@
                             <a class="nav-link" href="${pageContext.request.contextPath}/home">Trang chủ</a>
                         </li>
                         <li class="nav-item flex-grow-1">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/about">Giới thiệu</a>
+                            <a class="nav-link  active" href="${pageContext.request.contextPath}/about">Giới thiệu</a>
                         </li>
                         <li class="nav-item flex-grow-1">
-                            <a class="nav-link  active" href="${pageContext.request.contextPath}/course">Khoá học</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/course">Khoá học</a>
 
                         </li>
                         <li class="nav-item flex-grow-1">
@@ -914,882 +920,884 @@
 
                 <div class="carousel-inner">
                     <div class="carousel-item active" style="min-height: 300px;">
-                        <img class="position-relative w-100" src="images/carousel-1.jpg" style="min-height: 300px; object-fit: cover;">
-
+                        <img class="position-relative w-100" 
+                             src="${pageContext.request.contextPath}/LogoServlet?type=banner" 
+                             alt="Banner" 
+                             style="min-height: 300px; object-fit: cover;"
+                             onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
                     </div>                                       
                 </div>
             </div>
         </div>
         <!-- Carousel End -->
-        <main>            
-            <!-- Category Start -->            
-            <div class="container-fluid py-5">
-                <div class="container pt-1 pb-3">
-                    <div class="text-center mb-5">    
-                        <h3>Khám Phá Các Môn Học</h3>
-                    </div>
-                    <div class="row" id="courseContainer">
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-1.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-2.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-3.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-4.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-5.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-6.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-7.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-8.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-9.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-10.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-11.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-12.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-13.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-14.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-15.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-16.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-17.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-18.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-19.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-20.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-21.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-22.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-23.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="images/cat-24.jpg" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="">
-                                    <h8 class="text-white font-weight-medium">20 Lớp học</h8>
-                                </a>
+        <main>
+            <!-- About start -->
+            <section class="about-section">
+                <div class="container">
+                    <div class="container-fluid py-3">
+                        <div class="container py-0">
+                            <div class="row align-items-center">
+                                <div class="col-lg-5">
+                                    <div class="square-image-container">
+                                        <img class="img-fluid rounded mb-4 mb-lg-0" 
+                                             src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter" 
+                                             alt="Image Center" 
+                                             onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                                    </div>
+                                </div>
+                                <div class="col-lg-7" style="text-align: justify;">
+                                    <div class="text-left mb-4">
+                                        <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px; text-align: justify; white-space: nowrap; font-size: clamp(0.9rem, 2.5vw, 1.25rem);">
+                                            Chất Lượng Giáo Dục - Giá Trị Bền Vững
+                                        </h5>
+                                        <h3 style="white-space: nowrap; text-align: left; font-size: clamp(1.25rem, 3vw, 2rem); overflow-wrap: anywhere;">
+                                            Khơi Nguồn Tri Thức – Dẫn Lối Thành Công
+                                        </h3>
+                                    </div>
+                                    <div id="descriptionContainer">
+                                        <p style="white-space: pre-wrap;" id="descriptionText">${descripCenter}</p>
+                                    </div>
+                                    <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Xem thêm</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination" id="pagination"></ul>
-                    </nav>
+                </div>
+            </section>
+            <!-- About end -->
+
+
+
+            
+            
+            
+            <!-- Ưu thế start -->
+            <section id="gioithieu" class="py-5 bg-light">
+                <div class="container">
+                    <h3 class="text-center mb-4">Ưu Thế Vượt Trội Của EDURA</h3>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 text-center shadow-sm">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="card-title">Giáo viên chất lượng</h5>
+                                    <p class="card-text">100% giáo viên có bằng cấp & kinh nghiệm giảng dạy lâu năm.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 text-center shadow-sm">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <i class="bi bi-book text-success" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="card-title">Giáo trình chuẩn</h5>
+                                    <p class="card-text">Giáo trình được biên soạn theo chuẩn khung của Bộ Giáo dục.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 text-center shadow-sm">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <i class="bi bi-bank text-warning" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="card-title">Liên kết nhà trường</h5>
+                                    <p class="card-text">Kết hợp với giáo viên chủ nhiệm theo dõi quá trình học tập.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 text-center shadow-sm">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <i class="bi bi-bar-chart-line text-danger" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="card-title">Tiến bộ vượt bậc</h5>
+                                    <p class="card-text">98% học sinh cải thiện kết quả chỉ sau 3 tháng học.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Ưu thế end -->
+
+            <!-- PHẢN HỒI TỪ HỌC VIÊN -->
+            <div class="container py-5">
+                <div class="row">
+                    <div class="col-md-5 py-3">
+                        <div class="d-flex justify-content-center">
+                            <h3 class="mb-4">Lắng Nghe Và Chia Sẻ 💬</h3>
+                        </div>
+
+                        <div id="testimonialWrapper" class="border-custom">
+                            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                                <div class="carousel-inner text-start">
+                                    <c:choose>
+                                        <c:when test="${not empty students}">
+                                            <c:forEach var="student" items="${students}" varStatus="status">
+                                                <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
+                                                    <div class="card p-4">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <img src="${pageContext.request.contextPath}/LogoServlet?type=student&userId=${student.userID}" 
+                                                                 alt="${student.fullName}" 
+                                                                 class="rounded-circle me-3" 
+                                                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                                                            <div>
+                                                                <h6 class="text-primary mb-1">${student.fullName}</h6>
+                                                                <p class="mb-0 small">Tài khoản: ${fn:substring(student.email, 0, 4)}****@gmail.com</p>
+                                                                <!-- Hiển thị sao -->
+                                                                <p class="mb-0 small">
+                                                                    <c:forEach var="i" begin="1" end="${student.rating}">
+                                                                        <i class="fas fa-star text-warning"></i>
+                                                                    </c:forEach>
+                                                                    <c:forEach var="i" begin="${student.rating + 1}" end="5">
+                                                                        <i class="far fa-star text-muted"></i>
+                                                                    </c:forEach>
+                                                                </p>
+                                                                <c:if test="${not empty student.certi}">
+                                                                    <ul class="list-unstyled mb-0">
+                                                                        <c:forEach var="achievement" items="${fn:split(student.certi, '.')}">
+                                                                            <c:if test="${not empty fn:trim(achievement)}">
+                                                                                <li class="mb-1 small"><i class="fas fa-trophy me-1 text-warning"></i>${fn:trim(achievement)}</li>
+                                                                                </c:if>
+                                                                            </c:forEach>
+                                                                    </ul>
+
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                        <p class="fst-italic text-muted">
+                                                            <i class="bi bi-quote fs-4 me-1"></i>${student.commentText}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="carousel-item active">
+                                                <div class="card p-4">
+                                                    <p class="text-center">Không có đánh giá tốt nào để hiển thị.</p>
+                                                </div>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+
+                                <!-- Chấm tròn điều hướng -->
+                                <div class="carousel-indicators mt-3 d-flex justify-content-center" id="testimonial-indicators">
+                                    <c:forEach var="i" begin="0" end="9" varStatus="status">
+                                        <button type="button" 
+                                                data-bs-target="#testimonialCarousel" 
+                                                data-bs-slide-to="${status.index}" 
+                                                class="${status.index == 0 ? 'active' : ''}" 
+                                                aria-current="${status.index == 0 ? 'true' : 'false'}" 
+                                                aria-label="Slide ${status.index + 1}"
+                                                <c:if test="${status.index >= fn:length(students)}">disabled</c:if>></button>
+                                    </c:forEach>
+                                </div>           
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải sẽ thiết kế sau -->
+                    <div class="col-md-7 py-3">
+                        <h3 class="mb-4 font-weight-bold text-center">
+                            👨‍👩‍👧‍👦 Góc Nhìn Phụ Huynh
+                        </h3>
+
+                        <!-- Vùng cuộn phản hồi với thanh cuộn đẹp -->
+
+
+
+                        <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;" class="custom-scrollbar">
+                            <c:choose>
+                                <c:when test="${not empty parents}">
+                                    <c:forEach var="parent" items="${parents}" varStatus="status">
+                                        <c:set var="colors" value="primary,success,info,warning,danger" />
+                                        <c:set var="color" value="${fn:split(colors, ',')[status.index % 5]}" />
+                                        <div class="border-left pl-3 border-${color} mb-4 bg-light p-3 rounded shadow-sm">
+                                            <p class="mb-2">“${parent.commentText}”</p>
+                                            <p class="mb-0 small">
+                                                <c:forEach var="i" begin="1" end="${parent.rating}">
+                                                    <i class="fas fa-star text-warning"></i>
+                                                </c:forEach>
+                                                <c:forEach var="i" begin="${parent.rating + 1}" end="5">
+                                                    <i class="far fa-star text-muted"></i>
+                                                </c:forEach>
+                                            </p>
+                                            <p class="text-right text-${color} font-weight-bold mb-0">
+                                                – Phụ huynh em ${parent.studentName}
+                                            </p>
+                                        </div>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="border-left pl-3 border-secondary mb-4 bg-light p-3 rounded shadow-sm">
+                                        <p class="mb-2">Không có đánh giá từ phụ huynh để hiển thị.</p>
+                                        <p class="text-right text-secondary font-weight-bold mb-0">– Trung tâm</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Category End -->
-            <!-- Courses Start -->
-            <div class="container-fluid py-3">
-                <div class="container py-0">
-                    <div class="text-center mb-5">
-                        <h3>Khoá Học Nổi Bật</h3>
-                    </div>
+        </div>
+        <!-- Phản hồi end -->           
+    </main>
+
+    <footer class="site-footer">
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+            <div class="row pt-5">
+                <div class="col-lg-5 col-md-12 mb-5">
+                    <a href="" class="text-decoration-none">
+
+                        <div class="logo-container">
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+
+                        </div>
+                        <div class="slogan-group text-left mt-2">
+
+                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                        </div>
+
+                    </a>
+                </div>
+                <div class="col-lg-7 col-md-12">
                     <div class="row">
-                        <!-- Khóa học 1 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-1.jpg" alt="Course 1">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">Đánh giá tư duy - TSA</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                            <div class="d-flex justify-content-start mt-4">
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
                         </div>
-                        <!-- Khóa học 2 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-2.jpg" alt="Course 2">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">TOEIC 4 kĩ năng</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Khóa học 3 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-3.jpg" alt="Course 3">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">IELTS cấp tốc</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Khóa học 4 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-4.jpg" alt="Course 4">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">Học sớm - ôn thi sớm lớp 12</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Khóa học 5 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-5.jpg" alt="Course 5">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">Ôn thi ĐGNL 2025</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Khóa học 6 -->
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="rounded overflow-hidden mb-2">
-                                <img class="img-fluid course-img" src="images/course-6.jpg" alt="Course 6">
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>25 Học sinh</small>
-                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>1 giờ 30 phút</small>
-                                    </div>
-                                    <a class="h5 course-title" href="">Luyện đề thi thử môn Toán</a>
-                                    <div class="border-top mt-4 pt-4">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0 rating"><i class="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small></h6>
-                                            <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                </a>
+
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Courses End -->                       
 
-        </main>
-
-        <footer class="site-footer">
-            <!-- Footer Start -->
-            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-                <div class="row pt-5">
-                    <div class="col-lg-5 col-md-12 mb-5">
-                        <a href="" class="text-decoration-none">
-
-                            <div class="logo-container">
-                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
-
-                            </div>
-                            <div class="slogan-group text-left mt-2">
-
-                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                            </div>
-
-                        </a>
-                    </div>
-                    <div class="col-lg-7 col-md-12">
-                        <div class="row">
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                                <div class="d-flex justify-content-start mt-4">
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                                <div class="d-flex flex-column justify-content-start">
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                    </a>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
 
             </div>
-            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </footer>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const backTopBtn = document.querySelector('.back-top-icon');
+        </div>
+        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-                if (backTopBtn) {
-                    // Hiển thị/ẩn nút khi cuộn
-                    window.addEventListener('scroll', () => {
-                        if (window.scrollY > 300) {
-                            backTopBtn.classList.add('visible');
-                        } else {
-                            backTopBtn.classList.remove('visible');
-                        }
-                    });
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backTopBtn = document.querySelector('.back-top-icon');
 
-                    // Cuộn mượt khi bấm
-                    backTopBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        window.scrollTo({top: 0, behavior: 'smooth'});
-                    });
-                } else {
-                    console.error('Back to Top button not found');
-                }
-            });
-        </script>
-
-        <!-- JAVASCRIPT FILES -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src="js/owl.carousel.min.js"></script>
-        <!-- <script src="js/counter.js"></script> -->
-        <!-- <script src="js/custom.js"></script> -->
-
-        <script>
-            let itemsPerPage = 8;
-            let totalItems = 0;
-            let totalPages = 0;
-            let currentPage = 1;
-
-            function displayPage(page) {
-                page = parseInt(page);
-                if (isNaN(page) || page < 1) {
-                    console.warn(`Giá trị page không hợp lệ (${page}), mặc định về trang 1`);
-                    page = 1;
-                }
-                if (page > totalPages && totalPages > 0) {
-                    console.warn(`Trang ${page} vượt quá tổng số trang (${totalPages}), đặt về trang cuối`);
-                    page = totalPages;
-                }
-                console.log("Đang hiển thị trang:", page, "currentPage:", currentPage);
-
-                const items = document.querySelectorAll('#courseContainer .col-lg-3');
-                if (!items.length) {
-                    console.error("Không tìm thấy phần tử .col-lg-3 trong #courseContainer");
-                    return;
-                }
-
-                if (itemsPerPage <= 0) {
-                    console.error("itemsPerPage không hợp lệ:", itemsPerPage);
-                    itemsPerPage = 8;
-                }
-
-                let visibleCount = 0;
-                items.forEach((item, index) => {
-                    const pageIndex = Math.floor(index / itemsPerPage) + 1;
-                    console.log(`Item ${index + 1}, Page Index: ${pageIndex}, Current Page: ${page}`);
-                    item.classList.add('hidden');
-                    if (pageIndex === page) {
-                        item.classList.remove('hidden');
-                        visibleCount++;
+            if (backTopBtn) {
+                // Hiển thị/ẩn nút khi cuộn
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 300) {
+                        backTopBtn.classList.add('visible');
+                    } else {
+                        backTopBtn.classList.remove('visible');
                     }
                 });
-                console.log(`Số mục hiển thị trên trang ${page}: ${visibleCount}`);
 
-                updatePagination(page);
+                // Cuộn mượt khi bấm
+                backTopBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+            } else {
+                console.error('Back to Top button not found');
+            }
+        });
+    </script>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <!-- <script src="js/counter.js"></script> -->
+    <!-- <script src="js/custom.js"></script> -->
+
+    <script>
+        let itemsPerPage = 8;
+        let totalItems = 0;
+        let totalPages = 0;
+        let currentPage = 1;
+
+        function displayPage(page) {
+            page = parseInt(page);
+            if (isNaN(page) || page < 1) {
+                console.warn(`Giá trị page không hợp lệ (${page}), mặc định về trang 1`);
+                page = 1;
+            }
+            if (page > totalPages && totalPages > 0) {
+                console.warn(`Trang ${page} vượt quá tổng số trang (${totalPages}), đặt về trang cuối`);
+                page = totalPages;
+            }
+            console.log("Đang hiển thị trang:", page, "currentPage:", currentPage);
+
+            const items = document.querySelectorAll('#courseContainer .col-lg-3');
+            if (!items.length) {
+                console.error("Không tìm thấy phần tử .col-lg-3 trong #courseContainer");
+                return;
             }
 
-            function updatePagination(page) {
-                const pagination = document.getElementById('pagination');
-                if (!pagination) {
-                    console.error('Không tìm thấy element #pagination');
-                    return;
+            if (itemsPerPage <= 0) {
+                console.error("itemsPerPage không hợp lệ:", itemsPerPage);
+                itemsPerPage = 8;
+            }
+
+            let visibleCount = 0;
+            items.forEach((item, index) => {
+                const pageIndex = Math.floor(index / itemsPerPage) + 1;
+                console.log(`Item ${index + 1}, Page Index: ${pageIndex}, Current Page: ${page}`);
+                item.classList.add('hidden');
+                if (pageIndex === page) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
                 }
-                pagination.innerHTML = '';
+            });
+            console.log(`Số mục hiển thị trên trang ${page}: ${visibleCount}`);
 
-                // Nút Previous
-                const prevLi = document.createElement('li');
-                prevLi.className = page === 1 ? 'page-item disabled' : 'page-item';
-                const prevA = document.createElement('a');
-                prevA.className = 'page-link';
-                prevA.href = 'javascript:void(0)';
-                prevA.textContent = '«'; // Mũi tên trái
-                prevA.dataset.action = 'prev'; // Dùng dataset để xác định hành động
-                prevLi.appendChild(prevA);
-                pagination.appendChild(prevLi);
+            updatePagination(page);
+        }
 
-                // Các nút trang số
-                for (let i = 1; i <= totalPages; i++) {
-                    const li = document.createElement('li');
-                    li.className = i === page ? 'page-item active' : 'page-item';
-                    const a = document.createElement('a');
-                    a.className = 'page-link';
-                    a.href = 'javascript:void(0)';
-                    a.textContent = i;
-                    a.dataset.page = i; // Dùng dataset để lưu data-page
-                    li.appendChild(a);
-                    pagination.appendChild(li);
-                }
+        function updatePagination(page) {
+            const pagination = document.getElementById('pagination');
+            if (!pagination) {
+                console.error('Không tìm thấy element #pagination');
+                return;
+            }
+            pagination.innerHTML = '';
 
-                // Nút Next
-                const nextLi = document.createElement('li');
-                nextLi.className = page === totalPages ? 'page-item disabled' : 'page-item';
-                const nextA = document.createElement('a');
-                nextA.className = 'page-link';
-                nextA.href = 'javascript:void(0)';
-                nextA.textContent = '»'; // Mũi tên phải
-                nextA.dataset.action = 'next'; // Dùng dataset để xác định hành động
-                nextLi.appendChild(nextA);
-                pagination.appendChild(nextLi);
+            // Nút Previous
+            const prevLi = document.createElement('li');
+            prevLi.className = page === 1 ? 'page-item disabled' : 'page-item';
+            const prevA = document.createElement('a');
+            prevA.className = 'page-link';
+            prevA.href = 'javascript:void(0)';
+            prevA.textContent = '«'; // Mũi tên trái
+            prevA.dataset.action = 'prev'; // Dùng dataset để xác định hành động
+            prevLi.appendChild(prevA);
+            pagination.appendChild(prevLi);
 
-                // Debug DOM
-                const links = pagination.querySelectorAll('.page-link');
-                links.forEach((link, index) => {
-                    console.log(`Nút phân trang ${index + 1}:`, link.outerHTML);
+            // Các nút trang số
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = i === page ? 'page-item active' : 'page-item';
+                const a = document.createElement('a');
+                a.className = 'page-link';
+                a.href = 'javascript:void(0)';
+                a.textContent = i;
+                a.dataset.page = i; // Dùng dataset để lưu data-page
+                li.appendChild(a);
+                pagination.appendChild(li);
+            }
+
+            // Nút Next
+            const nextLi = document.createElement('li');
+            nextLi.className = page === totalPages ? 'page-item disabled' : 'page-item';
+            const nextA = document.createElement('a');
+            nextA.className = 'page-link';
+            nextA.href = 'javascript:void(0)';
+            nextA.textContent = '»'; // Mũi tên phải
+            nextA.dataset.action = 'next'; // Dùng dataset để xác định hành động
+            nextLi.appendChild(nextA);
+            pagination.appendChild(nextLi);
+
+            // Debug DOM
+            const links = pagination.querySelectorAll('.page-link');
+            links.forEach((link, index) => {
+                console.log(`Nút phân trang ${index + 1}:`, link.outerHTML);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra các phần tử không mong muốn có class page-link
+            const pageLinksOutsidePagination = document.querySelectorAll('.page-link:not(#pagination .page-link)');
+            if (pageLinksOutsidePagination.length > 0) {
+                console.warn("Có các phần tử ngoài #pagination sử dụng class page-link:", pageLinksOutsidePagination);
+                pageLinksOutsidePagination.forEach(el => {
+                    console.log("Phần tử:", el.outerHTML);
                 });
             }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Kiểm tra các phần tử không mong muốn có class page-link
-                const pageLinksOutsidePagination = document.querySelectorAll('.page-link:not(#pagination .page-link)');
-                if (pageLinksOutsidePagination.length > 0) {
-                    console.warn("Có các phần tử ngoài #pagination sử dụng class page-link:", pageLinksOutsidePagination);
-                    pageLinksOutsidePagination.forEach(el => {
-                        console.log("Phần tử:", el.outerHTML);
-                    });
-                }
+            // Lấy trang hiện tại từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentPage = parseInt(urlParams.get('page')) || 1;
+            console.log("Trang hiện tại từ URL:", currentPage);
 
-                // Lấy trang hiện tại từ URL
-                const urlParams = new URLSearchParams(window.location.search);
-                currentPage = parseInt(urlParams.get('page')) || 1;
-                console.log("Trang hiện tại từ URL:", currentPage);
+            const items = document.querySelectorAll('#courseContainer .col-lg-3');
+            totalItems = items.length;
+            console.log("Tổng số phần tử:", totalItems);
+            if (totalItems > 0) {
+                totalPages = Math.ceil(totalItems / itemsPerPage);
+                console.log("Tổng số trang:", totalPages);
+                displayPage(currentPage);
+            } else {
+                console.error('Không tìm thấy phần tử .col-lg-3 trong #courseContainer');
+            }
 
-                const items = document.querySelectorAll('#courseContainer .col-lg-3');
-                totalItems = items.length;
-                console.log("Tổng số phần tử:", totalItems);
-                if (totalItems > 0) {
-                    totalPages = Math.ceil(totalItems / itemsPerPage);
-                    console.log("Tổng số trang:", totalPages);
-                    displayPage(currentPage);
-                } else {
-                    console.error('Không tìm thấy phần tử .col-lg-3 trong #courseContainer');
-                }
+            // Sử dụng event delegation để xử lý click
+            const pagination = document.getElementById('pagination');
+            if (pagination) {
+                pagination.addEventListener('click', (e) => {
+                    const link = e.target.closest('.page-link');
+                    if (!link)
+                        return;
 
-                // Sử dụng event delegation để xử lý click
-                const pagination = document.getElementById('pagination');
-                if (pagination) {
-                    pagination.addEventListener('click', (e) => {
-                        const link = e.target.closest('.page-link');
-                        if (!link)
+                    e.preventDefault();
+                    console.log("Phần tử được click:", link.outerHTML);
+
+                    // Xử lý nút Previous/Next
+                    if (link.dataset.action) {
+                        if (link.dataset.action === 'prev' && currentPage > 1) {
+                            currentPage--;
+                        } else if (link.dataset.action === 'next' && currentPage < totalPages) {
+                            currentPage++;
+                        } else {
+                            console.log("Không thể chuyển trang: Đã ở giới hạn (trang đầu/cuối)");
                             return;
-
-                        e.preventDefault();
-                        console.log("Phần tử được click:", link.outerHTML);
-
-                        // Xử lý nút Previous/Next
-                        if (link.dataset.action) {
-                            if (link.dataset.action === 'prev' && currentPage > 1) {
-                                currentPage--;
-                            } else if (link.dataset.action === 'next' && currentPage < totalPages) {
-                                currentPage++;
-                            } else {
-                                console.log("Không thể chuyển trang: Đã ở giới hạn (trang đầu/cuối)");
-                                return;
-                            }
-                        } else {
-                            // Xử lý nút trang số
-                            const pageNum = link.dataset.page;
-                            console.log("Nhấn vào trang (raw data-page):", pageNum);
-                            if (!pageNum || isNaN(parseInt(pageNum))) {
-                                console.error("data-page không hợp lệ hoặc không tồn tại:", pageNum);
-                                return;
-                            }
-                            currentPage = parseInt(pageNum);
                         }
+                    } else {
+                        // Xử lý nút trang số
+                        const pageNum = link.dataset.page;
+                        console.log("Nhấn vào trang (raw data-page):", pageNum);
+                        if (!pageNum || isNaN(parseInt(pageNum))) {
+                            console.error("data-page không hợp lệ hoặc không tồn tại:", pageNum);
+                            return;
+                        }
+                        currentPage = parseInt(pageNum);
+                    }
 
-                        console.log("Cập nhật currentPage:", currentPage);
+                    console.log("Cập nhật currentPage:", currentPage);
 
-                        // Cập nhật URL
-                        const url = new URL(window.location);
-                        url.searchParams.set('page', currentPage);
-                        window.history.pushState({}, '', url);
+                    // Cập nhật URL
+                    const url = new URL(window.location);
+                    url.searchParams.set('page', currentPage);
+                    window.history.pushState({}, '', url);
 
-                        displayPage(currentPage);
+                    displayPage(currentPage);
+                });
+
+                // Kiểm tra nếu #pagination bị thay đổi
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        console.warn("Phần tử #pagination bị thay đổi:", mutation);
                     });
-
-                    // Kiểm tra nếu #pagination bị thay đổi
-                    const observer = new MutationObserver((mutations) => {
-                        mutations.forEach((mutation) => {
-                            console.warn("Phần tử #pagination bị thay đổi:", mutation);
-                        });
-                    });
-                    observer.observe(pagination, {childList: true, subtree: true});
-                } else {
-                    console.error("Không tìm thấy #pagination để gắn sự kiện");
+                });
+                observer.observe(pagination, {childList: true, subtree: true});
+            } else {
+                console.error("Không tìm thấy #pagination để gắn sự kiện");
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Debug tất cả nav-link trong #navbar-vertical
+            $('#navbar-vertical .nav-link').each(function () {
+                const panelId = $(this).attr('data-panel');
+                console.log('Nav-link trong #navbar-vertical:', $(this).text().trim(), 'data-panel:', panelId);
+                if (!panelId) {
+                    console.warn('Nav-link thiếu data-panel:', $(this).prop('outerHTML'));
                 }
             });
-        </script>
-        <script>
-            $(document).ready(function () {
-                // Debug tất cả nav-link trong #navbar-vertical
-                $('#navbar-vertical .nav-link').each(function () {
-                    const panelId = $(this).attr('data-panel');
-                    console.log('Nav-link trong #navbar-vertical:', $(this).text().trim(), 'data-panel:', panelId);
-                    if (!panelId) {
-                        console.warn('Nav-link thiếu data-panel:', $(this).prop('outerHTML'));
-                    }
-                });
 
-                // Debug tất cả panel
-                $('.course-panel').each(function () {
-                    console.log('Panel tồn tại:', $(this).attr('id'));
-                    console.log('Columns trong panel:', $(this).find('.column').length, $(this).find('.column').map(function () {
-                        return $(this).attr('class');
-                    }).get());
-                });
+            // Debug tất cả panel
+            $('.course-panel').each(function () {
+                console.log('Panel tồn tại:', $(this).attr('id'));
+                console.log('Columns trong panel:', $(this).find('.column').length, $(this).find('.column').map(function () {
+                    return $(this).attr('class');
+                }).get());
+            });
 
-                // Ẩn tất cả panel và cột khi load trang
+            // Ẩn tất cả panel và cột khi load trang
+            $('.course-panel').removeClass('active').css('display', 'none');
+            $('.course-panel .column').removeClass('active').css('display', 'none');
+            console.log('Khởi tạo: Tất cả panel và cột đã ẩn');
+
+            // Ẩn navbar-vertical khi load trang
+            $('#navbar-vertical').removeClass('show').css('display', 'none');
+            console.log('Khởi tạo: Dropdown navbar-vertical đã ẩn');
+
+            // Toggle dropdown Subjects
+            $('#subjects-btn').click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const $dropdown = $('#navbar-vertical');
+                const isShown = $dropdown.hasClass('show');
+                $dropdown.toggleClass('show').css('display', isShown ? 'none' : 'block');
+                $(this).attr('aria-expanded', !isShown);
+                console.log('Toggle dropdown: show =', !isShown);
+            });
+
+            // Xử lý click vào nav-link trong #navbar-vertical
+            $('#navbar-vertical .nav-link').click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const panelId = $(this).attr('data-panel');
+                console.log('Clicked nav-link:', $(this).text().trim(), 'data-panel:', panelId);
+
+                if (!panelId || typeof panelId !== 'string' || panelId.trim() === '') {
+                    alert('Lỗi: Panel ID không hợp lệ. Vui lòng thử lại!');
+                    console.error('Panel ID không hợp lệ:', panelId, 'Element:', $(this).prop('outerHTML'));
+                    return;
+                }
+
+                const cleanPanelId = panelId.trim();
+                console.log('Clean panelId:', cleanPanelId);
+
+                const panelElement = document.getElementById(cleanPanelId);
+                if (!panelElement) {
+                    alert('Nội dung cho "' + $(this).text().trim() + '" hiện chưa khả dụng. Vui lòng thử lại sau!');
+                    console.warn(`Panel ${cleanPanelId} không tồn tại trong DOM`);
+                    return;
+                }
+
+                const $newPanel = $(panelElement);
+                console.log('Panel được chọn:', $newPanel.attr('id'), 'tồn tại:', $newPanel.length);
+
                 $('.course-panel').removeClass('active').css('display', 'none');
                 $('.course-panel .column').removeClass('active').css('display', 'none');
-                console.log('Khởi tạo: Tất cả panel và cột đã ẩn');
+                console.log('Ẩn tất cả panel và cột');
 
-                // Ẩn navbar-vertical khi load trang
-                $('#navbar-vertical').removeClass('show').css('display', 'none');
-                console.log('Khởi tạo: Dropdown navbar-vertical đã ẩn');
+                $newPanel.addClass('active').css('display', 'block');
+                console.log('Hiển thị panel:', $newPanel.attr('id'), 'active =', $newPanel.hasClass('active'), 'display =', $newPanel.css('display'));
 
-                // Toggle dropdown Subjects
-                $('#subjects-btn').click(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const $dropdown = $('#navbar-vertical');
-                    const isShown = $dropdown.hasClass('show');
-                    $dropdown.toggleClass('show').css('display', isShown ? 'none' : 'block');
-                    $(this).attr('aria-expanded', !isShown);
-                    console.log('Toggle dropdown: show =', !isShown);
-                });
+                $newPanel.find('.tab-link').removeClass('active');
+                const $documentsTab = $newPanel.find('.tab-link[data-tab="documents"]');
+                $documentsTab.addClass('active');
+                $newPanel.find('.column').removeClass('active').css('display', 'none');
+                const $documentsColumn = $newPanel.find('.column.documents');
+                if ($documentsColumn.length) {
+                    $documentsColumn.addClass('active').css('display', 'flex');
+                    console.log('Cột Tài liệu active =', $documentsColumn.hasClass('active'), 'display =', $documentsColumn.css('display'));
+                } else {
+                    console.warn('Cột Tài liệu không tồn tại trong panel:', $newPanel.attr('id'));
+                }
 
-                // Xử lý click vào nav-link trong #navbar-vertical
-                $('#navbar-vertical .nav-link').click(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const panelId = $(this).attr('data-panel');
-                    console.log('Clicked nav-link:', $(this).text().trim(), 'data-panel:', panelId);
+                $('#navbar-vertical .nav-link').removeClass('active');
+                $(this).addClass('active');
+                console.log('Nav-link active:', $(this).text().trim());
 
-                    if (!panelId || typeof panelId !== 'string' || panelId.trim() === '') {
-                        alert('Lỗi: Panel ID không hợp lệ. Vui lòng thử lại!');
-                        console.error('Panel ID không hợp lệ:', panelId, 'Element:', $(this).prop('outerHTML'));
-                        return;
-                    }
-
-                    const cleanPanelId = panelId.trim();
-                    console.log('Clean panelId:', cleanPanelId);
-
-                    const panelElement = document.getElementById(cleanPanelId);
-                    if (!panelElement) {
-                        alert('Nội dung cho "' + $(this).text().trim() + '" hiện chưa khả dụng. Vui lòng thử lại sau!');
-                        console.warn(`Panel ${cleanPanelId} không tồn tại trong DOM`);
-                        return;
-                    }
-
-                    const $newPanel = $(panelElement);
-                    console.log('Panel được chọn:', $newPanel.attr('id'), 'tồn tại:', $newPanel.length);
-
-                    $('.course-panel').removeClass('active').css('display', 'none');
-                    $('.course-panel .column').removeClass('active').css('display', 'none');
-                    console.log('Ẩn tất cả panel và cột');
-
-                    $newPanel.addClass('active').css('display', 'block');
-                    console.log('Hiển thị panel:', $newPanel.attr('id'), 'active =', $newPanel.hasClass('active'), 'display =', $newPanel.css('display'));
-
-                    $newPanel.find('.tab-link').removeClass('active');
-                    const $documentsTab = $newPanel.find('.tab-link[data-tab="documents"]');
-                    $documentsTab.addClass('active');
-                    $newPanel.find('.column').removeClass('active').css('display', 'none');
-                    const $documentsColumn = $newPanel.find('.column.documents');
-                    if ($documentsColumn.length) {
-                        $documentsColumn.addClass('active').css('display', 'flex');
-                        console.log('Cột Tài liệu active =', $documentsColumn.hasClass('active'), 'display =', $documentsColumn.css('display'));
-                    } else {
-                        console.warn('Cột Tài liệu không tồn tại trong panel:', $newPanel.attr('id'));
-                    }
-
-                    $('#navbar-vertical .nav-link').removeClass('active');
-                    $(this).addClass('active');
-                    console.log('Nav-link active:', $(this).text().trim());
-
-                    console.log('Dropdown vẫn mở để chọn mục khác');
-                });
-
-                // Xử lý hover tab
-                $('.tab-link').on('mouseenter', function () {
-                    const $panel = $(this).closest('.course-panel');
-                    let tab = $(this).data('tab');
-                    console.log('Tab value:', tab, 'Element:', $(this).prop('outerHTML'));
-
-                    if (typeof tab !== 'string') {
-                        console.warn('Tab không phải chuỗi:', tab, 'Element:', $(this).prop('outerHTML'));
-                        tab = 'documents';
-                    }
-
-                    const cleanTab = tab.replace(/[^\w\s-]/g, '').trim();
-                    console.log('Cleaned tab value:', cleanTab, 'Char codes:', cleanTab.split('').map(char => char.charCodeAt(0)));
-
-                    if (cleanTab === '') {
-                        console.warn('Cleaned tab is empty, falling back to documents:', tab, 'Element:', $(this).prop('outerHTML'));
-                        tab = 'documents';
-                    }
-
-                    console.log('Hover tab:', cleanTab, 'trong panel', $panel.attr('id'));
-
-                    // Debug $panel
-                    console.log('Panel element:', $panel.length, 'Classes:', $panel.attr('class'));
-                    console.log('Columns trong panel:', $panel.find('.column').length, $panel.find('.column').map(function () {
-                        return $(this).attr('class');
-                    }).get());
-
-                    $panel.find('.tab-link').removeClass('active');
-                    $panel.find('.column').removeClass('active').css('display', 'none');
-
-                    // Sử dụng selector an toàn hơn
-                    const selector = '.column.' + cleanTab;
-                    console.log('Selector:', selector);
-                    const $targetColumn = $panel.find(selector);
-                    if ($targetColumn.length) {
-                        $targetColumn.addClass('active').css('display', 'flex');
-                        console.log('Cột', cleanTab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
-                    } else {
-                        console.warn('Cột ' + selector + ' không tồn tại trong panel:', $panel.attr('id'));
-                        const $defaultColumn = $panel.find('.column.documents');
-                        if ($defaultColumn.length) {
-                            $panel.find('.tab-link[data-tab="documents"]').addClass('active');
-                            $defaultColumn.addClass('active').css('display', 'flex');
-                            console.log('Hiển thị cột Tài liệu mặc định');
-                        } else {
-                            console.warn('Cột .column.documents cũng không tồn tại trong panel:', $panel.attr('id'));
-                        }
-                    }
-                });
-                // Xử lý click vào tab-link
-                $('.tab-link').on('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    const $panel = $(this).closest('.course-panel');
-                    const tab = $(this).data('tab');
-                    console.log('Clicked tab:', tab, 'trong panel', $panel.attr('id'));
-
-                    // Xóa active khỏi tất cả tab-link và column trong panel
-                    $panel.find('.tab-link').removeClass('active');
-                    $panel.find('.column').removeClass('active').css('display', 'none');
-
-                    // Thêm active vào tab-link được click
-                    $(this).addClass('active');
-
-                    // Hiển thị column tương ứng
-                    const $targetColumn = $panel.find('.column.' + tab);
-                    if ($targetColumn.length) {
-                        $targetColumn.addClass('active').css('display', 'flex');
-                        console.log('Cột', tab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
-                    } else {
-                        console.warn('Cột .' + tab + ' không tồn tại trong panel:', $panel.attr('id'));
-                    }
-                });
-
-                // Đóng dropdown khi click ra ngoài
-                $(document).click(function (e) {
-                    if (!$(e.target).closest('#subjects-btn, #navbar-vertical').length) {
-                        $('#navbar-vertical').removeClass('show').css('display', 'none');
-                        $('#subjects-btn').attr('aria-expanded', 'false');
-                        console.log('Đóng dropdown khi click ra ngoài');
-                    }
-                });
+                console.log('Dropdown vẫn mở để chọn mục khác');
             });
-        </script>
 
-        <!-- Chấm tròn điều hướng -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const carousel = document.querySelector('#testimonialCarousel');
-                const indicators = document.querySelectorAll('#testimonial-indicators button');
+            // Xử lý hover tab
+            $('.tab-link').on('mouseenter', function () {
+                const $panel = $(this).closest('.course-panel');
+                let tab = $(this).data('tab');
+                console.log('Tab value:', tab, 'Element:', $(this).prop('outerHTML'));
 
-                // Lắng nghe sự kiện chuyển slide (tự động hoặc ấn nút)
-                carousel.addEventListener('slid.bs.carousel', function (event) {
-                    indicators.forEach(btn => btn.classList.remove('active'));
-                    if (indicators[event.to]) {
-                        indicators[event.to].classList.add('active');
+                if (typeof tab !== 'string') {
+                    console.warn('Tab không phải chuỗi:', tab, 'Element:', $(this).prop('outerHTML'));
+                    tab = 'documents';
+                }
+
+                const cleanTab = tab.replace(/[^\w\s-]/g, '').trim();
+                console.log('Cleaned tab value:', cleanTab, 'Char codes:', cleanTab.split('').map(char => char.charCodeAt(0)));
+
+                if (cleanTab === '') {
+                    console.warn('Cleaned tab is empty, falling back to documents:', tab, 'Element:', $(this).prop('outerHTML'));
+                    tab = 'documents';
+                }
+
+                console.log('Hover tab:', cleanTab, 'trong panel', $panel.attr('id'));
+
+                // Debug $panel
+                console.log('Panel element:', $panel.length, 'Classes:', $panel.attr('class'));
+                console.log('Columns trong panel:', $panel.find('.column').length, $panel.find('.column').map(function () {
+                    return $(this).attr('class');
+                }).get());
+
+                $panel.find('.tab-link').removeClass('active');
+                $panel.find('.column').removeClass('active').css('display', 'none');
+
+                // Sử dụng selector an toàn hơn
+                const selector = '.column.' + cleanTab;
+                console.log('Selector:', selector);
+                const $targetColumn = $panel.find(selector);
+                if ($targetColumn.length) {
+                    $targetColumn.addClass('active').css('display', 'flex');
+                    console.log('Cột', cleanTab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
+                } else {
+                    console.warn('Cột ' + selector + ' không tồn tại trong panel:', $panel.attr('id'));
+                    const $defaultColumn = $panel.find('.column.documents');
+                    if ($defaultColumn.length) {
+                        $panel.find('.tab-link[data-tab="documents"]').addClass('active');
+                        $defaultColumn.addClass('active').css('display', 'flex');
+                        console.log('Hiển thị cột Tài liệu mặc định');
+                    } else {
+                        console.warn('Cột .column.documents cũng không tồn tại trong panel:', $panel.attr('id'));
                     }
-                });
-            });
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.querySelectorAll('[class]').forEach(el => {
-                if (el.className.includes('.')) {
-                    console.error('❌ Có dấu chấm dư trong class:', el);
                 }
             });
-        </script>
-        <!-- JavaScript để khởi tạo Owl Carousel -->
-        <script>
-            $(document).ready(function () {
-                console.log("Khởi tạo Owl Carousel...");
-                var $carousel = $('.owl-carousel.team-carousel');
+            // Xử lý click vào tab-link
+            $('.tab-link').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-                if ($carousel.length === 0) {
-                    console.error("Không tìm thấy .owl-carousel.team-carousel trong DOM");
+                const $panel = $(this).closest('.course-panel');
+                const tab = $(this).data('tab');
+                console.log('Clicked tab:', tab, 'trong panel', $panel.attr('id'));
+
+                // Xóa active khỏi tất cả tab-link và column trong panel
+                $panel.find('.tab-link').removeClass('active');
+                $panel.find('.column').removeClass('active').css('display', 'none');
+
+                // Thêm active vào tab-link được click
+                $(this).addClass('active');
+
+                // Hiển thị column tương ứng
+                const $targetColumn = $panel.find('.column.' + tab);
+                if ($targetColumn.length) {
+                    $targetColumn.addClass('active').css('display', 'flex');
+                    console.log('Cột', tab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
+                } else {
+                    console.warn('Cột .' + tab + ' không tồn tại trong panel:', $panel.attr('id'));
+                }
+            });
+
+            // Đóng dropdown khi click ra ngoài
+            $(document).click(function (e) {
+                if (!$(e.target).closest('#subjects-btn, #navbar-vertical').length) {
+                    $('#navbar-vertical').removeClass('show').css('display', 'none');
+                    $('#subjects-btn').attr('aria-expanded', 'false');
+                    console.log('Đóng dropdown khi click ra ngoài');
+                }
+            });
+        });
+    </script>
+
+    <!-- Chấm tròn điều hướng -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const carousel = document.querySelector('#testimonialCarousel');
+            const indicators = document.querySelectorAll('#testimonial-indicators button');
+
+            // Lắng nghe sự kiện chuyển slide (tự động hoặc ấn nút)
+            carousel.addEventListener('slid.bs.carousel', function (event) {
+                indicators.forEach(btn => btn.classList.remove('active'));
+                if (indicators[event.to]) {
+                    indicators[event.to].classList.add('active');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('[class]').forEach(el => {
+            if (el.className.includes('.')) {
+                console.error('❌ Có dấu chấm dư trong class:', el);
+            }
+        });
+    </script>
+    <!-- JavaScript để khởi tạo Owl Carousel -->
+    <script>
+        $(document).ready(function () {
+            console.log("Khởi tạo Owl Carousel...");
+            var $carousel = $('.owl-carousel.team-carousel');
+
+            if ($carousel.length === 0) {
+                console.error("Không tìm thấy .owl-carousel.team-carousel trong DOM");
+                return;
+            }
+
+            $carousel.owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                navText: ['', '']
+                ,
+                // Xóa nội dung mặc định của <span>
+                responsive: {
+                    0: {items: 1},
+                    600: {items: 2},
+                    1000: {items: 4}
+                }
+            }).on('initialized.owl.carousel', function (event) {
+                console.log("Owl Carousel đã khởi tạo thành công!");
+
+                // Kiểm tra và xóa <span> trong nút
+                var $buttons = $('.owl-nav button');
+                if ($buttons.length === 0) {
+                    console.error("Không tìm thấy .owl-nav button trong DOM sau khi khởi tạo");
                     return;
                 }
 
-                $carousel.owlCarousel({
-                    loop: true,
-                    margin: 10,
-                    nav: true,
-                    navText: ['', '']
-                    ,
-                    // Xóa nội dung mặc định của <span>
-                    responsive: {
-                        0: {items: 1},
-                        600: {items: 2},
-                        1000: {items: 4}
-                    }
-                }).on('initialized.owl.carousel', function (event) {
-                    console.log("Owl Carousel đã khởi tạo thành công!");
-
-                    // Kiểm tra và xóa <span> trong nút
-                    var $buttons = $('.owl-nav button');
-                    if ($buttons.length === 0) {
-                        console.error("Không tìm thấy .owl-nav button trong DOM sau khi khởi tạo");
-                        return;
-                    }
-
-                    $buttons.each(function (index) {
-                        var $span = $(this).find('span');
-                        console.log(`Nút điều hướng ${index + 1} trước khi xử lý:`, $(this).html());
-                        if ($span.length > 0) {
-                            $span.remove(); // Xóa <span> khỏi DOM
-                            console.log(`Nút điều hướng ${index + 1} sau khi xóa <span>:`, $(this).html());
-                        } else {
-                            console.log(`Nút điều hướng ${index + 1} không chứa <span>`);
-                        }
-                    });
-
-                    // Đảm bảo .owl-nav hiển thị
-                    $('.owl-nav').css({
-                        'display': 'block !important',
-                        'visibility': 'visible !important',
-                        'opacity': '1 !important'
-                    });
-
-                    // Debug DOM
-                    var $nav = $('.owl-nav');
-                    if ($nav.length) {
-                        console.log("Tìm thấy .owl-nav trong DOM:", $nav.html());
+                $buttons.each(function (index) {
+                    var $span = $(this).find('span');
+                    console.log(`Nút điều hướng ${index + 1} trước khi xử lý:`, $(this).html());
+                    if ($span.length > 0) {
+                        $span.remove(); // Xóa <span> khỏi DOM
+                        console.log(`Nút điều hướng ${index + 1} sau khi xóa <span>:`, $(this).html());
                     } else {
-                        console.error("Không tìm thấy .owl-nav sau khi khởi tạo Owl Carousel");
+                        console.log(`Nút điều hướng ${index + 1} không chứa <span>`);
                     }
-                }).on('changed.owl.carousel', function (event) {
-                    console.log("Carousel đã chuyển sang slide:", event.item.index);
                 });
+
+                // Đảm bảo .owl-nav hiển thị
+                $('.owl-nav').css({
+                    'display': 'block !important',
+                    'visibility': 'visible !important',
+                    'opacity': '1 !important'
+                });
+
+                // Debug DOM
+                var $nav = $('.owl-nav');
+                if ($nav.length) {
+                    console.log("Tìm thấy .owl-nav trong DOM:", $nav.html());
+                } else {
+                    console.error("Không tìm thấy .owl-nav sau khi khởi tạo Owl Carousel");
+                }
+            }).on('changed.owl.carousel', function (event) {
+                console.log("Carousel đã chuyển sang slide:", event.item.index);
             });
-        </script>
-    </body>
+        });
+    </script>
+    <!-- Tách chuỗi DiscrepCenter -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const descriptionText = document.getElementById("descriptionText");
+            if (descriptionText && descriptionText.textContent.trim()) {
+                const paragraphs = descriptionText.textContent.split('\n').filter(line => line.trim() !== '');
+                const container = document.getElementById("descriptionContainer");
+                container.innerHTML = ''; // Xóa nội dung ban đầu
+                paragraphs.forEach(paragraph => {
+                    const p = document.createElement('p');
+                    p.textContent = paragraph;
+                    container.appendChild(p);
+                });
+            } else {
+                const p = document.createElement('p');
+                p.textContent = 'Không có mô tả trung tâm.';
+                descriptionText.replaceWith(p);
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            console.log('jQuery loaded:', typeof $);
+
+            // Biến để lưu vị trí cuộn
+            let scrollPosition = 0;
+
+            // Xử lý nút Xem thêm
+            $('#loadMoreBtn').click(function () {
+                console.log('Nút Xem thêm được nhấn');
+                $('.course-item.d-none').slice(0, 6).removeClass('d-none');
+                if ($('.course-item.d-none').length === 0) {
+                    $('#loadMoreBtn').hide();
+                }
+            });
+
+            // Đóng modal khi nhấn dấu X hoặc nút Đóng
+            $('#courseDetailModal .close, #courseDetailModal .btn-secondary, #teacherDetailModal .close, #teacherDetailModal .btn-secondary').on('click', function (e) {
+                console.log('Nút đóng hoặc dấu X được nhấn', e);
+                $(this).closest('.modal').modal('hide');
+            });
+
+            // Lưu vị trí cuộn trước khi mở modal
+            $('#courseDetailModal, #teacherDetailModal').on('show.bs.modal', function () {
+                scrollPosition = window.scrollY;
+                console.log('Lưu vị trí cuộn:', scrollPosition);
+            });
+
+            // Khôi phục vị trí cuộn sau khi đóng modal
+            $('#courseDetailModal, #teacherDetailModal').on('hidden.bs.modal', function () {
+                console.log('Khôi phục vị trí cuộn:', scrollPosition);
+                window.scrollTo(0, scrollPosition);
+            });
+
+            // Khởi tạo Owl Carousel
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                responsive: {
+                    0: {items: 1},
+                    600: {items: 3},
+                    1000: {items: 5}
+                }
+            });
+
+            // Hàm showCourseDetail (giữ nguyên)
+            function showCourseDetail(name, descrip, isHot, subjectName, maxStudents, timeRange, startDate, endDate, tuitionFee, teacherName, roomID, shiftID, thuName) {
+                console.log('showCourseDetail called with:', {name, descrip, isHot, subjectName, maxStudents, timeRange, startDate, endDate, tuitionFee, teacherName, roomID, shiftID, thuName});
+                document.getElementById('courseDetailModalLabel').innerText = name || '';
+                document.getElementById('modalCourseDescrip').innerText = descrip || 'Chưa có mô tả';
+                document.getElementById('modalIsHot').innerHTML = isHot === 'true' ? '<span class="badge badge-danger">Hot</span>' : 'Bình thường';
+                document.getElementById('modalSubjectName').innerText = subjectName || 'Chưa xác định';
+                document.getElementById('modalMaxStudents').innerText = (maxStudents || '0') + ' học sinh';
+                document.getElementById('modalTimeRange').innerText = timeRange || '';
+                document.getElementById('modalStartDate').innerText = startDate || '';
+                document.getElementById('modalEndDate').innerText = endDate || '';
+                document.getElementById('modalTuitionFee').innerText = tuitionFee || '';
+                document.getElementById('modalTeacherName').innerText = teacherName || 'Chưa phân công';
+                document.getElementById('modalRoomID').innerText = 'Phòng ' + (roomID || '');
+                document.getElementById('modalShiftID').innerText = 'Ca ' + (shiftID || '');
+                document.getElementById('modalThuID').innerText = thuName || 'Chưa xác định';
+                $('#courseDetailModal').modal({
+                    backdrop: true,
+                    keyboard: true
+                });
+                $('#courseDetailModal').modal('show');
+            }
+
+            // Hàm showTeacherDetail (bỏ birthDate)
+            function showTeacherDetail(fullName, gender, phone, email, certi, descrip, onlineStatus) {
+                console.log('showTeacherDetail called with:', {fullName, gender, phone, email, certi, descrip, onlineStatus});
+                document.getElementById('teacherDetailModalLabel').innerText = fullName || '';
+                document.getElementById('modalTeacherFullName').innerText = fullName || 'Chưa xác định';
+                document.getElementById('modalTeacherGender').innerText = gender || 'Chưa xác định';
+                document.getElementById('modalTeacherPhone').innerText = phone || 'Chưa xác định';
+                document.getElementById('modalTeacherEmail').innerText = email || 'Chưa xác định';
+                document.getElementById('modalTeacherCerti').innerText = certi || 'Chưa xác định';
+                document.getElementById('modalTeacherDescrip').innerText = descrip || 'Chưa có mô tả';
+                document.getElementById('modalTeacherOnlineStatus').innerText = onlineStatus || 'Chưa xác định';
+                $('#teacherDetailModal').modal({
+                    backdrop: true,
+                    keyboard: true
+                });
+                $('#teacherDetailModal').modal('show');
+            }
+
+            // Gán hàm vào global scope
+            window.showCourseDetail = showCourseDetail;
+            window.showTeacherDetail = showTeacherDetail;
+        });
+    </script>
+
+</body>
 </html>

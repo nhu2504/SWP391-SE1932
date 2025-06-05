@@ -1,0 +1,261 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-info {
+    text-align: center;
+}
+
+.user-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.user-info p {
+    margin: 5px 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.user-info ul, .sidebar-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.user-info ul li, .sidebar-section ul li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    /* Bỏ gạch ngang */
+}
+
+.user-info ul li a, .sidebar-section ul li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    color: #333;
+}
+
+.user-info ul li:hover, .sidebar-section ul li:hover {
+    background-color: #f0f0f0;
+}
+
+.user-info ul li.active {
+    background-color: #e0e0e0;
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.sidebar-section {
+    margin-top: 40px;
+    padding-top: 10px;
+}
+
+.sidebar-help {
+    margin-top: 300px;
+    font-size: 14px;
+}
+
+.sidebar-help a {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    color: #888;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.sidebar-help a:hover {
+    background-color: #f0f0f0;
+    color: #555;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    position: relative;
+    min-height: calc(100vh - 80px);
+    background-color: #fff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.search-term {
+    display: flex;
+    align-items: center;
+}
+
+.search-term input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 200px;
+}
+
+.search-term button {
+    padding: 8px 15px;
+    background-color: #666;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.search-term button:hover {
+    background-color: #555;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 70px; /* Tăng khoảng cách giữa các ô lên 50px để rộng hơn nữa */
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 0;
+    border: none;
+}
+
+.dashboard-item {
+    background-color: #A9A9A9;
+    padding: 30px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 150px;
+}
+
+.dashboard-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-item .icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.dashboard-item p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.schedule-table, .grade-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-table th, .schedule-table td,
+.grade-table th, .grade-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.schedule-table th,
+.grade-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.schedule-table td,
+.grade-table td {
+    font-size: 14px;
+}
+
+.grade-table .dropdown {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.grade-table .dropdown label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.grade-table .dropdown select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.back-button {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    display: inline-block;
+}
+
+.back-button:hover {
+    color: #0056b3;
+}
+
+footer {
+    text-align: center;
+    padding: 75px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+}

@@ -87,7 +87,6 @@ public class RegisterServlet extends HttpServlet {
             String phone = request.getParameter("phone");
             String gender = request.getParameter("gender");
             String birth = request.getParameter("dob");
-            String address = request.getParameter("Address");
             String school = request.getParameter("school");
             String clAtSc = request.getParameter("class");
             String parentPhone = request.getParameter("phonepar");
@@ -110,14 +109,14 @@ public class RegisterServlet extends HttpServlet {
             } else {
                 birthDate = Date.valueOf(birth);
             }
-            if (!email.matches("^[A-Za-z0-9]+@(.+)$")) {
+            if ( !email.matches("^[A-Za-z0-9]+@(.+)$")) {
                 mess = "Email không hợp lệ";
-            } else if (!phone.matches("^0\\d{9}$")) {
-                mess = "Số điện thoại không hợp lệ";
+            } else if ( !phone.matches("^0\\d{9}$")) {
+                mess = "Số điện thoại không hợp lệ ";
             } else if (!parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
-                mess = "Email không hợp lệ";
+                mess = "Email phụ huynh không hợp lệ ";
             } else if (!parentPhone.matches("^0\\d{9}$")) {
-                mess = "Số điện thoại không hợp lệ";
+                mess = "Số điện thoại phụ huynh không hợp lệ ";
             }
             try {
                 LocalDate birthDate1 = LocalDate.parse(birth);
@@ -136,9 +135,10 @@ public class RegisterServlet extends HttpServlet {
             }
 
             RegisterDAO rd = new RegisterDAO();
-            boolean success = rd.register(fName, phone, email, gender,
-                    birthDate, address, school, clAtSc, parentPhone,
-                    parentEmail, avatar, confirm);
+            boolean success = rd.register(fName, phone, email, gender, 
+                    birthDate, school, clAtSc, parentPhone, parentEmail, avatar, confirm);
+            
+            
             if (success) {
                 request.getRequestDispatcher("SuccessRegister.jsp").forward(request, response);
 

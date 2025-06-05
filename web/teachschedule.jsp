@@ -6,6 +6,10 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.List" %>
+<%@ page import="entity.Shift" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,6 +22,8 @@
         <!-- CSS FILES -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
@@ -255,6 +261,37 @@
                 padding: 10px; /* Add padding for better look */
                 text-align: center;
             }
+            .schedule-title-container {
+                position: relative;
+                height: 70px; /* Chiều cao container để dễ căn giữa */
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+
+            .schedule-title {
+                font-size: 40px;
+                font-weight: 600;
+            }
+
+            /* Nhóm chứa các slogan */
+            .slogan-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px; /* Khoảng cách giữa các câu */
+                align-items: flex-start; /* Căn trái để thẳng hàng với logo */
+            }
+
+            /* Định dạng từng slogan */
+            .slogan {
+                font-size: 1.2rem; /* Tăng kích thước chữ (trước đây là 0.9rem) */
+                font-weight: 700; /* In đậm (trước đây là 500) */
+                color: #333;
+                margin: 0; /* Xóa margin mặc định */
+                line-height: 1.4;
+                transition: color 0.3s ease;
+            }
+
 
         </style>
     </head>
@@ -272,7 +309,7 @@
                         <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Our Office</h6>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -281,7 +318,7 @@
                         <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email Us</h6>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -290,54 +327,47 @@
                         <i class="fa fa-2x fa-phone text-primary mr-3"></i>
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Call Us</h6>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="container-fluid schedule-title-container navbar">
-
-            <h3 class="schedule-title">Lịch Giảng Dạy</h3>
+        <div class="container-fluid schedule-title-container navbar position-relative">
+            <a href="teacherdashboard.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h3 class="schedule-title text-center w-100 m-0">Lịch Giảng Dạy</h3>
         </div>
-        <form action="shiftservlet" method="get">
 
-
-
-            <table border="1" class="table-time">
+      
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>
-                            <select name="time" required>
-                                <option value="">--Chọn tuần--</option>
-                                <option value="week1">Tuần 1</option>
-                                <option value="week2">Tuần 2</option>
-                                <option value="week3">Tuần 3</option>
-                                <option value="week4">Tuần 4</option>
-
-                            </select>
-                        </th>
-                        <th>Thứ 2</th>
-                        <th>Thứ 3</th>
-                        <th>Thứ 4</th>
-                        <th>Thứ 5</th>
-                        <th>Thứ 6</th>
-                        <th>Thứ 7</th>
-                        <th>Chủ nhật</th>
+                        <th>Thời Gian</th>
+                            <c:forEach var="day" items="${days}">
+                            <th>${day.nameThu}</th>
+                            </c:forEach>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="shift" items="${SHIFT}">
+                    <c:forEach var="shift" items="${shifts}">
                         <tr>
                             <td>${shift.startTime} - ${shift.endTime}</td>
+                            <c:forEach var="day" items="${days}">
+                                <td>
+                                    <c:if test="${scheduleMap[day.thuID + '_' + shift.id]}">
+                                        x
+                                    </c:if>
+                                </td>
+                            </c:forEach>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
 
-
-        </form>
+       
 
 
 
@@ -346,15 +376,33 @@
 
         <footer class="site-footer">
             <!-- Footer Start -->
-            <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
+            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
                 <div class="row pt-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <a href="" class="text-decoration-none">
+
+                            <div class="logo-container">
+                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+
+                            </div>
+                            <div class="slogan-group text-left mt-2">
+
+                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                            </div>
+
+                        </a>
+                    </div>
                     <div class="col-lg-7 col-md-12">
                         <div class="row">
                             <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Get In Touch</h5>
-                                <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                                <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                                <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
                                 <div class="d-flex justify-content-start mt-4">
                                     <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
                                     <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -363,30 +411,27 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Our Courses</h5>
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
                                 <div class="d-flex flex-column justify-content-start">
-                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
-                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
-                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
-                                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
-                                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-12 mb-5">
-                        <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Newsletter</h5>
-                        <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p>
-                        <div class="w-100">
-                            <div class="input-group">
-                                <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary px-4">Sign Up거리</button>
-                                </div>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                    </a>
 
+
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
                 </div>
 

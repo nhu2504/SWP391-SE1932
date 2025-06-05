@@ -16,7 +16,7 @@ public class Register {
     private String email;
     private String gender;
     private Date birth;
-    private String address;
+    
     private String school;
     private String classAtSchool;
     private String parentPhone;
@@ -27,13 +27,12 @@ public class Register {
     public Register() {
     }
 
-    public Register(String fullName, String phone, String email, String gender, Date birth, String address, String school, String classAtSchool, String parentPhone, String parentEmail, String avatar, boolean confirm) {
+    public Register(String fullName, String phone, String email, String gender, Date birth, String school, String classAtSchool, String parentPhone, String parentEmail, String avatar, boolean confirm) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
         this.gender = gender;
         this.birth = birth;
-        this.address = address;
         this.school = school;
         this.classAtSchool = classAtSchool;
         this.parentPhone = parentPhone;
@@ -41,6 +40,9 @@ public class Register {
         this.avatar = avatar;
         this.confirm = confirm;
     }
+    
+
+   
 
     public String getFullName() {
         return fullName;
@@ -82,13 +84,7 @@ public class Register {
         this.birth = birth;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    
 
     public String getSchool() {
         return school;
@@ -140,8 +136,10 @@ public class Register {
 
     @Override
     public String toString() {
-        return "Register{" + "fullName=" + fullName + ", phone=" + phone + ", email=" + email + ", gender=" + gender + ", birth=" + birth + ", address=" + address + ", school=" + school + ", classAtSchool=" + classAtSchool + ", parentPhone=" + parentPhone + ", parentEmail=" + parentEmail + ", avatar=" + avatar + ", confirm=" + confirm + '}';
+        return "Register{" + "fullName=" + fullName + ", phone=" + phone + ", email=" + email + ", gender=" + gender + ", birth=" + birth + ", school=" + school + ", classAtSchool=" + classAtSchool + ", parentPhone=" + parentPhone + ", parentEmail=" + parentEmail + ", avatar=" + avatar + ", confirm=" + confirm + '}';
     }
+
+   
 
    
     

@@ -16,6 +16,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login</title>
         <style>
@@ -125,11 +128,25 @@
                 margin-bottom: 0.5px;
                 display: block;
             }
+            .position-relative {
+                position: relative;
+            }
+
+            .toggle-password {
+                position: absolute;
+                top: 50%;
+                right: 5px;
+                transform: translateY(-35%);
+                cursor: pointer;
+                color: #666;
+                font-size: 18px;
+            }
+
 
         </style>
     </head>
     <body>
-       
+
         <div class="wrapper">
             <!-- Đăng nhập -->
             <div class="form-container">
@@ -137,25 +154,29 @@
                 <form action="login" method="get">
                     <div class="form-group">
                         <label>Email *</label>
-                        <input type="text" name="loginEmail"  required />
+                        <input type="text" name="loginEmail"   />
                     </div>
                     <div class="form-group">
                         <label>Mật khẩu *</label>
-                        <input type="password" name="loginPassword" required />
+                        <div class="position-relative">
+                            <input type="password" id="Password" name="loginPassword" class="form-control pe-5" required />
+                            <i class="fa fa-eye-slash toggle-password" id="togglePass" onclick="togglePassword('Password', 'togglePass')"></i>
+                        </div>
                     </div>
+
                     <div class="form-group">
                         <%-- Thêm debug ngay trước select --%>
                         <select name="role" required>
                             <option value="">--Chọn vai trò--</option>
                             <option value="admin">Quản trị viên</option>
                             <option value="teacher">Giáo viên</option>
-                            <option value="Studentt">Học sinh</option>
+                            <option value="student">Học sinh</option>
                             <option value="parent">Phụ huynh</option>
                             <option value="manager">Quản lý</option>
                         </select>
-                         <a href="#">Quên mật khẩu?</a>
+                        <a href="#">Quên mật khẩu?</a>
                     </div>
-                    
+
                     <br />
                     <% if (request.getAttribute("error") != null) { %>
                     <span class="error-message"><%= request.getAttribute("error") %></span>
@@ -170,7 +191,7 @@
                 <h2>Đăng ký học</h2>
                 <form action="register" method="post"  enctype="multipart/form-data">
                     <div class="form-group">
-                        <input type="text" name="fullName" placeholder="Họ và Tên" required />
+                        <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
                     </div>
                     <div class="form-group">
 
@@ -190,12 +211,9 @@
                     </div>
                     <div class="form-group">
                         <label>Ngày sinh</label>
-                        <input type="date" name="dob" required/>
+                        <input type="date" name="dob" />
                     </div>
-                    <div class="form-group">
 
-                        <input type="text" name="Address" placeholder="Địa chỉ" required/>
-                    </div>
 
                     <div class="form-group schoolclass sc">
 
@@ -214,11 +232,11 @@
 
                     <div class="form-group">
 
-                        <input type="text" name="phonepar" placeholder="SĐT người giám hộ" required/>
+                        <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ" required />
                     </div>
                     <div class="form-group">
 
-                        <input type="text" name="emailpar" placeholder="Email người giám hộ" required/>
+                        <input type="text" name="emailpar" placeholder="Email người giám hộ" required />
                     </div>
 
                     <div class="form-group">
@@ -230,10 +248,10 @@
                         <input type="checkbox" name="verifi" required/>
                         Cam kết rằng những thông tin bạn cung cấp phía trên là chính xác, nếu có gì sai sót bạn phải chịu trách nhiệm trước
                         <a href="#">Pháp Luật</a> theo 
-                        <a href="#">Thông tư 29</a> về việc học thêm.
+                        <a href="https://chinhphu.vn/?pageid=27160&docid=212362&classid=1">Thông tư 29</a> về việc học thêm.
                     </div>
                     <br />
-                    
+
                     <% if (request.getAttribute("error1") != null) { %>
                     <span class="error-message"><%= request.getAttribute("error1") %></span>
                     <% } %>
@@ -244,6 +262,21 @@
 
             </div>
         </div>
+        <script>
+            function togglePassword(inputId, iconId) {
+                let input = document.getElementById(inputId);
+                let icon = document.getElementById(iconId);
 
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("bi-eye-slash");
+                    icon.classList.add("bi-eye");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("bi-eye");
+                    icon.classList.add("bi-eye-slash");
+                }
+            }
+        </script>
     </body>
 </html>

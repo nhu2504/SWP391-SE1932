@@ -25,35 +25,72 @@ public class loginDAO {
         SchoolDAO sd = new SchoolDAO();
         SchoolClassDAO scd = new SchoolClassDAO();
         try {
-              Connection conn = new DBContext().connection;
-                PreparedStatement ps = conn.prepareStatement(query); 
-                ps.setString(1, email);
-                ps.setString(2, password);
-                ps.setInt(3, roleid);
-                ResultSet rs = ps.executeQuery();
-                while(rs.next()){
-                    return new account(rs.getInt("UserID"),
-                            rs.getString("FullName"),
-                            rs.getString("Gender"),
-                            rs.getDate("BirthDate"),
-                            rs.getString("phone"),
-                            rs.getString("email"),
-                            rs.getString("pass"),
-                            rs.getString("avatar"),
-                            rs.getInt("onlineStatus"),
-                            rs.getDate("created_at"),
-                            rs.getString("Certi"), 
-                            rs.getString("Descrip"), 
-                            sd.getSchoolByID(rs.getInt("SchoolID")),
-                            scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
-                            rd.getRoleByID(rs.getInt("roleID")), 
-                            rs.getString("ParentEmail"),
-                            rs.getString("ParentPhone"));
-                }
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.setInt(3, roleid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return new account(rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Gender"),
+                        rs.getDate("BirthDate"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("pass"),
+                        rs.getString("avatar"),
+                        rs.getInt("onlineStatus"),
+                        rs.getDate("created_at"),
+                        rs.getString("Certi"),
+                        rs.getString("Descrip"),
+                        sd.getSchoolByID(rs.getInt("SchoolID")),
+                        scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
+                        rd.getRoleByID(rs.getInt("roleID")),
+                        rs.getString("ParentEmail"),
+                        rs.getString("ParentPhone"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    
+
+    public account getUserByID(int id) {
+        String query = "  select * from [User]\n"
+                + "  where UserID = ?";
+        roleDAO rd = new roleDAO();
+        SchoolDAO sd = new SchoolDAO();
+        SchoolClassDAO scd = new SchoolClassDAO();
+
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new account(rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Gender"),
+                        rs.getDate("BirthDate"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("pass"),
+                        rs.getString("avatar"),
+                        rs.getInt("onlineStatus"),
+                        rs.getDate("created_at"),
+                        rs.getString("Certi"),
+                        rs.getString("Descrip"),
+                        sd.getSchoolByID(rs.getInt("SchoolID")),
+                        scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
+                        rd.getRoleByID(rs.getInt("roleID")),
+                        rs.getString("ParentEmail"),
+                        rs.getString("ParentPhone"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
