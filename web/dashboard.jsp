@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bảng điều khiển</title>
+    <title>DashBoard</title>
     <link rel="stylesheet"href="./css/style.css">
 </head>
 <body>
