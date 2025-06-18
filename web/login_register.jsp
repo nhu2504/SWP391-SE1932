@@ -208,6 +208,7 @@
                             <input type="radio" name="gender" value="Nam" /> Nam
                             <input type="radio" name="gender" value="Khác" /> Khác
                         </div>
+
                     </div>
                     <div class="form-group">
                         <label>Ngày sinh</label>
@@ -259,6 +260,74 @@
                     <button type="submit">Gửi yêu cầu đăng kí học</button>
 
                 </form>
+
+
+                        <div class="form-group">
+                            <a href="#">Quên mật khẩu?</a>
+                        </div>
+                        <br />
+                        <% if (request.getAttribute("error") != null) { %>
+                        <span class="error-message"><%= request.getAttribute("error") %></span>
+                        <% } %>
+                        <br />
+                        <button type="submit" class="log">Đăng nhập</button>
+                    </form>
+                    
+                </div>
+                <!-- Đăng ký học -->
+                <div class="form-container">
+                    <h2>Đăng ký học</h2>
+                    <form action="register" method="post"  enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="email" placeholder="Email" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="phone" placeholder="Số điện thoại" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Giới tính</label><br/>
+                            <div class="gender-group">
+                                <input type="radio" name="gender" value="Nữ" checked /> Nữ
+                                <input type="radio" name="gender" value="Nam" /> Nam
+                                <input type="radio" name="gender" value="Khác" /> Khác
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày sinh</label>
+                            <input type="date" name="dob" />
+                        </div>
+                        <div class="form-group schoolclass sc">
+                            <input type="text" name="school" placeholder="Trường" required/>
+                        </div>
+                        <div class="form-group schoolclass sc">
+                            <input type="text" name="schoolAddress" placeholder="Địa Chỉ" required/>
+                        </div>
+                        <div class="form-group schoolclass cl">
+                            <input type="text" name="classAtSchool" placeholder="Lớp" required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="emailpar" placeholder="Email người giám hộ"  />
+                        </div>
+                        <div class="form-footer">
+                            <input type="checkbox" name="verifi" required/>
+                            Cam kết rằng những thông tin bạn cung cấp phía trên là chính xác, nếu có gì sai sót bạn phải chịu trách nhiệm trước
+                            <a href="#">Pháp Luật</a> theo 
+                            <a href="https://chinhphu.vn/?pageid=27160&docid=212362&classid=1">Thông tư 29</a> về việc học thêm.
+                        </div>
+                        <br />
+                        <% if (request.getAttribute("error1") != null) { %>
+                        <span class="error-message"><%= request.getAttribute("error1") %></span>
+                        <% } %>
+                        <br />
+                        <button type="submit">Gửi yêu cầu đăng kí học</button>
+                    </form>
+                </div>
 
             </div>
         </div>
