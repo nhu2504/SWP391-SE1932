@@ -815,10 +815,10 @@
                             <a class="nav-link" href="${pageContext.request.contextPath}/home">Trang chủ</a>
                         </li>
                         <li class="nav-item flex-grow-1">
-                            <a class="nav-link  active" href="${pageContext.request.contextPath}/about">Giới thiệu</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/about">Giới thiệu</a>
                         </li>
                         <li class="nav-item flex-grow-1">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/course">Khoá học</a>
+                            <a class="nav-link  active" href="${pageContext.request.contextPath}/course">Khoá học</a>
 
                         </li>
                         <li class="nav-item flex-grow-1">
@@ -931,224 +931,160 @@
         </div>
         <!-- Carousel End -->
         <main>
-            <!-- About start -->
-            <section class="about-section">
-                <div class="container">
-                    <div class="container-fluid py-3">
-                        <div class="container py-0">
-                            <div class="row align-items-center">
-                                <div class="col-lg-5">
-                                    <div class="square-image-container">
-                                        <img class="img-fluid rounded mb-4 mb-lg-0" 
-                                             src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter" 
-                                             alt="Image Center" 
-                                             onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
-                                    </div>
-                                </div>
-                                <div class="col-lg-7" style="text-align: justify;">
-                                    <div class="text-left mb-4">
-                                        <h5 class="text-primary text-uppercase mb-3" style="letter-spacing: 5px; text-align: justify; white-space: nowrap; font-size: clamp(0.9rem, 2.5vw, 1.25rem);">
-                                            Chất Lượng Giáo Dục - Giá Trị Bền Vững
-                                        </h5>
-                                        <h3 style="white-space: nowrap; text-align: left; font-size: clamp(1.25rem, 3vw, 2rem); overflow-wrap: anywhere;">
-                                            Khơi Nguồn Tri Thức – Dẫn Lối Thành Công
-                                        </h3>
-                                    </div>
-                                    <div id="descriptionContainer">
-                                        <p style="white-space: pre-wrap;" id="descriptionText">${descripCenter}</p>
-                                    </div>
-                                    <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
+            
+            <!-- Category Start -->            
+            <div class="container-fluid py-5">
+                <div class="container pt-1 pb-3">
+                    <div class="text-center mb-5">    
+                        <h3>Khám Phá Các Môn Học</h3>
                     </div>
-                </div>
-            </section>
-            <!-- About end -->
-
-
-
-            
-            
-            
-            <!-- Ưu thế start -->
-            <section id="gioithieu" class="py-5 bg-light">
-                <div class="container">
-                    <h3 class="text-center mb-4">Ưu Thế Vượt Trội Của EDURA</h3>
-                    <div class="row g-4">
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 text-center shadow-sm">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h5 class="card-title">Giáo viên chất lượng</h5>
-                                    <p class="card-text">100% giáo viên có bằng cấp & kinh nghiệm giảng dạy lâu năm.</p>
-                                </div>
+                    <div class="row" id="courseContainer">
+                        <%
+                            List<Subject> subjectImages = (List<Subject>) request.getAttribute("subjectImages");
+                            if (subjectImages != null && !subjectImages.isEmpty()) {
+                                for (Subject subject : subjectImages) {
+                        %>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
+                                <img class="img-fluid" src="<%= subject.getImageSubject() %>" alt="" onerror="this.src='https://picsum.photos/200/200';">
+                                <a class="cat-overlay text-white text-decoration-none" href="#">
+                                    <h6 class="text-white font-weight-medium"><%= subject.getClassCount() %> Lớp học</h6>
+                                </a>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 text-center shadow-sm">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <i class="bi bi-book text-success" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h5 class="card-title">Giáo trình chuẩn</h5>
-                                    <p class="card-text">Giáo trình được biên soạn theo chuẩn khung của Bộ Giáo dục.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 text-center shadow-sm">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <i class="bi bi-bank text-warning" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h5 class="card-title">Liên kết nhà trường</h5>
-                                    <p class="card-text">Kết hợp với giáo viên chủ nhiệm theo dõi quá trình học tập.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 text-center shadow-sm">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <i class="bi bi-bar-chart-line text-danger" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h5 class="card-title">Tiến bộ vượt bậc</h5>
-                                    <p class="card-text">98% học sinh cải thiện kết quả chỉ sau 3 tháng học.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <%
+                                }
+                            } else {
+                        %>
+                        <div class="alert alert-warning col-12">Không có môn học nào để hiển thị.</div>
+                        <%
+                            }
+                        %>
                     </div>
+
+
+
                 </div>
-            </section>
-            <!-- Ưu thế end -->
+            </div>
 
-            <!-- PHẢN HỒI TỪ HỌC VIÊN -->
-            <div class="container py-5">
-                <div class="row">
-                    <div class="col-md-5 py-3">
-                        <div class="d-flex justify-content-center">
-                            <h3 class="mb-4">Lắng Nghe Và Chia Sẻ 💬</h3>
-                        </div>
-
-                        <div id="testimonialWrapper" class="border-custom">
-                            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-                                <div class="carousel-inner text-start">
-                                    <c:choose>
-                                        <c:when test="${not empty students}">
-                                            <c:forEach var="student" items="${students}" varStatus="status">
-                                                <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
-                                                    <div class="card p-4">
-                                                        <div class="d-flex align-items-center mb-3">
-                                                            <img src="${pageContext.request.contextPath}/LogoServlet?type=student&userId=${student.userID}" 
-                                                                 alt="${student.fullName}" 
-                                                                 class="rounded-circle me-3" 
-                                                                 style="width: 120px; height: 120px; object-fit: cover;"
-                                                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
-                                                            <div>
-                                                                <h6 class="text-primary mb-1">${student.fullName}</h6>
-                                                                <p class="mb-0 small">Tài khoản: ${fn:substring(student.email, 0, 4)}****@gmail.com</p>
-                                                                <!-- Hiển thị sao -->
-                                                                <p class="mb-0 small">
-                                                                    <c:forEach var="i" begin="1" end="${student.rating}">
-                                                                        <i class="fas fa-star text-warning"></i>
-                                                                    </c:forEach>
-                                                                    <c:forEach var="i" begin="${student.rating + 1}" end="5">
-                                                                        <i class="far fa-star text-muted"></i>
-                                                                    </c:forEach>
-                                                                </p>
-                                                                <c:if test="${not empty student.certi}">
-                                                                    <ul class="list-unstyled mb-0">
-                                                                        <c:forEach var="achievement" items="${fn:split(student.certi, '.')}">
-                                                                            <c:if test="${not empty fn:trim(achievement)}">
-                                                                                <li class="mb-1 small"><i class="fas fa-trophy me-1 text-warning"></i>${fn:trim(achievement)}</li>
-                                                                                </c:if>
-                                                                            </c:forEach>
-                                                                    </ul>
-
-                                                                </c:if>
-                                                            </div>
+            <!-- Category End -->
+            <!-- Courses Start -->
+            <div class="container-fluid py-3">
+                <div class="container py-0">
+                    <div class="text-center mb-5">
+                        <h3>Khoá Học Nổi Bật</h3>
+                    </div>
+                    <!-- Danh sách khóa học -->
+                    <div class="container py-5">
+                        <div class="row" id="courseRow">
+                            <c:choose>
+                                <c:when test="${not empty tutoringClasses}">
+                                    <c:forEach var="course" items="${tutoringClasses}" varStatus="loop">
+                                        <div class="col-lg-4 col-md-6 mb-4 course-item ${loop.index >= 6 ? 'd-none' : ''}">
+                                            <div class="rounded overflow-hidden mb-2">
+                                                <img class="img-fluid course-img" 
+                                                     src="${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${course.tutoringClass.tutoringClassID}" 
+                                                     alt="${course.tutoringClass.className}"
+                                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                                                <div class="course-content">
+                                                    <div class="d-flex justify-content-between mb-3">
+                                                        <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>${course.tutoringClass.maxStudents} Học sinh</small>
+                                                        <small class="m-0"><i class="far fa-clock text-primary mr-2"></i>${course.duration}</small>
+                                                    </div>
+                                                    <a class="h5 course-title" href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}">
+                                                        ${course.tutoringClass.className}
+                                                    </a>
+                                                    <div class="border-top mt-4 pt-4">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <button class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold"
+                                                                    onclick="showCourseDetail(
+                                                                                    '${course.tutoringClass.className.replace('\'', '\\\'')}',
+                                                                                    '${course.tutoringClass.descrip != null ? course.tutoringClass.descrip.replace('\'', '\\\'') : 'Chưa có mô tả'}',
+                                                                                    '${course.tutoringClass.isHot()}',
+                                                                                    '${course.subjectName != null ? course.subjectName.replace('\'', '\\\'') : 'Chưa xác định'}',
+                                                                                    '${course.tutoringClass.maxStudents}',
+                                                                                    '<fmt:formatDate value="${course.startTime}" pattern="HH:mm"/> - <fmt:formatDate value="${course.endTime}" pattern="HH:mm"/>',
+                                                                                                    '<fmt:formatDate value="${course.tutoringClass.startDate}" pattern="dd/MM/yyyy"/>',
+                                                                                                    '<fmt:formatDate value="${course.tutoringClass.endDate}" pattern="dd/MM/yyyy"/>',
+                                                                                                    '<fmt:formatNumber value="${course.tutoringClass.tuitionFee}" type="currency" currencySymbol="VNĐ/1 buổi"/>',
+                                                                                                    '${course.teacherName != null ? course.teacherName.replace('\'', '\\\'') : 'Chưa phân công'}',
+                                                                                                    '${course.tutoringClass.roomID}',
+                                                                                                    '${course.tutoringClass.shiftID}',
+                                                                                                    '${course.thuName != null ? course.thuName.replace('\'', '\\\'') : 'Chưa xác định'}'
+                                                                                                    )">
+                                                                Chi tiết
+                                                            </button>
+                                                            <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}" 
+                                                               class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Tham gia</a>
                                                         </div>
-                                                        <p class="fst-italic text-muted">
-                                                            <i class="bi bi-quote fs-4 me-1"></i>${student.commentText}
-                                                        </p>
                                                     </div>
                                                 </div>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <div class="carousel-item active">
-                                                <div class="card p-4">
-                                                    <p class="text-center">Không có đánh giá tốt nào để hiển thị.</p>
-                                                </div>
                                             </div>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-
-                                <!-- Chấm tròn điều hướng -->
-                                <div class="carousel-indicators mt-3 d-flex justify-content-center" id="testimonial-indicators">
-                                    <c:forEach var="i" begin="0" end="9" varStatus="status">
-                                        <button type="button" 
-                                                data-bs-target="#testimonialCarousel" 
-                                                data-bs-slide-to="${status.index}" 
-                                                class="${status.index == 0 ? 'active' : ''}" 
-                                                aria-current="${status.index == 0 ? 'true' : 'false'}" 
-                                                aria-label="Slide ${status.index + 1}"
-                                                <c:if test="${status.index >= fn:length(students)}">disabled</c:if>></button>
-                                    </c:forEach>
-                                </div>           
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cột phải sẽ thiết kế sau -->
-                    <div class="col-md-7 py-3">
-                        <h3 class="mb-4 font-weight-bold text-center">
-                            👨‍👩‍👧‍👦 Góc Nhìn Phụ Huynh
-                        </h3>
-
-                        <!-- Vùng cuộn phản hồi với thanh cuộn đẹp -->
-
-
-
-                        <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;" class="custom-scrollbar">
-                            <c:choose>
-                                <c:when test="${not empty parents}">
-                                    <c:forEach var="parent" items="${parents}" varStatus="status">
-                                        <c:set var="colors" value="primary,success,info,warning,danger" />
-                                        <c:set var="color" value="${fn:split(colors, ',')[status.index % 5]}" />
-                                        <div class="border-left pl-3 border-${color} mb-4 bg-light p-3 rounded shadow-sm">
-                                            <p class="mb-2">“${parent.commentText}”</p>
-                                            <p class="mb-0 small">
-                                                <c:forEach var="i" begin="1" end="${parent.rating}">
-                                                    <i class="fas fa-star text-warning"></i>
-                                                </c:forEach>
-                                                <c:forEach var="i" begin="${parent.rating + 1}" end="5">
-                                                    <i class="far fa-star text-muted"></i>
-                                                </c:forEach>
-                                            </p>
-                                            <p class="text-right text-${color} font-weight-bold mb-0">
-                                                – Phụ huynh em ${parent.studentName}
-                                            </p>
                                         </div>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="border-left pl-3 border-secondary mb-4 bg-light p-3 rounded shadow-sm">
-                                        <p class="mb-2">Không có đánh giá từ phụ huynh để hiển thị.</p>
-                                        <p class="text-right text-secondary font-weight-bold mb-0">– Trung tâm</p>
+                                    <div class="col-12">
+                                        <p class="text-center">Không có khóa học nào để hiển thị.</p>
                                     </div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
+                        <c:if test="${fn:length(tutoringClasses) > 6}">
+                            <div class="text-center mt-4">
+                                <button id="loadMoreBtn" class="btn btn-primary py-2 px-4">Xem thêm</button>
+                            </div>
+                        </c:if>
                     </div>
+
+                    <!-- Modal chi tiết khóa học -->
+                    <div class="modal fade" id="courseDetailModal" tabindex="-1" role="dialog" aria-labelledby="courseDetailModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content shadow-lg">
+                                <div class="modal-header" style="background-color: #FF6B6B; color: white;">
+                                    <h5 class="modal-title font-weight-bold" id="courseDetailModalLabel">Chi tiết khóa học</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body px-4">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <p><i class="fas fa-align-left mr-2 text-primary"></i><span id="modalCourseDescrip"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <p><i class="fas fa-fire mr-2 text-danger"></i><strong>Trạng thái:</strong> 
+                                                <span id="modalIsHot" class="badge badge-warning"></span>
+                                            </p>
+                                            <p><i class="fas fa-book mr-2 text-success"></i><strong>Môn học:</strong> <span id="modalSubjectName"></span></p>
+                                            <p><i class="fas fa-users mr-2 text-info"></i><strong>Số học sinh tối đa:</strong> <span id="modalMaxStudents"></span></p>
+                                            <p><i class="far fa-clock mr-2 text-secondary"></i><strong>Giờ học:</strong> <span id="modalTimeRange"></span></p>
+                                            <p><i class="fas fa-calendar-plus mr-2 text-primary"></i><strong>Ngày bắt đầu:</strong> <span id="modalStartDate"></span></p>
+                                            <p><i class="fas fa-calendar-times mr-2 text-danger"></i><strong>Ngày kết thúc:</strong> <span id="modalEndDate"></span></p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p><i class="fas fa-money-bill-wave mr-2 text-success"></i><strong>Học phí:</strong> <span id="modalTuitionFee"></span></p>
+                                            <p><i class="fas fa-chalkboard-teacher mr-2 text-dark"></i><strong>Giáo viên:</strong> <span id="modalTeacherName"></span></p>
+                                            <p><i class="fas fa-door-open mr-2 text-secondary"></i><strong>Phòng học:</strong> <span id="modalRoomID"></span></p>
+                                            <p><i class="fas fa-clock mr-2 text-info"></i><strong>Ca học:</strong> <span id="modalShiftID"></span></p>
+                                            <p><i class="fas fa-calendar-day mr-2 text-warning"></i><strong>Thứ:</strong> <span id="modalThuID"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
-        </div>
-        <!-- Phản hồi end -->           
+            <!-- Courses End -->
+                
     </main>
 
     <footer class="site-footer">
