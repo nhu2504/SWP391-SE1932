@@ -4,7 +4,7 @@ import dal.TutoringClassDAO;
 import dal.SubjectDAO;
 import dal.RoomDAO;
 import dal.ShiftlearnDAO;
-import dal.ThuDAO;
+
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +16,7 @@ import entity.TutoringClass;
 import entity.Subject;
 import entity.Room;
 import entity.Shift;
-import entity.Thu;
+
 
 @WebServlet(name = "ScheduleServlet", urlPatterns = {"/ScheduleServlet"})
 public class ScheduleServlet extends HttpServlet {
@@ -25,7 +25,7 @@ public class ScheduleServlet extends HttpServlet {
     private SubjectDAO subjectDAO = new SubjectDAO();
     private RoomDAO roomDAO = new RoomDAO();
     private ShiftlearnDAO shiftlearnDAO = new ShiftlearnDAO();
-    private ThuDAO thuDAO = new ThuDAO();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,20 +37,20 @@ public class ScheduleServlet extends HttpServlet {
             ArrayList<Subject> subjects = subjectDAO.getAllSubject();
             ArrayList<Room> rooms = roomDAO.getAllRooms();
             ArrayList<Shift> shifts = shiftlearnDAO.getAllShifts();
-            ArrayList<Thu> thus = thuDAO.getAllThus();
+
 
             // Debug: In số lượng dữ liệu
             System.out.println("ScheduleServlet: tutoringClasses size = " + tutoringClasses.size());
             System.out.println("ScheduleServlet: subjects size = " + subjects.size());
             System.out.println("ScheduleServlet: rooms size = " + rooms.size());
             System.out.println("ScheduleServlet: shifts size = " + shifts.size());
-            System.out.println("ScheduleServlet: thus size = " + thus.size());
+
 
             request.setAttribute("tutoringClasses", tutoringClasses);
             request.setAttribute("subjects", subjects);
             request.setAttribute("rooms", rooms);
             request.setAttribute("shifts", shifts);
-            request.setAttribute("thus", thus);
+
             request.getRequestDispatcher("/schedule.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

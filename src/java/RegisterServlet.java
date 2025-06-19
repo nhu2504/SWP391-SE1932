@@ -88,21 +88,14 @@ public class RegisterServlet extends HttpServlet {
             String gender = request.getParameter("gender");
             String birth = request.getParameter("dob");
             String school = request.getParameter("school");
-            String clAtSc = request.getParameter("class");
+            String address = request.getParameter("schoolAddress");
+            String clAtSc = request.getParameter("classAtSchool");
             String parentPhone = request.getParameter("phonepar");
             String parentEmail = request.getParameter("emailpar");
             boolean confirm = request.getParameter("verifi") != null;
-            
-            Part avtPart = request.getPart("avatar");
-            String avtName = Paths.get(avtPart.getSubmittedFileName()).getFileName().toString();
-            String uploadPath = getServletContext().getRealPath("/uploads");
-            File up = new File(uploadPath);
-            if (!up.exists()) {
-                up.mkdirs();
-            }
-            avtPart.write(uploadPath + File.separator + avtName);
-            String avatar = "uploads/" + avtName;
 
+            
+            
             Date birthDate;
             if (birth.isEmpty()) {
                 birthDate = null;
@@ -136,7 +129,8 @@ public class RegisterServlet extends HttpServlet {
 
             RegisterDAO rd = new RegisterDAO();
             boolean success = rd.register(fName, phone, email, gender, 
-                    birthDate, school, clAtSc, parentPhone, parentEmail, avatar, confirm);
+                    birthDate, school,address, clAtSc, parentPhone,
+                    parentEmail, confirm);
             
             
             if (success) {

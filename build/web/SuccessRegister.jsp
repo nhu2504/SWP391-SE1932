@@ -18,6 +18,7 @@
             }
         </style>
     </head>
+    <!--trang nay de hien thi khi nguoi dung dang ki hoc thanh cong-->
     <body>
         <h1>Gửi Đăng kí thành công</h1>
         <p>Vui lòng chờ quản lý phê duyệt và chú ý email của bạn.</p>

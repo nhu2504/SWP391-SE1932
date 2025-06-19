@@ -494,6 +494,7 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
+
         </style>
     </head>
 
@@ -549,7 +550,7 @@
             <h3 class="schedule-title text-center w-100 m-0">Bảng Điều Khiển</h3>
         </div>
 
-        <div class="container-fluid">
+        <div >
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
@@ -577,12 +578,41 @@
                 <!-- Main -->
                 <div class="col-md-9 main">
                     <div class="grid">
-                        <a href="teachschedule.jsp"><div class="card"><i class="fas fa-calendar-alt"></i> Lịch Dạy</div></a>
-                        <a href="#"><div class="card"><i class="fas fa-calendar-check"></i> Điểm Danh</div></a>
+                        <div class="infor-sche">
+                            <a href="templateschedule.jsp"><div class="card"><i class="fas fa-calendar-alt"></i> Lịch Dạy
+                                    <div class="card">
+
+                                        <div>
+                                            <strong>Sắp diễn ra:</strong><br>
+                                            <span>Ôn cấp tốc TSA - 01</span><br>
+                                            <span>Thời gian: 7h30 - 9h</span><br>
+                                            <span>Phòng: E6</span>
+                                        </div>
+                                    </div>
+                                </div></a>
+                        </div>
+                        <a href="#"><div class="card"><i class="fas fa-calendar-check"></i> Điểm Danh
+                                <div class="card">
+
+                                    <div class="d-flex align-items-center">
+                                        <form action="SearchClassServlet" method="get" class="d-flex">
+                                            <input type="text" name="keyword" class="form-control form-control-sm mr-2" placeholder="Tìm kiếm lớp">
+                                            <button type="submit" class="btn btn-sm btn-outline-dark">Tìm</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div></a>
                         <a href="#"><div class="card"><i class="fas fa-users"></i> Danh sách lớp</div></a>
-                        <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập</div></a>
-                        <a href="#"><div class="card"><i class="fas fa-arrow-right"></i> Nhập điểm</div></a>
-                        <a href="#"><div class="card"><i class="fas fa-folder-plus"></i> Tạo bài tập về nhà</div></a>
+                        <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
+                                <div class="card">
+
+                                    <form action="UploadMaterialServlet" method="post" enctype="multipart/form-data">
+                                        <input type="file" name="material" class="form-control-file mb-2">
+                                        <button class="btn btn-sm btn-outline-dark" type="submit">Tải tài liệu</button>
+                                    </form>
+                                </div>
+                            </div></a>
+
 
                     </div>
                 </div>
@@ -591,71 +621,71 @@
 
 
 
-       <footer class="site-footer">
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-            <div class="row pt-5">
-                <div class="col-lg-5 col-md-12 mb-5">
-                    <a href="" class="text-decoration-none">
+        <footer class="site-footer">
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+                <div class="row pt-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <a href="" class="text-decoration-none">
 
-                        <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+                            <div class="logo-container">
+                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
 
-                        </div>
-                        <div class="slogan-group text-left mt-2">
-
-                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                        </div>
-
-                    </a>
-                </div>
-                <div class="col-lg-7 col-md-12">
-                    <div class="row">
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                </a>
+                            <div class="slogan-group text-left mt-2">
+
+                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                            </div>
+
+                        </a>
+                    </div>
+                    <div class="col-lg-7 col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                                <div class="d-flex justify-content-start mt-4">
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                    </a>
 
 
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
                 </div>
 
-
             </div>
+            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </div>
-        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
-
-    </footer>
+        </footer>
 
 
         <!-- JAVASCRIPT FILES -->

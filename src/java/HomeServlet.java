@@ -1,5 +1,9 @@
+
 import dal.*;
-import entity.HomeTutoringClass;
+import entity.Banner;
+import entity.Grade;
+import entity.TutoringClass;
+import entity.School;
 import entity.Subject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,14 +17,17 @@ import java.util.Map;
 // Định nghĩa các URL mà servlet này sẽ xử lý
 @WebServlet({"/home", "/about", "/course", "/teacher"})
 public class HomeServlet extends HttpServlet {
+
     // Khởi tạo các DAO để lấy dữ liệu từ database
     private final CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
+    private final GradeDAO gradeDAO = new GradeDAO();
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final DocumentDAO documentDAO = new DocumentDAO();
     private final TutoringClassDAO tutoringClassDAO = new TutoringClassDAO();
-    private final TeacherDAO teacherDAO = new TeacherDAO();
-    private final StudentDAO studentDAO = new StudentDAO();
-    private final ParentDAO parentCommentDAO = new ParentDAO();
+
+    
+    private final SchoolDAO schoolDAO = new SchoolDAO();
+    private final BannerDAO dao = new BannerDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,7 +47,16 @@ public class HomeServlet extends HttpServlet {
             } else {
                 request.setAttribute("error", "Không tìm thấy thông tin trung tâm");
             }
-
+            List<Grade> grades = gradeDAO.getAllGrades();
+            request.setAttribute("grades", grades);
+            System.out.println("Số lượng khối lớp: " + grades.size());
+            if (grades != null) {
+                for (Grade g : grades) {
+                    System.out.println("Khối lớp: " + g.getGradeID() + " - " + g.getGradeName());
+                }
+            } else {
+                System.out.println("grades là null sau khi lấy từ GradeDAO.");
+            }
             // 2. Lấy danh sách môn học
             List<Map<String, String>> subjects = subjectDAO.getAllSubjects();
             request.setAttribute("subjects", subjects);
@@ -56,10 +72,18 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("classes", classes);
             System.out.println("Số khóa học lấy được: " + classes.values().stream().mapToInt(List::size).sum());
 
-            // 5. Lấy danh sách khóa học chi tiết
-            List<Map<String, Object>> tutoringClasses = tutoringClassDAO.getDetailedTutoringClasses();
-            request.setAttribute("tutoringClasses", tutoringClasses);
-            System.out.println("Số khóa học chi tiết lấy được: " + tutoringClasses.size());
+            List<Banner> banners = dao.getAllBanners(); // Lấy các banner có bannerID <> 1
+            request.setAttribute("banners", banners);
+
+            // Lấy danh sách khóa học nổi bật
+            List<Map<String, Object>> featuredTutoringClasses = tutoringClassDAO.getFeaturedTutoringClasses();
+            request.setAttribute("featuredTutoringClasses", featuredTutoringClasses);
+            System.out.println("Số khóa học nổi bật lấy được: " + featuredTutoringClasses.size());
+
+            // Lấy danh sách khóa học quanh năm
+            List<Map<String, Object>> yearRoundTutoringClasses = tutoringClassDAO.getYearRoundTutoringClasses();
+            request.setAttribute("yearRoundTutoringClasses", yearRoundTutoringClasses);
+            System.out.println("Số khóa học quanh năm lấy được: " + yearRoundTutoringClasses.size());
 
             // 6. Lấy danh sách ảnh môn học
             List<Subject> subjectImages = subjectDAO.getSubjectImages(request.getContextPath());
@@ -67,19 +91,14 @@ public class HomeServlet extends HttpServlet {
             System.out.println("Số môn học với ảnh lấy được: " + subjectImages.size());
 
             // 7. Lấy danh sách giáo viên
-            List<Map<String, Object>> teachers = teacherDAO.getAllTeachers();
-            request.setAttribute("teachers", teachers);
-            System.out.println("Số giáo viên lấy được: " + teachers.size());
+            
 
             // 8. Lấy danh sách học sinh nổi bật (top 10)
-            List<Map<String, Object>> students = studentDAO.getTopStudents();
-            request.setAttribute("students", students);
-            System.out.println("Số học sinh lấy được: " + students.size());
+           
 
-            // 9. Lấy bình luận của phụ huynh
-            List<Map<String, Object>> parents = parentCommentDAO.getParentComments();
-            request.setAttribute("parents", parents);
-            System.out.println("Số phụ huynh lấy được: " + parents.size());
+            // 9. Lấy danh sách các trường liên kết
+            List<School> schools = schoolDAO.getAllSchools();
+            request.setAttribute("schools", schools);
 
             // Chuyển tiếp đến JSP
             forwardToJsp(request, response);
@@ -116,7 +135,6 @@ public class HomeServlet extends HttpServlet {
             case "/teacher":
                 jspPage = "Teacher.jsp";
                 break;
-            
             default:
                 jspPage = "Home.jsp"; // Mặc định là trang chủ
                 break;

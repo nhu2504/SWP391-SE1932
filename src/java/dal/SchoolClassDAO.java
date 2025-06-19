@@ -18,6 +18,7 @@ public class SchoolClassDAO {
 
     public SchoolClass getSchoolClassByID(int id) {
         SchoolDAO sd = new SchoolDAO();
+        GradeDAO gd = new GradeDAO();
         String query = "select * from SchoolClass\n"
                 + "  where SchoolClassID = ?";
         try {
@@ -28,11 +29,24 @@ public class SchoolClassDAO {
                 if(rs.next()){
                     return new SchoolClass(rs.getInt(1), 
                             rs.getString(2), 
-                            sd.getSchoolByID(rs.getInt(3)));
+                            rs.getInt(3), 
+                            rs.getInt(4));
+                    
                 }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+    public static void main(String[] args) {
+        SchoolClassDAO sd = new SchoolClassDAO();
+                int sID = 2; 
+                SchoolClass s = sd.getSchoolClassByID(sID);
+    
+    if (s != null) {
+        System.out.println("Sáº£n pháº©m tĂ¬m tháº¥y: " + s.toString());
+    } else {
+        System.out.println("KhĂ´ng tĂ¬m tháº¥y sáº£n pháº©m vá»›i ID: " + sID);
+    }
     }
 }

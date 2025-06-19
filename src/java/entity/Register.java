@@ -16,30 +16,41 @@ public class Register {
     private String email;
     private String gender;
     private Date birth;
-    
     private String school;
+    private String address;
     private String classAtSchool;
     private String parentPhone;
     private String parentEmail;
-    private String avatar;
     private boolean confirm;
 
     public Register() {
     }
 
-    public Register(String fullName, String phone, String email, String gender, Date birth, String school, String classAtSchool, String parentPhone, String parentEmail, String avatar, boolean confirm) {
+    public Register(String fullName, String phone, String email, String gender, Date birth, String school, String address, String classAtSchool, String parentPhone, String parentEmail, boolean confirm) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
         this.gender = gender;
         this.birth = birth;
         this.school = school;
+        this.address = address;
         this.classAtSchool = classAtSchool;
         this.parentPhone = parentPhone;
         this.parentEmail = parentEmail;
-        this.avatar = avatar;
         this.confirm = confirm;
     }
+
+    
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    
     
 
    
@@ -118,13 +129,7 @@ public class Register {
         this.parentEmail = parentEmail;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+   
 
     public boolean isConfirm() {
         return confirm;
@@ -136,8 +141,11 @@ public class Register {
 
     @Override
     public String toString() {
-        return "Register{" + "fullName=" + fullName + ", phone=" + phone + ", email=" + email + ", gender=" + gender + ", birth=" + birth + ", school=" + school + ", classAtSchool=" + classAtSchool + ", parentPhone=" + parentPhone + ", parentEmail=" + parentEmail + ", avatar=" + avatar + ", confirm=" + confirm + '}';
+        return "Register{" + "fullName=" + fullName + ", phone=" + phone + ", email=" + email + ", gender=" + gender + ", birth=" + birth + ", school=" + school + ", address=" + address + ", classAtSchool=" + classAtSchool + ", parentPhone=" + parentPhone + ", parentEmail=" + parentEmail + ", confirm=" + confirm + '}';
     }
+
+    
+    
 
    
 

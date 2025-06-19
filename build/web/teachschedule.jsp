@@ -7,8 +7,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="java.util.List" %>
 <%@ page import="entity.Shift" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="entity.Schedule" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -193,13 +195,13 @@
                     top: auto !important; /* Vô hiệu hóa top */
                 }
             }
+            /* Phần header - top bar */
             .top-header {
-                background-color: #FFF1F1;
+                background-color: #FFF1F1; /* Hồng nhạt */
                 color: #000 !important;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                padding: 50px 0; /* tăng chiều cao header */
+                padding: 15px 0;
             }
-
 
             /* Màu đỏ cho biểu tượng */
             .top-header i.text-primary {
@@ -210,11 +212,12 @@
             .top-header h1 span.text-primary {
                 color: #EC6F69 !important;
                 font-weight: 700;
+                font-size: 60px;
             }
 
             /* Chữ còn lại của logo */
             .top-header h1 {
-                font-size: 36px;
+                font-size: 50px;
                 color: #000;
                 font-weight: 700;
             }
@@ -222,6 +225,7 @@
             /* Căn chỉnh icon và text sát nhau */
             .top-header .d-inline-flex i {
                 margin-right: 12px;
+                font-size: 50px;
             }
 
             .top-header small {
@@ -231,7 +235,25 @@
 
             .top-header h6 {
                 font-weight: 600;
+                font-size:20px;
                 margin-bottom: 4px;
+            }
+            .logo-container {
+                position: relative;
+                width: 100px; /* Giữ kích thước cố định của div */
+                height: 100px; /* Giữ tỷ lệ vuông */
+                overflow: hidden; /* Ẩn phần vượt ra ngoài */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Logo image */
+            .logo-image {
+                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
+                height: auto;
+                transform: scale(2); /* Phóng to mặc định */
+                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
             }
             /* Style cho navbar nền xám nhạt */
             .navbar {
@@ -291,43 +313,167 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
+            .sidebar {
+                background-color: #fdeaf3;
+                height: 100%;
+                padding: 20px;
+                text-align: center;
+            }
 
+            .avatar {
+                font-size: 60px;
+                margin-bottom: 10px;
+            }
+
+            .username {
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .sidebar a {
+                display: block;
+                color: #000;
+                text-decoration: none;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+
+            .main h1 {
+                text-align: center;
+                margin: 30px 0;
+            }
+            .sidebar {
+                background-color: #FFF1F1;
+                padding: 30px 20px;
+                min-height: 70vh;
+                text-align: center;
+            }
+
+            .sidebar .avatar {
+                font-size: 80px;
+                margin-bottom: 5px;
+            }
+
+            .sidebar .username {
+
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .sidebar a {
+                display: block;
+                font-size: 18px;
+                padding: 15px 0;
+                color: #000;
+                text-decoration: none;
+                text-align: left;
+                padding-left: 40px;
+                transition: background 0.3s;
+            }
+
+            .sidebar a i {
+                margin-right: 10px;
+            }
+
+            .sidebar a:hover {
+                background-color: #ffd8eb;
+                border-radius: 10px;
+            }
+
+            .main .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 40px;
+            }
+
+            .main .card {
+                background-color: #FFF1F1;
+                padding: 40px;
+                text-align: center;
+                font-size: 20px;
+                border-radius: 20px;
+                font-weight: 500;
+                transition: transform 0.2s;
+            }
+
+            .main .card i {
+                font-size: 30px;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .main .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+
+            h1.dashboard-title {
+                text-align: center;
+                background-color: #f0f0f0;
+                padding: 20px;
+                font-size: 28px;
+                margin-top: 0;
+                font-weight: bold;
+            }
+            .avatar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+            }
+
+            .avatar-img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%; /* bo tròn ảnh */
+                object-fit: cover;   /* đảm bảo ảnh không bị méo */
+                border: 2px solid #ccc;
+            }
 
         </style>
     </head>
 
     <body id="top">
         <div class="container-fluid d-none d-lg-block top-header">
-            <div class="row align-items-center py-4 px-xl-5">
-                <div class="col-lg-3">
-                    <a href="" class="text-decoration-none">
-                        <h1 class="m-0"><span class="text-primary">E</span>DURA</h1>
+            <div class="row align-items-center py-0 px-xl-5">
+                <!-- Logo -->
+                <div class="col-lg-3 text-center">
+                    <a href="Home.jsp" class="text-decoration-none">
+                        <div class="logo-container">
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+                        </div>
+
                     </a>
                 </div>
-                <div class="col-lg-3 text-right">
+                <!-- Địa chỉ -->
+                <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Our Office</h6>
-
+                            <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
+                            <small>${address}</small>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 text-right">
+                <!-- Email -->
+                <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Email Us</h6>
-
+                            <h6 class="font-weight-semi-bold mb-1">Email</h6>
+                            <small>${email}</small>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 text-right">
+                <!-- Số điện thoại -->
+                <div class="col-lg-3 text-center">
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-phone text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Call Us</h6>
-
+                            <h6 class="font-weight-semi-bold mb-1">Điện thoại</h6>
+                            <small>${phone}</small>
                         </div>
                     </div>
                 </div>
@@ -341,37 +487,65 @@
             <h3 class="schedule-title text-center w-100 m-0">Lịch Giảng Dạy</h3>
         </div>
 
-      
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Thời Gian</th>
-                            <c:forEach var="day" items="${days}">
-                            <th>${day.nameThu}</th>
-                            </c:forEach>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="shift" items="${shifts}">
+        <div>
+            <div class="row">
+                <div class="col-md-3 sidebar">
+                    <%
+        String userName = (String) session.getAttribute("userName");
+        String userAvatar = (String) session.getAttribute("userAvatar");
+        if (userAvatar == null || userAvatar.isEmpty()) {
+            userAvatar = "default-avatar.jpg";
+        }
+        if (userName == null || userName.isEmpty()) {
+            userName = "Tên người dùng";
+        }
+                    %>
+
+                    <div class="avatar">
+                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
+                    </div>
+                    <div class="username"><%= userName %></div>
+
+                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
+                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                </div>
+
+                <!-- Main -->
+                <div class="col-md-9 main">
+                    <%
+         List<Schedule> schedules = (List<Schedule>) request.getAttribute("schedules");
+         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+         if (schedules != null && !schedules.isEmpty()) {
+                    %>
+                    <table border="1">
                         <tr>
-                            <td>${shift.startTime} - ${shift.endTime}</td>
-                            <c:forEach var="day" items="${days}">
-                                <td>
-                                    <c:if test="${scheduleMap[day.thuID + '_' + shift.id]}">
-                                        x
-                                    </c:if>
-                                </td>
-                            </c:forEach>
+                            <th>Ngày học</th>
+                            <th>Lớp</th>
+                            <th>Ca học</th>
+                            <th>Phòng</th>
                         </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-
-       
-
-
-
-
+                        <% for (Schedule s : schedules) { %>
+                        <tr>
+                            <td><%= sdf.format(s.getDateLearn()) %></td>
+                            <td><%= s.getTutor().getClassName() %></td>
+                            <td><%= s.getShift().getStartTime() %> - <%= s.getShift().getEndTime() %></td>
+                            <td><%= s.getRoom().getName() %></td>
+                        </tr>
+                        <% } %>
+                    </table>
+                    <%
+                        } else {
+                    %>
+                    <p>Không có lịch học.</p>
+                    <%
+                        }
+                    %>
+                </div>
+            </div>
+        </div>
 
 
         <footer class="site-footer">

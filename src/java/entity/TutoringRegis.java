@@ -11,43 +11,43 @@ import java.util.Date;
  * @author NGOC ANH
  */
 public class TutoringRegis {
-    private int tutorRegisID;
-    private account userID;
-    private TutoringClass tutorID;
+    private int tutorRegisId;
+    private int userId;
+    private int tutorId;
     private Date regisDate;
 
     public TutoringRegis() {
     }
 
-    public TutoringRegis(int tutorRegisID, account userID, TutoringClass tutorID, Date regisDate) {
-        this.tutorRegisID = tutorRegisID;
-        this.userID = userID;
-        this.tutorID = tutorID;
+    public TutoringRegis(int tutorRegisId, int userId, int tutorId, Date regisDate) {
+        this.tutorRegisId = tutorRegisId;
+        this.userId = userId;
+        this.tutorId = tutorId;
         this.regisDate = regisDate;
     }
 
-    public int getTutorRegisID() {
-        return tutorRegisID;
+    public int getTutorRegisId() {
+        return tutorRegisId;
     }
 
-    public void setTutorRegisID(int tutorRegisID) {
-        this.tutorRegisID = tutorRegisID;
+    public void setTutorRegisId(int tutorRegisId) {
+        this.tutorRegisId = tutorRegisId;
     }
 
-    public account getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(account userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public TutoringClass getTutorID() {
-        return tutorID;
+    public int getTutorId() {
+        return tutorId;
     }
 
-    public void setTutorID(TutoringClass tutorID) {
-        this.tutorID = tutorID;
+    public void setTutorId(int tutorId) {
+        this.tutorId = tutorId;
     }
 
     public Date getRegisDate() {
@@ -60,8 +60,7 @@ public class TutoringRegis {
 
     @Override
     public String toString() {
-        return "TutoringRegis{" + "tutorRegisID=" + tutorRegisID + ", userID=" + userID + ", tutorID=" + tutorID + ", regisDate=" + regisDate + '}';
+        return "TutoringRegis{" + "tutorRegisId=" + tutorRegisId + ", userId=" + userId + ", tutorId=" + tutorId + ", regisDate=" + regisDate + '}';
     }
-    
     
 }

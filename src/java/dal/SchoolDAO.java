@@ -5,16 +5,38 @@
 package dal;
 
 import entity.School;
-import entity.roles;
+import entity.Roles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
 public class SchoolDAO {
+    public List<School> getAllSchools() {
+        List<School> schools = new ArrayList<>();
+        String sql = "SELECT SchoolID, SchoolName, AddressSchool FROM School";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                School s = new School();
+                s.setSchoolID(rs.getInt("SchoolID"));
+                s.setName(rs.getString("SchoolName"));
+                s.setAddress(rs.getString("AddressSchool"));
+                schools.add(s);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return schools;
+    }
 
     public School getSchoolByID(int id) {
         String query = "select * from School\n"

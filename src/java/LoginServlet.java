@@ -4,10 +4,10 @@
  */
 
 
-import dal.loginDAO;
-import dal.roleDAO;
-import entity.account;
-import entity.roles;
+import dal.UserDAO;
+
+import entity.User;
+
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -67,30 +67,13 @@ public class LoginServlet extends HttpServlet {
         
         String email = request.getParameter("loginEmail");
         String pass = request.getParameter("loginPassword");
-        String role = request.getParameter("role");
         
-        int ro = 0;
+       
 
-        if (role.equals("admin")) {
-            ro = 1;
-        } else if (role.equals("teacher")) {
-            ro = 2;
-        } else if (role.equals("student")) {
-            ro = 3;
-        } else if (role.equals("parent")) {
-            ro = 4;
-        } else if (role.equals("manager")) {
-            ro = 5;
-        } else {
-
-            request.getRequestDispatcher("login_register.jsp").forward(request, response);
-            return;
-        }
-
-        loginDAO ld = new loginDAO();
-        account acc = ld.login(email, pass, ro);
+        UserDAO ld = new UserDAO();
+        User acc = ld.login(email, pass);
         if (acc == null) {
-            request.setAttribute("error", "Đăng nhập không thành công. Kiểm tra lại email, mật khẩu và vai trò của bạn");
+            request.setAttribute("error", "ÄÄƒng nháº­p khĂ´ng thĂ nh cĂ´ng. Kiá»ƒm tra láº¡i email, máº­t kháº©u vĂ  vai trĂ² cá»§a báº¡n");
             request.getRequestDispatcher("login_register.jsp").forward(request, response);
             return;
         } else {
@@ -98,24 +81,22 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("account", acc);
             session.setAttribute("userName", acc.getName());
             session.setAttribute("userAvatar", acc.getAvatar());
-            
-            // Điều hướng theo vai trò
-            String roleName = acc.getRole().getRole();
-            switch (roleName.toLowerCase()) {
-                case "admin":
-                    response.sendRedirect("Home.jsp");
+            session.setAttribute("userRoleID", acc.getRoleID());
+            // Äiá»u hÆ°á»›ng theo vai trĂ²
+            int roleId = acc.getRoleID();
+            switch (roleId) {
+                case 1:
+                    response.sendRedirect(request.getContextPath() + "/home");
                     break;
 
-                case "teacher":
+                case 2:
                     response.sendRedirect("teacherdashboard.jsp");
                     break;
-                case "student":
+                case 3:
                     response.sendRedirect("dashboard.jsp");
                     break;
-                case "parent":
-                    response.sendRedirect("parent_dashboard.jsp");
-                    break;
-                case "manager":
+                
+                case 4:
                     response.sendRedirect("manager_dashboard.jsp");
                     break;
                 default:

@@ -19,8 +19,8 @@ public class ShiftlearnDAO {
             while (rs.next()) {
                 Shift s = new Shift();
                 s.setId(rs.getInt("ShiftID"));
-                s.setStartTime(rs.getString("Start_time"));
-                s.setEndTime(rs.getString("End_time"));
+                s.setStartTime(rs.getTime("Start_time"));
+                s.setEndTime(rs.getTime("End_time"));
                 shifts.add(s);
             }
         } catch (SQLException e) {
@@ -39,8 +39,8 @@ public class ShiftlearnDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Shift(rs.getInt("ShiftID"), 
-                        rs.getString("Start_time"), 
-                        rs.getString("End_time"));
+                        rs.getTime("Start_time"), 
+                        rs.getTime("End_time"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,9 +57,9 @@ for (Shift role : rolesList) {
 //        int roleID = 2; 
 //    roles role = r.getRoleByID(roleID);
 //    if (role != null) {
-//        System.out.println("Sản phẩm tìm thấy: " + role.toString());
+//        System.out.println("Sáº£n pháº©m tĂ¬m tháº¥y: " + role.toString());
 //    } else {
-//        System.out.println("Không tìm thấy sản phẩm với ID: " + roleID);
+//        System.out.println("KhĂ´ng tĂ¬m tháº¥y sáº£n pháº©m vá»›i ID: " + roleID);
 //    }
     }
 }

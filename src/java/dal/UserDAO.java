@@ -4,8 +4,8 @@
  */
 package dal;
 
-import entity.account;
-import entity.roles;
+import entity.User;
+import entity.Roles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,25 +14,23 @@ import java.sql.ResultSet;
  *
  * @author DO NGOC ANH HE180661
  */
-public class loginDAO {
+public class UserDAO {
 
-    public account login(String email, String password, int roleid) {
+    public User login(String email, String password) {
         String query = "select * from [User]\n"
                 + "where email = ?\n"
                 + "and pass = ? \n"
-                + "and roleID = ?";
-        roleDAO rd = new roleDAO();
-        SchoolDAO sd = new SchoolDAO();
-        SchoolClassDAO scd = new SchoolClassDAO();
+                ;
+        
         try {
             Connection conn = new DBContext().connection;
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, email);
             ps.setString(2, password);
-            ps.setInt(3, roleid);
+            
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                return new account(rs.getInt("UserID"),
+                return new User(rs.getInt("UserID"),
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
@@ -44,9 +42,9 @@ public class loginDAO {
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
-                        sd.getSchoolByID(rs.getInt("SchoolID")),
-                        scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
-                        rd.getRoleByID(rs.getInt("roleID")),
+                        rs.getInt("SchoolID"),
+                        rs.getInt("SchoolClassID"),
+                        rs.getInt("roleID"),
                         rs.getString("ParentEmail"),
                         rs.getString("ParentPhone"));
             }
@@ -56,20 +54,17 @@ public class loginDAO {
         return null;
     }
 
-    public account getUserByID(int id) {
+    public User getUserByID(int id) {
         String query = "  select * from [User]\n"
                 + "  where UserID = ?";
-        roleDAO rd = new roleDAO();
-        SchoolDAO sd = new SchoolDAO();
-        SchoolClassDAO scd = new SchoolClassDAO();
-
+        
         try {
             Connection conn = new DBContext().connection;
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new account(rs.getInt("UserID"),
+                return new User(rs.getInt("UserID"),
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
@@ -81,9 +76,9 @@ public class loginDAO {
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
-                        sd.getSchoolByID(rs.getInt("SchoolID")),
-                        scd.getSchoolClassByID(rs.getInt("SchoolClassID")),
-                        rd.getRoleByID(rs.getInt("roleID")),
+                        rs.getInt("SchoolID"),
+                        rs.getInt("SchoolClassID"),
+                        rs.getInt("roleID"),
                         rs.getString("ParentEmail"),
                         rs.getString("ParentPhone"));
             }
@@ -92,5 +87,50 @@ public class loginDAO {
         }
         return null;
     }
+    public User getUserByEmail(String email) {
+    String query = "select * from [User] where email = ?";
+   
+    try {
+        Connection conn = new DBContext().connection;
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new User(rs.getInt("UserID"),
+                    rs.getString("FullName"),
+                    rs.getString("Gender"),
+                    rs.getDate("BirthDate"),
+                    rs.getString("phone"),
+                    rs.getString("email"),
+                    rs.getString("pass"),
+                    rs.getString("avatar"),
+                    rs.getInt("onlineStatus"),
+                    rs.getDate("created_at"),
+                    rs.getString("Certi"),
+                    rs.getString("Descrip"),
+                    rs.getInt("SchoolID"),
+                    rs.getInt("SchoolClassID"),
+                    rs.getInt("roleID"),
+                    rs.getString("ParentEmail"),
+                    rs.getString("ParentPhone"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+public static void main(String[] args) {
+        UserDAO r = new UserDAO();
+
+       
+        String email = "chuchegirl9@gmail.com"; 
+    User role = r.getUserByEmail(email);
+    if (role != null) {
+        System.out.println("Information user: " + role.toString());
+    } else {
+        System.out.println("Not found user with email: " + email);
+    }
+    }
+
 
 }

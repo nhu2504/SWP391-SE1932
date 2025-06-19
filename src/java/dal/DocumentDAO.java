@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DocumentDAO {
-    
-
     public ArrayList<Document> getDocumentsByUserID(int userID) {
         ArrayList<Document> documents = new ArrayList<>();
         String sql = """
@@ -23,7 +21,7 @@ public class DocumentDAO {
             ) 
             WHERE tr.UserID = ?
         """;
-        loginDAO ld = new loginDAO();
+        UserDAO ld = new UserDAO();
         SubjectDAO sd = new SubjectDAO();
         try (Connection conn = new DBContext().connection;
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -35,9 +33,9 @@ public class DocumentDAO {
                     rs.getString("Title"),
                     rs.getString("Descrip"),
                     
-                    ld.getUserByID(rs.getInt("UploadedBy")),
+                   rs.getInt("UploadedBy"),
                         rs.getDate("UploadDate"),
-                    sd.getSubjectByID(rs.getInt("SubjectID"))
+                    rs.getInt("SubjectID")
                 );
                 documents.add(doc);
             }
@@ -50,7 +48,7 @@ public class DocumentDAO {
         Map<String, List<Map<String, String>>> documents = new HashMap<>();
         try (Connection conn = new DBContext().connection;
              PreparedStatement ps = conn.prepareStatement(
-                     // Câu SQL lấy thông tin tài liệu
+                     // CĂ¢u SQL láº¥y thĂ´ng tin tĂ i liá»‡u
                      "SELECT DocumentId, Title, Descrip, SubjectId FROM Document");
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -66,4 +64,5 @@ public class DocumentDAO {
         }
         return documents;
     }
+
 }
