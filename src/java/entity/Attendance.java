@@ -8,32 +8,35 @@ import java.util.Date;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class Attendance {
-    private TutoringClass tutoringClass;
+    private int tutorID;
     private int userID;
     private Date attendanceDate;
-    private int isPresent;
+    private boolean isPresent;
 
     public Attendance() {
     }
 
-    public Attendance(TutoringClass tutoringClass, int userID, Date attendanceDate, int isPresent) {
-        this.tutoringClass = tutoringClass;
+    public Attendance(int tutorID, int userID, Date attendanceDate, boolean isPresent) {
+        this.tutorID = tutorID;
         this.userID = userID;
         this.attendanceDate = attendanceDate;
         this.isPresent = isPresent;
     }
 
-    public TutoringClass getTutoringClass() {
-        return tutoringClass;
+    public int getTutorID() {
+        return tutorID;
     }
 
-    public void setTutoringClass(TutoringClass tutoringClass) {
-        this.tutoringClass = tutoringClass;
+    public void setTutorID(int tutorID) {
+        this.tutorID = tutorID;
     }
 
+    
+   
     
 
     public int getUserID() {
@@ -52,19 +55,17 @@ public class Attendance {
         this.attendanceDate = attendanceDate;
     }
 
-    public int getIsPresent() {
+    public boolean getIsPresent() {
         return isPresent;
     }
 
-    public void setIsPresent(int isPresent) {
+    public void setIsPresent(boolean isPresent) {
         this.isPresent = isPresent;
     }
 
     @Override
     public String toString() {
-        return "Attendance{" + "tutoringClass=" + tutoringClass + ", userID=" + userID + ", attendanceDate=" + attendanceDate + ", isPresent=" + isPresent + '}';
+        return "Attendance{" + "tutorID=" + tutorID + ", userID=" + userID + ", attendanceDate=" + attendanceDate + ", isPresent=" + isPresent + '}';
     }
 
-    
-    
 }

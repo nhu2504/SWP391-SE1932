@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class TutoringRegis {
     private int tutorRegisId;

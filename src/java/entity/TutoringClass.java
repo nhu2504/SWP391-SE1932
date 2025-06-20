@@ -1,25 +1,28 @@
 package entity;
 
 import java.util.Date;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class TutoringClass {
     private int tutoringClassID;
     private String className;
     private String image;
     private String descrip;
-    private int isHot;
+    private boolean isHot;
     private int subjectID;
     private Date startDate;
     private Date endDate;
     private double price;
-    
     private int maxStudent;
     private int gradeID;
 
     public TutoringClass() {
     }
 
-    public TutoringClass(int tutoringClassID, String className, String image, String descrip, int isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.image = image;
@@ -43,7 +46,7 @@ public class TutoringClass {
         
     }
 
-    public TutoringClass(int tutoringClassID, String className, String image, String descrip, int isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent, int gradeID) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent, int gradeID) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.image = image;
@@ -125,13 +128,15 @@ public class TutoringClass {
         this.descrip = descrip;
     }
 
-    public int getIsHot() {
+    public boolean isIsHot() {
         return isHot;
     }
 
-    public void setIsHot(int isHot) {
+    public void setIsHot(boolean isHot) {
         this.isHot = isHot;
     }
+
+    
 
     public double getPrice() {
         return price;

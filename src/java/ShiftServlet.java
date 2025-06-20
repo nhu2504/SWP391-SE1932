@@ -58,8 +58,10 @@ public class ShiftServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         ShiftlearnDAO sd = new ShiftlearnDAO();
-        List<Shift> list = sd.getAllShifts();
+        List<Shift> shiftList = sd.getAllShifts();
         
+        request.setAttribute("shiftList", shiftList);
+        request.getRequestDispatcher("templateschedule.jsp").forward(request, response);
     } 
 
     /** 

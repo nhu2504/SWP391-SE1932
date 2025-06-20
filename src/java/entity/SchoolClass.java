@@ -6,7 +6,8 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class SchoolClass {
     private int schoolClassID;

@@ -8,20 +8,21 @@ import java.util.Date;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class Notification {
     private int notifiID;
     private String tittle;
     private String content;
     private Date createAt;
-    private roles targetRole;
-    private account createBy;
+    private int targetRole;
+    private int createBy;
 
     public Notification() {
     }
 
-    public Notification(int notifiID, String tittle, String content, Date createAt, roles targetRole, account createBy) {
+    public Notification(int notifiID, String tittle, String content, Date createAt, int targetRole, int createBy) {
         this.notifiID = notifiID;
         this.tittle = tittle;
         this.content = content;
@@ -29,6 +30,8 @@ public class Notification {
         this.targetRole = targetRole;
         this.createBy = createBy;
     }
+
+    
 
     public int getNotifiID() {
         return notifiID;
@@ -62,19 +65,19 @@ public class Notification {
         this.createAt = createAt;
     }
 
-    public roles getTargetRole() {
+    public int getTargetRole() {
         return targetRole;
     }
 
-    public void setTargetRole(roles targetRole) {
+    public void setTargetRole(int targetRole) {
         this.targetRole = targetRole;
     }
 
-    public account getCreateBy() {
+    public int getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(account createBy) {
+    public void setCreateBy(int createBy) {
         this.createBy = createBy;
     }
 
@@ -82,5 +85,6 @@ public class Notification {
     public String toString() {
         return "Notification{" + "notifiID=" + notifiID + ", tittle=" + tittle + ", content=" + content + ", createAt=" + createAt + ", targetRole=" + targetRole + ", createBy=" + createBy + '}';
     }
-    
+
+
 }

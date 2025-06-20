@@ -1,5 +1,9 @@
 package entity;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Room {
     private int id;
     private String name;

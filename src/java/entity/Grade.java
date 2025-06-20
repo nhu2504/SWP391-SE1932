@@ -1,60 +1,40 @@
 package entity;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Grade {
-    private TutoringClass tutoringClass;
-    private account userID;
-    private String nameOfTest;
-    private float score;
+    private int gradeID;
+   private String gradeName;
 
     public Grade() {
     }
 
-    public Grade(TutoringClass tutoringClass, account userID, String nameOfTest, float score) {
-        this.tutoringClass = tutoringClass;
-        this.userID = userID;
-        this.nameOfTest = nameOfTest;
-        this.score = score;
+    public Grade(int gradeID, String gradeName) {
+        this.gradeID = gradeID;
+        this.gradeName = gradeName;
     }
 
-    public TutoringClass getTutoringClass() {
-        return tutoringClass;
+    public int getGradeID() {
+        return gradeID;
     }
 
-    public void setTutoringClass(TutoringClass tutoringClass) {
-        this.tutoringClass = tutoringClass;
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
     }
 
-    public account getUserID() {
-        return userID;
+    public String getGradeName() {
+        return gradeName;
     }
 
-    public void setUserID(account userID) {
-        this.userID = userID;
-    }
-
-    
-
-    
-
-    public String getNameOfTest() {
-        return nameOfTest;
-    }
-
-    public void setNameOfTest(String nameOfTest) {
-        this.nameOfTest = nameOfTest;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
     }
 
     @Override
     public String toString() {
-        return "Grade{" + "tutoringClass=" + tutoringClass + ", userID=" + userID + ", nameOfTest=" + nameOfTest + ", score=" + score + '}';
+        return "Grade{" + "gradeID=" + gradeID + ", gradeName=" + gradeName + '}';
     }
-    
+
 }

@@ -21,12 +21,13 @@ public class Register {
     private String classAtSchool;
     private String parentPhone;
     private String parentEmail;
+    private int idUserIntro;
     private boolean confirm;
 
     public Register() {
     }
 
-    public Register(String fullName, String phone, String email, String gender, Date birth, String school, String address, String classAtSchool, String parentPhone, String parentEmail, boolean confirm) {
+    public Register(String fullName, String phone, String email, String gender, Date birth, String school, String address, String classAtSchool, String parentPhone, String parentEmail, int idUserIntro, boolean confirm) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
@@ -37,8 +38,19 @@ public class Register {
         this.classAtSchool = classAtSchool;
         this.parentPhone = parentPhone;
         this.parentEmail = parentEmail;
+        this.idUserIntro = idUserIntro;
         this.confirm = confirm;
     }
+
+    public int getIdUserIntro() {
+        return idUserIntro;
+    }
+
+    public void setIdUserIntro(int idUserIntro) {
+        this.idUserIntro = idUserIntro;
+    }
+
+    
 
     
 

@@ -7,22 +7,23 @@ import java.sql.Time;
 /**
  *
  * @author DO NGOC ANH HE180661
+ * 
  */
 public class Shift {
     private int id;
-    private String startTime;
-    private String endTime;
+    private Time startTime;
+    private Time endTime;
 
     public Shift() {
     }
 
-    public Shift(int id, String startTime, String endTime) {
+    public Shift(int id, Time startTime, Time endTime) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public Shift(String startTime, String endTime) {
+    public Shift(Time startTime, Time endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -39,21 +40,23 @@ public class Shift {
         this.id = id;
     }
 
-    public String getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
+
+   
 
     @Override
     public String toString() {
