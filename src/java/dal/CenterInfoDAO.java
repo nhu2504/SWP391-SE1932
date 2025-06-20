@@ -33,4 +33,101 @@ public class CenterInfoDAO {
         }
         return null; // Trả về null nếu không tìm thấy hoặc có lỗi
     }
+    // Cập nhật một trường của trung tâm
+    public boolean updateField(int centerId, String fieldName, String fieldValue) {
+        String dbColumn = switch (fieldName) {
+            case "centerName" -> "NameCenter";
+            case "address" -> "AddressCenter";
+            case "email" -> "Email";
+            case "phone" -> "Phone";
+            case "descripCenter" -> "DescripCenter";
+                case "logo" -> "Logo";
+            default -> null;
+        };
+
+        if (dbColumn == null) {
+            return false;
+        }
+
+        String sql = "UPDATE CenterInfo SET " + dbColumn + " = ? WHERE CenterID = ?";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, fieldValue != null && fieldValue.trim().isEmpty() ? null : fieldValue);
+            ps.setInt(2, centerId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Xóa một trường của trung tâm (đặt thành NULL)
+    public boolean deleteField(int centerId, String fieldName) {
+        String dbColumn = switch (fieldName) {
+            case "centerName" -> "NameCenter";
+case "address" -> "AddressCenter";
+            case "email" -> "Email";
+            case "phone" -> "Phone";
+            case "descripCenter" -> "DescripCenter";
+            case "logo" -> "Logo";
+            default -> null;
+        };
+
+        if (dbColumn == null) {
+            return false;
+        }
+
+        String sql = "UPDATE CenterInfo SET " + dbColumn + " = NULL WHERE CenterID = ?";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, centerId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public int getYearOfWork() {
+        String sql = "SELECT YearOfWork FROM CenterInfo WHERE CenterID = 1"; // Giả định CenterID = 1
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("YearOfWork");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 2000; // Giá trị mặc định nếu không có dữ liệu
+    }
+
+    public int getStudentCount() {
+        String sql = "SELECT COUNT(*) AS total FROM [User] WHERE roleID = 3"; // Vai trò 3 là student
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Giá trị mặc định nếu không có dữ liệu
+    }
+
+    public int getPartnerSchoolsCount() {
+        String sql = "SELECT COUNT(*) AS total FROM School"; // Giả định số trường liên kết là tổng School
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Giá trị mặc định nếu không có dữ liệu
+    }
 }

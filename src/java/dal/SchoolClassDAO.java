@@ -9,23 +9,26 @@ import entity.SchoolClass;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
  */
 public class SchoolClassDAO {
-
+    //lấy ra lớp của trường học đã liên kết theo id
     public SchoolClass getSchoolClassByID(int id) {
-        SchoolDAO sd = new SchoolDAO();
-        GradeDAO gd = new GradeDAO();
-        String query = "select * from SchoolClass\n"
-                + "  where SchoolClassID = ?";
+        //lấy ra 1 lớp học trong trường
+        String query = """
+                       select * from SchoolClass
+                         where SchoolClassID = ?""";
+        //tạo kết nối, chuẩn bị chạy câu lệnh sql
         try {
             Connection conn = new DBContext().connection; 
                 PreparedStatement ps = conn.prepareStatement(query); 
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
+                //nếu có kết quả được trả về, dùng constructor để tạo đối tượng
                 if(rs.next()){
                     return new SchoolClass(rs.getInt(1), 
                             rs.getString(2), 
@@ -33,20 +36,21 @@ public class SchoolClassDAO {
                             rs.getInt(4));
                     
                 }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Lỗi "+e.getMessage());
         }
         return null;
     }
+    //test lấy dữ liệu
     public static void main(String[] args) {
         SchoolClassDAO sd = new SchoolClassDAO();
                 int sID = 2; 
                 SchoolClass s = sd.getSchoolClassByID(sID);
     
     if (s != null) {
-        System.out.println("Sáº£n pháº©m tĂ¬m tháº¥y: " + s.toString());
+        System.out.println("Lớp tìm thấy: " + s.toString());
     } else {
-        System.out.println("KhĂ´ng tĂ¬m tháº¥y sáº£n pháº©m vá»›i ID: " + sID);
+        System.out.println("Không tìm thấy lớp với ID: " + sID);
     }
     }
 }

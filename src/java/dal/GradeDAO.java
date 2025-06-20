@@ -1,59 +1,68 @@
 package dal;
 
+import dal.DBContext;
+import entity.Grade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import entity.Grade;
-import entity.TutoringClass;
-import entity.account;
+import java.util.List;
 
 public class GradeDAO {
-   
+    public Grade getGradeByID(int id) {
+        String query = "select * from Grade\n"
+                + "where GradeID = ?";
+        try {
+            Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query); 
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    return new Grade(rs.getInt(1), rs.getString(2));
+                   
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    public ArrayList<Grade> getGradesByUserID(int userID) {
-        ArrayList<Grade> grades = new ArrayList<>();
-        String sql = "SELECT TutoringClassID, UserID, nameoftest, Score FROM Grade WHERE UserID = ?";
-        loginDAO ld = new loginDAO();
-        TutoringClassDAO td = new TutoringClassDAO();
+    // Lấy danh sách tất cả các khối lớp từ DB
+    public List<Grade> getAllGrades() {
+        List<Grade> grades = new ArrayList<>();
         try (Connection conn = new DBContext().connection;
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, userID);
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT GradeID, GradeName FROM grade ORDER BY GradeID ASC");
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Grade grade = new Grade(
-                    td.getTutoringClassByID(rs.getInt("TutoringClassID")),
-                    ld.getUserByID(rs.getInt("UserID")),
-                    rs.getString("nameoftest"),
-                    rs.getFloat("Score")
-                );
+                Grade grade = new Grade();
+                grade.setGradeID(rs.getInt("GradeID"));
+                grade.setGradeName(rs.getString("GradeName"));
                 grades.add(grade);
             }
-            System.out.println("GradeDAO: grades size for userID " + userID + " = " + grades.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return grades;
     }
-//    public Grade getOneGradeByID(int tutorID, int userID){
-//        String query = "select * from Grade\n"
-//                + "where TutoringClassID = ?"
-//                + "and UserID = ?";
-//        TutoringClassDAO td = new TutoringClassDAO();
-//        loginDAO ld = new loginDAO();
-//        try {
-//            Connection conn = new DBContext().connection; 
-//                PreparedStatement ps = conn.prepareStatement(query); 
-//                ps.setInt(1, td.getTutoringClassByID(tutorID));
-//                ps.setInt(2, ld.getUserByID(userID));
-//                ResultSet rs = ps.executeQuery();
-//                if(rs.next()){
-//                    return new Grade();
-//                }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+     public String getGradeNameById(int gradeId) {
+        String gradeName = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection; 
+            String sql = "SELECT gradeName FROM Grade WHERE gradeId = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, gradeId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                gradeName = rs.getString("gradeName");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+        return gradeName;
+    }
 }

@@ -6,9 +6,8 @@ package dal;
 
 /**
  *
- * @author DO NGOC ANH HE180661
- * 
+ * @author NGOC ANH
  */
-public class TutoringRegisDAO {
+public class ClassGroup_StudentDAO {
     
 }
