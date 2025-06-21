@@ -12,7 +12,7 @@ import java.util.Date;
  * 
  */
 public class Attendance {
-    private int tutorID;
+    private int classGroup;
     private int userID;
     private Date attendanceDate;
     private boolean isPresent;
@@ -20,24 +20,21 @@ public class Attendance {
     public Attendance() {
     }
 
-    public Attendance(int tutorID, int userID, Date attendanceDate, boolean isPresent) {
-        this.tutorID = tutorID;
+    public Attendance(int classGroup, int userID, Date attendanceDate, boolean isPresent) {
+        this.classGroup = classGroup;
         this.userID = userID;
         this.attendanceDate = attendanceDate;
         this.isPresent = isPresent;
     }
 
-    public int getTutorID() {
-        return tutorID;
+    public int getClassGroup() {
+        return classGroup;
     }
 
-    public void setTutorID(int tutorID) {
-        this.tutorID = tutorID;
+    public void setClassGroup(int classGroup) {
+        this.classGroup = classGroup;
     }
 
-    
-   
-    
 
     public int getUserID() {
         return userID;
@@ -65,7 +62,9 @@ public class Attendance {
 
     @Override
     public String toString() {
-        return "Attendance{" + "tutorID=" + tutorID + ", userID=" + userID + ", attendanceDate=" + attendanceDate + ", isPresent=" + isPresent + '}';
+        return "Attendance{" + "classGroup=" + classGroup + ", userID=" + userID + ", attendanceDate=" + attendanceDate + ", isPresent=" + isPresent + '}';
     }
+
+    
 
 }

@@ -28,6 +28,7 @@ public class User {
     private int schoolID;
     private int classID;
     private int roleID;
+    private boolean isHot;
     private String parentEmail;
     private String parentPhone;
 
@@ -93,6 +94,28 @@ public class User {
         this.certi = certi;
         this.descrip = descrip;
     }
+
+    public User(int id, String name, String gender, Date birth, String phone, String email, String password, String avatar, int status, Date createDate, String certi, String descrip, int schoolID, int classID, int roleID, boolean isHot, String parentEmail, String parentPhone) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.birth = birth;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.avatar = avatar;
+        this.status = status;
+        this.createDate = createDate;
+        this.certi = certi;
+        this.descrip = descrip;
+        this.schoolID = schoolID;
+        this.classID = classID;
+        this.roleID = roleID;
+        this.isHot = isHot;
+        this.parentEmail = parentEmail;
+        this.parentPhone = parentPhone;
+    }
+    
 
     public int getId() {
         return id;
@@ -234,10 +257,19 @@ public class User {
         this.parentPhone = parentPhone;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", birth=" + birth + ", phone=" + phone + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", status=" + status + ", createDate=" + createDate + ", certi=" + certi + ", descrip=" + descrip + ", schoolID=" + schoolID + ", classID=" + classID + ", roleID=" + roleID + ", parentEmail=" + parentEmail + ", parentPhone=" + parentPhone + '}';
+    public boolean isIsHot() {
+        return isHot;
     }
 
+    public void setIsHot(boolean isHot) {
+        this.isHot = isHot;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", birth=" + birth + ", phone=" + phone + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", status=" + status + ", createDate=" + createDate + ", certi=" + certi + ", descrip=" + descrip + ", schoolID=" + schoolID + ", classID=" + classID + ", roleID=" + roleID + ", isHot=" + isHot + ", parentEmail=" + parentEmail + ", parentPhone=" + parentPhone + '}';
+    }
+
+    
 
 }

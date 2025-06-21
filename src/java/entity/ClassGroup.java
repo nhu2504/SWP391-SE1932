@@ -15,20 +15,16 @@ public class ClassGroup {
     private int toturID;
     private String name;
     private int maxStudent;
-    private int roomId;
-    private int shiftId;
     private int teachId;
 
     public ClassGroup() {
     }
 
-    public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int roomId, int shiftId, int teachId) {
+    public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int teachId) {
         this.classGroupId = classGroupId;
         this.toturID = toturID;
         this.name = name;
         this.maxStudent = maxStudent;
-        this.roomId = roomId;
-        this.shiftId = shiftId;
         this.teachId = teachId;
     }
 
@@ -64,22 +60,7 @@ public class ClassGroup {
         this.maxStudent = maxStudent;
     }
 
-    public int getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
-    }
-
-    public int getShiftId() {
-        return shiftId;
-    }
-
-    public void setShiftId(int shiftId) {
-        this.shiftId = shiftId;
-    }
-
+    
     public int getTeachId() {
         return teachId;
     }
@@ -90,8 +71,8 @@ public class ClassGroup {
 
     @Override
     public String toString() {
-        return "ClassGroup{" + "classGroupId=" + classGroupId + ", toturID=" + toturID + ", name=" + name + ", maxStudent=" + maxStudent + ", roomId=" + roomId + ", shiftId=" + shiftId + ", teachId=" + teachId + '}';
+        return "ClassGroup{" + "classGroupId=" + classGroupId + ", toturID=" + toturID + ", name=" + name + ", maxStudent=" + maxStudent + ", teachId=" + teachId + '}';
     }
-    
 
+    
 }

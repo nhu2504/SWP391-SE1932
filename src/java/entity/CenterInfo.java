@@ -18,7 +18,6 @@ public class CenterInfo {
     private String descrip1;
     private String address;
     private String logo;
-    private String banner;
     private String imageCenter;
     private String phone;
     private String email;
@@ -44,7 +43,7 @@ public class CenterInfo {
 
     
 
-    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo, String banner, 
+    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo,  
             String imageCenter, String phone, String email, String website, String face, String zalo, 
             String youtube, String tiktok, Date lastUpdate, int updateBy) {
         this.centerID = centerID;
@@ -52,7 +51,6 @@ public class CenterInfo {
         this.descrip = descrip;
         this.address = address;
         this.logo = logo;
-        this.banner = banner;
         this.imageCenter = imageCenter;
         this.phone = phone;
         this.email = email;
@@ -67,14 +65,13 @@ public class CenterInfo {
     
     
 
-    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo, String banner, 
+    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo,  
           String imageCenter, String phone, String email, Date lastUpdate, int updateBy) {
         this.centerID = centerID;
         this.nameCenter = nameCenter;
         this.descrip = descrip;
         this.address = address;
         this.logo = logo;
-        this.banner = banner;
         this.imageCenter = imageCenter;
         this.phone = phone;
         this.email = email;
@@ -82,28 +79,26 @@ public class CenterInfo {
         this.updateBy = updateBy;
     }
 
-    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo, String banner, 
+    public CenterInfo(int centerID, String nameCenter, String descrip, String address, String logo,  
             String imageCenter, String phone, String email, Date lastUpdate) {
         this.centerID = centerID;
         this.nameCenter = nameCenter;
         this.descrip = descrip;
         this.address = address;
         this.logo = logo;
-        this.banner = banner;
         this.imageCenter = imageCenter;
         this.phone = phone;
         this.email = email;
         this.lastUpdate = lastUpdate;
     }
 
-    public CenterInfo(int centerID, String nameCenter, String descrip, String descrip1, String address, String logo, String banner, String imageCenter, String phone, String email, String website, String face, String zalo, String youtube, String tiktok, Date lastUpdate, int updateBy) {
+    public CenterInfo(int centerID, String nameCenter, String descrip, String descrip1, String address, String logo, String imageCenter, String phone, String email, String website, String face, String zalo, String youtube, String tiktok, Date lastUpdate, int updateBy) {
         this.centerID = centerID;
         this.nameCenter = nameCenter;
         this.descrip = descrip;
         this.descrip1 = descrip1;
         this.address = address;
         this.logo = logo;
-        this.banner = banner;
         this.imageCenter = imageCenter;
         this.phone = phone;
         this.email = email;
@@ -157,14 +152,6 @@ public class CenterInfo {
 
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-
-    public String getBanner() {
-        return banner;
-    }
-
-    public void setBanner(String banner) {
-        this.banner = banner;
     }
 
     
@@ -268,9 +255,9 @@ public class CenterInfo {
 
     @Override
     public String toString() {
-        return "CenterInfo{" + "centerID=" + centerID + ", nameCenter=" + nameCenter + ", descrip=" + descrip + ", descrip1=" + descrip1 + ", address=" + address + ", logo=" + logo + ", banner=" + banner + ", imageCenter=" + imageCenter + ", phone=" + phone + ", email=" + email + ", website=" + website + ", face=" + face + ", zalo=" + zalo + ", youtube=" + youtube + ", tiktok=" + tiktok + ", lastUpdate=" + lastUpdate + ", updateBy=" + updateBy + ", yearOfWork=" + yearOfWork + '}';
+        return "CenterInfo{" + "centerID=" + centerID + ", nameCenter=" + nameCenter + ", descrip=" + descrip + ", descrip1=" + descrip1 + ", address=" + address + ", logo=" + logo + ", imageCenter=" + imageCenter + ", phone=" + phone + ", email=" + email + ", website=" + website + ", face=" + face + ", zalo=" + zalo + ", youtube=" + youtube + ", tiktok=" + tiktok + ", lastUpdate=" + lastUpdate + ", updateBy=" + updateBy + ", yearOfWork=" + yearOfWork + '}';
     }
 
-    
+   
 
 }

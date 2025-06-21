@@ -16,13 +16,12 @@ public class TutoringClass {
     private Date startDate;
     private Date endDate;
     private double price;
-    private int maxStudent;
     private int gradeID;
 
     public TutoringClass() {
     }
 
-    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.image = image;
@@ -32,8 +31,6 @@ public class TutoringClass {
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
-        
-        this.maxStudent = maxStudent;
     }
     
 
@@ -46,7 +43,7 @@ public class TutoringClass {
         
     }
 
-    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int maxStudent, int gradeID) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int gradeID) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.image = image;
@@ -56,8 +53,6 @@ public class TutoringClass {
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
-        
-        this.maxStudent = maxStudent;
         this.gradeID = gradeID;
     }
     
@@ -146,15 +141,6 @@ public class TutoringClass {
         this.price = price;
     }
 
-    
-
-    public int getMaxStudent() {
-        return maxStudent;
-    }
-
-    public void setMaxStudent(int maxStudent) {
-        this.maxStudent = maxStudent;
-    }
 
     public int getSubjectID() {
         return subjectID;
@@ -166,7 +152,9 @@ public class TutoringClass {
 
     @Override
     public String toString() {
-        return "TutoringClass{" + "tutoringClassID=" + tutoringClassID + ", className=" + className + ", image=" + image + ", descrip=" + descrip + ", isHot=" + isHot + ", subjectID=" + subjectID + ", startDate=" + startDate + ", endDate=" + endDate + ", price=" + price + ", maxStudent=" + maxStudent + ", gradeID=" + gradeID + '}';
+        return "TutoringClass{" + "tutoringClassID=" + tutoringClassID + ", className=" + className + ", image=" + image + ", descrip=" + descrip + ", isHot=" + isHot + ", subjectID=" + subjectID + ", startDate=" + startDate + ", endDate=" + endDate + ", price=" + price + ", gradeID=" + gradeID + '}';
     }
+
+   
 
 }
