@@ -4,11 +4,6 @@
     Author     : DO NGOC ANH HE180661
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%--<%@page import="dal.UserDAO"%>
-<%@page import="dal.RoleDAO"%>
-<%@page import="entity.User"%>
-<%@page import="entity.Roles"%>
-<%@page import="java.util.*"%>--%>
 <%@taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
@@ -38,6 +33,10 @@
                 margin-bottom: 17px;
                 color: #FF6B6B;
                 font-size: 40px;
+
+            }
+            .form-container h2{
+                font-weight: bold;
             }
             .form-group {
                 margin-bottom: 15px;
@@ -54,6 +53,8 @@
                 margin-top: 5px;
                 border-radius: 6px;
                 border: 1px solid #ccc;
+                font-size: 16px; /* đồng bộ font-size */
+                font-family: inherit; /* cùng font với toàn trang */
             }
             .gender-group {
                 margin-top: 5px;
@@ -109,7 +110,7 @@
             }
             .toggle-password {
                 position: absolute;
-                top: 50%;
+                top: 40%;
                 right: 5px;
                 transform: translateY(-35%);
                 cursor: pointer;
@@ -241,6 +242,11 @@
                 background-color: #fff !important;
                 border-color: #ccc !important;
                 color: #333 !important;
+            }
+
+            .form-control {
+                font-size: 16px !important;
+                font-family: inherit;
             }
 
             .container-fluid.bg-dark.text-white .btn-primary {
@@ -536,17 +542,7 @@
                 transform: scale(1.05); /* Phóng to 5% */
                 box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4); /* Bóng đậm hơn */
             }
-            .schedule-title {
-                font-size: 40px;
-                font-weight: 500;
-            }
-            .schedule-title-container {
-                position: relative;
-                height: 70px; /* Chiều cao container để dễ căn giữa */
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+
             .navbar {
                 background-color: #f8f9fa !important; /* Xám nhạt */
                 padding: 12px 24px;
@@ -649,7 +645,12 @@
                 }
             }
 
-
+            .site-footer .logo-image {
+                max-width: 50%;
+                margin-left: 50px;
+                height: auto;
+                width: auto;
+            }
 
 
         </style>
@@ -710,7 +711,7 @@
                     <h2>Đăng nhập</h2>
                     <form action="login" method="get">
                         <div class="form-group">
-                            <label>Email *</label>
+                            <label>Email hoặc Số Điện Thoại*</label>
                             <input type="text" name="loginEmail"   />
                         </div>
                         <div class="form-group">
@@ -730,7 +731,7 @@
                         <br />
                         <button type="submit" class="log">Đăng nhập</button>
                     </form>
-                        <form action="${pageContext.request.contextPath}/googlelogin" method="GET">
+                    <form action="${pageContext.request.contextPath}/googlelogin" method="GET">
                         <div class="google-login">
                             <p>Hoặc đăng nhập bằng</p>
                             <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20openid&redirect_uri=http://localhost:9999/WebApplication3/googlelogin&response_type=code&client_id=462397547099-cog4espvmnlb8qcg8s34ikuum3hufpur.apps.googleusercontent.com&prompt=consent" 
@@ -781,6 +782,9 @@
                         </div>
                         <div class="form-group">
                             <input type="text" name="emailpar" placeholder="Email người giám hộ"  />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="userIntro" placeholder="ID người giới thiệu"  />
                         </div>
                         <div class="form-footer">
                             <input type="checkbox" name="verifi" required/>

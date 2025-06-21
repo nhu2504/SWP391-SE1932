@@ -65,15 +65,15 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String email = request.getParameter("loginEmail");
+        String emailOrPhone = request.getParameter("loginEmail");
         String pass = request.getParameter("loginPassword");
         
        
 
         UserDAO ld = new UserDAO();
-        User acc = ld.login(email, pass);
+        User acc = ld.login(emailOrPhone, pass);
         if (acc == null) {
-            request.setAttribute("error", "ÄÄƒng nháº­p khĂ´ng thĂ nh cĂ´ng. Kiá»ƒm tra láº¡i email, máº­t kháº©u vĂ  vai trĂ² cá»§a báº¡n");
+            request.setAttribute("error", "Đăng nhập không thành công. Vui lòng kiểm tra lại email, số điện thoại và mật khẩu của bạn");
             request.getRequestDispatcher("login_register.jsp").forward(request, response);
             return;
         } else {
@@ -82,7 +82,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("userName", acc.getName());
             session.setAttribute("userAvatar", acc.getAvatar());
             session.setAttribute("userRoleID", acc.getRoleID());
-            // Äiá»u hÆ°á»›ng theo vai trĂ²
+            // Điều hướng theo vai trò
             int roleId = acc.getRoleID();
             switch (roleId) {
                 case 1:

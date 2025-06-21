@@ -18,11 +18,10 @@ import java.sql.SQLException;
 public class UserDAO {
     
     //lấy ra người dùng theo email và mật khẩu
-    public User login(String email, String password) {
+    public User login(String emailOrPhone, String password) {
         //tìm người dùng có mail và mật khẩu trùng khớp
         String query = """
-                       select * from [User]
-                       where email = ?
+                       select * from [user] where email = ? or phone = ?
                        and pass = ? 
                        """
                 ;
@@ -30,8 +29,9 @@ public class UserDAO {
         try {
             Connection conn = new DBContext().connection;
             PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, email);
-            ps.setString(2, password);
+            ps.setString(1, emailOrPhone);
+            ps.setString(2, emailOrPhone);
+            ps.setString(3, password);
             //truy vấn có kết quả thì tạo và trả về đối tượng user
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
