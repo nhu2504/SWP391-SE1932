@@ -6,6 +6,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@page import="entity.ScheduleJoin"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -584,34 +586,55 @@
                                 
                                 <div class="card">
                                     <i class="fas fa-calendar-alt"></i> Lịch Dạy
-                                    <%
-    ScheduleJoin nextSchedule = (ScheduleJoin) request.getAttribute("nextSchedule");
-                                %>
 
                                     <div>
                                         <strong>Sắp diễn ra:</strong><br>
-                                        <% if (nextSchedule != null) { %>
-                                        <span><%= nextSchedule.getClassGroupName() %></span><br>
-                                        <span>Thời gian: <%= nextSchedule.getStart_time() %> - <%= nextSchedule.getEnd_time() %></span><br>
-                                        <span>Phòng: <%= nextSchedule.getRoomName() %></span><br>
-                                        <span>Ngày: <%= nextSchedule.getDateLearn() %></span>
-                                        <% } else { %>
-                                        <span>Không có lịch dạy sắp tới.</span>
-                                        <% } %>
+                                        <c:choose>
+                                            <c:when test="${not empty sessionScope.nextSchedule}">
+                                                <span>${sessionScope.nextSchedule.classGroupName}</span><br>
+                                                <span>Thời gian: 
+                                                    <fmt:formatDate value="${sessionScope.nextSchedule.start_time}" pattern="HH:mm"/> - 
+                                                    <fmt:formatDate value="${sessionScope.nextSchedule.end_time}" pattern="HH:mm"/>
+                                                </span><br>
+                                                <span>Phòng: ${sessionScope.nextSchedule.roomName}</span><br>
+                                                <span>Ngày: 
+                                                    <fmt:formatDate value="${sessionScope.nextSchedule.dateLearn}" pattern="dd/MM/yyyy"/>
+                                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>Không có lịch dạy sắp tới.</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                       
                                     </div>
 
                                 </div></a>
                         </div>
-                        <a href="#"><div class="card"><i class="fas fa-calendar-check"></i> Điểm Danh
-                                <div class="card">
-
-                                    <div class="d-flex align-items-center">
-                                        <form action="SearchClassServlet" method="get" class="d-flex">
-                                            <input type="text" name="keyword" class="form-control form-control-sm mr-2" placeholder="Tìm kiếm lớp">
-                                            <button type="submit" class="btn btn-sm btn-outline-dark">Tìm</button>
-                                        </form>
-                                    </div>
+                        <a href="#">
+                            <div class="card">
+                                <i class="fas fa-calendar-check"></i> Điểm Danh
+                                
+                                <div>
+                                    <strong>
+                                        Các lớp học hôm nay:
+                                    </strong><br>
+                                    <c:choose>
+                                        <c:when test="${not empty sessionScope.todayClasses}">
+                                            <c:forEach var="cg" items="${todayClasses}">
+                                                <a href="#">${cg.classGroupName}</a>
+                                                <a href="#">take</a>
+                                                <a href="#">edit</a>
+                                                <br/>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>Không có lớp học nào hôm nay.</span>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
+
+                                
+
                             </div></a>
                         <a href="#"><div class="card"><i class="fas fa-users"></i> Danh sách lớp</div></a>
                         <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
