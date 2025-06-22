@@ -63,6 +63,7 @@ public class ShiftlearnDAO {
         }
         return null;
     }
+    
     //test xem đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {
         ShiftlearnDAO r = new ShiftlearnDAO();

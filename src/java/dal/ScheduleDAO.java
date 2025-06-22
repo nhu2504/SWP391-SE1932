@@ -4,12 +4,8 @@
  */
 package dal;
 
-import entity.Room;
+import entity.ScheduleJoin;
 import entity.Schedule;
-import entity.Shift;
-import entity.TutoringClass;
-import entity.User;
-import entity.Roles;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
@@ -48,12 +44,12 @@ public class ScheduleDAO {
 
                 s.setScheID(rs.getInt("ScheduleID"));
                 s.setClassgroupID(rs.getInt("TutoringClassID"));
-                
+
                 s.setShiftId(rs.getInt("ShiftID"));
-                
+
                 s.setRoomId(rs.getInt("RoomID"));
                 s.setDateLearn(rs.getDate("DateLearn"));
-               s.setUserId(rs.getInt("UserID"));
+                s.setUserId(rs.getInt("UserID"));
                 schedules.add(s);
             }
         } catch (Exception e) {
@@ -63,19 +59,69 @@ public class ScheduleDAO {
 
     }
 
+    public ScheduleJoin getNextScheduleByTeacher(int userId) throws SQLException {
+        ScheduleJoin schedule = null;
+        String sql = "SELECT TOP 1\n"
+                + "    s.ScheduleID,\n"
+                + "    cg.ClassGroupName,\n"
+                + "    sh.Start_time,\n"
+                + "    sh.End_time,\n"
+                + "    r.roomName,\n"
+                + "    s.DateLearn\n"
+                + "FROM \n"
+                + "    Schedule s\n"
+                + "    JOIN ClassGroup cg ON s.ClassGroupID = cg.ClassGroupID\n"
+                + "    JOIN Shiftlearn sh ON s.ShiftID = sh.ShiftID\n"
+                + "    JOIN Room r ON s.RoomID = r.id\n"
+                + "WHERE \n"
+                + "    s.UserID = ?\n"
+                + "    AND (s.DateLearn > GETDATE() OR (s.DateLearn = CAST(GETDATE() AS DATE) AND sh.Start_time > CAST(GETDATE() AS TIME)))\n"
+                + "ORDER BY\n"
+                + "    s.DateLearn ASC, sh.Start_time ASC";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    schedule = new ScheduleJoin();
+                    schedule.setScheId(rs.getInt("ScheduleID"));
+                    schedule.setClassGroupName(rs.getString("ClassGroupName"));
+                    schedule.setStart_time(rs.getTime("Start_time"));
+                    schedule.setEnd_time(rs.getTime("End_time"));
+                    schedule.setRoomName(rs.getString("roomName"));
+                    schedule.setDateLearn(rs.getDate("DateLearn"));
+                }
+            }
+        }
+        return schedule;
+    }
+
     public static void main(String[] args) {
         ScheduleDAO dao = new ScheduleDAO();
-        int testUserId = 3;
+        int testUserId = 4;
 
-        List<Schedule> schedules = dao.getScheduleByUserID(testUserId);
 
-        if (schedules != null && !schedules.isEmpty()) {
-            for (Schedule s : schedules) {
-                System.out.println(s);  
-            }
+        System.out.println("\n=== Lịch học kế tiếp của giáo viên có ID " + testUserId + " ===");
+    try {
+        ScheduleJoin nextSchedule = dao.getNextScheduleByTeacher(testUserId);
+        if (nextSchedule != null) {
+            System.out.println(nextSchedule);
         } else {
-            System.out.println("Not fount: " + testUserId);
+            System.out.println("Không có lịch học kế tiếp.");
         }
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi lấy lịch học kế tiếp:");
+        e.printStackTrace();
     }
+    }
+    //        List<Schedule> schedules = dao.getScheduleByUserID(testUserId);
+//
+//        if (schedules != null && !schedules.isEmpty()) {
+//            for (Schedule s : schedules) {
+//                System.out.println(s);
+//            }
+//        } else {
+//            System.out.println("Not fount: " + testUserId);
+//        }
+
 
 }

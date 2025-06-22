@@ -5,6 +5,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page import="entity.ScheduleJoin"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -579,16 +580,26 @@
                 <div class="col-md-9 main">
                     <div class="grid">
                         <div class="infor-sche">
-                            <a href="templateschedule.jsp"><div class="card"><i class="fas fa-calendar-alt"></i> Lịch Dạy
-                                    <div class="card">
+                            <a href="templateschedule.jsp">
+                                
+                                <div class="card">
+                                    <i class="fas fa-calendar-alt"></i> Lịch Dạy
+                                    <%
+    ScheduleJoin nextSchedule = (ScheduleJoin) request.getAttribute("nextSchedule");
+                                %>
 
-                                        <div>
-                                            <strong>Sắp diễn ra:</strong><br>
-                                            <span>Ôn cấp tốc TSA - 01</span><br>
-                                            <span>Thời gian: 7h30 - 9h</span><br>
-                                            <span>Phòng: E6</span>
-                                        </div>
+                                    <div>
+                                        <strong>Sắp diễn ra:</strong><br>
+                                        <% if (nextSchedule != null) { %>
+                                        <span><%= nextSchedule.getClassGroupName() %></span><br>
+                                        <span>Thời gian: <%= nextSchedule.getStart_time() %> - <%= nextSchedule.getEnd_time() %></span><br>
+                                        <span>Phòng: <%= nextSchedule.getRoomName() %></span><br>
+                                        <span>Ngày: <%= nextSchedule.getDateLearn() %></span>
+                                        <% } else { %>
+                                        <span>Không có lịch dạy sắp tới.</span>
+                                        <% } %>
                                     </div>
+
                                 </div></a>
                         </div>
                         <a href="#"><div class="card"><i class="fas fa-calendar-check"></i> Điểm Danh
