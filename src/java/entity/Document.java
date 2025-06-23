@@ -10,6 +10,7 @@ public class Document {
    private int documentId;
     private String title;
     private String description;
+    private String pdfPath;
     private int uploadedBy;
     private Date uploadDate;
     private int subjectId;
@@ -17,6 +18,33 @@ public class Document {
 
     public Document() {
     }
+
+    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate) {
+        this.documentId = documentId;
+        this.title = title;
+        this.description = description;
+        this.pdfPath = pdfPath;
+        this.uploadedBy = uploadedBy;
+        this.uploadDate = uploadDate;
+    }
+
+    public Document(String title, String description, String pdfPath) {
+        this.title = title;
+        this.description = description;
+        this.pdfPath = pdfPath;
+    }
+
+    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate, int subjectId, int gradeId) {
+        this.documentId = documentId;
+        this.title = title;
+        this.description = description;
+        this.pdfPath = pdfPath;
+        this.uploadedBy = uploadedBy;
+        this.uploadDate = uploadDate;
+        this.subjectId = subjectId;
+        this.gradeId = gradeId;
+    }
+    
 
     public Document(int documentId, String title, String description, int uploadedBy, Date uploadDate, int subjectId) {
         this.documentId = documentId;
@@ -52,12 +80,20 @@ public class Document {
         this.gradeId = gradeId;
     }
 
-    
-    
-    
-    
-    
+    public String getPdfPath() {
+        return pdfPath;
+    }
 
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
+
+    
+    
+    
+    
+    
+    
     
 
     public String getTitle() {
@@ -120,8 +156,10 @@ public class Document {
 
     @Override
     public String toString() {
-        return "Document{" + "documentId=" + documentId + ", title=" + title + ", description=" + description + ", uploadedBy=" + uploadedBy + ", uploadDate=" + uploadDate + ", subjectId=" + subjectId + ", gradeId=" + gradeId + '}';
+        return "Document{" + "documentId=" + documentId + ", title=" + title + ", description=" + description + ", pdfPath=" + pdfPath + ", uploadedBy=" + uploadedBy + ", uploadDate=" + uploadDate + ", subjectId=" + subjectId + ", gradeId=" + gradeId + '}';
     }
+
+    
 
     
     

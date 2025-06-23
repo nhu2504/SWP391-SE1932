@@ -96,6 +96,20 @@ public class DocumentDAO {
     }
     return docs;
 }
-
+    public void saveDocument(String title, String descrip, int uploadedBy, int subjectId, int gradeId, String pdfPath) throws SQLException {
+        String sql = "INSERT INTO Document (Title, Descrip, UploadedBy, SubjectID, GradeID, PDFPath) VALUES (?, ?, ?, ?, ?, ?)";
+        try (
+            Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, title);
+            ps.setString(2, descrip);
+            ps.setInt(3, uploadedBy);
+            ps.setInt(4, subjectId);
+            ps.setInt(5, gradeId);
+            ps.setString(6, pdfPath);
+            ps.executeUpdate();
+        }
+    }
 
 }

@@ -498,6 +498,29 @@
                 transition: color 0.3s ease;
             }
 
+            .class-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 6px;
+            }
+
+            .class-name {
+                flex: 1; /* Tên lớp chiếm phần lớn còn lại */
+                padding-right: 10px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .action-btn {
+                min-width: 50px; /* đảm bảo chiều rộng đồng đều */
+                text-align: center;
+                margin-left: 10px;
+                color: #007bff;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
         </style>
     </head>
 
@@ -583,7 +606,7 @@
                     <div class="grid">
                         <div class="infor-sche">
                             <a href="templateschedule.jsp">
-                                
+
                                 <div class="card">
                                     <i class="fas fa-calendar-alt"></i> Lịch Dạy
 
@@ -605,55 +628,90 @@
                                                 <span>Không có lịch dạy sắp tới.</span>
                                             </c:otherwise>
                                         </c:choose>
-                                       
+
                                     </div>
 
                                 </div></a>
                         </div>
-                        <a href="#">
-                            <div class="card">
-                                <i class="fas fa-calendar-check"></i> Điểm Danh
-                                
-                                <div>
-                                    <strong>
-                                        Các lớp học hôm nay:
-                                    </strong><br>
-                                    <c:choose>
-                                        <c:when test="${not empty sessionScope.todayClasses}">
-                                            <c:forEach var="cg" items="${todayClasses}">
-                                                <a href="#">${cg.classGroupName}</a>
-                                                <a href="#">take</a>
-                                                <a href="#">edit</a>
-                                                <br/>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span>Không có lớp học nào hôm nay.</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
+                        <div class="attend">
+                            <a href="#">
+                                <div class="card">
+                                    <i class="fas fa-calendar-check"></i> Điểm Danh
+                                    <div>
+                                        <strong>Các lớp học hôm nay:</strong><br>
+                                        <c:choose>
+                                            <c:when test="${not empty todayClasses}">
+                                                <c:forEach var="c" items="${todayClasses}">
+                                                    <div class="class-row">
+                                                        <div class="class-name">
+                                                            <a href="#">${c.name}</a>
+                                                        </div>
+                                                        <div style="display: flex; gap: 13px;">
+                                                            <a href="#">take</a>
+                                                            <a href="#">edit</a>
+                                                        </div>
+                                                        <br/>
+                                                    </div>
 
-                                
-
-                            </div></a>
+                                                </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>Không có lớp học nào hôm nay.</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div></a>
+                        </div>
                         <a href="#"><div class="card"><i class="fas fa-users"></i> Danh sách lớp</div></a>
                         <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
-                                <div class="card">
+                                <form method="post" action="upload" enctype="multipart/form-data">
+                                    <table>
 
-                                    <form action="UploadMaterialServlet" method="post" enctype="multipart/form-data">
-                                        <input type="file" name="material" class="form-control-file mb-2">
-                                        <button class="btn btn-sm btn-outline-dark" type="submit">Tải tài liệu</button>
-                                    </form>
-                                </div>
+                                        <tbody>
+                                            <tr>
+                                                <td>Tiêu đề:</td>
+                                                <td><input type="text" name="title"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mô tả:</td>
+                                                <td><input type="text" name="descrip"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Môn học:</td>
+                                                <td>
+                                                    <select name="subjectId" required>
+                                                        <option value="">--Chọn môn học--</option>
+                                                        <c:forEach var="subject" items="${subjectList}">
+                                                            <option value="${subject.subjectID}">${subject.subjectName}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Khối lớp:</td>
+                                                <td>
+                                                    <select name="gradeId" required>
+                                                        <option value="">--Chọn khối lớp--</option>
+                                                        <c:forEach var="grade" items="${gradeList}">
+                                                            <option value="${grade.gradeID}">${grade.gradeName}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>File PDF:</td>
+                                                <td><input type="file" name="pdf"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <input type="submit" value="Upload">
+                                </form>
+
                             </div></a>
-
-
                     </div>
                 </div>
             </div>
         </div>
-
-
 
         <footer class="site-footer">
             <!-- Footer Start -->

@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -70,9 +71,9 @@ public class DashboardAttendServlet extends HttpServlet {
         int userId = Integer.parseInt(session.getAttribute("userId").toString());
 
         ClassGroupDAO dao = new ClassGroupDAO();
-        List<ClassGroup> todayClasses = null;
+        ArrayList<ClassGroup> todayClasses = new ArrayList<>();
         try {
-            todayClasses = dao.getTodayClasses(userId);
+            todayClasses = (ArrayList<ClassGroup>) dao.getTodayClasses(userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
