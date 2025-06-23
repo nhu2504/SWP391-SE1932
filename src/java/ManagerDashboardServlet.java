@@ -41,7 +41,7 @@ public class ManagerDashboardServlet extends HttpServlet {
         request.setAttribute("todayScheduleCount", todayScheduleCount);
         
         // Chuyển tiếp đến trang managerdashboard.jsp
-        request.getRequestDispatcher("WEB-INF/manager/managerdashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("managerdashboard.jsp").forward(request, response);
     }
 
     /**
