@@ -6,6 +6,11 @@ public class Subject {
     private String imageSubject;
     private int classCount;
 
+    public Subject() {
+    }
+
+    
+    
     // Constructor cho danh sách môn học
     public Subject(int subjectId, String subjectName) {
         this.subjectId = subjectId;
@@ -41,6 +46,24 @@ public class Subject {
     public int getClassCount() {
         return classCount;
     }
+
+    public void setSubjectId(int subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public void setImageSubject(String imageSubject) {
+        this.imageSubject = imageSubject;
+    }
+
+    public void setClassCount(int classCount) {
+        this.classCount = classCount;
+    }
+    
+    
 
     @Override
     public String toString() {

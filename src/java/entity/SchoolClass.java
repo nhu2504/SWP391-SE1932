@@ -11,24 +11,28 @@ package entity;
 public class SchoolClass {
     private int schoolClassID;
     private String className;
-    private School school;
-    private Grade grade;
+    private int schoolID;
+    private int gradeID;
 
     public SchoolClass() {
     }
 
-    public SchoolClass(int schoolClassID, String className, School school) {
+    public SchoolClass(int schoolClassID, String className, int schoolID) {
         this.schoolClassID = schoolClassID;
         this.className = className;
-        this.school = school;
+        this.schoolID = schoolID;
     }
 
-    public SchoolClass(int schoolClassID, String className, School school, Grade grade) {
+    public SchoolClass(int schoolClassID, String className, int schoolID, int gradeID) {
         this.schoolClassID = schoolClassID;
         this.className = className;
-        this.school = school;
-        this.grade = grade;
+        this.schoolID = schoolID;
+        this.gradeID = gradeID;
     }
+
+    
+
+    
     
     public int getSchoolClassID() {
         return schoolClassID;
@@ -46,26 +50,28 @@ public class SchoolClass {
         this.className = className;
     }
 
-    public School getSchool() {
-        return school;
+    public int getSchoolID() {
+        return schoolID;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setSchoolID(int schoolID) {
+        this.schoolID = schoolID;
     }
 
-    public Grade getGrade() {
-        return grade;
+    public int getGradeID() {
+        return gradeID;
     }
 
-    public void setGrade(Grade grade) {
-        this.grade = grade;
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
     }
 
     @Override
     public String toString() {
-        return "SchoolClass{" + "schoolClassID=" + schoolClassID + ", className=" + className + ", school=" + school + ", grade=" + grade + '}';
+        return "SchoolClass{" + "schoolClassID=" + schoolClassID + ", className=" + className + ", schoolID=" + schoolID + ", gradeID=" + gradeID + '}';
     }
+
+    
     
     
     

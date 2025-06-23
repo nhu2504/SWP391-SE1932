@@ -1,196 +1,149 @@
-import dal.DBContext;
+/*
+ * Tác giả: Van Nhu
+ * Ngày tạo: 23/06/2025
+ * Mô tả: Servlet xử lý cập nhật thông tin trung tâm dạy thêm:
+ *  - Cập nhật văn bản (tên, địa chỉ, email, mô tả, ...)
+ *  - Upload ảnh logo và ảnh chính trung tâm
+ *  - Cho phép xóa nội dung về trạng thái null
+ */
+
+import dal.CenterInfoDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//Văn Thị NHư - HE181329
 
 @WebServlet("/UpdateCenterInfoServlet")
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024,  // 1MB
-        maxFileSize = 5 * 1024 * 1024,    // 5MB
-        maxRequestSize = 10 * 1024 * 1024 // 10MB
+    maxFileSize = 5 * 1024 * 1024,        // File tối đa: 5MB
+    maxRequestSize = 10 * 1024 * 1024     // Tổng request tối đa: 10MB
 )
 public class UpdateCenterInfoServlet extends HttpServlet {
 
-    private static final String[] VALID_FIELDS = {"centerName", "address", "email", "phone"};
-    private static final Logger LOGGER = Logger.getLogger(UpdateCenterInfoServlet.class.getName());
+    // DAO để cập nhật dữ liệu bảng CenterInfo
+    private final CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
+
+    // Đường dẫn thư mục chứa ảnh ngoài thư mục dự án
+    private static final String EXTERNAL_IMG_DIR = "D:/data/images";
+
+    // Danh sách các field được phép cập nhật trong bảng center_info
+    private static final String[] VALID_FIELDS = {
+        "centerName", "address", "email", "phone", "logo", "imageCenter", "descripCenter"
+    };
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-        LOGGER.info("🔄 Bắt đầu xử lý POST request...");
-
-        // Kiểm tra phân quyền
-        HttpSession session = request.getSession(false);
-        if (session == null || !"admin".equals(session.getAttribute("userRole"))) {
-            LOGGER.warning("⚠️ Không có quyền admin.");
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Chỉ admin có thể chỉnh sửa thông tin.");
+        // 1. Kiểm tra quyền Admin
+        HttpSession session = req.getSession(false);
+        if (session == null || !"1".equals(String.valueOf(session.getAttribute("userRoleID")))) {
+            System.out.println("Không có quyền truy cập.");
+            res.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
-        // Kiểm tra content type
-        String contentType = request.getContentType();
+        // ✅ 2. Đọc dữ liệu từ form gửi lên
+        String contentType = req.getContentType();
         boolean isMultipart = contentType != null && contentType.toLowerCase().contains("multipart/form-data");
-        String fieldName = request.getParameter("fieldName");
 
-        try (Connection conn = new DBContext().connection) { // Giả sử DBContext có getConnection()
-            if (conn == null) {
-                LOGGER.severe("❌ Không thể kết nối đến cơ sở dữ liệu.");
-                throw new SQLException("Không thể kết nối đến cơ sở dữ liệu.");
-            }
+        String fieldName = req.getParameter("fieldName"); // tên field cần cập nhật
+        String action = req.getParameter("action");       // "update" hoặc "delete"
+        String fieldValue = req.getParameter("fieldValue");
 
-            if (isMultipart) {
-                // Xử lý upload file logo
-                try {
-                    Part filePart = request.getPart("logoFile");
-                    if (filePart == null) {
-                        LOGGER.warning("⚠️ Không tìm thấy field 'logoFile' trong request.");
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Không tìm thấy file logo.");
-                        return;
-                    }
-                    if (filePart.getSize() == 0) {
-                        LOGGER.warning("⚠️ File logo rỗng.");
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File logo không hợp lệ.");
-                        return;
-                    }
+        try {
+            // 3. Trường hợp upload ảnh logo
+            if (isMultipart && req.getPart("logoFile") != null && req.getPart("logoFile").getSize() > 0) {
+                uploadAndSaveImage(req.getPart("logoFile"), "logo");
 
-                    String originalFileName = filePart.getSubmittedFileName();
-                    if (originalFileName == null || originalFileName.isEmpty()) {
-                        LOGGER.warning("⚠️ File name không hợp lệ.");
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tên file không hợp lệ.");
-                        return;
-                    }
+            // 4. Trường hợp upload ảnh imageCenter
+            } else if (isMultipart && req.getPart("imageCenterFile") != null && req.getPart("imageCenterFile").getSize() > 0) {
+                uploadAndSaveImage(req.getPart("imageCenterFile"), "imageCenter");
 
-                    String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-                    String newFileName = "logo_" + System.nanoTime() + extension; // Dùng nanoTime để tránh trùng
+            // 5. Trường hợp cập nhật hoặc xóa trường văn bản (tên, địa chỉ,...)
+            } else if (fieldName != null && action != null) {
 
-                    // Lưu file vào thư mục Uploads
-                    String uploadsPath = getServletContext().getRealPath("/uploads");
-                    File uploadsDir = new File(uploadsPath);
-                    if (!uploadsDir.exists() && !uploadsDir.mkdirs()) {
-                        LOGGER.severe("❌ Không thể tạo thư mục Uploads: " + uploadsPath);
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không thể tạo thư mục lưu file.");
-                        return;
-                    }
-
-                    File savedFile = new File(uploadsDir, newFileName);
-                    filePart.write(savedFile.getAbsolutePath());
-                    LOGGER.info("🖼️ File đã lưu tại: " + savedFile.getAbsolutePath());
-
-                    // Sao lưu vào images
-                    String imagesPath = getServletContext().getRealPath("/images");
-                    File imagesDir = new File(imagesPath);
-                    if (!imagesDir.exists() && !imagesDir.mkdirs()) {
-                        LOGGER.severe("❌ Không thể tạo thư mục images: " + imagesPath);
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không thể tạo thư mục sao lưu.");
-                        return;
-                    }
-
-                    File backupFile = new File(imagesDir, newFileName);
-                    Files.copy(savedFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    LOGGER.info("🗂️ Sao lưu logo vào /images thành công.");
-
-                    // Cập nhật database
-                    String sql = "UPDATE CenterInfo SET Logo = ? WHERE CenterID = 1";
-                    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                        ps.setString(1, newFileName);
-                        int rows = ps.executeUpdate();
-                        if (rows == 0) {
-                            LOGGER.warning("⚠️ Không cập nhật được logo trong DB.");
-                            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không cập nhật được logo.");
-                            return;
-                        }
-                        LOGGER.info("✅ Đã cập nhật logo mới vào DB: " + newFileName);
-                    }
-                } catch (IllegalStateException e) {
-                    LOGGER.log(Level.SEVERE, "❌ Lỗi kích thước file: ", e);
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File quá lớn hoặc không hợp lệ.");
-                    return;
-                } catch (ServletException | IOException e) {
-                    LOGGER.log(Level.SEVERE, "❌ Lỗi khi xử lý file upload: ", e);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi xử lý file: " + (e.getMessage() != null ? e.getMessage() : "Không xác định"));
-                    return;
-                }
-
-            } else if (fieldName != null && !fieldName.trim().isEmpty()) {
-                // Xử lý cập nhật thông tin văn bản
-                String fieldValue = request.getParameter("fieldValue");
-                if (fieldValue == null || fieldValue.trim().isEmpty()) {
-                    LOGGER.warning("⚠️ Giá trị fieldValue không hợp lệ.");
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Giá trị không hợp lệ.");
-                    return;
-                }
-
-                // Kiểm tra field hợp lệ
-                boolean isValidField = false;
-                for (String valid : VALID_FIELDS) {
-                    if (valid.equals(fieldName)) {
-                        isValidField = true;
+                // Kiểm tra tên field có hợp lệ không
+                boolean valid = false;
+                for (String f : VALID_FIELDS) {
+                    if (f.equals(fieldName)) {
+                        valid = true;
                         break;
                     }
                 }
 
-                if (!isValidField) {
-                    LOGGER.warning("⚠️ Tên trường không hợp lệ: " + fieldName);
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tên trường không hợp lệ.");
+                if (!valid) {
+                    System.out.println("Trường không hợp lệ: " + fieldName);
+                    res.sendRedirect(req.getContextPath() + "/home");
                     return;
                 }
 
-                String dbColumn = switch (fieldName) {
-                    case "centerName" -> "NameCenter";
-                    case "address" -> "AddressCenter";
-                    case "email" -> "Email";
-                    case "phone" -> "Phone";
-                    default -> null;
-                };
-
-                if (dbColumn == null) {
-                    LOGGER.warning("⚠️ Trường không được hỗ trợ: " + fieldName);
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Trường không được hỗ trợ.");
-                    return;
-                }
-
-                String sql = "UPDATE CenterInfo SET " + dbColumn + " = ? WHERE CenterID = 1";
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, fieldValue);
-                    int rows = ps.executeUpdate();
-                    if (rows == 0) {
-                        LOGGER.warning("⚠️ Không cập nhật được " + dbColumn + ": " + fieldValue);
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không cập nhật được thông tin.");
+                // 5.1 Cập nhật văn bản
+                if ("update".equals(action)) {
+                    if (fieldValue == null || fieldValue.trim().isEmpty()) {
+                        System.out.println("Giá trị cập nhật trống.");
+                        res.sendRedirect(req.getContextPath() + "/home");
                         return;
                     }
-                    LOGGER.info("✅ Đã cập nhật " + dbColumn + ": " + fieldValue);
+
+                    boolean ok = centerInfoDAO.updateField(1, fieldName, fieldValue);
+                    System.out.println(ok
+                            ? "Cập nhật " + fieldName + " thành công: " + fieldValue
+                            : "Cập nhật thất bại cho: " + fieldName);
+
+                // 5.2 Xóa trường dữ liệu (set null)
+                } else if ("delete".equals(action)) {
+                    boolean ok = centerInfoDAO.deleteField(1, fieldName);
+                    System.out.println(ok
+                            ? "Xóa thành công (set null): " + fieldName
+                            : "Xóa thất bại: " + fieldName);
+
+                } else {
+                    System.out.println("Action không hợp lệ: " + action);
                 }
 
             } else {
-                LOGGER.warning("⚠️ Yêu cầu không hợp lệ: Thiếu fieldName hoặc không phải multipart.");
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Yêu cầu không hợp lệ.");
-                return;
+                System.out.println("Dữ liệu form không hợp lệ.");
             }
 
-            // Chuyển hướng về trang chủ
-            response.sendRedirect(request.getContextPath() + "/home");
+            // 6. Sau khi xử lý xong, chuyển về trang chủ
+            res.sendRedirect(req.getContextPath() + "/home");
 
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "❌ Lỗi khi cập nhật cơ sở dữ liệu: ", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi cơ sở dữ liệu: " + (e.getMessage() != null ? e.getMessage() : "Không xác định"));
+        } catch (Exception e) {
+            // 7. Bắt lỗi và chuyển hướng về home
+            System.out.println("Lỗi xử lý: " + e.getMessage());
+            res.sendRedirect(req.getContextPath() + "/home");
         }
+    }
+
+    // Hàm hỗ trợ upload ảnh và lưu tên file vào CSDL
+    private void uploadAndSaveImage(Part filePart, String fieldName) throws IOException {
+        // Lấy tên file và phần mở rộng
+        String originalName = filePart.getSubmittedFileName();
+        String extension = originalName.substring(originalName.lastIndexOf("."));
+        String newFileName = fieldName + "_" + System.nanoTime() + extension;
+
+        // Tạo thư mục chứa file nếu chưa có
+        File dir = new File(EXTERNAL_IMG_DIR);
+        if (!dir.exists()) dir.mkdirs();
+
+        // Lưu ảnh lên ổ đĩa
+        File savedFile = new File(dir, newFileName);
+        try {
+            filePart.write(savedFile.getAbsolutePath());
+        } catch (Exception e) {
+            Files.copy(filePart.getInputStream(), savedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        // Lưu tên file vào CSDL
+        boolean ok = centerInfoDAO.updateField(1, fieldName, newFileName);
+        System.out.println(ok
+                ? "Cập nhật ảnh " + fieldName + " thành công: " + newFileName
+                : "Lỗi khi cập nhật " + fieldName + " vào DB.");
     }
 }

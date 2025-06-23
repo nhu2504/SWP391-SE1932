@@ -15,11 +15,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+
 import java.util.logging.Level;
 public class ScheduleTemplateDAO {
-    private static final Logger LOGGER = Logger.getLogger(ScheduleTemplateDAO.class.getName());
-
+    
+/**
+ * 
+ *
+ * Ngày tạo: 23/06/2025  
+ * Người viết: Van Nhu
+ */
     /**
      * Tính thời lượng ca học dựa trên thời gian bắt đầu và kết thúc.
      * @param startTime Thời gian bắt đầu (java.sql.Time).
@@ -35,7 +40,7 @@ public class ScheduleTemplateDAO {
                 String duration = (hours > 0 ? hours + " giờ " : "") + (minutes > 0 ? minutes + " phút" : "");
                 return duration.isEmpty() ? "0 phút" : duration;
             } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Lỗi định dạng thời gian: ", e);
+                e.printStackTrace();
                 return "Lỗi định dạng thời gian";
             }
         }
@@ -86,7 +91,7 @@ public class ScheduleTemplateDAO {
                 scheduleTemplates.add(templateDetail);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách lịch học mẫu: ", e);
+            e.printStackTrace();
         }
         return scheduleTemplates;
     }
@@ -132,11 +137,11 @@ public class ScheduleTemplateDAO {
                 templateDetail.put("endTime", endTime != null ? endTime.toString() : "");
                 templateDetail.put("duration", duration);
             } else {
-                LOGGER.warning("Không tìm thấy ScheduleTemplate với ID: " + templateID);
+                
                 return null;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy lịch học mẫu: ", e);
+            e.printStackTrace();
             return null;
         }
         return templateDetail;
@@ -161,7 +166,7 @@ public class ScheduleTemplateDAO {
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi thêm lịch học mẫu: ", e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -186,7 +191,7 @@ public class ScheduleTemplateDAO {
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi cập nhật lịch học mẫu: ", e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -205,7 +210,7 @@ public class ScheduleTemplateDAO {
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi xóa lịch học mẫu: ", e);
+            e.printStackTrace();
             return false;
         }
     }

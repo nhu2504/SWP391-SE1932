@@ -8,6 +8,10 @@
         <servlet-name>LogoServlet</servlet-name>
         <servlet-class>LogoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BannerServlet</servlet-name>
+        <servlet-class>BannerServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>LogoServlet</servlet-name>
         <url-pattern>/LogoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BannerServlet</servlet-name>
+        <url-pattern>/BannerServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>

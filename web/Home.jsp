@@ -7,8 +7,20 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entity.Subject" %>
 
+<%
+    Integer roleID = (Integer) session.getAttribute("userRoleID");
+    if (roleID != null && roleID == 1) {
+%>
+<!-- Chèn các tính năng hoặc thông báo dành riêng cho admin ở đây -->
+<!--    <div class="alert alert-info">Bạn đang đăng nhập với quyền ADMIN.</div>-->
+<!-- Thêm link quản trị, chỉnh sửa, quản lý tài khoản, ... -->
+<%
+    }
+%>
+
 <!DOCTYPE html>
-<!-- Văn Thị Như - HE181329 -->
+<!-- Văn Thị Như - HE181329 
+Ngày update 23/6/2025-->
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -779,6 +791,28 @@
                     width: 100%;
                 }
             }
+            @media (max-width: 768px) {
+    #course-content {
+        position: relative !important; /* Không dùng absolute trên mobile */
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: 10px;
+        z-index: auto;
+    }
+
+    #navbar-vertical {
+        width: 100%;
+    }
+
+    .content-container {
+        flex-direction: column !important;
+        align-items: stretch;
+    }
+}
+
+
 
             .carousel-wrapper {
                 max-height: 300px; /* Giữ ảnh không quá cao */
@@ -835,7 +869,7 @@
                 margin: 60px auto;
                 border-radius: 12px;
                 padding: 32px 28px 24px 28px;
-                max-width: 540px;
+                max-width: 70%;
                 box-shadow: 0 8px 40px rgba(0,0,0,0.18);
                 position: relative;
                 animation: modal-appear 0.25s cubic-bezier(0.4,0,0.2,1);
@@ -936,6 +970,7 @@
             .modal-header .modal-title {
                 color: #fff !important;
             }
+
             .info-label {
                 font-weight: bold;
                 color: #FF6B6B !important; /* Đổi sang màu hồng như cũ */
@@ -952,55 +987,143 @@
                 color: inherit; /* Kế thừa màu từ cha */
             }
             .team-carousel .team-item {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .bg-light.text-center.p-4 {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .teacher-title {
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                font-size: 1.15rem;
+                word-break: break-word;
+            }
+            .teacher-school {
+                font-size: 1rem;
+                color: #6c757d;
+                margin-bottom: 1rem;
+                word-break: break-word;
+            }
+            .btn.mt-auto {
+                margin-top: auto !important;
+            }
+            .edit-icon {
+                color: #007bff;
+            }
+            .edit-icon:hover {
+                color: #0056b3;
+            }
+            #editDescription {
+                width: 100%;
+                min-height: 400px;
+                font-size: 16px;
+                padding: 12px;
+                resize: vertical;
+            }
+            .modal-header2 {
+                display: flex;
+                justify-content: space-between; /* Tiêu đề bên trái, nút đóng bên phải */
+                align-items: center;            /* Căn giữa theo chiều dọc */
+                padding: 1rem 1rem;
+                border-bottom: 1px solid #dee2e6;
+                background-color: #f8f9fa;      /* Màu nền nhẹ giống Bootstrap */
+                border-top-left-radius: 0.3rem;
+                border-top-right-radius: 0.3rem;
+            }
+            .team-item .img-fluid {
+    width: 200px;
+    height: 350px;
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+    border-style: none;
+    vertical-align: middle;
 }
 
-.bg-light.text-center.p-4 {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-.teacher-title {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    font-size: 1.15rem;
-    word-break: break-word;
-}
-.teacher-school {
-    font-size: 1rem;
-    color: #6c757d;
-    margin-bottom: 1rem;
-    word-break: break-word;
-}
-.btn.mt-auto {
-    margin-top: auto !important;
-}
+
         </style>
     </head>
     <body id="top">
+<!--        Header-->
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
                 <div class="col-lg-4 text-center">
                     <div class="logo-container d-flex align-items-center justify-content-center position-relative">
-                        <form id="logoUploadForm" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet" method="post" enctype="multipart/form-data" style="position: relative;">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image" onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
-                            <span class="edit-icon position-absolute" data-field="logo" onclick="document.getElementById('logoUploadInput').click();" style="bottom: -10px; right: -10px; display: <%= "admin".equals(session.getAttribute("userRole")) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-camera"></i>
-                            </span>
-                            <input type="file" id="logoUploadInput" name="logoFile" accept="image/*" style="display: none;" onchange="document.getElementById('logoUploadForm').submit();" />
-                        </form>
+                        <img src="${pageContext.request.contextPath}/LogoServlet"
+                             alt="Logo Trung Tâm"
+                             class="logo-image"
+                             style="max-height:120px;max-width:100%;"/>
+                        <!-- Icon camera: mở modal đổi logo, vị trí như cũ -->
+                        <span class="edit-icon position-absolute"
+                              data-bs-toggle="modal" data-bs-target="#editLogoModal"
+                              style="bottom: 0px; right: 0px; cursor:pointer; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
+                            <i class="fa fa-camera"></i>
+                        </span>
                     </div>
                     <h6 class="slogan mb-0 ml-2 d-flex align-items-center small">
                         ${centerName}
-                        <span class="edit-icon ml-2" data-field="centerName" data-value="${centerName}" onclick="openEditModal(this)" style="display: <%= "admin".equals(session.getAttribute("userRole")) ? "inline-block" : "none" %>;">
+                        <span class="edit-icon ml-2" data-field="centerName" data-value="${centerName}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
                             <i class="fa fa-pencil-alt"></i>
                         </span>
                     </h6>
                 </div>
+
+                <!-- Modal đổi logo giống banner, có nút xoá -->
+                <div class="modal fade" id="editLogoModal" tabindex="-1" aria-labelledby="editLogoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <!-- Nút đóng -->
+                            <div class="modal-header d-flex justify-content-between align-items-center">
+                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa logo</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Ảnh logo hiện tại -->
+                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
+                                        <img src="${pageContext.request.contextPath}/LogoServlet"
+                                             class="img-fluid"
+                                             style="max-height: 120px; max-width: 100%;"
+                                             alt="Logo hiện tại"/>
+                                    </div>
+                                    <!-- Nút xoá logo -->
+                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
+                                        <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
+                                              method="post"
+                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá logo?');">
+                                            <input type="hidden" name="action" value="delete" />
+                                            <input type="hidden" name="fieldName" value="logo"/>
+                                            <button type="submit" class="btn btn-danger">Xoá</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Form cập nhật logo nằm bên dưới, full width -->
+                                <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      class="d-flex w-100 align-items-center justify-content-between">
+                                    <input type="hidden" name="action" value="updateLogo" />
+                                    <div class="flex-grow-1 me-3">
+                                        <input type="file" name="logoFile" accept="image/*" class="form-control" required>
+                                    </div>
+                                    <div class="d-flex">
+                                        <button type="submit" class="btn btn-success me-2">Lưu</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Địa chỉ -->
                 <div class="col-lg-3 text-center">
                     <div class="info-container d-flex align-items-center">
@@ -1008,7 +1131,7 @@
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
                             <small class="field-value" data-field="address">${address}</small>
-                            <span class="edit-icon ml-2" data-field="address" data-value="${address}" onclick="openEditModal(this)" style="display: <%= "admin".equals(session.getAttribute("userRole")) ? "inline-block" : "none" %>;">
+                            <span class="edit-icon ml-2" data-field="address" data-value="${address}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
                                 <i class="fa fa-pencil-alt"></i>
                             </span>
                         </div>
@@ -1021,7 +1144,7 @@
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email</h6>
                             <small class="field-value" data-field="email">${email}</small>
-                            <span class="edit-icon ml-2" data-field="email" data-value="${email}" onclick="openEditModal(this)" style="display: <%= "admin".equals(session.getAttribute("userRole")) ? "inline-block" : "none" %>;">
+                            <span class="edit-icon ml-2" data-field="email" data-value="${email}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
                                 <i class="fa fa-pencil-alt"></i>
                             </span>
                         </div>
@@ -1034,7 +1157,7 @@
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Điện thoại</h6>
                             <small class="field-value" data-field="phone">${phone}</small>
-                            <span class="edit-icon ml-2" data-field="phone" data-value="${phone}" onclick="openEditModal(this)" style="display: <%= "admin".equals(session.getAttribute("userRole")) ? "inline-block" : "none" %>;">
+                            <span class="edit-icon ml-2" data-field="phone" data-value="${phone}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
                                 <i class="fa fa-pencil-alt"></i>
                             </span>
                         </div>
@@ -1045,38 +1168,37 @@
 
         <!-- Modal chỉnh sửa thông tin -->
         <div class="modal fade" id="editFieldModal" tabindex="-1" role="dialog" aria-labelledby="editFieldModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="dialog">
-                <form id="editFieldForm" method="post" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet" onsubmit="handleFormSubmit(event)">
-                    <div class="modal-content">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="editFieldForm" method="post" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editFieldModalLabel">Chỉnh sửa</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <h5 class="modal-title1" id="editFieldModalLabel">Chỉnh sửa</h5>
+                            <button type="button" class="close position-absolute" style="right: 10px; top: 10px;" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="hidden" name="fieldName" id="fieldNameInput" />
-                            <input type="hidden" name="action" value="update" id="actionInput" />
                             <div class="form-group">
-                                <label for="fieldValueInput" id="fieldLabel">Giá trị mới:</label>
+                                <label id="fieldLabel">Nhập giá trị:</label>
+                                <input type="hidden" name="fieldName" id="fieldNameInput" />
+                                <input type="hidden" name="action" id="actionInput" value="update" />
                                 <input type="text" class="form-control" name="fieldValue" id="fieldValueInput" required />
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload()">Hủy</button>
-                            <form id="deleteFieldForm" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet" method="post" style="display:inline;" onsubmit="handleFormSubmit(event)">
-                                <input type="hidden" name="fieldName" id="deleteFieldNameInput" />
-                                <input type="hidden" name="action" value="delete" />
-                                <button type="submit" class="btn btn-danger">Xoá</button>
-                            </form>
-                            <button type="submit" class="btn btn-secondary">Lưu</button>
+                        <div class="modal-footer d-flex justify-content-end gap-2">
+                            <!-- Nút Xoá -->
+                            <button type="button" class="btn btn-danger" onclick="handleDelete()">Xoá</button>
+
+                            <!-- Nút Lưu (xanh lá) -->
+                            <button type="submit" class="btn btn-success">Lưu</button>
+
+                            <!-- Nút Huỷ -->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModalEdit()">Huỷ</button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-
-
         <!-- Phần Header -->
         <div class="header-container", style="background: linear-gradient(to right, #FF9AA2, #FFF1F1)">
             <nav class="navbar navbar-expand-lg">
@@ -1104,9 +1226,22 @@
                             <li class="nav-item flex-grow-1">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/teacher">Giáo viên</a>
                             </li>
-                            <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
-                                <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
-                            </li>
+                            <c:choose>
+                                
+                                <c:when test="${sessionScope.userRoleID == '1'}">
+                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
+                                        <a class="nav-link custom-btn btn-login" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
+                                    </li>
+                                </c:when>
+
+                                
+                                <c:otherwise>
+                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
+                                        <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+
                         </ul>
                     </div>
                 </div>
@@ -1143,11 +1278,11 @@
                                 <c:when test="${not empty subjects}">
                                     <div class="d-flex flex-column">
                                         <c:forEach var="subject" items="${subjects}" varStatus="loop">
-                                            <c:set var="subjectId" value="${not empty subject.id ? subject.id : loop.count}" />
+                                            <c:set var="subjectId" value="${not empty subject.subjectId ? subject.subjectId : loop.count}" />
                                             <a href="#" class="nav-link d-block px-2 py-1"
-                                               data-panel="panel-default-${subjectId}">${subject.name}</a>
-                                            <c:if test="${empty subject.id}">
-                                                <p style="color: red;">Cảnh báo: subject.id trống cho ${subject.name}, dùng index ${loop.count} thay thế.</p>
+                                               data-panel="panel-default-${subjectId}">${subject.subjectName}</a>
+                                            <c:if test="${empty subject.subjectId}">
+                                                <p style="color: red;">Cảnh báo: subject.subjectId trống cho ${subject.subjectName}, dùng index ${loop.count} thay thế.</p>
                                             </c:if>
                                         </c:forEach>
                                     </div>
@@ -1164,28 +1299,123 @@
                 <div class="position-relative w-100 rounded shadow overflow-hidden" style="max-width: 950px; height: 100%;">
                     <div id="header-carousel" class="carousel slide h-100" data-bs-ride="carousel">
                         <div class="carousel-inner h-100">
-                            <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                <div class="carousel-item h-100 ${loop.first ? 'active' : ''}">
-                                    <a href="${pageContext.request.contextPath}/login_register.jsp">
-                                        <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
-                                             class="d-block w-100 h-100"
-                                             style="object-fit: contain;"
-                                             alt="Banner ${loop.index + 1}">
-                                    </a>
-                                </div>
-                            </c:forEach>
+
+                            <!-- Hiển thị banner hoặc dòng thông báo nếu không có -->
+                            <c:choose>
+                                <c:when test="${not empty banners}">
+                                    <c:forEach var="banner" items="${banners}" varStatus="loop">
+                                        <div class="carousel-item h-100 ${loop.first ? 'active' : ''}" style="position: relative;">
+                                            <a href="${pageContext.request.contextPath}/login_register.jsp">
+                                                <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
+                                                     class="d-block w-100 h-100"
+                                                     style="object-fit: contain;"
+                                                     alt="Banner ${loop.index + 1}">
+                                            </a>
+
+                                            <span class="edit-icon ml-2"
+                                                  onclick="openBannerEditModal()"
+                                                  style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
+                                                  display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
+                                                <i class="fa fa-camera"></i>
+                                            </span>
+                                        </div>
+                                    </c:forEach>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <div class="carousel-item active h-100 d-flex justify-content-center align-items-center bg-white"
+                                         style="min-height: 300px; position: relative;">
+                                        <p class="text-muted mb-0">Chưa có banner nào.</p>
+
+                                        <span class="edit-icon ml-2"
+                                              onclick="openBannerEditModal()"
+                                              style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
+                                              display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
+                                            <i class="fa fa-camera"></i>
+                                        </span>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
-                        <!-- Dấu chấm điều hướng (indicators) -->
-                        <div class="carousel-indicators d-flex justify-content-center position-absolute" style="bottom: 10px;">
-                            <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                <button type="button"
-                                        data-bs-target="#header-carousel"
-                                        data-bs-slide-to="${loop.index}"
-                                        class="${loop.first ? 'active' : ''}"
-                                        <c:if test="${loop.first}">aria-current="true"</c:if>
-                                        aria-label="Slide ${loop.index + 1}"></button>
-                            </c:forEach>
+                        <!-- Dấu chấm điều hướng chỉ hiện khi có nhiều banner -->
+                        <c:if test="${fn:length(banners) > 1}">
+                            <div class="carousel-indicators d-flex justify-content-center position-absolute" style="bottom: 10px;">
+                                <c:forEach var="banner" items="${banners}" varStatus="loop">
+                                    <button type="button"
+                                            data-bs-target="#header-carousel"
+                                            data-bs-slide-to="${loop.index}"
+                                            class="${loop.first ? 'active' : ''}"
+                                            <c:if test="${loop.first}">aria-current="true"</c:if>
+                                            aria-label="Slide ${loop.index + 1}"></button>
+                                </c:forEach>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+
+                <!-- Modal chỉnh sửa banner -->
+                <div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <!-- Nút đóng -->
+                            <div class="modal-header d-flex justify-content-between align-items-center">
+                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa banner</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Danh sách banner hiện tại: mỗi dòng 1 ảnh và 1 nút xoá -->
+                                <div class="table-responsive mb-4">
+                                    <table class="table align-middle">
+                                        <tbody>
+                                            <c:forEach var="banner" items="${banners}" varStatus="loop">
+                                                <tr>
+                                                    <td style="width:70%;vertical-align:middle;">
+                                                        <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
+                                                             class="img-fluid"
+                                                             style="max-height: 120px; max-width: 100%; border: 1px solid #eee; background: #fafbfc;"
+                                                             alt="Banner ${loop.index + 1}" />
+                                                    </td>
+                                                    <td style="width:30%;vertical-align:middle;">
+                                                        <form action="${pageContext.request.contextPath}/BannerServlet"
+                                                              method="post"
+                                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá banner này?');"
+                                                              class="d-inline-block">
+                                                            <input type="hidden" name="action" value="delete" />
+                                                            <input type="hidden" name="bannerID" value="${banner.bannerID}" />
+                                                            <button type="submit" class="btn btn-danger px-4">Xoá</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            <c:if test="${empty banners}">
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted">Chưa có banner nào.</td>
+                                                </tr>
+                                            </c:if>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Form thêm banner mới (upload 1 ảnh) -->
+
+                                <div class="w-100 px-3"> <!-- Cách hai đầu div lớn đều -->
+                                    <form action="${pageContext.request.contextPath}/BannerServlet"
+                                          method="post"
+                                          enctype="multipart/form-data"
+                                          class="d-flex justify-content-between align-items-center w-100 gap-2 m-0">
+                                        <input type="hidden" name="action" value="add" />
+                                        <input type="file" name="bannerImage" accept="image/*"
+                                               class="form-control flex-grow-1 me-2"
+                                               required>
+                                        <button type="submit" class="btn btn-success">Thêm</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1194,20 +1424,22 @@
         </div>
 
         <!-- Tài liệu và khoá học -->
-        <div class="course-panel-container" id="course-content" style="width: 400px; display: none; margin-left: 250px; top: 229px; position: absolute; z-index: 9; background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
+        <div class="course-panel-container" id="course-content" style="width: 400px; display: none;
+     background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
+
+
             <c:forEach var="grade" items="${grades}">
                 <c:forEach var="subject" items="${subjects}">
                     <div class="course-panel"
-                         id="panel-${grade.gradeID}-${subject.id}"
+                         id="panel-${grade.gradeID}-${subject.subjectId}"
                          data-grade-id="${grade.gradeID}"
-                         data-subject-id="${subject.id}"
+                         data-subject-id="${subject.subjectId}"
                          style="display: none;">
                         <div class="panel-header">
                             <a class="tab-link active" data-tab="documents">Tài liệu</a>
-                            <%-- Kiểm tra có khóa học không --%>
                             <c:set var="hasCourse" value="false" />
                             <c:forEach var="cls" items="${classes}">
-                                <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.id}">
+                                <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.subjectId}">
                                     <c:set var="hasCourse" value="true" />
                                 </c:if>
                             </c:forEach>
@@ -1220,7 +1452,7 @@
                                 <div class="content-list">
                                     <c:set var="hasDoc" value="false"/>
                                     <c:forEach var="doc" items="${documents}">
-                                        <c:if test="${doc.gradeId == grade.gradeID && doc.subjectId == subject.id}">
+                                        <c:if test="${doc.gradeId == grade.gradeID && doc.subjectId == subject.subjectId}">
                                             <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=document&docId=${doc.documentId}">${doc.title}</a>
                                             <c:set var="hasDoc" value="true"/>
                                         </c:if>
@@ -1232,7 +1464,7 @@
                             </div>
                             <c:set var="hasCourse" value="false"/>
                             <c:forEach var="cls" items="${classes}">
-                                <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.id}">
+                                <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.subjectId}">
                                     <c:set var="hasCourse" value="true" />
                                 </c:if>
                             </c:forEach>
@@ -1241,7 +1473,7 @@
                                     <div class="content-list">
                                         <c:set var="hasAnyCls" value="false"/>
                                         <c:forEach var="cls" items="${classes}">
-                                            <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.id}">
+                                            <c:if test="${cls.gradeID == grade.gradeID && cls.subjectID == subject.subjectId}">
                                                 <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${cls.tutoringClassID}">${cls.className}</a>
                                                 <c:set var="hasAnyCls" value="true"/>
                                             </c:if>
@@ -1261,34 +1493,34 @@
         <div class="info-banner d-flex justify-content-around align-items-center text-white px-5" style="background: linear-gradient(to right, #FF9AA2, #FFD3DC);
              height: 120px; border-radius: 8px; margin-top: 0px;">
             <div class="col-lg-4 text-center mb-3">
-    <div class="d-flex align-items-center justify-content-center">
-        <i class="fa fa-award" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
-        <div class="text-start">
-            <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${yearsActive} năm</h6>
-            <small style="font-size: 1rem;">Ươm mầm tri thức</small>
-        </div>
-    </div>
-</div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <i class="fa fa-award" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${yearsActive} năm</h6>
+                        <small style="font-size: 1rem;">Ươm mầm tri thức</small>
+                    </div>
+                </div>
+            </div>
 
-<div class="col-lg-4 text-center mb-3">
-    <div class="d-flex align-items-center justify-content-center">
-        <i class="fa fa-users" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
-        <div class="text-start">
-            <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${studentCount}</h6>
-            <small style="font-size: 1rem;">Học viên tin tưởng</small>
-        </div>
-    </div>
-</div>
+            <div class="col-lg-4 text-center mb-3">
+                <div class="d-flex align-items-center justify-content-center">
+                    <i class="fa fa-users" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${studentCount}</h6>
+                        <small style="font-size: 1rem;">Học viên tin tưởng</small>
+                    </div>
+                </div>
+            </div>
 
-<div class="col-lg-4 text-center mb-3">
-    <div class="d-flex align-items-center justify-content-center">
-        <i class="fa fa-trophy" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
-        <div class="text-start">
-            <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${partnerSchoolsCount}</h6>
-            <small style="font-size: 1rem;">Trường liên kết</small>
-        </div>
-    </div>
-</div>
+            <div class="col-lg-4 text-center mb-3">
+                <div class="d-flex align-items-center justify-content-center">
+                    <i class="fa fa-trophy" style="font-size: 2.5rem; color: white; margin-right: 1rem;"></i>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-1" style="font-size: 1.1rem; color: white">${partnerSchoolsCount}</h6>
+                        <small style="font-size: 1rem;">Trường liên kết</small>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <main>
@@ -1299,12 +1531,66 @@
                         <div class="container py-5">
                             <div class="row align-items-center">
                                 <div class="col-lg-5">
-                                    <div class="square-image-container">
+                                    <div class="square-image-container position-relative d-flex align-items-center justify-content-center">
+                                        <!-- Ảnh imageCenter -->
                                         <img class="img-fluid rounded mb-4 mb-lg-0" 
                                              src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter" 
                                              alt="Image Center" 
-                                             onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+
+                                             <!-- Icon camera: chỉ admin mới thấy -->
+                                        <span class="edit-icon position-absolute"
+                                              data-bs-toggle="modal" data-bs-target="#editImageCenterModal"
+                                              style="bottom: 0px; right: 0px; cursor:pointer; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1 ? "inline-block" : "none") %>;">
+                                            <i class="fa fa-camera"></i>
+                                        </span>
                                     </div>
+                                    <%-- Modal đổi ảnh imageCenter, vẫn giữ form cũ, chỉ render cho admin --%>
+                                    <% if (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) { %>
+                                    <div class="modal fade" id="editImageCenterModal" tabindex="-1" aria-labelledby="editImageCenterModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header d-flex justify-content-between align-items-center">
+                                                    <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa logo</h5>
+                                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
+                                                            <img src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter"
+                                                                 class="img-fluid"
+                                                                 style="max-height: 120px; max-width: 100%;"
+                                                                 alt="Ảnh trung tâm hiện tại"/>
+                                                        </div>
+                                                        <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
+                                                            <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
+                                                                  method="post"
+                                                                  onsubmit="return confirm('Bạn chắc chắn muốn xoá ảnh trung tâm?');">
+                                                                <input type="hidden" name="action" value="delete" />
+                                                                <input type="hidden" name="fieldName" value="imageCenter"/>
+                                                                <button type="submit" class="btn btn-danger">Xoá</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
+                                                          method="post"
+                                                          enctype="multipart/form-data"
+                                                          class="d-flex w-100 align-items-center justify-content-between">
+                                                        <input type="hidden" name="action" value="updateImageCenter" />
+                                                        <div class="flex-grow-1 me-3">
+                                                            <input type="file" name="imageCenterFile" accept="image/*" class="form-control" required>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <button type="submit" class="btn btn-success me-2">Lưu</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
                                 </div>
                                 <div class="col-lg-7" style="text-align: justify;">
                                     <div class="text-left mb-4">
@@ -1315,10 +1601,39 @@
                                             Khơi Nguồn Tri Thức – Dẫn Lối Thành Công
                                         </h3>
                                     </div>
+                                    <!-- Mô tả trung tâm -->
                                     <div id="descriptionContainer">
-                                        <p style="white-space: pre-wrap;" id="descriptionText">${descripCenter}</p>
+                                        <div class="info-container d-flex align-items-start">
+                                            <div class="text-left" style="flex: 1;">
+                                                <c:choose>
+                                                    <c:when test="${not empty descripCenter}">
+                                                        <c:forEach var="sentence" items="${fn:split(descripCenter, '\\\\.')}" varStatus="status">
+                                                            <c:set var="trimmed" value="${fn:trim(sentence)}" />
+                                                            <c:if test="${not empty trimmed}">
+                                                                <p>${trimmed}<c:if test="${!fn:endsWith(trimmed, '.')}">.</c:if></p>
+                                                            </c:if>
+                                                        </c:forEach>
+
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p style="font-style: italic; color: gray;">Chưa có mô tả trung tâm.</p>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <!-- Icon chỉnh sửa (chỉ hiển thị với admin) -->
+                                                <span class="edit-icon ml-2"
+                                                      data-field="descripCenter"
+                                                      data-value="${descripCenter}"
+                                                      onclick="openEditModal(this)"
+                                                      style="position: absolute; bottom: 10px; right: 10px; z-index: 10; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
+                                                    <i class="fa fa-pencil-alt"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <%-- Chỉ hiện nút xem thêm nếu chưa đăng nhập --%>
+                                    <% if (session.getAttribute("userRoleID") == null) { %>
                                     <a href="login_register.jsp" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Xem thêm</a>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -1334,154 +1649,154 @@
                         <h3>Khám Phá Các Môn Học</h3>
                     </div>
                     <div class="row" id="courseContainer">
-                        <%
-                            List<Subject> subjectImages = (List<Subject>) request.getAttribute("subjectImages");
-                            if (subjectImages != null && !subjectImages.isEmpty()) {
-                                for (Subject subject : subjectImages) {
-                        %>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="cat-item position-relative overflow-hidden rounded mb-2">
-                                <img class="img-fluid" src="<%= subject.getImageSubject() %>" alt="" onerror="this.src='https://picsum.photos/200/200';">
-                                <a class="cat-overlay text-white text-decoration-none" href="#">
-                                    <h6 class="text-white font-weight-medium"><%= subject.getClassCount() %> Lớp học</h6>
-                                </a>
-                            </div>
-                        </div>
-                        <%
-                                }
-                            } else {
-                        %>
-                        <div class="alert alert-warning col-12">Không có môn học nào để hiển thị.</div>
-                        <%
-                            }
-                        %>
+                        <c:choose>
+                            <c:when test="${not empty subjects}">
+                                <c:forEach var="subject" items="${subjects}">
+                                    <div class="col-lg-3 col-md-6 mb-4">
+                                        <div class="cat-item position-relative overflow-hidden rounded mb-2">
+                                            <img class="img-fluid" 
+                                                 src="${pageContext.request.contextPath}/LogoServlet?type=subject&subjectId=${subject.subjectId}" 
+                                                 alt="${subject.subjectName}" 
+                                                 onerror="this.src='https://picsum.photos/200/200';">
+                                            <a class="cat-overlay text-white text-decoration-none" href="#">
+                                                <h6 class="text-white font-weight-medium">
+                                                    ${subject.classCount} Khoá học
+                                                </h6>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="alert alert-warning col-12">Không có môn học nào để hiển thị.</div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
-
             <!-- Category End -->
             <!-- Gv Start -->
             <div class="container-fluid py-0">
-    <div class="container py-0">
-        <div class="section-title text-center position-relative mb-5">
-            <div class="text-center mb-5">
-                <h3>Đội Ngũ Giáo Viên</h3>
-            </div>
-        </div>
-        <!-- Danh sách giáo viên -->
-        <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
-            <c:choose>
-                <c:when test="${not empty teachers}">
-                    <c:forEach var="teacher" items="${teachers}">
-                        <c:if test="${not empty teacher.id}">
-                            <c:set var="schoolName" value="${teacherSchoolNames[teacher.id]}" />
-                            <div class="team-item">
-                                <img class="img-fluid w-100"
-                                     src="${pageContext.request.contextPath}/LogoServlet?type=teacher&userId=${teacher.id}"
-                                     alt="${teacher.name}"
-                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
-                                <div class="bg-light text-center p-4">
-                                    <div class="teacher-title">${teacher.name}</div>
-                                    <div class="teacher-school">
-                                        <i class="fas fa-school"></i>
-                                        <span>${schoolName}</span>
-                                    </div>
-                                    <button class="btn btn-primary mt-auto"
-                                            onclick="showTeacherDetail(
-                                                '${teacher.name != null ? teacher.name.replace('\'', '\\\'') : ''}',
-                                                '${teacher.gender != null ? teacher.gender.replace('\'', '\\\'') : 'Chưa xác định'}',
-                                                '${teacher.phone != null ? teacher.phone.replace('\'', '\\\'') : 'Chưa xác định'}',
-                                                '${teacher.email != null ? teacher.email.replace('\'', '\\\'') : 'Chưa xác định'}',
-                                                '${teacher.certi != null ? teacher.certi.replace('\'', '\\\'') : 'Chưa xác định'}',
-                                                '${teacher.descrip != null ? teacher.descrip.replace('\'', '\\\'') : 'Chưa có mô tả'}',
-                                                '${teacher.status == 1 ? 'Đang hoạt động' : 'Không hoạt động'}',
-                                                '${schoolName != null ? schoolName.replace('\'', '\\\'') : 'Giáo viên của Edura'}'
-                                            )">
-                                        Thông tin
+                <div class="container py-0">
+                    <div class="section-title text-center position-relative mb-5">
+                        <div class="text-center mb-5">
+                            <h3>Đội Ngũ Giáo Viên</h3>
+                        </div>
+                    </div>
+                    <!-- Danh sách giáo viên -->
+                    <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
+                        <c:choose>
+                            <c:when test="${not empty teachers}">
+                                <c:forEach var="teacher" items="${teachers}">
+                                    <c:if test="${not empty teacher.id}">
+                                        <c:set var="schoolName" value="${teacherSchoolNames[teacher.id]}" />
+                                        <div class="team-item">
+                                            <img class="img-fluid w-100"
+                                                 src="${pageContext.request.contextPath}/LogoServlet?type=teacher&userId=${teacher.id}"
+                                                 alt="${teacher.name}"
+                                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                                            <div class="bg-light text-center p-4">
+                                                <div class="teacher-title">${teacher.name}</div>
+                                                <div class="teacher-school">
+                                                    <i class="fas fa-school"></i>
+                                                    <span>${schoolName}</span>
+                                                </div>
+                                                <button class="btn btn-primary mt-auto"
+                                                        onclick="showTeacherDetail(
+                                                                        '${teacher.name != null ? teacher.name.replace('\'', '\\\'') : ''}',
+                                                                        '${teacher.gender != null ? teacher.gender.replace('\'', '\\\'') : 'Chưa xác định'}',
+                                                                        '${teacher.phone != null ? teacher.phone.replace('\'', '\\\'') : 'Chưa xác định'}',
+                                                                        '${teacher.email != null ? teacher.email.replace('\'', '\\\'') : 'Chưa xác định'}',
+                                                                        '${teacher.certi != null ? teacher.certi.replace('\'', '\\\'') : 'Chưa xác định'}',
+                                                                        '${teacher.descrip != null ? teacher.descrip.replace('\'', '\\\'') : 'Chưa có mô tả'}',
+                                                                        '${teacher.status == 1 ? 'Đang hoạt động' : 'Không hoạt động'}',
+                                                                        '${schoolName != null ? schoolName.replace('\'', '\\\'') : 'Giáo viên của Edura'}'
+                                                                        )">
+                                                    Thông tin
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text-center p-4">
+                                    <p>Không có giáo viên nào để hiển thị.</p>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <!-- Modal chi tiết giáo viên giữ nguyên -->
+                    <div class="modal fade" id="teacherDetailModal" tabindex="-1" role="dialog" aria-labelledby="teacherDetailModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content shadow-lg">
+                                <div class="modal-header" style="background-color: #FF6B6B; color: white;">
+                                    <h5 class="modal-title font-weight-bold" id="teacherDetailModalLabel">Giáo viên: <span id="modalTeacherTitle"></span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeTeacherModal()" style="color: white;">
+                                        <span aria-hidden="true">×</span>
                                     </button>
                                 </div>
-                            </div>
-                        </c:if>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <div class="text-center p-4">
-                        <p>Không có giáo viên nào để hiển thị.</p>
-                    </div>
-                </c:otherwise>
-            </c:choose>
-        </div>
-        <!-- Modal chi tiết giáo viên giữ nguyên -->
-        <div class="modal fade" id="teacherDetailModal" tabindex="-1" role="dialog" aria-labelledby="teacherDetailModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content shadow-lg">
-                    <div class="modal-header" style="background-color: #FF6B6B; color: white;">
-                        <h5 class="modal-title font-weight-bold" id="teacherDetailModalLabel">Giáo viên: <span id="modalTeacherTitle"></span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeTeacherModal()" style="color: white;">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body px-4">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <p><i class="fas fa-align-left mr-2 text-primary"></i>
-                                    <span id="modalTeacherDescrip"></span>
-                                </p>
-                            </div>
-                        </div>
-                        <!-- Thông tin giáo viên dạng bảng đẹp -->
-                        <div class="container-fluid px-0">
-                            <div class="row mb-2 align-items-start">
-                                <div class="col-sm-6 pr-sm-2">
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-user text-primary"></i></span>
-                                        <span class="info-label">Họ và tên:</span>
-                                        <span class="info-value" id="modalTeacherFullName"></span>
+                                <div class="modal-body px-4">
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <p><i class="fas fa-align-left mr-2 text-primary"></i>
+                                                <span id="modalTeacherDescrip"></span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-school text-info"></i></span>
-                                        <span class="info-label">Trường:</span>
-                                        <span class="info-value" id="modalTeacherSchool"></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-venus-mars text-info"></i></span>
-                                        <span class="info-label">Giới tính:</span>
-                                        <span class="info-value" id="modalTeacherGender"></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-phone text-secondary"></i></span>
-                                        <span class="info-label">Số điện thoại:</span>
-                                        <span class="info-value" id="modalTeacherPhone"></span>
+                                    <!-- Thông tin giáo viên dạng bảng đẹp -->
+                                    <div class="container-fluid px-0">
+                                        <div class="row mb-2 align-items-start">
+                                            <div class="col-sm-6 pr-sm-2">
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-user text-primary"></i></span>
+                                                    <span class="info-label">Họ và tên:</span>
+                                                    <span class="info-value" id="modalTeacherFullName"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-school text-info"></i></span>
+                                                    <span class="info-label">Trường:</span>
+                                                    <span class="info-value" id="modalTeacherSchool"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-venus-mars text-info"></i></span>
+                                                    <span class="info-label">Giới tính:</span>
+                                                    <span class="info-value" id="modalTeacherGender"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-phone text-secondary"></i></span>
+                                                    <span class="info-label">Số điện thoại:</span>
+                                                    <span class="info-value" id="modalTeacherPhone"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 pl-sm-2">
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-envelope text-danger"></i></span>
+                                                    <span class="info-label">Email:</span>
+                                                    <span class="info-value" id="modalTeacherEmail"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-certificate text-warning"></i></span>
+                                                    <span class="info-label">Chứng chỉ:</span>
+                                                    <span class="info-value" id="modalTeacherCerti"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="info-icon"><i class="fas fa-signal text-dark"></i></span>
+                                                    <span class="info-label">Trạng thái:</span>
+                                                    <span class="info-value" id="modalTeacherOnlineStatus"></span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 pl-sm-2">
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-envelope text-danger"></i></span>
-                                        <span class="info-label">Email:</span>
-                                        <span class="info-value" id="modalTeacherEmail"></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-certificate text-warning"></i></span>
-                                        <span class="info-label">Chứng chỉ:</span>
-                                        <span class="info-value" id="modalTeacherCerti"></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-icon"><i class="fas fa-signal text-dark"></i></span>
-                                        <span class="info-label">Trạng thái:</span>
-                                        <span class="info-value" id="modalTeacherOnlineStatus"></span>
-                                    </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-primary py-md-2 px-md-3" data-dismiss="modal" onclick="closeTeacherModal()">Đóng</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-primary py-md-2 px-md-3" data-dismiss="modal" onclick="closeTeacherModal()">Đóng</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
             <!-- Gv End -->
 
             <!-- Courses Start -->
@@ -1495,53 +1810,52 @@
                         <c:choose>
                             <c:when test="${not empty featuredTutoringClasses}">
                                 <c:set var="featuredCount" value="0"/>
-                                <c:forEach var="course" items="${featuredTutoringClasses}" varStatus="loop">
-                                    <%-- Chuẩn bị groupStrings cho từng khóa học --%>
-                                    <c:set var="groupStrings" value="" />
-                                    <c:forEach var="group" items="${course.classGroups}">
-                                        <c:set var="room" value="${group.roomName != null ? group.roomName : ''}" />
-                                        <c:set var="teacher" value="${group.teacherName != null ? group.teacherName : ''}" />
-                                        <c:set var="start" value="${group.startTime != null ? group.startTime : ''}" />
-                                        <c:set var="end" value="${group.endTime != null ? group.endTime : ''}" />
-                                        <c:set var="groupString" value="${room}~${teacher}~${start}~${end}" />
-                                        <c:set var="groupStrings" value="${groupStrings}${groupString};" />
-                                    </c:forEach>
-
+                                <c:forEach var="tc" items="${featuredTutoringClasses}">
+                                    <%-- Reset groupStrings for each class with scope="page" --%>
+                                    <c:set var="groupStrings" value="" scope="page"/>
+                                    <c:set var="classGroups" value="${featuredClassGroupsMap[tc.tutoringClassID]}" />
+                                    <c:if test="${not empty classGroups}">
+                                        <c:forEach var="group" items="${classGroups}">
+                                            <c:set var="room" value="${roomNames[group.roomId]}" />
+                                            <c:set var="teacher" value="${teacherNames[group.teachId]}" />
+                                            <c:set var="start" value="${shiftStartTimes[group.shiftId]}" />
+                                            <c:set var="end" value="${shiftEndTimes[group.shiftId]}" />
+                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${room}~${teacher}~${start}~${end}" />
+                                            <c:set var="groupStrings" value="${groupStrings}${groupString};" scope="page"/>
+                                        </c:forEach>
+                                    </c:if>
                                     <div class="col-lg-4 col-md-4 mb-4 featured-course-item ${featuredCount >= 3 ? 'd-none' : ''}">
                                         <div class="rounded overflow-hidden">
                                             <img class="img-fluid course-img"
-                                                 src="${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${course.tutoringClass.tutoringClassID}"
-                                                 alt="${fn:escapeXml(course.tutoringClass.className)}"
+                                                 src="${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${tc.tutoringClassID}"
+                                                 alt="${fn:escapeXml(tc.className)}"
                                                  onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
                                             <div class="course-content">
-                                                <div class="d-flex justify-content-between mb-3">
-                                                    <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>${course.tutoringClass.maxStudent} Học sinh</small>
-                                                    <small class="m-0"><i class="far fa-clock text-primary mr-1"></i>${fn:escapeXml(course.duration)}</small>
-                                                </div>
                                                 <a class="h5 course-title"
-                                                   href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}">
-                                                    ${fn:escapeXml(course.tutoringClass.className)}
+                                                   href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${tc.tutoringClassID}">
+                                                    ${fn:escapeXml(tc.className)}
                                                 </a>
                                                 <div class="border-top mt-4 pt-4">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <button type="button"
                                                                 class="btn btn-primary py-md-2 px-md-3 font-weight-semi-bold"
-                                                                onclick="showCourseDetail(this)"
-                                                                data-classname="${course.tutoringClass.className}"
-                                                                data-descrip="${course.tutoringClass.descrip}"
-                                                                data-ishot="${course.tutoringClass.isHot ? 'Nổi bật' : 'Quanh năm'}"
-                                                                data-gradename="${course.gradeName}"
-                                                                data-subject="${course.subjectName}"
-                                                                data-maxstudents="${course.tutoringClass.maxStudent}"
-                                                                data-timerange="${course.startTime} - ${course.endTime}"
-                                                                data-startdate="${course.tutoringClass.startDate}"
-                                                                data-enddate="${course.tutoringClass.endDate}"
-                                                                data-tuition="${course.tutoringClass.price}"
-                                                                data-classid="${course.tutoringClass.tutoringClassID}"
-                                                                data-classgroups="${fn:escapeXml(groupStrings)}">
+                                                                data-classid="${tc.tutoringClassID}"
+                                                                data-classname="${fn:escapeXml(tc.className)}"
+                                                                data-descrip="${empty tc.descrip ? 'Chưa có mô tả' : fn:escapeXml(tc.descrip)}"
+                                                                data-ishot="${tc.isHot}"
+                                                                data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
+                                                                data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
+
+                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
+                                                                data-duration="${durationMap[tc.tutoringClassID]}"
+                                                                data-startdate="${tc.startDate}"
+                                                                data-enddate="${tc.endDate}"
+                                                                data-tuition="${tc.price}"
+                                                                data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
+                                                                onclick="showCourseDetail(this)">
                                                             Chi tiết
                                                         </button>
-                                                        <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}"
+                                                        <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${tc.tutoringClassID}"
                                                            class="btn btn-primary py-md-2 px-md-3 font-weight-semi-bold">Tham gia</a>
                                                     </div>
                                                 </div>
@@ -1577,51 +1891,52 @@
                         <c:choose>
                             <c:when test="${not empty yearRoundTutoringClasses}">
                                 <c:set var="yearRoundCount" value="0"/>
-                                <c:forEach var="course" items="${yearRoundTutoringClasses}" varStatus="loop">
-                                    <c:set var="groupStrings" value="" />
-                                    <c:forEach var="group" items="${course.classGroups}">
-                                        <c:set var="room" value="${group.roomName != null ? group.roomName : ''}" />
-                                        <c:set var="teacher" value="${group.teacherName != null ? group.teacherName : ''}" />
-                                        <c:set var="start" value="${group.startTime != null ? group.startTime : ''}" />
-                                        <c:set var="end" value="${group.endTime != null ? group.endTime : ''}" />
-                                        <c:set var="groupString" value="${room}~${teacher}~${start}~${end}" />
-                                        <c:set var="groupStrings" value="${groupStrings}${groupString};" />
-                                    </c:forEach>
+                                <c:forEach var="tc" items="${yearRoundTutoringClasses}">
+                                    <%-- Reset groupStrings for each class with scope="page" --%>
+                                    <c:set var="groupStrings" value="" scope="page"/>
+                                    <c:set var="classGroups" value="${yearRoundClassGroupsMap[tc.tutoringClassID]}" />
+                                    <c:if test="${not empty classGroups}">
+                                        <c:forEach var="group" items="${classGroups}">
+                                            <c:set var="room" value="${roomNames[group.roomId]}" />
+                                            <c:set var="teacher" value="${teacherNames[group.teachId]}" />
+                                            <c:set var="start" value="${shiftStartTimes[group.shiftId]}" />
+                                            <c:set var="end" value="${shiftEndTimes[group.shiftId]}" />
+                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${room}~${teacher}~${start}~${end}" />
+                                            <c:set var="groupStrings" value="${groupStrings}${groupString};" scope="page"/>
+                                        </c:forEach>
+                                    </c:if>
                                     <div class="col-lg-4 col-md-4 mb-4 year-round-course-item ${yearRoundCount >= 3 ? 'd-none' : ''}">
                                         <div class="rounded overflow-hidden">
                                             <img class="img-fluid course-img"
-                                                 src="${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${course.tutoringClass.tutoringClassID}"
-                                                 alt="${fn:escapeXml(course.tutoringClass.className)}"
+                                                 src="${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${tc.tutoringClassID}"
+                                                 alt="${fn:escapeXml(tc.className)}"
                                                  onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
                                             <div class="course-content">
-                                                <div class="d-flex justify-content-between mb-3">
-                                                    <small class="m-0"><i class="fa fa-users text-primary mr-2"></i>${course.tutoringClass.maxStudent} Học sinh</small>
-                                                    <small class="m-0"><i class="far fa-clock text-primary mr-1"></i>${fn:escapeXml(course.duration)}</small>
-                                                </div>
                                                 <a class="h5 course-title"
-                                                   href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}">
-                                                    ${fn:escapeXml(course.tutoringClass.className)}
+                                                   href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${tc.tutoringClassID}">
+                                                    ${fn:escapeXml(tc.className)}
                                                 </a>
                                                 <div class="border-top mt-4 pt-4">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <button type="button"
                                                                 class="btn btn-primary py-md-2 px-md-3 font-weight-semi-bold"
-                                                                onclick="showCourseDetail(this)"
-                                                                data-classname="${course.tutoringClass.className}"
-                                                                data-descrip="${course.tutoringClass.descrip}"
-                                                                data-ishot="${course.tutoringClass.isHot ? 'Nổi bật' : 'Quanh năm'}"
-                                                                data-gradename="${course.gradeName}"
-                                                                data-subject="${course.subjectName}"
-                                                                data-maxstudents="${course.tutoringClass.maxStudent}"
-                                                                data-timerange="${course.startTime} - ${course.endTime}"
-                                                                data-startdate="${course.tutoringClass.startDate}"
-                                                                data-enddate="${course.tutoringClass.endDate}"
-                                                                data-tuition="${course.tutoringClass.price}"
-                                                                data-classid="${course.tutoringClass.tutoringClassID}"
-                                                                data-classgroups="${fn:escapeXml(groupStrings)}">
+                                                                data-classid="${tc.tutoringClassID}"
+                                                                data-classname="${fn:escapeXml(tc.className)}"
+                                                                data-descrip="${empty tc.descrip ? 'Chưa có mô tả' : fn:escapeXml(tc.descrip)}"
+                                                                data-ishot="${tc.isHot}"
+                                                                data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
+                                                                data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
+                                                                data-maxstudents="${tc.maxStudent}"
+                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
+                                                                data-duration="${durationMap[tc.tutoringClassID]}"
+                                                                data-startdate="${tc.startDate}"
+                                                                data-enddate="${tc.endDate}"
+                                                                data-tuition="${tc.price}"
+                                                                data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
+                                                                onclick="showCourseDetail(this)">
                                                             Chi tiết
                                                         </button>
-                                                        <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${course.tutoringClass.tutoringClassID}"
+                                                        <a href="${pageContext.request.contextPath}/login_register.jsp?redirect=course&courseId=${tc.tutoringClassID}"
                                                            class="btn btn-primary py-md-2 px-md-3 font-weight-semi-bold">Tham gia</a>
                                                     </div>
                                                 </div>
@@ -1650,27 +1965,50 @@
                     </c:if>
 
                     <!-- Modal chi tiết khoá học -->
-                    <div id="courseDetailModal" class="modal">
-                        <div class="modal-content">
-                            <button type="button" class="close" onclick="closeModalClass()" aria-label="Đóng">&times;</button>
-                            <h4 id="modalCourseName"></h4>
-                            <p id="modalCourseDescrip"></p>
-                            <p><strong>Loại khóa học:</strong> <span id="modalIsHot"></span></p>
-                            <p><strong>Lớp:</strong> <span id="modalgradeName"></span></p>
+                    <div id="courseDetailModal" class="modal" style="display: none;">
+                        <div class="modal-content p-4" style="max-width: 900px; margin: auto; border-radius: 10px; background: #fff;">
+                            <button type="button" class="close" onclick="closeModalClass()" aria-label="Đóng"
+                                    style="position: absolute; right: 20px; top: 20px; font-size: 24px;">&times;</button>
 
-                            <p><strong>Môn học:</strong> <span id="modalSubjectName"></span></p>
-                            <p><strong>Sĩ số tối đa:</strong> <span id="modalMaxStudents"></span></p>
-                            <p><strong>Thời gian:</strong> <span id="modalTimeRange"></span></p>
-                            <p><strong>Ngày bắt đầu:</strong> <span id="modalStartDate"></span></p>
-                            <p><strong>Ngày kết thúc:</strong> <span id="modalEndDate"></span></p>
-                            <p><strong>Học phí:</strong> <span id="modalTuitionFee"></span></p>
-                            <div id="classGroupContent"></div>
-                            <a id="joinCourseBtn" href="#" class="btn-action">Tham gia</a>
+                            <h4 id="modalCourseName" class="mb-3 font-weight-bold"></h4>
+
+                            <!-- Mô tả riêng 1 dòng -->
+                            <div class="mb-4">
+                                <p class="text-muted mb-0" style="font-size: 1.1rem;">
+                                    <strong>Mô tả:</strong> <span id="modalCourseDescrip"></span>
+                                </p>
+                            </div>
+
+
+                            <!-- Thông tin chia 2 cột -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-fire text-danger mr-2"></i><strong>Loại khóa học:</strong> <span id="modalIsHot"></span></p>
+                                    <p><i class="fas fa-layer-group text-primary mr-2"></i><strong>Lớp:</strong> <span id="modalgradeName"></span></p>
+                                    <p><i class="fas fa-book text-info mr-2"></i><strong>Môn học:</strong> <span id="modalSubjectName"></span></p>
+                                    <!--                                    <p><i class="fas fa-user-friends text-success mr-2"></i><strong>Sĩ số tối đa:</strong> <span id="modalMaxStudents"></span></p>-->
+                                </div>
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-clock text-warning mr-2"></i><strong>Thời gian:</strong> <span id="modalDuration"></span></p>
+                                    <p><i class="fas fa-calendar-plus text-secondary mr-2"></i><strong>Ngày bắt đầu:</strong> <span id="modalStartDate"></span></p>
+                                    <p><i class="fas fa-calendar-check text-secondary mr-2"></i><strong>Ngày kết thúc:</strong> <span id="modalEndDate"></span></p>
+                                    <p><i class="fas fa-money-bill text-success mr-2"></i><strong>Học phí:</strong> <span id="modalTuitionFee"></span></p>
+                                </div>
+                            </div>
+
+                            <!-- Danh sách nhóm lớp -->
+                            <div class="mt-4" id="classGroupContent"></div>
+
+                            <!-- Nút tham gia -->
+                            <div class="text-right mt-4">
+                                <a id="joinCourseBtn" href="#" class="btn btn-primary px-4 py-2">Tham gia</a>
+                            </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
-
             <!-- Courses End -->
 
             <!-- Ưu thế start -->
@@ -1853,8 +2191,7 @@
                     <a href="" class="text-decoration-none">
 
                         <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"/>
                         </div>
                         <div class="slogan-group text-left mt-2">
                             <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
@@ -2432,107 +2769,189 @@
             });
         });
     </script>
-    <!-- Tách chuỗi DiscrepCenter -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const descriptionText = document.getElementById("descriptionText");
-            if (descriptionText && descriptionText.textContent.trim()) {
-                const paragraphs = descriptionText.textContent.split('\n').filter(line => line.trim() !== '');
-                const container = document.getElementById("descriptionContainer");
-                container.innerHTML = ''; // Xóa nội dung ban đầu
-                paragraphs.forEach(paragraph => {
+    <!--     Tách chuỗi DiscrepCenter 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const descriptionText = document.getElementById("descriptionText");
+                if (descriptionText && descriptionText.textContent.trim()) {
+                    const paragraphs = descriptionText.textContent.split('\n').filter(line => line.trim() !== '');
+                    const container = document.getElementById("descriptionContainer");
+                    container.innerHTML = ''; // Xóa nội dung ban đầu
+                    paragraphs.forEach(paragraph => {
+                        const p = document.createElement('p');
+                        p.textContent = paragraph;
+                        container.appendChild(p);
+                    });
+                } else {
                     const p = document.createElement('p');
-                    p.textContent = paragraph;
-                    container.appendChild(p);
-                });
-            } else {
-                const p = document.createElement('p');
-                p.textContent = 'Không có mô tả trung tâm.';
-                descriptionText.replaceWith(p);
-            }
-        });
-    </script>
+                    p.textContent = 'Không có mô tả trung tâm.';
+                    descriptionText.replaceWith(p);
+                }
+            });
+        </script>-->
     <script>
+        function clean(value) {
+            return (value && value !== "false") ? value : '';
+        }
+
+
         window.showCourseDetail = function (btn) {
             const get = key => btn.getAttribute('data-' + key) || '';
+
+            // Cập nhật thông tin cơ bản
             document.getElementById('modalCourseName').textContent = get('classname') || 'Chưa xác định';
             document.getElementById('modalCourseDescrip').textContent = get('descrip') || 'Chưa có mô tả';
-
-            document.getElementById('modalIsHot').textContent = get('ishot') || 'Quanh năm';
-            document.getElementById('modalgradeName').textContent = get('gradeName') || 'Chưa có mô tả';
+            document.getElementById('modalIsHot').textContent = (get('ishot') === "true" || get('ishot') === "1") ? "Nổi bật" : "Quanh năm";
+            document.getElementById('modalgradeName').textContent = get('gradename') || 'Chưa xác định';
             document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';
-            document.getElementById('modalMaxStudents').textContent = get('maxstudents') || 'Chưa xác định';
-            document.getElementById('modalTimeRange').textContent = get('timerange') || 'Chưa xác định';
+//            let maxStudents = get('maxstudents');
+//            document.getElementById('modalMaxStudents').textContent = maxStudents ? (maxStudents + " học sinh") : 'Chưa xác định';
+            document.getElementById('modalDuration').textContent = (get('duration') || 'Chưa xác định') + ' / 1 buổi';
             document.getElementById('modalStartDate').textContent = get('startdate') || 'Chưa xác định';
             document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';
-            document.getElementById('modalTuitionFee').textContent = get('tuition') || 'Chưa xác định';
+
+            console.log("maxstudents = ", get('maxstudents'));
+
+            // Format học phí
+            function formatMoneyVND(amount) {
+                if (!amount || isNaN(amount))
+                    return 'Chưa xác định';
+                return Number(amount).toLocaleString('vi-VN') + " VNĐ / 1 buổi";
+            }
+            document.getElementById('modalTuitionFee').textContent = formatMoneyVND(get('tuition'));
+
+            // Gán link nút đăng ký
             document.getElementById('joinCourseBtn').href = 'login_register.jsp?redirect=course&courseId=' + (get('classid') || '');
 
-            // Xử lý danh sách nhóm lớp
-            let html = '<p>Chưa có nhóm lớp nào.</p>';
-            try {
-                const classGroupsStr = get('classgroups');
-                if (classGroupsStr) {
-                    const groupsArr = classGroupsStr.split(';').filter(Boolean);
-                    if (groupsArr.length > 0) {
-                        html = '<h6>Danh sách lớp:</h6><table class="table table-bordered"><thead><tr><th>Phòng</th><th>Giáo viên</th><th>Giờ bắt đầu</th><th>Giờ kết thúc</th></tr></thead><tbody>';
-                        groupsArr.forEach(item => {
-                            const [room, teacher, start, end] = item.split('~').map(x => (x === "false" ? "" : x));
-                            html += `<tr>
-              <td>${room}</td>
-              <td>${teacher}</td>
-              <td>${start}</td>
-              <td>${end}</td>
-            </tr>`;
-                        });
-                        html += '</tbody></table>';
-                    }
-                }
-            } catch (e) {
-                html = '<p>Lỗi khi tải thông tin nhóm lớp.</p>';
-            }
-            document.getElementById('classGroupContent').innerHTML = html;
+            // Ghi log kiểm tra
+            const container = document.getElementById('classGroupContent');
+            console.log("📌 DOM container:", container);
 
-            // Mở modal
+            const classGroupsStr = get('classgroups');
+            console.log("📦 classGroupsStr raw:", classGroupsStr);
+
+
+            let html = '<p>Chưa có nhóm lớp nào.</p>';
+
+            if (classGroupsStr) {
+                const groupsArr = classGroupsStr.split(';').filter(Boolean);
+                console.log("📦 groupsArr parsed:", groupsArr);
+                console.log("📏 groupsArr.length:", groupsArr.length);
+
+                if (groupsArr.length > 0) {
+                    html = `
+                <h6>Danh sách nhóm lớp:</h6>
+                <table class="table table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            
+                            <th>Tên nhóm</th>
+                            <th>Sĩ số tối đa</th>
+                            <th>Phòng</th>
+                            <th>Giáo viên</th>
+                            <th>Thứ trong tuần</th>
+                            <th>Bắt đầu</th>
+                            <th>Kết thúc</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                    groupsArr.forEach((item, index) => {
+                        const parts = item.split('~');
+                        while (parts.length < 7)
+                            parts.push('');
+                        function formatTime(str) {
+                            if (!str || typeof str !== 'string')
+                                return '';
+                            return str.length >= 5 ? str.substring(0, 5) : str;
+                        }
+
+//                        const groupId = parts[0];
+                        const groupName = parts[0];
+                        const maxStudent = parts[1];
+                        const room = parts[2];
+                        const teacher = parts[3];
+                        const thu = parts[4];
+                        const start = formatTime(parts[5]);
+                        const end = formatTime(parts[6]);
+
+                        // Log từng phần
+                        console.log(`🔍 Group ${index + 1} parts:`, parts);
+//                        console.log("📋 groupId:", groupId);
+                        console.log("📋 groupName:", groupName);
+                        console.log("📋 maxStudent:", maxStudent);
+                        console.log("📋 room:", room);
+                        console.log("📋 teacher:", teacher);
+                        console.log("📋 start:", start);
+                        console.log("📋 end:", end);
+
+
+
+
+                        html += `
+    <tr>
+        
+        <td>` + clean(groupName) + `</td>
+        <td>` + clean(maxStudent) + `</td>
+        <td>` + clean(room) + `</td>
+        <td>` + clean(teacher) + `</td>
+        <td>` + (thu === "null" ? "Chưa xếp lịch" : clean(thu)) + `</td>
+        <td>` + clean(start) + `</td>
+        <td>` + clean(end) + `</td>
+    </tr>`;
+
+                    });
+
+                    html += `
+                    </tbody>
+                </table>`;
+                }
+            }
+
+            // Cập nhật vào DOM
+            if (container) {
+                container.innerHTML = html;
+                console.log("🧱 HTML sinh ra:", html);
+                console.log("✅ Đã cập nhật bảng nhóm lớp.");
+            } else {
+                console.warn("⚠️ Không tìm thấy #classGroupContent");
+            }
+
+            // Hiển thị modal
             document.getElementById('courseDetailModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
         };
 
+// Hàm đóng modal
         window.closeModalClass = function () {
             document.getElementById('courseDetailModal').style.display = 'none';
             document.body.style.overflow = '';
         };
 
-// Xem thêm các khóa nổi bật
-        document.getElementById('loadMoreFeaturedBtn')?.addEventListener('click', function () {
-            const items = document.querySelectorAll('#featuredCourseRow .featured-course-item.d-none');
-            let shown = 0;
-            items.forEach(item => {
-                if (shown < 3) {
-                    item.classList.remove('d-none');
-                    shown++;
-                }
-            });
-            if (!document.querySelectorAll('#featuredCourseRow .featured-course-item.d-none').length) {
-                this.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadMoreFeaturedBtn = document.getElementById('loadMoreFeaturedBtn');
+            if (loadMoreFeaturedBtn) {
+                loadMoreFeaturedBtn.addEventListener('click', function () {
+                    document.querySelectorAll('.featured-course-item.d-none').forEach(function (el) {
+                        el.classList.remove('d-none');
+                    });
+                    this.style.display = 'none';
+                });
             }
-        });
 
-// Xem thêm các khóa quanh năm
-        document.getElementById('loadMoreYearRoundBtn')?.addEventListener('click', function () {
-            const items = document.querySelectorAll('#yearRoundCourseRow .year-round-course-item.d-none');
-            let shown = 0;
-            items.forEach(item => {
-                if (shown < 3) {
-                    item.classList.remove('d-none');
-                    shown++;
-                }
-            });
-            if (!document.querySelectorAll('#yearRoundCourseRow .year-round-course-item.d-none').length) {
-                this.style.display = 'none';
+            const loadMoreYearRoundBtn = document.getElementById('loadMoreYearRoundBtn');
+            if (loadMoreYearRoundBtn) {
+                loadMoreYearRoundBtn.addEventListener('click', function () {
+                    document.querySelectorAll('.year-round-course-item.d-none').forEach(function (el) {
+                        el.classList.remove('d-none');
+                    });
+                    this.style.display = 'none';
+                });
             }
         });
     </script>
+
+
 
 
     <script>
@@ -2541,72 +2960,203 @@
             console.log("JSP đã tải, kiểm tra grades: ", JSON.stringify(grades));
         });
     </script>
+
+    <!--    Chỉnh sửa thông tin header-->
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editFieldForm = document.getElementById("editFieldForm");
+            if (editFieldForm) {
+                editFieldForm.addEventListener("submit", handleFormSubmit);
+                console.log("Attached submit event to #editFieldForm");
+            } else {
+                console.error("Form #editFieldForm not found");
+            }
+
+            // Bắt sự kiện click icon chỉnh sửa (trừ logo)
+            $(document).on('click', '.edit-icon', function () {
+                const field = $(this).attr('data-field');
+                if (field && field !== 'logo') {
+                    console.log("Clicked .edit-icon:", this, "data-field:", field);
+                    openEditModal(this);
+                }
+            });
+
+            // Reset form khi đóng modal
+            $('#editFieldModal').on('hidden.bs.modal', function () {
+                const form = document.getElementById("editFieldForm");
+                if (form) {
+                    form.reset();
+                    console.log("Reset form on modal close");
+                }
+            });
+        });
+
         function openEditModal(el) {
-            var field = el.getAttribute("data-field");
-            var value = el.getAttribute("data-value") || '';
+            console.log("Opening edit modal for:", el);
+            if (!el || !el.getAttribute) {
+                console.error("Phần tử không hợp lệ:", el);
+                alert("Lỗi hệ thống: Phần tử không hợp lệ.");
+                return;
+            }
 
-            console.log("Opening modal for field:", field, "with value:", value);
+            const field = el.getAttribute("data-field");
+            const value = el.getAttribute("data-value") || '';
+            const fieldNameInput = document.getElementById("fieldNameInput");
+            const fieldValueInput = document.getElementById("fieldValueInput");
+            const fieldLabel = document.getElementById("fieldLabel");
+            const modalLabel = document.getElementById("editFieldModalLabel");
+            const actionInput = document.getElementById("actionInput");
 
-            document.getElementById("fieldNameInput").value = field;
-            document.getElementById("deleteFieldNameInput").value = field;
-            document.getElementById("fieldValueInput").value = value;
-            document.getElementById("fieldLabel").textContent = "Nhập " + convertFieldName(field) + ":";
-            document.getElementById("editFieldModalLabel").textContent = "Chỉnh sửa " + convertFieldName(field);
+            if (!fieldNameInput || !fieldValueInput || !fieldLabel || !modalLabel || !actionInput) {
+                console.error("Phần tử không tồn tại:", {fieldNameInput, fieldValueInput, fieldLabel, modalLabel, actionInput});
+                alert("Lỗi hệ thống: Không tìm thấy phần tử.");
+                return;
+            }
+
+            fieldNameInput.value = field;
+            fieldValueInput.value = decodeURIComponent(value);
+            fieldLabel.textContent = "Nhập " + convertFieldName(field) + ":";
+            modalLabel.textContent = "Chỉnh sửa " + convertFieldName(field).toLocaleLowerCase();
+            actionInput.value = "update";
 
             $('#editFieldModal').modal('show');
         }
 
         function convertFieldName(field) {
             switch (field) {
-                case 'centerName':
-                    return 'tên trung tâm';
-                case 'address':
-                    return 'địa chỉ';
-                case 'email':
-                    return 'email';
-                case 'phone':
-                    return 'số điện thoại';
+                case "centerName":
+                    return "Tên trung tâm";
+                case "address":
+                    return "Địa chỉ";
+                case "email":
+                    return "Email";
+                case "phone":
+                    return "Số điện thoại";
+                case "descripCenter":
+                    return "Mô tả trung tâm";
                 default:
-                    return 'giá trị';
+                    return field;
             }
         }
 
         function handleFormSubmit(event) {
             event.preventDefault();
-            const form = event.target;
-            const isDelete = form.id === 'deleteFieldForm';
-            if (isDelete && !confirm('Bạn có chắc muốn xóa nội dung này không?')) {
+            const form = event.currentTarget;
+
+            if (!(form instanceof HTMLFormElement)) {
+                console.error("Sự kiện submit không được gọi từ form:", form);
+                alert("Lỗi hệ thống: Form không hợp lệ.");
                 return;
             }
 
+            const actionAttr = form.getAttribute("action");
+            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
+                    ? actionAttr.trim()
+                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
+
             const formData = new FormData(form);
-            for (let [key, value] of formData.entries()) {
-                console.log("Form data:", key, "=", value);
+            const data = Object.fromEntries(formData);
+
+            if (!data.fieldName || !data.action) {
+                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
+                return;
             }
 
-            fetch(form.action, {
+            if (data.action === "update" && (!data.fieldValue || data.fieldValue.trim() === "")) {
+                alert("Vui lòng nhập giá trị hợp lệ.");
+                return;
+            }
+
+            fetch(formAction, {
                 method: 'POST',
-                body: formData
-            }).then(response => {
-                console.log("Response status:", response.status);
-                if (response.ok) {
-                    alert('Thao tác thành công!');
-                    location.reload();
-                } else {
-                    response.text().then(text => {
-                        console.error("Error response:", text);
-                        alert('Thao tác thất bại! Lỗi: ' + text);
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(data).toString()
+            })
+                    .then(response => response.text().then(text => ({status: response.status, text})))
+                    .then(({ status, text }) => {
+                        if (status >= 200 && status < 300 && text.includes("thành công")) {
+                            alert('Thao tác thành công!');
+                            $('#editFieldModal').modal('hide');
+                            updateContent(data.fieldName, data.fieldValue);
+                            refreshDisplay(data.fieldName, data.fieldValue);
+                            location.reload();
+                        } else {
+                            alert('Thao tác thất bại! Lỗi: ' + (text || 'Không xác định'));
+                    }
+                    })
+                    .catch(error => {
+                        alert('Lỗi khi gửi yêu cầu: ' + error.message);
                     });
-                }
-            }).catch(error => {
-                console.error('Lỗi:', error);
-                alert('Lỗi khi gửi yêu cầu: ' + error.message);
-            });
         }
 
-        $('#editFieldModal').on('hidden.bs.modal', () => location.reload());
+        function handleDelete() {
+            if (!confirm('Bạn có chắc muốn xóa nội dung này không?'))
+                return;
+
+            const field = document.getElementById("fieldNameInput")?.value;
+            const form = document.getElementById("editFieldForm");
+
+            if (!form || !(form instanceof HTMLFormElement)) {
+                alert("Lỗi hệ thống: Form không hợp lệ.");
+                return;
+            }
+
+            if (!field) {
+                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
+                return;
+            }
+
+            const actionAttr = form.getAttribute("action");
+            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
+                    ? actionAttr.trim()
+                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
+
+            const data = {fieldName: field, action: "delete"};
+
+            fetch(formAction, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(data).toString()
+            })
+                    .then(response => response.text().then(text => ({status: response.status, text})))
+                    .then(({ status, text }) => {
+                        if (status >= 200 && status < 300 && text.includes("thành công")) {
+                            alert('Xóa thành công!');
+                            $('#editFieldModal').modal('hide');
+                            updateContent(field, '');
+                            refreshDisplay(field, '');
+                            location.reload();
+                        } else {
+                            alert('Xóa thất bại! Lỗi: ' + (text || 'Không xác định'));
+                    }
+                    })
+                    .catch(error => {
+                        alert('Lỗi khi gửi yêu cầu xóa: ' + error.message);
+                    });
+        }
+
+        function updateContent(fieldName, fieldValue) {
+            const element = document.querySelector(`[data-field="${fieldName}"]`);
+            if (element) {
+                element.textContent = fieldValue || '';
+            }
+        }
+        function closeModalEdit() {
+            $('#editFieldModal').modal('hide');
+            location.reload(); // Tự động tải lại trang sau khi modal đóng
+        }
+
+
+        function refreshDisplay(fieldName, fieldValue) {
+            // Có thể AJAX reload, cập nhật bảng hoặc đồng bộ nhiều phần tử cùng field
+        }
     </script>
+
+
     <script>
         window.showTeacherDetail = function (fullName, gender, phone, email, certi, descrip, onlineStatus, schoolName) {
             document.getElementById('modalTeacherFullName').textContent = fullName || 'Chưa xác định';
@@ -2658,42 +3208,71 @@
             }
         }
     </script>
-<script>
-function equalizeTeamItemHeights() {
-    var maxHeight = 0;
-    $('.team-item').css('height', 'auto'); // Reset trước
-    $('.team-item').each(function() {
-        var h = $(this).outerHeight();
-        if (h > maxHeight) maxHeight = h;
-    });
-    $('.team-item').css('height', maxHeight + 'px');
-}
-
-$(document).ready(function() {
-    // Khởi tạo owlCarousel
-    $('.owl-carousel').owlCarousel({
-        loop: true,
-        margin: 20,
-        nav: true,
-        dots: true,
-        responsive: {
-            0: { items: 1 },
-            600: { items: 2 },
-            1000: { items: 3 }
+    <script>
+        function equalizeTeamItemHeights() {
+            var maxHeight = 0;
+            $('.team-item').css('height', 'auto'); // Reset trước
+            $('.team-item').each(function () {
+                var h = $(this).outerHeight();
+                if (h > maxHeight)
+                    maxHeight = h;
+            });
+            $('.team-item').css('height', maxHeight + 'px');
         }
-    });
 
-    // Đồng bộ chiều cao sau khi owlCarousel render hoặc thay đổi
-    $(".owl-carousel").on('initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel changed.owl.carousel', function() {
-        setTimeout(equalizeTeamItemHeights, 200); // Đợi để render xong
-    });
+        $(document).ready(function () {
+            // Khởi tạo owlCarousel
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: true,
+                dots: true,
+                responsive: {
+                    0: {items: 1},
+                    600: {items: 2},
+                    1000: {items: 3}
+                }
+            });
 
-    // Đồng bộ lại khi resize cửa sổ
-    $(window).on('resize', function() {
-        setTimeout(equalizeTeamItemHeights, 200);
-    });
+            // Đồng bộ chiều cao sau khi owlCarousel render hoặc thay đổi
+            $(".owl-carousel").on('initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel changed.owl.carousel', function () {
+                setTimeout(equalizeTeamItemHeights, 200); // Đợi để render xong
+            });
+
+            // Đồng bộ lại khi resize cửa sổ
+            $(window).on('resize', function () {
+                setTimeout(equalizeTeamItemHeights, 200);
+            });
+        });
+    </script>
+    <!--    Chỉnh sửa banner-->
+    <script>
+        function openBannerEditModal() {
+            const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
+            modal.show();
+        }
+    </script>
+    <script>
+    $(document).ready(function () {
+    const $navbarVertical = $('#navbar-vertical');
+    const $courseContent = $('#course-content');
+
+    if ($navbarVertical.length && $courseContent.length) {
+        const verticalOffset = $navbarVertical.offset();
+        const verticalWidth = $navbarVertical.outerWidth();
+        const verticalHeight = $navbarVertical.outerHeight();
+
+        $courseContent.css({
+            position: 'absolute',
+            top: verticalOffset.top + 'px',          // Ngay hàng với navbar dọc
+            left: (verticalOffset.left + verticalWidth) + 'px', // Ngay bên phải
+            zIndex: 9999
+        });
+    }
 });
+
 </script>
+
 
 
 </body>

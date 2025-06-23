@@ -4,7 +4,12 @@ import entity.School;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-//Văn Thị NHư - HE181329
+/**
+ * 
+ *
+ * Ngày tạo: 23/06/2025  
+ * Người viết: Van Nhu
+ */
 public class SchoolDAO {
     public List<School> getAllSchools() {
         List<School> schools = new ArrayList<>();
