@@ -645,7 +645,107 @@
                 }
             }
 
-
+            .site-footer .logo-image {
+                max-width: 50%;
+                margin-left: 50px;
+                height: auto;
+                width: auto;
+            }
+            /*CSS quen mat khau*/
+            /* Popup nền mờ */
+            .forgot-password-modal {
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.13);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .forgot-password-content {
+                background: #fff;
+                border-radius: 10px;
+                padding: 32px 36px 32px 36px;
+                box-shadow: 0 0 20px 0 rgba(0,0,0,0.14);
+                position: relative;
+                width: 450px;
+                max-width: 90vw;
+                min-width: 260px;
+                text-align: center;
+            }
+            .close-forgot-btn {
+                position: absolute;
+                top: 14px;
+                right: 18px;
+                font-size: 28px;
+                color: #EC6F69;
+                cursor: pointer;
+                font-weight: bold;
+                z-index: 10;
+                transition: color 0.2s;
+            }
+            .close-forgot-btn:hover {
+                color: #333;
+            }
+            .forgot-title {
+                color: #FF6B6B;
+                font-size: 32px;
+                font-weight: bold;
+                margin-bottom: 14px;
+                margin-top: 0;
+            }
+            .forgot-label {
+                display: block;
+                text-align: left;
+                font-weight: 600;
+                margin-bottom: 6px;
+                font-size: 16px;
+            }
+            .forgot-input {
+                width: 100%;
+                border-radius: 20px;
+                border: 2px solid #FF6B6B;
+                padding: 10px 16px;
+                margin-bottom: 15px;
+                font-size: 18px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            .forgot-input:focus {
+                border-color: #EC6F69;
+            }
+            .forgot-desc {
+                color: #333;
+                font-size: 14px;
+                margin-bottom: 22px;
+                text-align: left;
+            }
+            .forgot-submit-btn {
+                display: block;
+                margin: 0 auto;
+                background: #FF6B6B;
+                color: #fff;
+                border: none;
+                border-radius: 999px;
+                padding: 10px 36px;
+                font-size: 18px;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(255,107,107,0.10);
+                transition: background 0.2s;
+            }
+            .forgot-submit-btn:hover {
+                background: #EC6F69;
+            }
+            @media (max-width: 500px) {
+                .forgot-password-content {
+                    padding: 20px 8vw;
+                    width: 95vw;
+                }
+            }
 
 
         </style>
@@ -706,7 +806,7 @@
                     <h2>Đăng nhập</h2>
                     <form action="login" method="get">
                         <div class="form-group">
-                            <label>Email *</label>
+                            <label>Email hoặc Số Điện Thoại*</label>
                             <input type="text" name="loginEmail"   />
                         </div>
                         <div class="form-group">
@@ -717,7 +817,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <a href="#">Quên mật khẩu?</a>
+                            <a href="requestPass.jsp">Quên mật khẩu?</a>
                         </div>
                         <br />
                         <% if (request.getAttribute("error") != null) { %>
@@ -736,6 +836,7 @@
                             </a>
                         </div>
                     </form>
+                    
 
                 </div>
                 <!-- Đăng ký học -->
@@ -874,6 +975,26 @@
                     input.type = "password";
                     icon.classList.remove("bi-eye");
                     icon.classList.add("bi-eye-slash");
+                }
+            }
+        </script>
+        <script>
+            // Hiện popup quên mật khẩu
+            function openForgotPassword() {
+                document.getElementById('forgotPasswordModal').style.display = 'flex';
+                setTimeout(function () {
+                    document.getElementById('forgotEmail').focus();
+                }, 200);
+            }
+            // Đóng popup quên mật khẩu
+            function closeForgotPassword() {
+                document.getElementById('forgotPasswordModal').style.display = 'none';
+            }
+            // Đóng popup khi click ra ngoài content
+            window.onclick = function (event) {
+                let modal = document.getElementById('forgotPasswordModal');
+                if (modal && event.target === modal) {
+                    closeForgotPassword();
                 }
             }
         </script>

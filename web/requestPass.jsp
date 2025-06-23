@@ -1,151 +1,37 @@
 <%-- 
-    Document   : login_register
-    Created on : May 24, 2025, 10:50:54 PM
-    Author     : DO NGOC ANH HE180661
+    Document   : requestPass
+    Created on : Jun 24, 2025, 12:23:49 AM
+    Author     : NGOC ANH
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>EDURA System</title>
+
+        <!-- CSS FILES -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+        <link href="css/owl.carousel.min.css" rel="stylesheet">
+        <link href="css/owl.theme.default.min.css" rel="stylesheet">
+        <link href="css/tooplate-gotto-job.css" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login</title>
         <style>
-
-
-            .wrapper {
-                display: flex;
-                background: #fff;
-                padding: 30px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                border-radius: 10px;
-                gap: 50px;
-            }
-            .form-container {
-                width: 600px;
-            }
-            h2 {
-                margin-bottom: 17px;
-                color: #FF6B6B;
-                font-size: 40px;
-
-            }
-            .form-container h2{
-                font-weight: bold;
-            }
-            .form-group {
-                margin-bottom: 15px;
-            }
-            label {
-                font-weight: bold;
-            }
-            input[type="text"],
-            input[type="email"],
-            input[type="password"],
-            input[type="date"] {
-                width: 100%;
-                padding: 10px;
-                margin-top: 5px;
-                border-radius: 6px;
-                border: 1px solid #ccc;
-                font-size: 16px; /* đồng bộ font-size */
-                font-family: inherit; /* cùng font với toàn trang */
-            }
-            .gender-group {
-                margin-top: 5px;
-            }
-            .gender-group input {
-                margin-right: 5px;
-            }
-            .form-footer {
-                font-size: 13px;
-                color: #666;
-                margin-top: 10px;
-            }
-            .form-footer a {
-                color: #007bff;
-                text-decoration: none;
-            }
-            .checkbox-group {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .form-options {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-size: 14px;
-            }
-            .cl{
-                width: 30%;
-            }
-            button {
-                background-color: #FF6B6B;
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                width: 100%;
-                border-radius: 6px;
-                font-size: 16px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background-color: #FF3366;
-            }
-            .error-message {
-                color: red;
-                font-weight: bold;
-                margin-bottom: 0.5px;
-                display: block;
-            }
-            .position-relative {
-                position: relative;
-            }
-            .toggle-password {
-                position: absolute;
-                top: 40%;
-                right: 5px;
-                transform: translateY(-35%);
-                cursor: pointer;
-                color: #666;
-                font-size: 18px;
-            }
-            .google-login {
-                text-align: center;
-                margin-top: 20px;
-            }
-            .google-btn {
-                display: inline-flex;
-                align-items: center;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                padding: 10px 15px;
-                text-decoration: none;
-                color: #444;
-                font-weight: bold;
-                transition: 0.3s;
-            }
-            .google-btn img {
-                width: 20px;
-                margin-right: 10px;
-            }
-            .google-btn:hover {
-                background-color: #f5f5f5;
-            }
-            .main-container {
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding: 50px;
-            }
+            /* Ghi đè style cho btn-primary */
             .btn-primary {
                 background-color: #FF6B6B !important;
                 border-color: #FF6B6B !important;
@@ -244,11 +130,6 @@
                 color: #333 !important;
             }
 
-            .form-control {
-                font-size: 16px !important;
-                font-family: inherit;
-            }
-
             .container-fluid.bg-dark.text-white .btn-primary {
                 background-color: #FF6B6B !important;
                 border-color: #FF6B6B !important;
@@ -288,7 +169,23 @@
                 transform: scale(1.1);
                 box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
             }
+            .logo-container {
+                position: relative;
+                width: 100px; /* Giữ kích thước cố định của div */
+                height: 100px; /* Giữ tỷ lệ vuông */
+                overflow: hidden; /* Ẩn phần vượt ra ngoài */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
 
+            /* Logo image */
+            .logo-image {
+                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
+                height: auto;
+                transform: scale(2); /* Phóng to mặc định */
+                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
+            }
 
             @media (max-width: 576px) {
                 .back-top-icon {
@@ -315,7 +212,7 @@
                 background-color: #FFF1F1; /* Hồng nhạt */
                 color: #000 !important;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                padding: 10px 0;
+                padding: 15px 0;
             }
 
             /* Màu đỏ cho biểu tượng */
@@ -351,7 +248,7 @@
             .top-header h6 {
                 font-weight: 600;
                 font-size:20px;
-                margin-bottom: 1px;
+                margin-bottom: 4px;
             }
             /* Style cho navbar nền xám nhạt */
             .navbar {
@@ -392,7 +289,15 @@
                 text-align: center;
             }
 
+            .avatar {
+                font-size: 60px;
+                margin-bottom: 10px;
+            }
 
+            .username {
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
 
             .sidebar a {
                 display: block;
@@ -542,7 +447,17 @@
                 transform: scale(1.05); /* Phóng to 5% */
                 box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4); /* Bóng đậm hơn */
             }
-
+            .schedule-title {
+                font-size: 40px;
+                font-weight: 500;
+            }
+            .schedule-title-container {
+                position: relative;
+                height: 70px; /* Chiều cao container để dễ căn giữa */
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
             .navbar {
                 background-color: #f8f9fa !important; /* Xám nhạt */
                 padding: 12px 24px;
@@ -581,77 +496,6 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
-            .top-header .row {
-                display: flex;
-                align-items: center;/*                  căn giữa theo chiều dọc */
-                justify-content: space-between; /*                 phân bố đều  */
-                flex-wrap: nowrap; /*                 không cho xuống hàng  */
-            }
-
-            .top-header .col-lg-3 {
-                flex: 1;
-                text-align: center;
-            }
-
-            .logo-container {
-                max-width: 50%;
-                text-align: center;
-
-            }
-
-            .logo-image {
-                max-width: 70%;
-                margin-left: 50px;
-            }
-
-            .site-footer{
-                width: 100%;
-                display: flex;
-                align-items: center;/*                  căn giữa theo chiều dọc */
-                justify-content: space-between; /*                 phân bố đều  */
-                flex-wrap: nowrap; /*                 không cho xuống hàng  */
-            }
-            .logo-container {
-                max-width: 50%;
-                margin-right: auto; /* Đẩy logo sang trái */
-            }
-
-            .logo-image {
-                width: 100%;
-                height: auto;
-                object-fit: contain;
-            }
-
-            .slogan-group p {
-                margin-bottom: 5px;
-                font-weight: 500;
-            }
-
-            footer .row > div {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-            }
-
-            @media (max-width: 767px) {
-                footer .row > div {
-                    margin-bottom: 20px;
-                    align-items: center;
-                    text-align: center;
-                }
-
-                .logo-container {
-                    margin: 0 auto;
-                }
-            }
-
-            .site-footer .logo-image {
-                max-width: 50%;
-                margin-left: 50px;
-                height: auto;
-                width: auto;
-            }
-            /*CSS quen mat khau*/
             /* Popup nền mờ */
             .forgot-password-modal {
                 position: fixed;
@@ -746,10 +590,27 @@
                     width: 95vw;
                 }
             }
+            .forgot-password-content {
+                
+                justify-content: center;
+                align-items: center;
+                margin-left: 750px;
+            }
+
+            .forgot-password-content {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            .alert alert-info{
+                margin-top: 5px;
+            }
 
 
         </style>
     </head>
+
     <body id="top">
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
@@ -795,114 +656,37 @@
                 </div>
             </div>
         </div>
+        <div class="container-fluid schedule-title-container navbar position-relative">
+            <a href="Home.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+                <i class="bi bi-arrow-left"></i>
+            </a>
 
-
-        <span class="close-btn" onclick="closeLoginPopup()" 
-              style="position: absolute; top: 10px; right: 20px; font-size: 30px; color: white; cursor: pointer;">&times;</span>
-        <div class="main-container">
-            <div class="wrapper">
-                <!-- Đăng nhập -->
-                <div class="form-container">
-                    <h2>Đăng nhập</h2>
-                    <form action="login" method="get">
-                        <div class="form-group">
-                            <label>Email hoặc Số Điện Thoại*</label>
-                            <input type="text" name="loginEmail"   />
-                        </div>
-                        <div class="form-group">
-                            <label>Mật khẩu *</label>
-                            <div class="position-relative">
-                                <input type="password" id="Password" name="loginPassword" class="form-control pe-5" required />
-                                <i class="fa fa-eye-slash toggle-password" id="togglePass" onclick="togglePassword('Password', 'togglePass')"></i>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <a href="requestPass.jsp">Quên mật khẩu?</a>
-                        </div>
-                        <br />
-                        <% if (request.getAttribute("error") != null) { %>
-                        <span class="error-message"><%= request.getAttribute("error") %></span>
-                        <% } %>
-                        <br />
-                        <button type="submit" class="log">Đăng nhập</button>
-                    </form>
-                    <form action="${pageContext.request.contextPath}/googlelogin" method="GET">
-                        <div class="google-login">
-                            <p>Hoặc đăng nhập bằng</p>
-                            <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20openid&redirect_uri=http://localhost:9999/WebApplication3/googlelogin&response_type=code&client_id=462397547099-cog4espvmnlb8qcg8s34ikuum3hufpur.apps.googleusercontent.com&prompt=consent" 
-                               class="google-btn">
-                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
-                                Đăng nhập với Google
-                            </a>
-                        </div>
-                    </form>
-                    
-
-                </div>
-                <!-- Đăng ký học -->
-                <div class="form-container">
-                    <h2>Đăng ký học</h2>
-                    <form action="register" method="post"  enctype="multipart/form-data">
-                        <div class="form-group">
-                            <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="email" placeholder="Email" required />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="phone" placeholder="Số điện thoại" required />
-                        </div>
-                        <div class="form-group">
-                            <label>Giới tính</label><br/>
-                            <div class="gender-group">
-                                <input type="radio" name="gender" value="Nữ" checked /> Nữ
-                                <input type="radio" name="gender" value="Nam" /> Nam
-                                <input type="radio" name="gender" value="Khác" /> Khác
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Ngày sinh</label>
-                            <input type="date" name="dob" />
-                        </div>
-                        <div class="form-group schoolclass sc">
-                            <input type="text" name="school" placeholder="Trường" required/>
-                        </div>
-                        <div class="form-group schoolclass sc">
-                            <input type="text" name="schoolAddress" placeholder="Địa Chỉ" required/>
-                        </div>
-                        <div class="form-group schoolclass cl">
-                            <input type="text" name="classAtSchool" placeholder="Lớp" required/>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="emailpar" placeholder="Email người giám hộ"  />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="userIntro" placeholder="ID người giới thiệu"  />
-                        </div>
-                        <div class="form-footer">
-                            <input type="checkbox" name="verifi" required/>
-                            Cam kết rằng những thông tin bạn cung cấp phía trên là chính xác, nếu có gì sai sót bạn phải chịu trách nhiệm trước
-                            <a href="#">Pháp Luật</a> theo 
-                            <a href="https://chinhphu.vn/?pageid=27160&docid=212362&classid=1">Thông tư 29</a> về việc học thêm.
-                        </div>
-                        <br />
-                        <% if (request.getAttribute("error1") != null) { %>
-                        <span class="error-message"><%= request.getAttribute("error1") %></span>
-                        <% } %>
-                        <br />
-                        <button type="submit">Gửi yêu cầu đăng kí học</button>
-                    </form>
-                </div>
-            </div>
         </div>
+
+
+        <div class="forgot-password-content">
+            
+            <h2 class="forgot-title">Quên Mật Khẩu</h2>
+            <form action="forgotpassword" method="post">
+                <label for="forgotEmail" class="forgot-label">Nhập địa chỉ email của bạn:</label>
+                <input type="email" id="forgotEmail" name="email" class="forgot-input" required />
+
+                <div class="forgot-desc">
+                    Chúng tôi sẽ gửi đường link để lấy lại mật khẩu qua email của bạn
+                </div>
+                <button type="submit" class="forgot-submit-btn">Đặt lại mật khẩu</button>
+            </form>
+            <c:if test="${not empty mess}">
+        <div >${mess} </div>
+    </c:if>
+        </div>
+
+
         <footer class="site-footer">
             <!-- Footer Start -->
             <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
                 <div class="row pt-5">
-                    <div class="col-lg-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
                         <a href="" class="text-decoration-none">
 
                             <div class="logo-container">
@@ -919,7 +703,7 @@
 
                         </a>
                     </div>
-                    <div class="col-lg-7">
+                    <div class="col-lg-7 col-md-12">
                         <div class="row">
                             <div class="col-md-6 mb-5">
                                 <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
@@ -963,21 +747,17 @@
             <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
         </footer>
-        <script>
-            function togglePassword(inputId, iconId) {
-                let input = document.getElementById(inputId);
-                let icon = document.getElementById(iconId);
-                if (input.type === "password") {
-                    input.type = "text";
-                    icon.classList.remove("bi-eye-slash");
-                    icon.classList.add("bi-eye");
-                } else {
-                    input.type = "password";
-                    icon.classList.remove("bi-eye");
-                    icon.classList.add("bi-eye-slash");
-                }
-            }
-        </script>
+
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- <script src="js/owl.carousel.min.js"></script>
+        <!-- <script src="js/counter.js"></script> -->
+        <!-- <script src="js/custom.js"></script> -->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             // Hiện popup quên mật khẩu
             function openForgotPassword() {
@@ -998,7 +778,5 @@
                 }
             }
         </script>
-
-
     </body>
 </html>
