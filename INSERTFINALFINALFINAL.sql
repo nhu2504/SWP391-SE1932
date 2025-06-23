@@ -231,7 +231,7 @@ values
 (N'Sinh Học','sinh.jpg'),
 (N'Hóa Học','hoa.jpg'),
 (N'Vật Lý','ly.jpg');
-
+select *from [user]
 
 --7.Ca hoc
 insert into Shiftlearn(Start_time,End_time)
@@ -242,7 +242,6 @@ values
 ('15:10:00', '17:10:00'),
 ('17:20:00', '19:20:00'),
 ('19:30:00', '21:30:00');
-
 
 --8.Room
 insert into Room(roomName)
@@ -337,6 +336,7 @@ values
 (8,N'Tổng ôn Văn 11 - 04',7),
 (9,N'Tổng ôn Tiếng Anh 12 - 01',11),
 (9,N'Tổng ôn Tiếng Anh 12 - 02',11);
+
 
 -- 11. Điểm danh của lớp (Attendance)
 insert into Attendance(ClassGroupID,UserID,IsPresent)
@@ -472,3 +472,32 @@ values
 (2,4,9,11,45),
 (2,5,10,11,46);
 
+SELECT cg.ClassGroupName
+FROM Schedule s
+JOIN ClassGroup cg ON s.ClassGroupID = cg.ClassGroupID
+WHERE s.UserID = 2
+  AND s.DateLearn = CONVERT(date, GETDATE())
+ORDER BY s.ShiftID ASC
+
+insert into ClassGroup_Student(ClassGroupID,StudentID)
+values
+(1,23),
+(1,26),
+(7,28),
+(7,31),
+(16,32),
+(22,38),
+(27,39),
+(34,40),
+(46,41),
+(41,22),
+(42,25),
+(43,29),
+(44,34),
+(41,35),
+(38,24),
+(39,27),
+(40,30),
+(38,33),
+(39,36),
+(40,37);
