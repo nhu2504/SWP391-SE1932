@@ -1290,125 +1290,17 @@ Ngày update 23/6/2025-->
             <div class="flex-grow-1 d-flex align-items-center justify-content-center bg-light p-3">
                 <div class="position-relative w-100 rounded shadow overflow-hidden" style="max-width: 950px; height: 100%;">
                     <div id="header-carousel" class="carousel slide h-100" data-bs-ride="carousel">
-                        <div class="carousel-inner h-100">
-
-                            <!-- Hiển thị banner hoặc dòng thông báo nếu không có -->
-                            <c:choose>
-                                <c:when test="${not empty banners}">
-                                    <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                        <div class="carousel-item h-100 ${loop.first ? 'active' : ''}" style="position: relative;">
-                                            <a href="${pageContext.request.contextPath}/login_register.jsp">
-                                                <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
-                                                     class="d-block w-100 h-100"
-                                                     style="object-fit: contain;"
-                                                     alt="Banner ${loop.index + 1}">
-                                            </a>
-
-                                            <span class="edit-icon ml-2"
-                                                  onclick="openBannerEditModal()"
-                                                  style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
-                                                  display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                                <i class="fa fa-camera"></i>
-                                            </span>
-                                        </div>
-                                    </c:forEach>
-                                </c:when>
-
-                                <c:otherwise>
-                                    <div class="carousel-item active h-100 d-flex justify-content-center align-items-center bg-white"
-                                         style="min-height: 300px; position: relative;">
-                                        <p class="text-muted mb-0">Chưa có banner nào.</p>
-
-                                        <span class="edit-icon ml-2"
-                                              onclick="openBannerEditModal()"
-                                              style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
-                                              display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                            <i class="fa fa-camera"></i>
-                                        </span>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active" style="min-height: 300px;">
+                                <img class="position-relative w-100" 
+                                     src="${pageContext.request.contextPath}/LogoServlet?type=bannerteacher" 
+                                     alt="BannerTeacher" 
+                                     style="min-height: 300px; object-fit: cover;"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                            </div>                                       
                         </div>
 
-                        <!-- Dấu chấm điều hướng chỉ hiện khi có nhiều banner -->
-                        <c:if test="${fn:length(banners) > 1}">
-                            <div class="carousel-indicators d-flex justify-content-center position-absolute" style="bottom: 10px;">
-                                <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                    <button type="button"
-                                            data-bs-target="#header-carousel"
-                                            data-bs-slide-to="${loop.index}"
-                                            class="${loop.first ? 'active' : ''}"
-                                            <c:if test="${loop.first}">aria-current="true"</c:if>
-                                            aria-label="Slide ${loop.index + 1}"></button>
-                                </c:forEach>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
 
-                <!-- Modal chỉnh sửa banner -->
-                <div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-
-                            <!-- Nút đóng -->
-                            <div class="modal-header d-flex justify-content-between align-items-center">
-                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa banner</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Danh sách banner hiện tại: mỗi dòng 1 ảnh và 1 nút xoá -->
-                                <div class="table-responsive mb-4">
-                                    <table class="table align-middle">
-                                        <tbody>
-                                            <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                                <tr>
-                                                    <td style="width:70%;vertical-align:middle;">
-                                                        <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
-                                                             class="img-fluid"
-                                                             style="max-height: 120px; max-width: 100%; border: 1px solid #eee; background: #fafbfc;"
-                                                             alt="Banner ${loop.index + 1}" />
-                                                    </td>
-                                                    <td style="width:30%;vertical-align:middle;">
-                                                        <form action="${pageContext.request.contextPath}/BannerServlet"
-                                                              method="post"
-                                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá banner này?');"
-                                                              class="d-inline-block">
-                                                            <input type="hidden" name="action" value="delete" />
-                                                            <input type="hidden" name="bannerID" value="${banner.bannerID}" />
-                                                            <button type="submit" class="btn btn-danger px-4">Xoá</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                            <c:if test="${empty banners}">
-                                                <tr>
-                                                    <td colspan="2" class="text-center text-muted">Chưa có banner nào.</td>
-                                                </tr>
-                                            </c:if>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Form thêm banner mới (upload 1 ảnh) -->
-
-                                <div class="w-100 px-3"> <!-- Cách hai đầu div lớn đều -->
-                                    <form action="${pageContext.request.contextPath}/BannerServlet"
-                                          method="post"
-                                          enctype="multipart/form-data"
-                                          class="d-flex justify-content-between align-items-center w-100 gap-2 m-0">
-                                        <input type="hidden" name="action" value="add" />
-                                        <input type="file" name="bannerImage" accept="image/*"
-                                               class="form-control flex-grow-1 me-2"
-                                               required>
-                                        <button type="submit" class="btn btn-success">Thêm</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1518,7 +1410,7 @@ Ngày update 23/6/2025-->
         <main>
             
             <!-- Gv Start -->
-            <div class="container-fluid py-0">
+            <div class="container-fluid py-5">
                 <div class="container py-0">
                     <div class="section-title text-center position-relative mb-5">
                         <div class="text-center mb-5">
