@@ -1680,7 +1680,7 @@ Ngày update 23/6/2025-->
                                                                 data-ishot="${tc.isHot}"
                                                                 data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
                                                                 data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
-                                                                data-maxstudents="${tc.maxStudent}"
+                                                                
                                                                 data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
                                                                 data-duration="${durationMap[tc.tutoringClassID]}"
                                                                 data-startdate="${tc.startDate}"

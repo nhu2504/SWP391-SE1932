@@ -35,7 +35,7 @@ public class HomeServlet extends HttpServlet {
     private final SchoolDAO schoolDAO = new SchoolDAO();
     private final BannerDAO bannerDAO = new BannerDAO();
     private final RoomDAO roomDAO = new RoomDAO();
-    private final ShiftDAO shiftDAO = new ShiftDAO();
+    private final ShiftLearnDAO shiftDAO = new ShiftLearnDAO();
     private final ClassGroupDAO classGroupDAO = new ClassGroupDAO();
 
     @Override

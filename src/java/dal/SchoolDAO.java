@@ -31,23 +31,23 @@ public class SchoolDAO {
         return schools;
     }
     
-    public School getSchoolByID(int id) {
-        String query = "select * from School\n"
-                + "  where SchoolID = ?";
-        try {
-            Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(query); 
-                ps.setInt(1, id);
-                ResultSet rs = ps.executeQuery();
-                if(rs.next()){
-                    return new School(rs.getInt(1), 
-                            rs.getString(2));
-                }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    } 
+//    public School getSchoolByID(int id) {
+//        String query = "select * from School\n"
+//                + "  where SchoolID = ?";
+//        try {
+//            Connection conn = new DBContext().connection; 
+//                PreparedStatement ps = conn.prepareStatement(query); 
+//                ps.setInt(1, id);
+//                ResultSet rs = ps.executeQuery();
+//                if(rs.next()){
+//                    return new School(rs.getInt(1), 
+//                            rs.getString(2));
+//                }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    } 
     public String getSchoolNameById(int schoolID) {
         String schoolName = "";
         try (Connection conn = new DBContext().connection;
