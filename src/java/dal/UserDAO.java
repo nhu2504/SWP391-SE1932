@@ -21,7 +21,7 @@ public class UserDAO {
     public User login(String emailOrPhone, String password) {
         //tìm người dùng có mail và mật khẩu trùng khớp
         String query = """
-                       select * from [user] where email = ? or phone = ?
+                       select * from [user] where (email = ? or phone = ?)
                        and pass = ? 
                        """
                 ;
@@ -133,18 +133,42 @@ public class UserDAO {
     }
     return null;
 }
+     public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE [User] SET pass = ? WHERE UserID = ?";
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newPassword); // Có thể hash password trước khi lưu!
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
 public static void main(String[] args) {
-        UserDAO r = new UserDAO();
+//        UserDAO r = new UserDAO();
+//
+//       
+//        String email = "chuchegirl9@gmail.com"; 
+//    User role = r.getUserByEmail(email);
+//    if (role != null) {
+//        System.out.println("Information user: " + role.toString());
+//    } else {
+//        System.out.println("Not found user with email: " + email);
+//    }
+UserDAO dao = new UserDAO();
+        int testUserId = 3; // Thay bằng ID có thật trong DB của bạn
+        String newPassword = "12345678"; // Mật khẩu mới bạn muốn đặt
 
-       
-        String email = "chuchegirl9@gmail.com"; 
-    User role = r.getUserByEmail(email);
-    if (role != null) {
-        System.out.println("Information user: " + role.toString());
-    } else {
-        System.out.println("Not found user with email: " + email);
-    }
+        boolean success = dao.updatePassword(testUserId, newPassword);
+
+        if (success) {
+            System.out.println("✔️ Đặt lại mật khẩu thành công!");
+        } else {
+            System.out.println("❌ Đặt lại mật khẩu thất bại.");
+        }
     }
 
 
