@@ -6,15 +6,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>EDURA System</title>
+    <meta name="description" content="Trang thông báo cho học sinh - Edura">
+    <meta name="author" content="Edura Team">
+    <title>Thông báo của học sinh - Edura</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.carousel.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.theme.default.min.css" rel="stylesheet">
@@ -22,7 +20,7 @@
 
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'League Spartan', 'Segoe UI Emoji', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f5f5f5;
@@ -31,7 +29,6 @@
         .top-header {
             background-color: #FFF1F1;
             color: #000;
-            font-family: 'League Spartan', sans-serif;
             padding: 15px 0;
             display: flex;
             justify-content: space-around;
@@ -45,7 +42,7 @@
         .top-header .contact-item {
             display: flex;
             align-items: center;
-            font-size: 16px;
+            font-size: 18px;
         }
         .top-header .contact-item i {
             margin-right: 10px;
@@ -53,7 +50,7 @@
             font-size: 35px;
         }
         .top-header .contact-item h6 {
-            font-weight: 600;
+            font-weight: bold;
             font-size: 22px;
             margin-bottom: 2px;
         }
@@ -62,62 +59,10 @@
             color: #333;
         }
         @media (max-width: 992px) {
-            .top-header {
-                display: none;
-            }
-        }
-        .sidebar {
-            background-color: #FFF1F1;
-            padding: 30px 20px;
-            min-height: 70vh;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-        }
-        .avatar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-        .avatar-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ccc;
-        }
-        .username {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 40px;
-            color: #000;
-        }
-        .menu-group {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            width: 100%;
-        }
-        .menu-group a {
-            display: block;
-            font-size: 18px;
-            padding: 15px 0;
-            color: #333;
-            text-decoration: none;
-            text-align: left;
-            padding-left: 40px;
-            transition: background 0.3s;
-        }
-        .sidebar a i {
-            margin-right: 10px;
-        }
-        .menu-group a:hover {
-            background-color: #ffd8eb;
-            border-radius: 10px;
+            .top-header { display: none; }
         }
         .main {
-            padding: 0;
+            padding: 20px;
         }
         h1.dashboard-title {
             text-align: center;
@@ -127,55 +72,90 @@
             margin-top: 0;
             font-weight: bold;
             color: #000;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 60px;
-            padding: 40px 20px;
-            max-width: 100%;
-            margin-left: 0;
-            margin-right: auto;
-        }
-        .card {
-            background-color: #FFF1F1;
-            padding: 40px;
+        h1.dashboard-title .title-content {
+            flex-grow: 1;
             text-align: center;
-            font-size: 20px;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
+        }
+        h1.dashboard-title .back-arrow {
+            margin-left: 20px;
             color: #333;
-            width: 100%;
+            font-size: 24px;
+            text-decoration: none;
         }
-        .card i, .card span.icon {
-            font-size: 30px;
+        h1.dashboard-title .back-arrow:hover {
+            color: #FF6B6B;
+        }
+        h1.dashboard-title .header-icons {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        h1.dashboard-title .header-icons .user-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        h1.dashboard-title .header-icons .user-dropdown .dropbtn {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        h1.dashboard-title .header-icons .user-dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 120px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 50;
+            top: 100%;
+        }
+        h1.dashboard-title .header-icons .user-dropdown:hover .dropdown-content {
             display: block;
-            margin-bottom: 10px;
         }
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
-            background-color: #fcd9e6;
+        h1.dashboard-title .header-icons .user-dropdown .dropdown-content a {
+            display: block;
+            padding: 5px 10px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
         }
-        .notification-section {
-            margin: 40px 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        h1.dashboard-title .header-icons .user-dropdown .dropdown-content a:hover {
+            color: #FF6B6B;
+        }
+        .container {
             padding: 20px;
         }
-        .notification-section h3 {
-            font-size: 24px;
+        .filter-bar {
+            text-align: right;
             margin-bottom: 20px;
-            color: #333;
+        }
+        .filter-bar select {
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            height: 37px;
         }
         .notification {
             background-color: #fff;
             border-left: 5px solid #FF6B6B;
             margin-bottom: 15px;
             padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             border-radius: 4px;
         }
         .notification.unread {
@@ -200,81 +180,31 @@
             font-size: 14px;
             line-height: 1.5;
         }
-        .view-all {
-            text-align: right;
-            margin-top: 20px;
-        }
-        .view-all a {
+        .notification .status {
+            float: right;
+            font-size: 12px;
             color: #FF6B6B;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .view-all a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                padding: 20px;
-            }
-        }
-        .schedule-table {
-            margin: 40px 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-        }
-        .schedule-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .schedule-table th, .schedule-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .schedule-table th {
-            background-color: #FF6B6B;
-            color: #fff;
-            font-weight: 600;
-        }
-        .schedule-table td {
-            font-size: 16px;
-        }
-        .schedule-table tr:hover {
-            background-color: #f9f9f9;
-        }
-        .attendance-status {
-            margin: 20px 20px;
-            font-size: 18px;
             font-weight: bold;
-            color: #dc3545;
         }
         .site-footer {
             margin-top: 90px;
-            font-family: 'League Spartan', sans-serif;
         }
         .container-fluid.bg-dark.text-white {
             background-color: #FFF1F1 !important;
             color: #333 !important;
             padding: 60px 45px;
             text-align: left;
-            font-family: 'League Spartan', sans-serif;
         }
         .container-fluid.bg-dark.text-white h5.text-primary {
             color: #FF6B6B !important;
             letter-spacing: 5px;
             text-transform: uppercase;
             margin-bottom: 20px;
-            font-family: 'League Spartan', sans-serif;
         }
         .container-fluid.bg-dark.text-white a.text-white {
             color: #333 !important;
             margin-bottom: 10px;
             display: block;
-            font-family: 'League Spartan', sans-serif;
         }
         .container-fluid.bg-dark.text-white a.text-white:hover {
             color: #FF6B6B !important;
@@ -363,9 +293,6 @@
                 right: 20px;
                 top: auto !important;
             }
-            .container-fluid.bg-dark.text-white {
-                padding: 60px 45px !important;
-            }
         }
         @media (max-width: 576px) {
             .back-top-icon {
@@ -374,7 +301,73 @@
                 font-size: 18px;
             }
         }
+        @media (max-width: 991px) {
+            .container-fluid.bg-dark.text-white {
+                padding: 60px 45px !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .notification h4, .notification .meta, .notification .content {
+                font-size: 14px;
+            }
+        }
     </style>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        window.addEventListener('click', function(e) {
+            const button = document.getElementById('userButton');
+            const dropdown = document.getElementById('userDropdown');
+            if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.addEventListener('scroll', function () {
+                const backTop = document.querySelector('.back-top-icon');
+                if (window.scrollY > 300) {
+                    backTop.classList.add('visible');
+                } else {
+                    backTop.classList.remove('visible');
+                }
+            });
+
+            function filterNotifications() {
+                const filter = document.getElementById("filter").value;
+                const notis = document.querySelectorAll(".notification");
+
+                notis.forEach(noti => {
+                    const isRead = noti.dataset.read === "true";
+                    const isImportant = noti.dataset.important === "true";
+                    noti.style.display = "block";
+
+                    switch (filter) {
+                        case "all":
+                            break;
+                        case "unread":
+                            if (isRead) noti.style.display = "none";
+                            break;
+                        case "read":
+                            if (!isRead) noti.style.display = "none";
+                            break;
+                        case "important":
+                            if (!isImportant) noti.style.display = "none";
+                            break;
+                        case "not-important":
+                            if (isImportant) noti.style.display = "none";
+                            break;
+                    }
+                });
+            }
+
+            document.getElementById("filter").addEventListener("change", filterNotifications);
+        });
+    </script>
 </head>
 <body id="top">
     <div class="container-fluid top-header">
@@ -406,82 +399,54 @@
         </div>
     </div>
 
-    <h1 class="dashboard-title">Bảng Điều Khiển</h1>
+    <h1 class="dashboard-title">
+        <a href="${pageContext.request.contextPath}/DashboardServlet" class="back-arrow" title="Quay lại" onclick="console.log('Navigating to DashboardServlet')"><i class="fas fa-arrow-left"></i></a>
+        <div class="title-content">Thông báo của học sinh</div>
+        <div class="header-icons">
+            <div class="user-dropdown">
+                <button class="dropbtn" id="userButton">${not empty userName ? userName : 'Khách'} <span class="ml-1">▼</span></button>
+                <div class="dropdown-content" id="userDropdown">
+                    <a href="${pageContext.request.contextPath}/login" title="Đăng nhập">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </h1>
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3 sidebar">
-                <div class="avatar">
-                    <img src="${pageContext.request.contextPath}/images${not empty sessionScope.userAvatar ? sessionScope.userAvatar : '/default-avatar.png'}" alt="Avatar" class="avatar-img" onerror="this.src='${pageContext.request.contextPath}/images/default-avatar.png';">
+            <div class="col-md-12 main">
+                <div class="filter-bar">
+                    <label for="filter">Lọc: </label>
+                    <select id="filter">
+                        <option value="all">Tất cả</option>
+                        <option value="unread">Thư chưa đọc</option>
+                        <option value="read">Thư đã đọc</option>
+                        <option value="important">Thư quan trọng</option>
+                        <option value="not-important">Thư không quan trọng</option>
+                    </select>
                 </div>
-                <div class="username">${not empty sessionScope.userName ? sessionScope.userName : 'Khách'}</div>
-                <div class="menu-group">
-                    <a href="${pageContext.request.contextPath}/home"><i class="fas fa-home"></i> Trang chủ</a>
-                    <a href="${pageContext.request.contextPath}/profile"><i class="fas fa-user"></i> Hồ sơ cá nhân</a>
-                    <a href="${pageContext.request.contextPath}/notifications"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="${pageContext.request.contextPath}/submit-form"><i class="fas fa-paper-plane"></i> Gửi đơn</a>
-                    <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-                </div>
-            </div>
 
-            <div class="col-md-9 main">
-                <div class="grid">
-                    <a href="${pageContext.request.contextPath}/tracking" class="card"><span class="icon">👥</span> Theo dõi lớp học</a>
-                    <a href="${pageContext.request.contextPath}/attendance.jsp" class="card"><span class="icon">✅</span> Điểm danh</a>
-                    <a href="${pageContext.request.contextPath}/PaymentServlet" class="card"><span class="icon">💳</span> Thanh toán</a>
-                </div>
-                <div class="attendance-status">
-                    Tình trạng điểm danh: Đã nghỉ ${absentCount} buổi
-                </div>
-                <div class="schedule-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Môn học</th>
-                                <th>Ngày học</th>
-                                <th>Ca học</th>
-                                <th>Phòng học</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="schedule" items="${schedules}">
-                                <tr>
-                                    <td>${schedule.subjectName}</td>
-                                    <td><fmt:formatDate value="${schedule.dateLearn}" pattern="dd-MM-yyyy"/></td>
-                                    <td>${schedule.shiftID}</td>
-                                    <td>${schedule.roomName}</td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="notification-section">
-                    <h3>Thông báo gần đây</h3>
-                    <c:choose>
-                        <c:when test="${empty notifications}">
-                            <div class="error-message">Không có thông báo để hiển thị.</div>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="notification" items="${notifications}">
-                                <div class="notification ${notification.read ? 'read' : 'unread'}" data-read="${notification.read}" data-important="${notification.important}">
-                                    <h4>
-                                        ${notification.title}
-                                        <span class="status">${notification.read ? '✅ Đã đọc' : '🔴 Chưa đọc'}${notification.important ? ' *' : ''}</span>
-                                    </h4>
-                                    <div class="meta">
-                                        Gửi lúc: <fmt:formatDate value="${notification.createdAt}" pattern="dd/MM/yyyy - HH:mm"/>
-                                    </div>
-                                    <div class="content">
-                                        ${notification.content}
-                                    </div>
+                <c:choose>
+                    <c:when test="${empty notifications}">
+                        <div class="error-message">Không có thông báo để hiển thị. Vui lòng thử lại sau.</div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="notification" items="${notifications}">
+                            <div class="notification ${notification.read ? 'read' : 'unread'}" data-read="${notification.read}" data-important="${notification.important}">
+                                <h4>
+                                    ${notification.title}
+                                    <span class="status">${notification.read ? '✅ Đã đọc' : '🔴 Chưa đọc'}${notification.important ? ' *' : ''}</span>
+                                </h4>
+                                <div class="meta">
+                                    Gửi lúc: <fmt:formatDate value="${notification.createdAt}" pattern="dd/MM/yyyy - HH:mm"/>
                                 </div>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-                    <div class="view-all">
-                        <a href="${pageContext.request.contextPath}/notifications">Xem tất cả thông báo</a>
-                    </div>
-                </div>
+                                <div class="content">
+                                    ${notification.content}
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
@@ -492,7 +457,8 @@
                 <div class="col-lg-5 col-md-12 mb-5">
                     <a href="" class="text-decoration-none">
                         <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/images/${centerInfo['Logo']}" alt="Logo Trung Tâm" class="logo-image" onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
+                            <img src="${pageContext.request.contextPath}/images/${centerInfo['Logo']}" alt="Logo Trung Tâm" class="logo-image" 
+                                onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
                         </div>
                         <div class="slogan-group text-left mt-2">
                             <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
@@ -534,15 +500,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        window.addEventListener('scroll', function () {
-            const backTop = document.querySelector('.back-top-icon');
-            if (window.scrollY > 300) {
-                backTop.classList.add('visible');
-            } else {
-                backTop.classList.remove('visible');
-            }
-        });
-    </script>
 </body>
 </html>

@@ -1,27 +1,18 @@
 package entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Schedule {
     private int scheduleID;
-    private String classGroupName;
-    private String shiftTime;
-    private String roomName;
+    private int classGroupID;
+    private int shiftID;
+    private int roomID;
     private Date dateLearn;
-    private String teacherName;
+    private int teacherID;
+    private String subjectName;
+    private String roomName;
 
-    public Schedule() {
-    }
-
-    public Schedule(int scheduleID, String classGroupName, String shiftTime, String roomName, Date dateLearn, String teacherName) {
-        this.scheduleID = scheduleID;
-        this.classGroupName = classGroupName;
-        this.shiftTime = shiftTime;
-        this.roomName = roomName;
-        this.dateLearn = dateLearn;
-        this.teacherName = teacherName;
-    }
-
+    // Getters and Setters
     public int getScheduleID() {
         return scheduleID;
     }
@@ -30,28 +21,28 @@ public class Schedule {
         this.scheduleID = scheduleID;
     }
 
-    public String getClassGroupName() {
-        return classGroupName;
+    public int getClassGroupID() {
+        return classGroupID;
     }
 
-    public void setClassGroupName(String classGroupName) {
-        this.classGroupName = classGroupName;
+    public void setClassGroupID(int classGroupID) {
+        this.classGroupID = classGroupID;
     }
 
-    public String getShiftTime() {
-        return shiftTime;
+    public int getShiftID() {
+        return shiftID;
     }
 
-    public void setShiftTime(String shiftTime) {
-        this.shiftTime = shiftTime;
+    public void setShiftID(int shiftID) {
+        this.shiftID = shiftID;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public int getRoomID() {
+        return roomID;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
     }
 
     public Date getDateLearn() {
@@ -62,18 +53,27 @@ public class Schedule {
         this.dateLearn = dateLearn;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public int getTeacherID() {
+        return teacherID;
     }
 
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+    public void setTeacherID(int teacherID) {
+        this.teacherID = teacherID;
     }
 
-    @Override
-    public String toString() {
-        return "Schedule{" + "scheduleID=" + scheduleID + ", classGroupName=" + classGroupName + ", shiftTime=" + shiftTime + ", roomName=" + roomName + ", dateLearn=" + dateLearn + ", teacherName=" + teacherName + '}';
+    public String getSubjectName() {
+        return subjectName;
     }
 
-    
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 }

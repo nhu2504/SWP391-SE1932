@@ -17,7 +17,7 @@ public class GradeDAO {
     private DBContext dbContext;
 
     public GradeDAO() {
-        dbContext = new DBContext();
+         dbContext = DBContext.getInstance();
     }
     public ArrayList<Grade> getGradesByUserID(int userID) throws SQLException {
         ArrayList<Grade> grades = new ArrayList<>();
@@ -27,7 +27,7 @@ public class GradeDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            conn = dbContext.connection;
+            conn = dbContext.getConnection();
             if (conn == null) {
                 throw new SQLException("Không thể lấy kết nối cơ sở dữ liệu");
             }

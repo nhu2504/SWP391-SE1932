@@ -4,24 +4,30 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 // Văn Thị Như - HE181329
 @WebServlet("/LogoServlet")
 public class LogoServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("LogoServlet được gọi tại: " + request.getRequestURI());
-        DBContext db = new DBContext();
-        Connection conn = db.connection;
+
+        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
+            // Sử dụng DBContext dạng singleton
+            conn = DBContext.getInstance().getConnection();
+
             String sql = "SELECT Logo FROM CenterInfo WHERE CenterID = 1";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -29,9 +35,7 @@ public class LogoServlet extends HttpServlet {
             if (rs.next()) {
                 byte[] imgData = rs.getBytes("Logo");
                 if (imgData != null) {
-                    // Đặt loại nội dung là image/png (hoặc image/jpeg tùy loại hình)
-                    response.setContentType("image/png");
-                    // Ghi dữ liệu hình ảnh vào output stream
+                    response.setContentType("image/png"); // hoặc image/jpeg tùy ảnh
                     response.getOutputStream().write(imgData);
                     System.out.println("Hình ảnh logo được phục vụ thành công");
                 } else {

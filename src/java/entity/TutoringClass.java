@@ -1,27 +1,29 @@
 package entity;
 
-import java.sql.Date;
-
 public class TutoringClass {
     private int tutoringClassID;
     private String className;
-    private String subjectName;
-    private Date startDate;
-    private Date endDate;
-    private double tuitionFee;
-    private String gradeName;
+    private int subjectID;
+    private int teacherID;
+    private String startDate;
+    private String endDate;
+    private int roomID;
+    private int shiftID;
+    private int thuID;
 
     public TutoringClass() {
     }
 
-    public TutoringClass(int tutoringClassID, String className, String subjectName, Date startDate, Date endDate, double tuitionFee, String gradeName) {
+    public TutoringClass(int tutoringClassID, String className, int subjectID, int teacherID, String startDate, String endDate, int roomID, int shiftID, int thuID) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
-        this.subjectName = subjectName;
+        this.subjectID = subjectID;
+        this.teacherID = teacherID;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.tuitionFee = tuitionFee;
-        this.gradeName = gradeName;
+        this.roomID = roomID;
+        this.shiftID = shiftID;
+        this.thuID = thuID;
     }
 
     public int getTutoringClassID() {
@@ -40,50 +42,59 @@ public class TutoringClass {
         this.className = className;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public int getSubjectID() {
+        return subjectID;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setSubjectID(int subjectID) {
+        this.subjectID = subjectID;
     }
 
-    public Date getStartDate() {
+    public int getTeacherID() {
+        return teacherID;
+    }
+
+    public void setTeacherID(int teacherID) {
+        this.teacherID = teacherID;
+    }
+
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public double getTuitionFee() {
-        return tuitionFee;
+    public int getRoomID() {
+        return roomID;
     }
 
-    public void setTuitionFee(double tuitionFee) {
-        this.tuitionFee = tuitionFee;
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
     }
 
-    public String getGradeName() {
-        return gradeName;
+    public int getShiftID() {
+        return shiftID;
     }
 
-    public void setGradeName(String gradeName) {
-        this.gradeName = gradeName;
+    public void setShiftID(int shiftID) {
+        this.shiftID = shiftID;
     }
 
-    @Override
-    public String toString() {
-        return "TutoringClass{" + "tutoringClassID=" + tutoringClassID + ", className=" + className + ", subjectName=" + subjectName + ", startDate=" + startDate + ", endDate=" + endDate + ", tuitionFee=" + tuitionFee + ", gradeName=" + gradeName + '}';
+    public int getThuID() {
+        return thuID;
     }
 
-    
+    public void setThuID(int thuID) {
+        this.thuID = thuID;
+    }
 }

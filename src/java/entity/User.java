@@ -1,45 +1,20 @@
 package entity;
 
-import java.sql.Date;
-
 public class User {
     private int userID;
-    private String fullName;
     private String email;
-    private String roleName;
-    private int roleID;
-    private Date birthDate;
-    private String phone;
+    private String password;
+    private String userName;
+    private String role;
     private String avatar;
 
-    public User() {
-    }
-
-    public User(int userID, String fullName, String email, String roleName, int roleID, Date birthDate, String phone, String avatar) {
-        this.userID = userID;
-        this.fullName = fullName;
-        this.email = email;
-        this.roleName = roleName;
-        this.roleID = roleID;
-        this.birthDate = birthDate;
-        this.phone = phone;
-        this.avatar = avatar;
-    }
-
+    // Getters and Setters
     public int getUserID() {
         return userID;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -50,36 +25,28 @@ public class User {
         this.email = email;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public int getRoleID() {
-        return roleID;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public String getRole() {
+        return role;
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getAvatar() {
@@ -89,10 +56,4 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
-    @Override
-    public String toString() {
-        return "User{" + "userID=" + userID + ", fullName=" + fullName + ", email=" + email + ", roleName=" + roleName + ", roleID=" + roleID + ", birthDate=" + birthDate + ", phone=" + phone + ", avatar=" + avatar + '}';
-    }
-
 }

@@ -20,7 +20,7 @@ public class HomeServlet extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("HomeServlet được gọi tại: " + request.getRequestURI());
 
-        try (Connection conn = new DBContext().connection) {
+        try (Connection conn = DBContext.getInstance().getConnection()) {
             if (conn == null) {
                 System.out.println("Lỗi: Kết nối cơ sở dữ liệu là null");
                 request.setAttribute("error", "Không thể kết nối đến cơ sở dữ liệu");

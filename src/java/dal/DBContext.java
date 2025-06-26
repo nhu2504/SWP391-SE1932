@@ -3,36 +3,28 @@ package dal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author FPT University - PRJ301
- */
 public class DBContext {
-    public Connection connection;
-    public DBContext(){
-     
-        try {
-            String user = "sa";
-            String pass = "123";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=eduraFINALFINALFINAL";
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection(url, user, pass);
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+    private static DBContext instance;
+    private String url = "jdbc:sqlserver://localhost:1433;databaseName=eduraFINALFINALFINAL";
+    private String user = "sa";
+    private String password = "123";
+
+    private DBContext() {}
+
+    public static DBContext getInstance() {
+        if (instance == null) {
+            instance = new DBContext();
         }
+        return instance;
     }
-    public static void main(String[] args) {
-        if ((new DBContext()).connection!=null) {
-            System.out.println("Connect success");
+
+    public Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            return DriverManager.getConnection(url, user, password);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver JDBC không tìm thấy.", e);
         }
-        else System.out.println("Connect fail");
     }
 }

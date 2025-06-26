@@ -21,8 +21,10 @@ public class ManagerDAO {
      * Constructor khởi tạo kết nối với cơ sở dữ liệu bằng DBContext.
      */
     public ManagerDAO() {
-        this.connection = new DBContext().connection; // Lấy kết nối từ DBContext
-        if (this.connection == null) {
+       try {
+            this.connection = DBContext.getInstance().getConnection(); // ✅ dùng DBContext singleton
+        } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println("Kết nối cơ sở dữ liệu thất bại!");
         }
     }

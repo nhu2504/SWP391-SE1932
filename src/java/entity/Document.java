@@ -5,23 +5,19 @@ public class Document {
     private String title;
     private String description;
     private String filePath;
-    private String externalLink;
     private int uploadedBy;
-    private String uploadDate;
-    private Integer classID;
+    private int subjectID;
 
     public Document() {
     }
 
-    public Document(int documentID, String title, String description, String filePath, String externalLink, int uploadedBy, String uploadDate, Integer classID) {
+    public Document(int documentID, String title, String description, String filePath, int uploadedBy, int subjectID) {
         this.documentID = documentID;
         this.title = title;
         this.description = description;
         this.filePath = filePath;
-        this.externalLink = externalLink;
         this.uploadedBy = uploadedBy;
-        this.uploadDate = uploadDate;
-        this.classID = classID;
+        this.subjectID = subjectID;
     }
 
     public int getDocumentID() {
@@ -56,14 +52,6 @@ public class Document {
         this.filePath = filePath;
     }
 
-    public String getExternalLink() {
-        return externalLink;
-    }
-
-    public void setExternalLink(String externalLink) {
-        this.externalLink = externalLink;
-    }
-
     public int getUploadedBy() {
         return uploadedBy;
     }
@@ -72,21 +60,11 @@ public class Document {
         this.uploadedBy = uploadedBy;
     }
 
-    public String getUploadDate() {
-        return uploadDate;
+    public int getSubjectID() {
+        return subjectID;
     }
 
-    public void setUploadDate(String uploadDate) {
-        this.uploadDate = uploadDate;
+    public void setSubjectID(int subjectID) {
+        this.subjectID = subjectID;
     }
-
-    public Integer getClassID() {
-        return classID;
-    }
-
-    public void setClassID(Integer classID) {
-        this.classID = classID;
-    }
-
-    
 }
