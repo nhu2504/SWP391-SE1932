@@ -24,6 +24,7 @@ public class Schedule {
     private String roomName;
     private Time startTime;
     private Time endTime;
+    private String teacherName;
 
     public Schedule() {
     }
@@ -36,6 +37,7 @@ public class Schedule {
         this.dateLearn = dateLearn;
         this.userId = userId;
     }
+    
 
     public Schedule(int scheID, int classgroupID, int shiftId, int roomId, Date dateLearn, int userId, String classgroupName, String shiftName, String roomName) {
         this.scheID = scheID;
@@ -61,6 +63,14 @@ public class Schedule {
         this.roomName = roomName;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
     
     

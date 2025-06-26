@@ -6,33 +6,37 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entity.Room;
+import java.util.List;
 /**
  *
  * @author DO NGOC ANH HE180661
  */
 public class RoomDAO {
-    //lấy ra tất cả phòng học
-    public ArrayList<Room> getAllRooms() {
-        //khởi tạo danh sách chứa các phòng lấy từ db
-        ArrayList<Room> rooms = new ArrayList<>();
-        //câu lệnh lấy toàn bộ dữ liệu trong bảng
-        String sql = "SELECT id, name FROM Room";
-        //mở kết nối, thực thi câu lệnh
-        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
-            //lặp qua kết quả trả về từ bảng room
+    /**
+     * Lấy toàn bộ danh sách phòng học từ bảng Room
+     *
+     * @return Danh sách các đối tượng Room
+     */
+    public List<Room> getAllRooms() {
+        List<Room> list = new ArrayList<>();
+        String sql = "SELECT id, roomName FROM Room"; // Câu SQL lấy dữ liệu
+
+        try (
+            Connection conn = new DBContext().connection;               // Mở kết nối DB
+            PreparedStatement ps = conn.prepareStatement(sql);          // Chuẩn bị câu lệnh
+            ResultSet rs = ps.executeQuery()                            // Thực thi truy vấn
+        ) {
             while (rs.next()) {
-                Room room = new Room(
-                        rs.getInt("id"),
-                        rs.getString("name")
-                );
-                //mỗi dòng tạo ra 1 đối tượng room rồi thêm vào danh sách
-                rooms.add(room);
+                Room r = new Room();                      // Tạo đối tượng Room mới
+                r.setId(rs.getInt("id"));                 // Gán ID
+                r.setName(rs.getString("roomName"));      // Gán tên phòng
+                list.add(r);                              // Thêm vào danh sách
             }
         } catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace(); // In lỗi nếu có
         }
-        return rooms;
+
+        return list; // Trả về danh sách các phòng
     }
     //tìm phòng học theo id
     public Room getRoomByID(int id) {

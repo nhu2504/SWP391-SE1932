@@ -41,6 +41,21 @@ public class SchoolClassDAO {
         }
         return null;
     }
+    public String getSchoolClassNameById(int schoolClassId) {
+        String ClassName = "";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(
+                 "select ClassName from SchoolClass where SchoolClassID = ?")) {
+            ps.setInt(1, schoolClassId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ClassName = rs.getString("ClassName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ClassName;
+    }
     //test lấy dữ liệu
     public static void main(String[] args) {
         SchoolClassDAO sd = new SchoolClassDAO();

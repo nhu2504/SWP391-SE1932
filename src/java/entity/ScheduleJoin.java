@@ -12,32 +12,85 @@ import java.util.Date;
 public class ScheduleJoin {
     private int scheId;
     private String classGroupName;
-    private Time start_time;
-    private Time end_time;
+    private Time startTime;
+    private Time endTime;
     private String roomName;
     private Date dateLearn;
     private int userId;
-
+    private int classGroupId;
+    private Date startDate;
+    private Date endDate;
+    private String teacherName;
+    private int roomId;
+    private int tutorId;
     public ScheduleJoin() {
     }
 
-    public ScheduleJoin(int scheId, String classGroupName, Time start_time, Time end_time, String roomName, Date dateLearn) {
+    public ScheduleJoin(int scheId, String classGroupName, Time startTime, Time endTime, String roomName, Date dateLearn) {
         this.scheId = scheId;
         this.classGroupName = classGroupName;
-        this.start_time = start_time;
-        this.end_time = end_time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.roomName = roomName;
         this.dateLearn = dateLearn;
     }
 
-    public ScheduleJoin(int scheId, String classGroupName, Time start_time, Time end_time, String roomName, Date dateLearn, int userId) {
+    public ScheduleJoin(int scheId, String classGroupName, Time startTime, Time endTime, String roomName, Date dateLearn, int userId) {
         this.scheId = scheId;
         this.classGroupName = classGroupName;
-        this.start_time = start_time;
-        this.end_time = end_time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.roomName = roomName;
         this.dateLearn = dateLearn;
         this.userId = userId;
+    }
+
+    public int getTutorId() {
+        return tutorId;
+    }
+
+    public void setTutorId(int tutorId) {
+        this.tutorId = tutorId;
+    }
+    
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+    
+    public int getClassGroupId() {
+        return classGroupId;
+    }
+
+    public void setClassGroupId(int classGroupId) {
+        this.classGroupId = classGroupId;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
     
 
@@ -57,20 +110,20 @@ public class ScheduleJoin {
         this.classGroupName = classGroupName;
     }
 
-    public Time getStart_time() {
-        return start_time;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setStart_time(Time start_time) {
-        this.start_time = start_time;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    public Time getEnd_time() {
-        return end_time;
+    public Time getEndTime() {
+        return endTime;
     }
 
-    public void setEnd_time(Time end_time) {
-        this.end_time = end_time;
+    public void setEndTime(Time end_time) {
+        this.endTime = endTime;
     }
 
     public String getRoomName() {
@@ -100,7 +153,7 @@ public class ScheduleJoin {
 
     @Override
     public String toString() {
-        return "ScheduleJoin{" + "scheId=" + scheId + ", classGroupName=" + classGroupName + ", start_time=" + start_time + ", end_time=" + end_time + ", roomName=" + roomName + ", dateLearn=" + dateLearn + '}';
+        return "ScheduleJoin{" + "scheId=" + scheId + ", classGroupName=" + classGroupName + ", start_time=" + startTime + ", end_time=" + endTime + ", roomName=" + roomName + ", dateLearn=" + dateLearn + '}';
     }
     
     

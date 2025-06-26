@@ -15,30 +15,29 @@ import java.util.List;
  */
 
 public class ShiftlearnDAO {
-    //lấy ra tất cả ca học từ bảng shiftlearn 
-    public ArrayList<Shift> getAllShifts() {
-        //tạo array list chứa các ca học được lấy ra
-        ArrayList<Shift> shifts = new ArrayList<>();
-        //lấy ra toàn bộ dữ liêuj từ bảng shiftlearn
+    public List<Shift> getAllShifts() {
+        List<Shift> list = new ArrayList<>();
         String sql = "SELECT * FROM Shiftlearn";
-        //kết nối db 
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            //thực thi câu truy vấn kết quả trả về được chứa trong result set
-            ResultSet rs = stmt.executeQuery();
-             //lặp qua từng dòng, gán dữ liệu từ db vào đối tượng, thêm đối tượng vào danh sách
+        try (
+                Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(sql); 
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Shift s = new Shift();
                 s.setId(rs.getInt("ShiftID"));
+
+                // Đọc trực tiếp kiểu java.sql.Time từ ResultSet
                 s.setStartTime(rs.getTime("Start_time"));
                 s.setEndTime(rs.getTime("End_time"));
-                shifts.add(s);
+
+                list.add(s);
             }
-                   } catch (SQLException e) {
-            System.out.println("Lỗi"+e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return shifts;
+        return list;
     }
+
     //lấy ra 1 ca học theo id
     public Shift getShiftByID(int id) {
         //truy vấn lấy ra ca học theo id

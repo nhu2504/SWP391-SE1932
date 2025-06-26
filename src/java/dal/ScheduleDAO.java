@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -19,19 +22,18 @@ import java.sql.SQLException;
  */
 public class ScheduleDAO {
 
-    public List<Schedule> getScheduleByUserID(int userId) {
-        List<Schedule> schedules = new ArrayList<>();
-        String sql = "SELECT s.ScheduleID, s.DateLearn, \n"
-                + "       tc.TutoringClassID, tc.ClassName, \n"
-                + "       sh.ShiftID, sh.Start_time, sh.End_time, \n"
-                + "       r.id AS RoomID, r.name AS RoomName, \n"
-                + "       u.UserID, u.FullName, u.Email, u.RoleID \n"
-                + "FROM Schedule s \n"
-                + "JOIN TutoringClass tc ON s.TutoringClassID = tc.TutoringClassID \n"
-                + "JOIN Shiftlearn sh ON s.ShiftID = sh.ShiftID \n"
-                + "JOIN Room r ON s.RoomID = r.id \n"
-                + "JOIN [User] u ON s.UserID = u.UserID \n"
-                + "WHERE s.UserID = ?";
+    public List<ScheduleJoin> getScheduleByUserID(int userId) {
+        List<ScheduleJoin> schedules = new ArrayList<>();
+        String sql = "SELECT s.DateLearn,\n"
+                + "        tc.ClassGroupName,\n"
+                + "        sh.Start_time, sh.End_time,\n"
+                + "        r.roomName \n"
+                + "               FROM Schedule s \n"
+                + "                JOIN ClassGroup tc ON s.ClassGroupID = tc.TutoringClassID \n"
+                + "                JOIN Shiftlearn sh ON s.ShiftID = sh.ShiftID \n"
+                + "               JOIN Room r ON s.RoomID = r.id \n"
+                + "                JOIN [User] u ON s.UserID = u.UserID \n"
+                + "                WHERE s.UserID = ?";
 
         try {
             Connection conn = new DBContext().connection;
@@ -40,16 +42,15 @@ public class ScheduleDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Schedule s = new Schedule();
+                ScheduleJoin s = new ScheduleJoin();
 
-                s.setScheID(rs.getInt("ScheduleID"));
-                s.setClassgroupID(rs.getInt("TutoringClassID"));
-
-                s.setShiftId(rs.getInt("ShiftID"));
-
-                s.setRoomId(rs.getInt("RoomID"));
                 s.setDateLearn(rs.getDate("DateLearn"));
-                s.setUserId(rs.getInt("UserID"));
+                s.setClassGroupName(rs.getString("ClassGroupName"));
+
+                s.setStartTime(rs.getTime("Start_time"));
+                s.setEndTime(rs.getTime("End_time"));
+                s.setRoomName(rs.getString("roomName"));
+
                 schedules.add(s);
             }
         } catch (Exception e) {
@@ -57,6 +58,45 @@ public class ScheduleDAO {
         }
         return schedules;
 
+    }
+
+    public List<ScheduleJoin> getSchedulesByWeek(int userId,Date startOfWeek, Date endOfWeek) throws SQLException {
+        List<ScheduleJoin> list = new ArrayList<>();
+        String sql = "SELECT s.ScheduleID, s.DateLearn, sl.Start_time,sl.End_time ,"
+                + "s.ClassGroupID, \n"
+                + "                cg.TutoringClassID, cg.ClassGroupName, "
+                + "tc.StartDate, tc.EndDate, \n"
+                + "                u.FullName , r.roomName \n"
+                + "                FROM Schedule s \n"
+                + "                JOIN ClassGroup cg ON s.ClassGroupID = cg.ClassGroupID \n"
+                + "                JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID \n"
+                + "                JOIN [User] u ON s.UserID = u.UserID \n"
+                + "				JOIN Shiftlearn sl ON s.ShiftID = sl.ShiftID\n"
+                + "                JOIN Room r ON s.RoomID = r.id \n"
+                + "                WHERE s.DateLearn BETWEEN ? AND ?  and s.UserID =?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, new java.sql.Date(startOfWeek.getTime()));
+            ps.setDate(2, new java.sql.Date(endOfWeek.getTime()));
+            ps.setInt(3, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ScheduleJoin sch = new ScheduleJoin();
+                sch.setScheId(rs.getInt("ScheduleID"));
+                sch.setDateLearn(rs.getDate("DateLearn"));
+                sch.setStartTime(rs.getTime("Start_time"));
+                sch.setEndTime(rs.getTime("End_time"));
+                sch.setClassGroupId(rs.getInt("ClassGroupID"));
+                sch.setTutorId(rs.getInt("TutoringClassID"));
+                sch.setClassGroupName(rs.getString("ClassGroupName"));
+                sch.setStartDate(rs.getDate("StartDate"));
+                sch.setEndDate(rs.getDate("EndDate"));
+                sch.setTeacherName(rs.getString("FullName"));
+                sch.setRoomName(rs.getString("roomName"));
+                
+                list.add(sch);
+            }
+        }
+        return list;
     }
 
     public ScheduleJoin getNextScheduleByTeacher(int userId) throws SQLException {
@@ -85,8 +125,8 @@ public class ScheduleDAO {
                     schedule = new ScheduleJoin();
                     schedule.setScheId(rs.getInt("ScheduleID"));
                     schedule.setClassGroupName(rs.getString("ClassGroupName"));
-                    schedule.setStart_time(rs.getTime("Start_time"));
-                    schedule.setEnd_time(rs.getTime("End_time"));
+                    schedule.setStartTime(rs.getTime("Start_time"));
+                    schedule.setEndTime(rs.getTime("End_time"));
                     schedule.setRoomName(rs.getString("roomName"));
                     schedule.setDateLearn(rs.getDate("DateLearn"));
                 }
@@ -96,24 +136,23 @@ public class ScheduleDAO {
     }
 
     public static void main(String[] args) {
-        ScheduleDAO dao = new ScheduleDAO();
-        int testUserId = 4;
-
-
-        System.out.println("\n=== Lịch học kế tiếp của giáo viên có ID " + testUserId + " ===");
-    try {
-        ScheduleJoin nextSchedule = dao.getNextScheduleByTeacher(testUserId);
-        if (nextSchedule != null) {
-            System.out.println(nextSchedule);
-        } else {
-            System.out.println("Không có lịch học kế tiếp.");
-        }
-    } catch (SQLException e) {
-        System.out.println("Lỗi khi lấy lịch học kế tiếp:");
-        e.printStackTrace();
-    }
-    }
-    //        List<Schedule> schedules = dao.getScheduleByUserID(testUserId);
+//        ScheduleDAO dao = new ScheduleDAO();
+        
+//
+//        System.out.println("\n=== Lịch học kế tiếp của giáo viên có ID " + testUserId + " ===");
+//        try {
+//            ScheduleJoin nextSchedule = dao.getNextScheduleByTeacher(testUserId);
+//            if (nextSchedule != null) {
+//                System.out.println(nextSchedule);
+//            } else {
+//                System.out.println("Không có lịch học kế tiếp.");
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Lỗi khi lấy lịch học kế tiếp:");
+//            e.printStackTrace();
+//        }
+//    }
+        //        List<Schedule> schedules = dao.getScheduleByUserID(testUserId);
 //
 //        if (schedules != null && !schedules.isEmpty()) {
 //            for (Schedule s : schedules) {
@@ -123,5 +162,59 @@ public class ScheduleDAO {
 //            System.out.println("Not fount: " + testUserId);
 //        }
 
+        // Giả sử bạn đã tạo DAO tên là ScheduleDAO
+//        ScheduleDAO dao = new ScheduleDAO();
+//
+//        int userId = 2; // Thay bằng ID hợp lệ trong database
+//        List<ScheduleJoin> schedules = dao.getScheduleByUserID(userId);
+//
+//        if (schedules.isEmpty()) {
+//            System.out.println("Không tìm thấy lịch học cho user ID: " + userId);
+//        } else {
+//            for (ScheduleJoin s : schedules) {
+//                System.out.println("Schedule ID: " + s.getScheId());
+//                System.out.println("Class Group ID: " + s.getClassGroupName());
+//                 System.out.println("Shift start : " + s.getStart_time());
+//                System.out.println("Shift end: " + s.getEnd_time());
+//                System.out.println("Room ID: " + s.getRoomName());
+//                System.out.println("Date Learn: " + s.getDateLearn());
+//               
+//                System.out.println("---------------------------");
+//            }
+//        }
+int testUserId = 4;
+        try {
+            // Khởi tạo DAO
+            ScheduleDAO dao = new ScheduleDAO();
+
+            // Thiết lập ngày
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            Date startOfWeek = cal.getTime();
+
+            cal.add(Calendar.DATE, 6); // +6 ngày sẽ là Chủ nhật cùng tuần
+            Date endOfWeek = cal.getTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println("Tìm lịch từ " + sdf.format(startOfWeek) + " đến " + sdf.format(endOfWeek));
+
+            List<ScheduleJoin> schedules = dao.getSchedulesByWeek(testUserId,startOfWeek, endOfWeek);
+            System.out.println("Số lịch tìm thấy: " + schedules.size());
+
+            for (ScheduleJoin sch : schedules) {
+                System.out.println("Schedule ID: " + sch.getScheId());
+                System.out.println("Date Learn: " + sdf.format(sch.getDateLearn()));
+                System.out.println("Shift ID: " + sch.getStartTime());
+                System.out.println("Room: " + sch.getRoomName());
+                System.out.println("Teacher: " + sch.getTeacherName());
+                System.out.println("Class Group: " + sch.getClassGroupName());
+                System.out.println("-----------------------------------------");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
