@@ -8,6 +8,7 @@
 <%@page import="entity.ScheduleJoin"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="entity.User" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -520,6 +521,35 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
+            .search-box {
+                display: flex;
+                align-items: center;
+                background-color: white;
+                border: 1px solid #ccc;
+                border-radius: 999px;
+                padding: 5px 10px;
+                gap: 8px;
+            }
+
+            .search-box input {
+                border: none;
+                outline: none;
+                background-color: transparent;
+                font-size: 14px;
+            }
+
+            .search-box button {
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                padding: 0;
+                outline: none;
+            }
+
+            .search-box i {
+                color: gray;
+            }
+
 
         </style>
     </head>
@@ -580,22 +610,16 @@
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
-        String userName = (String) session.getAttribute("userName");
-        String userAvatar = (String) session.getAttribute("userAvatar");
-        if (userAvatar == null || userAvatar.isEmpty()) {
-            userAvatar = "default-avatar.jpg";
-        }
-        if (userName == null || userName.isEmpty()) {
-            userName = "Tên người dùng";
-        }
+                        User user = (User) session.getAttribute("user");
                     %>
 
-                    <div class="avatar">
-                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
-                    </div>
-                    <div class="username"><%= userName %></div>
 
-                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <div class="avatar">
+                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                    </div>
+                   <div class="username">${user.name}</div>
+
+                    <a href="profileservlet"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
                     <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
@@ -605,7 +629,7 @@
                 <div class="col-md-9 main">
                     <div class="grid">
                         <div class="infor-sche">
-                            <a href="templateschedule.jsp">
+                            <a href="showschedule">
 
                                 <div class="card">
                                     <i class="fas fa-calendar-alt"></i> Lịch Dạy
@@ -616,8 +640,7 @@
                                             <c:when test="${not empty sessionScope.nextSchedule}">
                                                 <span>${sessionScope.nextSchedule.classGroupName}</span><br>
                                                 <span>Thời gian: 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.start_time}" pattern="HH:mm"/> - 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.end_time}" pattern="HH:mm"/>
+                                                    <fmt:formatDate value="${sessionScope.nextSchedule.startTime}" pattern="HH:mm"/> - <fmt:formatDate value="${sessionScope.nextSchedule.endTime}" pattern="HH:mm"/>
                                                 </span><br>
                                                 <span>Phòng: ${sessionScope.nextSchedule.roomName}</span><br>
                                                 <span>Ngày: 
@@ -652,7 +675,6 @@
                                                         </div>
                                                         <br/>
                                                     </div>
-
                                                 </c:forEach>
                                             </c:when>
                                             <c:otherwise>
@@ -661,134 +683,147 @@
                                         </c:choose>
                                     </div>
                                 </div></a>
+                            
                         </div>
-                        <a href="#"><div class="card"><i class="fas fa-users"></i> Danh sách lớp</div></a>
-                        <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
-                                <form method="post" action="upload" enctype="multipart/form-data">
-                                    <table>
+                        <div class="header-container">
+                            <a href="#">
+                                <div class="card">
+                                    <i class="fas fa-users"></i> Danh sách lớp
 
-                                        <tbody>
-                                            <tr>
-                                                <td>Tiêu đề:</td>
-                                                <td><input type="text" name="title"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mô tả:</td>
-                                                <td><input type="text" name="descrip"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Môn học:</td>
-                                                <td>
-                                                    <select name="subjectId" required>
-                                                        <option value="">--Chọn môn học--</option>
-                                                        <c:forEach var="subject" items="${subjectList}">
-                                                            <option value="${subject.subjectID}">${subject.subjectName}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Khối lớp:</td>
-                                                <td>
-                                                    <select name="gradeId" required>
-                                                        <option value="">--Chọn khối lớp--</option>
-                                                        <c:forEach var="grade" items="${gradeList}">
-                                                            <option value="${grade.gradeID}">${grade.gradeName}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>File PDF:</td>
-                                                <td><input type="file" name="pdf"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <input type="submit" value="Upload">
-                                </form>
+                            </a>
 
-                            </div></a>
+                            <div class="search-box">
+                                <input type="text" placeholder="Tìm kiếm lớp">
+                                <button><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
                     </div>
+                    <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
+                            <form method="post" action="upload" enctype="multipart/form-data">
+                                <table>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>Tiêu đề:</td>
+                                            <td><input type="text" name="title"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mô tả:</td>
+                                            <td><input type="text" name="descrip"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Môn học:</td>
+                                            <td>
+                                                <select name="subjectId" required>
+                                                    <option value="">--Chọn môn học--</option>
+                                                    <c:forEach var="subject" items="${subjectList}">
+                                                        <option value="${subject.subjectID}">${subject.subjectName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Khối lớp:</td>
+                                            <td>
+                                                <select name="gradeId" required>
+                                                    <option value="">--Chọn khối lớp--</option>
+                                                    <c:forEach var="grade" items="${gradeList}">
+                                                        <option value="${grade.gradeID}">${grade.gradeName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>File PDF:</td>
+                                            <td><input type="file" name="pdf"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="submit" value="Upload">
+                            </form>
+
+                        </div></a>
                 </div>
             </div>
         </div>
+    </div>
 
-        <footer class="site-footer">
-            <!-- Footer Start -->
-            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-                <div class="row pt-5">
-                    <div class="col-lg-5 col-md-12 mb-5">
-                        <a href="" class="text-decoration-none">
+    <footer class="site-footer">
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+            <div class="row pt-5">
+                <div class="col-lg-5 col-md-12 mb-5">
+                    <a href="" class="text-decoration-none">
 
-                            <div class="logo-container">
-                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+                        <div class="logo-container">
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
 
+                        </div>
+                        <div class="slogan-group text-left mt-2">
+
+                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                        </div>
+
+                    </a>
+                </div>
+                <div class="col-lg-7 col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                            <div class="d-flex justify-content-start mt-4">
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
-                            <div class="slogan-group text-left mt-2">
-
-                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                            </div>
-
-                        </a>
-                    </div>
-                    <div class="col-lg-7 col-md-12">
-                        <div class="row">
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                                <div class="d-flex justify-content-start mt-4">
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                                <div class="d-flex flex-column justify-content-start">
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                    </a>
+                        </div>
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                </a>
 
 
-                                </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
+
             </div>
-            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </footer>
+        </div>
+        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
+
+    </footer>
 
 
-        <!-- JAVASCRIPT FILES -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- <script src="js/owl.carousel.min.js"></script>
-        <!-- <script src="js/counter.js"></script> -->
-        <!-- <script src="js/custom.js"></script> -->
+    <!-- JAVASCRIPT FILES -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script src="js/owl.carousel.min.js"></script>
+    <!-- <script src="js/counter.js"></script> -->
+    <!-- <script src="js/custom.js"></script> -->
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    </body>
+</body>
 </html>

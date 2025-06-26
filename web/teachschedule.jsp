@@ -6,11 +6,13 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="entity.Shift" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="entity.Schedule" %>
+<%@ page import="entity.User" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -481,7 +483,7 @@
         </div>
 
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="teacherdashboard.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
             <h3 class="schedule-title text-center w-100 m-0">Lịch Giảng Dạy</h3>
@@ -491,20 +493,15 @@
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
-        String userName = (String) session.getAttribute("userName");
-        String userAvatar = (String) session.getAttribute("userAvatar");
-        if (userAvatar == null || userAvatar.isEmpty()) {
-            userAvatar = "default-avatar.jpg";
-        }
-        if (userName == null || userName.isEmpty()) {
-            userName = "Tên người dùng";
-        }
+                         User user = (User) session.getAttribute("user");
                     %>
 
+
                     <div class="avatar">
-                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
+                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                     </div>
-                    <div class="username"><%= userName %></div>
+                    <div class="username">${user.name}</div>
+
 
                     <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
@@ -514,35 +511,51 @@
 
                 <!-- Main -->
                 <div class="col-md-9 main">
-                    <%
-         List<Schedule> schedules = (List<Schedule>) request.getAttribute("schedules");
-         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    <div style="text-align:center; margin-bottom: 20px;">
+                        <form method="get" action="showschedule" style="display:inline;">
+                            <input type="hidden" name="weekOffset" value="${weekOffset - 1}"/>
+                            <button type="submit" class="btn btn-primary">&lt; Tuần trước</button>
+                        </form>
+                        <span style="margin: 0 20px; font-weight: bold;"> ${weekLabel}</span>
+                        <form method="get" action="showschedule" style="display:inline;">
+                            <input type="hidden" name="weekOffset" value="${weekOffset + 1}"/>
+                            <button type="submit" class="btn btn-primary">Tuần tiếp &gt;</button>
+                        </form>
+                    </div>
+                    <table border="1" class="table-time">
+                        <tr>
+                            <th>Ca / Thứ</th>
+                            <th>Thứ 2</th>
+                            <th>Thứ 3</th>
+                            <th>Thứ 4</th>
+                            <th>Thứ 5</th>
+                            <th>Thứ 6</th>
+                            <th>Thứ 7</th>
+                            <th>Chủ nhật</th>
+                        </tr>
 
-         if (schedules != null && !schedules.isEmpty()) {
-                    %>
-                    <table border="1">
-                        <tr>
-                            <th>Ngày học</th>
-                            <th>Lớp</th>
-                            <th>Ca học</th>
-                            <th>Phòng</th>
-                        </tr>
-                        <% for (Schedule s : schedules) { %>
-                        <tr>
-                            <td><%= sdf.format(s.getDateLearn()) %></td>
-                            <td><%= s.getTutor().getClassName() %></td>
-                            <td><%= s.getShift().getStartTime() %> - <%= s.getShift().getEndTime() %></td>
-                            <td><%= s.getRoom().getName() %></td>
-                        </tr>
-                        <% } %>
+                        <c:forEach var="shift" items="${listShift}">
+                            <tr>
+                                <td>
+                                    Ca ${shift.id} <br/>
+                                    <fmt:formatDate value="${shift.startTime}" pattern="HH:mm"/> - 
+                                    <fmt:formatDate value="${shift.endTime}" pattern="HH:mm"/>
+                                </td>
+                                <c:forEach var="day" begin="2" end="8">
+                                    <td>
+                                        <c:set var="shiftKey" value="${shift.startTime}-${shift.endTime}" />
+                                        <c:set var="realDay" value="${day == 8 ? 1 : day}" />
+                                        <c:forEach var="st" items="${scheduleMap[shiftKey][realDay]}">
+                                            Lớp: ${st.classGroupName}<br/>
+                                            GV: ${st.teacherName}<br/>
+                                            Phòng: ${st.roomName}<br/>
+                                            Ngày: <fmt:formatDate value="${st.dateLearn}" pattern="dd/MM/yyyy"/><br/>
+                                        </c:forEach>
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </c:forEach>
                     </table>
-                    <%
-                        } else {
-                    %>
-                    <p>Không có lịch học.</p>
-                    <%
-                        }
-                    %>
                 </div>
             </div>
         </div>

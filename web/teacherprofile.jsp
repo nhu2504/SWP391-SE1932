@@ -7,6 +7,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="entity.User" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -498,55 +500,123 @@
             }
 
             .container {
-            display: flex;
-            justify-content: space-between;
-            gap: 50px;
-        }
-        .section {
-            flex: 1;
-        }
-        h2 {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            border: 2px solid black;
-            border-radius: 999px;
-            font-size: 14px;
-        }
-        .avatar {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .avatar img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid black;
-        }
-        .btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #f8b6b6;
-            border: none;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #f29494;
-        }
+                display: flex;
+                justify-content: space-between;
+                gap: 50px;
+            }
+            .section {
+                flex: 1;
+            }
+            h2 {
+                margin-bottom: 20px;
+            }
+            label {
+                display: block;
+                margin-top: 15px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 90%;
+                padding: 10px;
+                border: 2px solid black;
+                border-radius: 999px;
+                font-size: 14px;
+            }
+            .avatar {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .avatar img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 2px solid black;
+            }
+            .btn {
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #f8b6b6;
+                border: none;
+                border-radius: 999px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .btn:hover {
+                background-color: #f29494;
+            }
+            .sidebar a.active {
+                background-color: #ffcad4;
+                border-radius: 10px;
+                font-weight: bold;
+            }
+            /*css cho phần tải avata*/
+            .avatar {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                margin-bottom: 24px;
+            }
+
+            .avatar-img {
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #ccc;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                flex-shrink: 0;
+            }
+
+            .avatar form {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .avatar form input[type="file"] {
+                font-size: 1rem;
+                padding: 6px 8px;
+                width: 220px;
+                max-width: 60vw;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+            }
+
+            .avatar form .btn {
+                background: #f8b6b6;
+                border: none;
+                border-radius: 999px;
+                padding: 8px 22px;
+                font-weight: bold;
+                color: #222;
+                transition: background 0.2s;
+                margin-left: 8px;
+            }
+
+            .avatar form .btn:hover {
+                background: #f29494;
+                color: #fff;
+            }
+
         </style>
     </head>
 
     <body id="top">
+        <c:if test="${not empty sessionScope.SuccessMessage}">
+            <script>
+                alert('${sessionScope.SuccessMessage}');
+            </script>
+            <c:remove var="SuccessMessage" scope="session"/>
+        </c:if>
+
+        <c:if test="${not empty sessionScope.FailMessage}">
+            <script>
+                alert('${sessionScope.FailMessage}');
+            </script>
+            <c:remove var="FailMessage" scope="session"/>
+        </c:if>
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -592,7 +662,7 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="teacherdashboard.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
             <h3 class="schedule-title text-center w-100 m-0">Hồ sơ cá nhân</h3>
@@ -602,22 +672,17 @@
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
-        String userName = (String) session.getAttribute("userName");
-        String userAvatar = (String) session.getAttribute("userAvatar");
-        if (userAvatar == null || userAvatar.isEmpty()) {
-            userAvatar = "default-avatar.jpg";
-        }
-        if (userName == null || userName.isEmpty()) {
-            userName = "Tên người dùng";
-        }
+                        User user = (User) session.getAttribute("user");
                     %>
 
-                    <div class="avatar">
-                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
-                    </div>
-                    <div class="username"><%= userName %></div>
 
-                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <div class="avatar">
+                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                    </div>
+                   <div class="username">${user.name}</div>
+
+
+                    <a href="#" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
                     <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
@@ -628,29 +693,35 @@
                     <div class="container">
                         <!-- THÔNG TIN CÁ NHÂN -->
                         <div class="section">
-                            <p><strong>Id người dùng:</strong> </p>
-                            <p><strong>Vai trò:</strong> </p>
+                            <p><strong>Id người dùng:</strong> ${user.id}</p>
+                            <p><strong>Vai trò:</strong> ${roleNameVi}</p>
 
-                            <div class="avatar">
-                                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Avatar">
-                                <br>
-                                <button class="btn">Tải Ảnh</button>
-                            </div>
+                            <form action="uploadprofile" method="post" enctype="multipart/form-data">
+                                <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                                <input type="file" name="avatarFile" accept="image/*" style="margin-top:10px;">
 
-                            <form action="updateProfile" method="post">
                                 <label>Email</label>
-                                <input type="text" name="email" value="">
+                                <input type="text" name="email" value="${user.email}">
 
                                 <label>Số điện thoại</label>
-                                <input type="text" name="phone" value="">
+                                <input type="text" name="phone" value="${user.phone}">
 
                                 <label>Trường</label>
-                                <input type="text" name="school" value="">
+                                <input type="text" name="school" value="${user.schoolID}">
 
                                 <label>Lớp</label>
-                                <input type="text" name="class" value="">
+                                <input type="text" name="schoolClass" value="${user.classID}">
+
+                                <label>Bằng cấp</label>
+                                <textarea name="certi" rows="4" cols="57" maxlength="1000">${user.certi}</textarea>
+
+                                <label>Mô tả</label>
+                                <textarea name="description" rows="5" cols="57" maxlength="1000">${user.descrip}</textarea>
 
                                 <button type="submit" class="btn">Lưu Thay Đổi</button>
+                                <c:if test="${not empty message}">
+                                    <div style="color: green; margin-top: 10px;">${message}</div>
+                                </c:if>
                             </form>
                         </div>
 

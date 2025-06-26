@@ -804,7 +804,7 @@
                 <!-- Đăng nhập -->
                 <div class="form-container">
                     <h2>Đăng nhập</h2>
-                    <form action="login" method="get">
+                    <form action="login" method="post">
                         <div class="form-group">
                             <label>Email hoặc Số Điện Thoại*</label>
                             <input type="text" name="loginEmail"   />
@@ -826,7 +826,7 @@
                         <br />
                         <button type="submit" class="log">Đăng nhập</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/googlelogin" method="GET">
+                    <form action="${pageContext.request.contextPath}/googlelogin" method="get">
                         <div class="google-login">
                             <p>Hoặc đăng nhập bằng</p>
                             <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20openid&redirect_uri=http://localhost:9999/WebApplication3/googlelogin&response_type=code&client_id=462397547099-cog4espvmnlb8qcg8s34ikuum3hufpur.apps.googleusercontent.com&prompt=consent" 
