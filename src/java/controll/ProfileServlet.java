@@ -4,10 +4,11 @@
  */
 package controll;
 
-import dal.ClassGroupDAO;
-import dal.ScheduleDAO;
-import entity.ClassGroup;
-import entity.ScheduleJoin;
+import dal.RoleDAO;
+import dal.SchoolClassDAO;
+import dal.SchoolDAO;
+import dal.UserDAO;
+import entity.Roles;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,15 +17,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
  * @author NGOC ANH
  */
-public class DashboardAttendServlet extends HttpServlet {
+public class ProfileServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +42,10 @@ public class DashboardAttendServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DashboardAttendServlet</title>");
+            out.println("<title>Servlet ProfileServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DashboardAttendServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ProfileServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,39 +60,56 @@ public class DashboardAttendServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Get session without creating a new one
-        if (session == null || session.getAttribute("user") == null) {
-            // No session or userId, redirect to login page
-            response.sendRedirect("login_register.jsp");
-            return;
-        }
+ @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    HttpSession session = request.getSession();
     User sessionUser = (User) session.getAttribute("user");
-        int userId = sessionUser.getId();
 
-        ClassGroupDAO dao = new ClassGroupDAO();
-        ArrayList<ClassGroup> todayClasses = new ArrayList<>();
-        try {
-            todayClasses = (ArrayList<ClassGroup>) dao.getTodayClasses(userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        ScheduleDAO daos = new ScheduleDAO();
-        ScheduleJoin nextSchedule = null;
-        try {
-            nextSchedule = daos.getNextScheduleByTeacher(userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Optionally, set an error attribute or redirect to an error page
-        }
-
-        // Set the nextSchedule in session scope for EL access
-        session.setAttribute("nextSchedule", nextSchedule);
-        request.setAttribute("todayClasses", todayClasses);
-        request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
+    if (sessionUser == null) {
+        response.sendRedirect("login_register.jsp");
+        return;
     }
+
+    int userId = sessionUser.getId();
+
+    UserDAO userDAO = new UserDAO();
+    User user = userDAO.getUserByID(userId);
+
+    if (user == null) {
+        request.setAttribute("error", "Không tìm thấy thông tin người dùng");
+        request.getRequestDispatcher("error.jsp").forward(request, response);
+        return;
+    }
+
+    SchoolDAO sdao = new SchoolDAO();
+    SchoolClassDAO scdao = new SchoolClassDAO();
+
+    String schoolName = sdao.getSchoolNameById(user.getSchoolID());
+    String classSchoolName = scdao.getSchoolClassNameById(user.getClassID());
+
+    RoleDAO roleDAO = new RoleDAO();
+    String roleName = roleDAO.getRoleNameByID(user.getRoleID());
+    if (roleName == null) roleName = "Unknown";
+
+    Map<String, String> roleNameViMap = Map.of(
+            "admin", "Quản trị viên",
+            "teacher", "Giáo viên",
+            "student", "Học sinh",
+            "manager", "Quản lý",
+            "Unknown", "Không xác định"
+    );
+
+    String roleNameVi = roleNameViMap.getOrDefault(roleName, "Không xác định");
+
+    request.setAttribute("user", user);
+    request.setAttribute("schoolName", schoolName);
+    request.setAttribute("classSchoolName", classSchoolName);
+    request.setAttribute("roleNameVi", roleNameVi);
+
+    request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);
+}
+
 
     /**
      * Handles the HTTP <code>POST</code> method.

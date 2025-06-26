@@ -35,18 +35,18 @@ public class GoogleLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet GoogleLogin</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet GoogleLogin at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+//        try (PrintWriter out = response.getWriter()) {
+//            /* TODO output your page here. You may use following sample code. */
+//            out.println("<!DOCTYPE html>");
+//            out.println("<html>");
+//            out.println("<head>");
+//            out.println("<title>Servlet GoogleLogin</title>");  
+//            out.println("</head>");
+//            out.println("<body>");
+//            out.println("<h1>Servlet GoogleLogin at " + request.getContextPath () + "</h1>");
+//            out.println("</body>");
+//            out.println("</html>");
+//        }
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -60,7 +60,7 @@ public class GoogleLogin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       String code = request.getParameter("code");
+        String code = request.getParameter("code");
     if (code == null || code.isEmpty()) {
         // Chưa có code, chuyển hướng tới Google
         String googleLoginURL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -85,9 +85,9 @@ public class GoogleLogin extends HttpServlet {
 
         if (acc != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("account", acc);
-            session.setAttribute("userName", acc.getName());
-            session.setAttribute("userAvatar", acc.getAvatar());
+            session.setAttribute("user", acc);
+            session.setAttribute("userId", acc.getId());
+
 
             // Điều hướng theo vai trò
             switch (acc.getRoleID()) {
@@ -95,7 +95,7 @@ public class GoogleLogin extends HttpServlet {
                     response.sendRedirect("SuccessRegister.jsp");
                     break;
                 case 2:
-                    response.sendRedirect("teacherdashboard.jsp");
+                    response.sendRedirect("dashboardattendservlet");
                     break;
                 case 3:
                     response.sendRedirect("dashboard.jsp");
@@ -110,6 +110,8 @@ public class GoogleLogin extends HttpServlet {
             request.setAttribute("error", "Email chưa tồn tại trong hệ thống.");
             request.getRequestDispatcher("login_register.jsp").forward(request, response);
         }
+        
+   
     
     } 
     
@@ -125,7 +127,7 @@ public class GoogleLogin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+            processRequest(request, response);
     }
 
     /** 
