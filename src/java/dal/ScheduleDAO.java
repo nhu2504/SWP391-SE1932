@@ -18,7 +18,7 @@ import java.util.Date;
 
 /**
  *
- * @author Văn Thị Như
+ * @author Văn Thị Như / Ngoc Anh
  */
 public class ScheduleDAO {
 

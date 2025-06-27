@@ -122,7 +122,7 @@ public class ScheduleJoin {
         return endTime;
     }
 
-    public void setEndTime(Time end_time) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 

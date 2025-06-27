@@ -505,8 +505,9 @@
 
                     <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+                    
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="login_register.jsp"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->

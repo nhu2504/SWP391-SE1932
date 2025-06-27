@@ -26,7 +26,7 @@ public class TokenForgetPassDAO {
     public boolean insertTokenForget(TokenForgetPass tokenForget) {
         String sql = "insert into TokenForgetPassword(token,expTime,isUsed,userID)\n"
                 + "values\n"
-                + "(?, DATEADD(MINUTE, 5, GETDATE()),?,?)";
+                + "(?, DATEADD(MINUTE, 1440, GETDATE()),?,?)";
         try {
             Connection conn = new DBContext().connection;
             PreparedStatement ps = conn.prepareStatement(sql);

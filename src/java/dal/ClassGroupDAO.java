@@ -5,6 +5,7 @@
 package dal;
 
 import entity.ClassGroup;
+import entity.TutoringClassStu;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -120,7 +121,8 @@ public class ClassGroupDAO {
                 + "WHERE s.UserID = ?\n"
                 + "  AND s.DateLearn = CONVERT(date, GETDATE())\n"
                 + "ORDER BY s.ShiftID ASC";
-        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = new DBContext().connection; 
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, teacherId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -132,6 +134,51 @@ public class ClassGroupDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    public ArrayList<TutoringClassStu> getClassesByUserID(int userID) {
+        ArrayList<TutoringClassStu> classes = new ArrayList<>();
+        String query = "SELECT DISTINCT tc.TutoringClassID, tc.ClassName, tc.StartDate, tc.Tuitionfee, " +
+                      "CASE WHEN p.PaymentID IS NOT NULL THEN 1 ELSE 0 END AS isPaid " +
+                      "FROM TutoringClass tc " +
+                      "JOIN ClassGroup cg ON tc.TutoringClassID = cg.TutoringClassID " +
+                      "JOIN ClassGroup_Student cgs ON cg.ClassGroupID = cgs.ClassGroupID " +
+                      "LEFT JOIN Payment p ON tc.TutoringClassID = p.TutoringClassID AND p.UserID = ? " +
+                      "WHERE cgs.StudentID = ? AND cgs.IsActive = 1";
+        try (Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userID);
+            ps.setInt(2, userID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TutoringClassStu tutoringClass = new TutoringClassStu();
+                tutoringClass.setTutoringClassID(rs.getInt("TutoringClassID"));
+                tutoringClass.setClassName(rs.getString("ClassName"));
+                tutoringClass.setStartDate(rs.getDate("StartDate"));
+                tutoringClass.setFee(rs.getDouble("Tuitionfee"));
+                tutoringClass.setPaid(rs.getBoolean("isPaid"));
+                classes.add(tutoringClass);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classes;
+    }
+
+    public void updatePaymentStatus(int tutoringClassID, int userID) throws SQLException {
+        String query = "IF EXISTS (SELECT 1 FROM Payment WHERE TutoringClassID = ? AND UserID = ?) " +
+                      "UPDATE Payment SET PaymentDate = GETDATE() " +
+                      "ELSE " +
+                      "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) " +
+                      "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
+        try (Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, tutoringClassID);
+            ps.setInt(2, userID);
+            ps.setInt(3, userID);
+            ps.setInt(4, tutoringClassID);
+            ps.setInt(5, tutoringClassID);
+            ps.executeUpdate();
+        }
     }
 
     public static void main(String[] args) {

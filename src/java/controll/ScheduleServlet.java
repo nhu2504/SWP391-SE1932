@@ -6,7 +6,9 @@
 package controll;
 
 import dal.ScheduleDAO;
+import dal.ShiftlearnDAO;
 import entity.ScheduleJoin;
+import entity.Shift;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,6 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @author NGOC ANH
@@ -64,6 +72,7 @@ public class ScheduleServlet extends HttpServlet {
         }
 
         int userId = Integer.parseInt(session.getAttribute("userId").toString());
+        
         ScheduleDAO dao = new ScheduleDAO();
         ScheduleJoin nextSchedule = null;
         try {
@@ -77,6 +86,8 @@ public class ScheduleServlet extends HttpServlet {
         session.setAttribute("nextSchedule", nextSchedule);
         request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
 
+      
+      
 
     }
     
