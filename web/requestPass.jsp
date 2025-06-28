@@ -674,7 +674,7 @@
                 <div class="forgot-desc">
                     Chúng tôi sẽ gửi đường link để lấy lại mật khẩu qua email của bạn
                 </div>
-                <button type="submit" class="forgot-submit-btn">Đặt lại mật khẩu</button>
+                <button type="submit" class="forgot-submit-btn">Xác nhận Email</button>
             </form>
             <c:if test="${not empty mess}">
         <div >${mess} </div>

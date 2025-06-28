@@ -94,14 +94,16 @@ public class ShowScheduleServlet extends HttpServlet {
             // Đặt về Thứ 2
             cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             cal.add(Calendar.WEEK_OF_YEAR, weekOffset);
-            Date startOfWeek = new Date(cal.getTimeInMillis());
+            Date startOfWeek = cal.getTime();
             // Đặt về Chủ nhật
             cal.add(Calendar.DATE, 6);
             cal.set(Calendar.HOUR_OF_DAY, 23);
             cal.set(Calendar.MINUTE, 59);
             cal.set(Calendar.SECOND, 59);
             cal.set(Calendar.MILLISECOND, 999);
+            
             Date endOfWeek = cal.getTime();
+            
             //Date endOfWeek = new Date(cal.getTimeInMillis());
 
             // 2. Lấy danh sách ca học

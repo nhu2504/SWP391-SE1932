@@ -503,7 +503,7 @@
                     <div class="username">${user.name}</div>
 
 
-                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <a href="profileservlet"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
                     
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>

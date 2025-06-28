@@ -80,6 +80,32 @@ public class ClassGroupDAO {
 
         return list;
     }
+    public List<ClassGroup> getAllClassGroupByUserId(int userId) {
+        List<ClassGroup> list = new ArrayList<>();
+        String sql = "SELECT * FROM ClassGroup WHERE TeacherID = ?";
+        
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                ClassGroup cg = new ClassGroup();
+                cg.setClassGroupId(rs.getInt("ClassGroupID"));
+                cg.setToturID(rs.getInt("TutoringClassID"));
+                cg.setName(rs.getString("ClassGroupName"));
+                cg.setMaxStudent(rs.getInt("MaxStudent"));
+                cg.setTeachId(rs.getInt("TeacherID"));
+                list.add(cg);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
 
     /**
      * Lấy danh sách các nhóm lớp theo tutoringClassID (ID lớp học thêm)
@@ -185,19 +211,29 @@ public class ClassGroupDAO {
         ClassGroupDAO dao = new ClassGroupDAO(); // Đổi tên nếu class của bạn khác
         int teacherId = 2; // Nhập ID giáo viên bạn muốn test
 
-        try {
-            List<ClassGroup> todayClasses = dao.getTodayClasses(teacherId);
-            if (todayClasses.isEmpty()) {
-                System.out.println("Không có lớp học nào hôm nay.");
-            } else {
-                System.out.println("Danh sách lớp học hôm nay:");
-                for (ClassGroup cg : todayClasses) {
-                    System.out.println("ID: " + cg.getClassGroupId() + " | Tên lớp: " + cg.getName());
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Đã xảy ra lỗi khi truy vấn lớp học hôm nay:");
-            e.printStackTrace();
+//        try {
+//            List<ClassGroup> todayClasses = dao.getTodayClasses(teacherId);
+//            if (todayClasses.isEmpty()) {
+//                System.out.println("Không có lớp học nào hôm nay.");
+//            } else {
+//                System.out.println("Danh sách lớp học hôm nay:");
+//                for (ClassGroup cg : todayClasses) {
+//                    System.out.println("ID: " + cg.getClassGroupId() + " | Tên lớp: " + cg.getName());
+//                }
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Đã xảy ra lỗi khi truy vấn lớp học hôm nay:");
+//            e.printStackTrace();
+//        }
+        List<ClassGroup> classGroups = dao.getAllClassGroupByUserId(teacherId);
+
+        System.out.println("Danh sách lớp của giáo viên có ID = " + teacherId + ":");
+        for (ClassGroup cg : classGroups) {
+            System.out.println(cg);
+        }
+
+        if (classGroups.isEmpty()) {
+            System.out.println("Không tìm thấy lớp nào cho giáo viên này.");
         }
     }
 }

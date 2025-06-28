@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controll;
 
 import dal.DocumentDAO;
@@ -23,34 +22,39 @@ import java.sql.SQLException;
  * @author NGOC ANH
  */
 public class UploadServlet extends HttpServlet {
-   private static final String UPLOAD_DIR = "uploads";
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    private static final String UPLOAD_DIR = "uploads";
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UploadServlet</title>");  
+            out.println("<title>Servlet UploadServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UploadServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UploadServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -58,12 +62,13 @@ public class UploadServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -71,12 +76,12 @@ public class UploadServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       HttpSession session = request.getSession();
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
         Integer uploadedBy = (Integer) session.getAttribute("userId");
 
         if (uploadedBy == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login_register.jsp");
             return;
         }
 
@@ -84,13 +89,19 @@ public class UploadServlet extends HttpServlet {
         String descrip = request.getParameter("descrip");
         String subjectIdStr = request.getParameter("subjectId");
         String gradeIdStr = request.getParameter("gradeId");
-        Part filePart = request.getPart("pdf");
+        Part filePart = null;
+        try {
+            filePart = request.getPart("pdf");
+        } catch (IllegalStateException ex) {
+            response.getWriter().println("File upload vượt quá giới hạn kích thước!");
+            return;
+        }
 
         // Validate
-        if (title == null || title.isEmpty() ||
-            subjectIdStr == null || subjectIdStr.isEmpty() ||
-            gradeIdStr == null || gradeIdStr.isEmpty() ||
-            filePart == null || !filePart.getContentType().equals("application/pdf")) {
+        if (title == null || title.isEmpty()
+                || subjectIdStr == null || subjectIdStr.isEmpty()
+                || gradeIdStr == null || gradeIdStr.isEmpty()
+                || filePart == null || filePart.getSize() == 0 || !filePart.getContentType().equals("application/pdf")) {
             response.getWriter().println("Vui lòng nhập đầy đủ thông tin và chọn file PDF hợp lệ!");
             return;
         }
@@ -100,12 +111,15 @@ public class UploadServlet extends HttpServlet {
 
         // Xử lý lưu file
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_"); // Loại bỏ ký tự đặc biệt
         String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
         String applicationPath = request.getServletContext().getRealPath("");
         String uploadPath = applicationPath + File.separator + UPLOAD_DIR;
 
         File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdir();
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
 
         String filePath = uploadPath + File.separator + uniqueFileName;
         filePart.write(filePath);
@@ -115,16 +129,18 @@ public class UploadServlet extends HttpServlet {
         // Lưu vào DB
         try {
             documentDao.saveDocument(title, descrip, uploadedBy, subjectId, gradeId, dbFilePath);
-            response.getWriter().println("Upload thành công! Đường dẫn file: " + dbFilePath);
+            // Chuyển hướng 
+            response.sendRedirect("teacherdashboard.jsp?uploadSuccess=true");
         } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Lỗi lưu vào database: " + e.getMessage());
         }
-    
+
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
