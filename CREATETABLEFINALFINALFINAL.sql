@@ -6,6 +6,7 @@ CREATE TABLE roles(
 	roleID INT PRIMARY KEY IDENTITY,
 	roleName NVARCHAR(30) not null
 );
+select roleName from roles where roleID = 2
 -- 2. Trường học (School)
 CREATE TABLE School (
     SchoolID INT PRIMARY KEY IDENTITY,
@@ -52,6 +53,27 @@ CREATE TABLE [User] (
     FOREIGN KEY (SchoolClassID) REFERENCES SchoolClass(SchoolClassID),
 	FOREIGN KEY (roleID) REFERENCES roles(roleID)
 );
+ALTER TABLE [User] DROP CONSTRAINT FK__User__SchoolClas__440B1D61;
+
+ALTER TABLE [User] DROP COLUMN SchoolClassID;
+CREATE TABLE TeacherClass (
+    UserID INT NOT NULL,
+    SchoolClassID INT NOT NULL,
+	PRIMARY KEY (UserID, SchoolClassID), 
+    FOREIGN KEY (UserID) REFERENCES [User](UserID),
+    FOREIGN KEY (SchoolClassID) REFERENCES SchoolClass(SchoolClassID)
+);
+
+CREATE TABLE TokenForgetPassword(
+	TokenID INT PRIMARY KEY IDENTITY,
+	token nvarchar(255) not null,
+	expTime DATETIME DEFAULT GETDATE(),
+	isUsed bit not null,
+	userID int not null,
+	FOREIGN KEY (userID) REFERENCES [User](UserID),
+);
+ALTER TABLE TokenForgetPassword DROP COLUMN expTime;
+ALTER TABLE TokenForgetPassword ADD expTime DATETIME DEFAULT GETDATE();
 
 
 -- 6. Môn học (Subject)(Toán,Văn,Anh,Sử,Địa,Lí,Hóa,Sinh)
@@ -59,6 +81,13 @@ CREATE TABLE Subjects (
     SubjectID INT PRIMARY KEY IDENTITY,
     SubjectName NVARCHAR(50) NOT NULL,
 	ImageSubject nvarchar(50)
+);
+CREATE TABLE TeacherSubjects (
+    UserID INT NOT NULL,
+    SubjectID INT NOT NULL,
+    PRIMARY KEY (UserID, SubjectID),
+    FOREIGN KEY (UserID) REFERENCES [User](UserID),
+    FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID)
 );
 
 
@@ -69,6 +98,8 @@ CREATE TABLE Shiftlearn(
 	End_time time not null
 );
 
+select *from Schedule where userID = 3 and datelearn = '2025-06-25'
+select*from TutoringRegistrationPending
 --8.Room
 CREATE TABLE Room (
     id INT PRIMARY KEY IDENTITY,
@@ -137,6 +168,8 @@ CREATE TABLE Document (
 	FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID),
 	FOREIGN KEY (GradeID) REFERENCES Grade(GradeID)
 );
+alter table Document
+add PDFPath NVARCHAR(255)
 
 -- 14. Thông báo (Notification)
 CREATE TABLE Notifications (
@@ -149,6 +182,8 @@ CREATE TABLE Notifications (
 	FOREIGN KEY (CreatedBy) REFERENCES [User](UserID),
 	FOREIGN KEY (TargetRole) REFERENCES roles(roleID)
 );
+alter table Notifications add isRead bit default 0;
+alter table Notifications add isImportant bit ;
 
 -- 15. Thanh toán (Payment)
 CREATE TABLE Payment (
@@ -160,6 +195,7 @@ CREATE TABLE Payment (
     FOREIGN KEY (UserID) REFERENCES [User](UserID),
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
+alter table Payment add isPaid bit default 0;
 
 --16. setting
 

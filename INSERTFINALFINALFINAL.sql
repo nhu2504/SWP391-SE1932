@@ -54,12 +54,17 @@ values
 (N'Lớp 12B',4,3),
 (N'Lớp 12A',5,3),
 (N'Lớp 12B',5,3);;
-
+insert into TeacherClass(UserID,SchoolClassID)
+values
+(2,1),
+(2,2),
+(2,12);
 -- 5. Người dùng 1-admin 2-teacher 3-student 4-manager
 INSERT INTO [User] (
     FullName, Gender, BirthDate, phone, email, pass, avatar,
     Certi, Descrip, SchoolID, SchoolClassID, roleID, ParentEmail, ParentPhone,isHot
 )
+
 VALUES 
 (N'Đỗ Ngọc Anh', N'Nữ', '2004-09-03', '0901548271', 'anhdnhe180661@fpt.edu.vn', 'ngocanh', 'admin.jpg',
     null, null, null, NULL, 1, 
@@ -232,7 +237,10 @@ values
 (N'Hóa Học','hoa.jpg'),
 (N'Vật Lý','ly.jpg');
 select *from [user]
-
+insert into TeacherSubjects(UserID,SubjectID)
+values
+(2,1),
+(2,8);
 --7.Ca hoc
 insert into Shiftlearn(Start_time,End_time)
 values
