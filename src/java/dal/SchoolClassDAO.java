@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -56,16 +58,56 @@ public class SchoolClassDAO {
         }
         return ClassName;
     }
+    
+    public List<SchoolClass> getAllClassesBySchoolId(int schoolId) {
+    List<SchoolClass> list = new ArrayList<>();
+    String sql = "SELECT schoolClassID, className, schoolID, gradeID FROM SchoolClass WHERE schoolID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, schoolId);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                SchoolClass sc = new SchoolClass(
+                    rs.getInt("SchoolClassID"),
+                    rs.getString("ClassName"),
+                    rs.getInt("SchoolID"),
+                    rs.getInt("GradeID")
+                );
+                list.add(sc);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
     //test lấy dữ liệu
     public static void main(String[] args) {
-        SchoolClassDAO sd = new SchoolClassDAO();
-                int sID = 2; 
-                SchoolClass s = sd.getSchoolClassByID(sID);
-    
-    if (s != null) {
-        System.out.println("Lớp tìm thấy: " + s.toString());
-    } else {
-        System.out.println("Không tìm thấy lớp với ID: " + sID);
-    }
+//        SchoolClassDAO sd = new SchoolClassDAO();
+//                int sID = 2; 
+//                SchoolClass s = sd.getSchoolClassByID(sID);
+//    
+//    if (s != null) {
+//        System.out.println("Lớp tìm thấy: " + s.toString());
+//    } else {
+//        System.out.println("Không tìm thấy lớp với ID: " + sID);
+//    }
+
+        SchoolClassDAO dao = new SchoolClassDAO();
+
+        int schoolId = 1; // Thay bằng ID trường học có thật trong cơ sở dữ liệu
+
+        List<SchoolClass> classes = dao.getAllClassesBySchoolId(schoolId);
+
+        if (classes.isEmpty()) {
+            System.out.println("Không có lớp nào thuộc trường có ID = " + schoolId);
+        } else {
+            System.out.println("Danh sách các lớp thuộc trường ID = " + schoolId + ":");
+            for (SchoolClass sc : classes) {
+                System.out.println(" - Lớp ID: " + sc.getSchoolClassID()
+                        + ", Tên lớp: " + sc.getClassName()
+                        + ", GradeID: " + sc.getGradeID());
+            }
+        }
     }
 }

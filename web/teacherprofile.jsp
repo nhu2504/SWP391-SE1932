@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="entity.User" %>
 
 <!DOCTYPE html>
@@ -679,13 +680,14 @@
                     <div class="avatar">
                         <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                     </div>
-                   <div class="username">${user.name}</div>
+                    <div class="username">${user.name}</div>
 
 
-                    <a href="#" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="login_register.jsp"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
@@ -707,10 +709,35 @@
                                 <input type="text" name="phone" value="${user.phone}">
 
                                 <label>Trường</label>
-                                <input type="text" name="school" value="${user.schoolID}">
+                                <select name="school">
+                                    <c:forEach var="sch" items="${allSchools}">
+                                        <option value="${sch.schoolID}" <c:if test="${user.schoolID == sch.schoolID}">selected</c:if>>
+                                            ${sch.name}
+                                        </option>
+                                    </c:forEach>
+                                </select>
 
-                                <label>Lớp</label>
-                                <input type="text" name="schoolClass" value="${user.classID}">
+                                <label>Lớp (tick nhiều lớp):</label>
+                                <div style="margin-bottom: 10px;">
+                                    <c:forEach var="cls" items="${allClasses}">
+                                        <label style="display: inline-block; margin-right: 10px;">
+                                            <input type="checkbox" name="classIds" value="${cls.schoolClassID}"
+                                                   <c:if test="${fn:contains(classIdsOfUserAsString, ',' + cls.schoolClassID + ',')}">checked</c:if> />
+                                            ${cls.className}
+                                        </label>
+                                    </c:forEach>
+                                </div>
+
+                                <label>Chuyên môn (tick nhiều chuyên môn):</label>
+                                <div style="margin-bottom: 10px;">
+                                    <c:forEach var="sub" items="${allSubjects}">
+                                        <label style="display: inline-block; margin-right: 10px;">
+                                            <input type="checkbox" name="subjectIds" value="${sub.subjectId}"
+                                                   <c:if test="${fn:contains(subjectIdsOfUserAsString, ',' + sub.subjectId + ',')}">checked</c:if> />
+                                            ${sub.subjectName}
+                                        </label>
+                                    </c:forEach>
+                                </div>
 
                                 <label>Bằng cấp</label>
                                 <textarea name="certi" rows="4" cols="57" maxlength="1000">${user.certi}</textarea>
@@ -719,8 +746,11 @@
                                 <textarea name="description" rows="5" cols="57" maxlength="1000">${user.descrip}</textarea>
 
                                 <button type="submit" class="btn">Lưu Thay Đổi</button>
-                                <c:if test="${not empty message}">
-                                    <div style="color: green; margin-top: 10px;">${message}</div>
+                                <c:if test="${not empty SuccessMessage}">
+                                    <div style="color: green; margin-top: 10px;">${SuccessMessage}</div>
+                                </c:if>
+                                <c:if test="${not empty FailMessage}">
+                                    <div style="color: red; margin-top: 10px;">${FailMessage}</div>
                                 </c:if>
                             </form>
                         </div>

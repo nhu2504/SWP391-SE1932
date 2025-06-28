@@ -7,41 +7,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Ngày tạo: 23/06/2025 Người viết: Van Nhu
+ */
 public class SubjectDAO {
+
     // Lấy danh sách tất cả môn học
-    public List<Map<String, String>> getAllSubjects() {
-        List<Map<String, String>> subjects = new ArrayList<>();
-        try (Connection conn = new DBContext().connection; // Kết nối database
-             PreparedStatement ps = conn.prepareStatement(
-                     // Câu SQL lấy tất cả môn học
-                     "SELECT SubjectId, SubjectName FROM Subjects");
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) { // Duyệt qua từng bản ghi
-                Map<String, String> subject = new HashMap<>();
-                subject.put("id", rs.getString("SubjectId")); // Lưu ID môn học
-                subject.put("name", rs.getString("SubjectName")); // Lưu tên môn học
-                subjects.add(subject); // Thêm vào danh sách
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return subjects; // Trả về danh sách môn học
-    }
-    public ArrayList<Subject> getAllSubject() {
-        ArrayList<Subject> subjects = new ArrayList<>();
-        String sql = "SELECT SubjectID, SubjectName FROM Subjects";
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+    public List<Subject> getAllSubjects() {
+        List<Subject> subjects = new ArrayList<>();
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(
+                "SELECT SubjectId, SubjectName FROM Subjects"); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Subject subject = new Subject(
-                    rs.getInt("SubjectID"),
-                    rs.getString("SubjectName")
-                );
+                Subject subject = new Subject();
+                subject.setSubjectId(rs.getInt("SubjectId"));
+                subject.setSubjectName(rs.getString("SubjectName"));
                 subjects.add(subject);
             }
         } catch (SQLException e) {
@@ -49,49 +31,125 @@ public class SubjectDAO {
         }
         return subjects;
     }
+// Lấy danh sách môn học và số lớp tương ứng
 
-    // Lấy danh sách ảnh môn học và số lớp học
-    public List<Subject> getSubjectImages(String contextPath) {
-        List<Subject> subjectImages = new ArrayList<>();
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement ps = conn.prepareStatement(
-                     // Câu SQL lấy ảnh và đếm số lớp học
-                     "SELECT s.ImageSubject, COUNT(t.TutoringClassID) AS ClassCount "
-                             + "FROM Subjects s "
-                             + "LEFT JOIN TutoringClass t ON s.SubjectId = t.SubjectId "
-                             + "GROUP BY s.ImageSubject");
-             ResultSet rs = ps.executeQuery()) {
+    public List<Subject> getSubjectsWithClassCount() {
+        List<Subject> list = new ArrayList<>();
+        String sql = "SELECT s.SubjectId, s.SubjectName, s.ImageSubject, COUNT(c.TutoringClassID) AS classCount "
+                + "FROM Subjects s "
+                + "LEFT JOIN TutoringClass c ON s.SubjectId = c.SubjectID "
+                + "GROUP BY s.SubjectId, s.SubjectName, s.ImageSubject";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                String imageSubject = rs.getString("ImageSubject"); // Lấy đường dẫn ảnh
-                int classCount = rs.getInt("ClassCount"); // Lấy số lớp học
-                // Xử lý đường dẫn ảnh
-                if (imageSubject != null && !imageSubject.isEmpty() && !imageSubject.startsWith("http")) {
-                    if (!imageSubject.startsWith("/images/")) {
-                        imageSubject = "/images/" + imageSubject.replaceFirst("^/+", "");
-                    }
-                    imageSubject = contextPath + imageSubject; // Thêm contextPath vào đường dẫn
-                }
-                subjectImages.add(new Subject(imageSubject, classCount)); // Thêm vào danh sách
+                Subject subject = new Subject();
+                subject.setSubjectId(rs.getInt("SubjectId"));
+                subject.setSubjectName(rs.getString("SubjectName"));
+                subject.setImageSubject(rs.getString("ImageSubject"));
+                subject.setClassCount(rs.getInt("classCount"));
+                list.add(subject);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return subjectImages;
+        return list;
     }
-    public Subject getSubjectByID(int id){
-        String query = "select * from Subjects\n"
-                + "where SubjectID = ?";
-        try {
-            Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(query); 
-                ps.setInt(1, id);
-                ResultSet rs = ps.executeQuery();
-                if(rs.next()){
-                    return new Subject(rs.getInt("SubjectID"), rs.getString("SubjectName"));
-                }
+
+    public List<Subject> getSubjectsByTeacherId(int teacherId) {
+        List<Subject> subjects = new ArrayList<>();
+        String sql = "SELECT s.* \n"
+                + "                   FROM TeacherSubjects ts \n"
+                + "                   JOIN Subjects s ON ts.SubjectID = s.SubjectID \n"
+                + "                   WHERE ts.UserID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, teacherId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Subject sub = new Subject();
+                sub.setSubjectId(rs.getInt("SubjectID"));
+                sub.setSubjectName(rs.getString("SubjectName"));
+                sub.setImageSubject(rs.getString("ImageSubject"));
+                subjects.add(sub);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return subjects;
+    }
+
+    public boolean updateSubjectOfTeacherDAO(int teacherId, List<Integer> subjectIds) {
+        String deleteSql = "DELETE FROM TeacherSubjects WHERE UserID = ?";
+        String insertSql = "INSERT INTO TeacherSubjects (UserID, SubjectID) VALUES (?, ?)";
+        Connection conn = null;
+        try {
+            conn = new DBContext().connection;
+            conn.setAutoCommit(false);
+
+            // Xóa hết chuyên môn cũ
+            try (PreparedStatement ps = conn.prepareStatement(deleteSql)) {
+                ps.setInt(1, teacherId);
+                ps.executeUpdate();
+            }
+
+            // Thêm các chuyên môn mới (nếu có)
+            if (subjectIds != null) {
+                try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                    for (Integer subjectId : subjectIds) {
+                        ps.setInt(1, teacherId);
+                        ps.setInt(2, subjectId);
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+            }
+
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        SubjectDAO dao = new SubjectDAO();
+//
+//        int teacherId = 2; // Thay bằng ID giáo viên đang có trong DB của bạn
+//
+//        List<Subject> subjectList = dao.getSubjectsByTeacherId(teacherId);
+//
+//        if (subjectList.isEmpty()) {
+//            System.out.println("Không có môn học nào cho giáo viên có ID = " + teacherId);
+//        } else {
+//            System.out.println("Danh sách môn học của giáo viên ID = " + teacherId + ":");
+//            for (Subject sub : subjectList) {
+//                System.out.println(" - Mã môn: " + sub.getSubjectId()
+//                        + ", Tên môn: " + sub.getSubjectName()
+//                        + ", Ảnh đại diện: " + sub.getImageSubject());
+//            }
+//        }
+
+        
+
+//        int teacherId = 2; // Thay bằng ID của giáo viên đã có trong DB
+//        List<Integer> subjectIds = Arrays.asList(1, 8); // Danh sách SubjectID cần gán mới
+//
+//        boolean result = dao.updateSubjectOfTeacherDAO(teacherId, subjectIds);
+//
+//        if (result) {
+//            System.out.println("Cập nhật chuyên môn cho giáo viên ID = " + teacherId + " thành công.");
+//        } else {
+//            System.out.println("Cập nhật chuyên môn thất bại.");
+//        }
+
+        List<Subject> subjects = dao.getAllSubjects();
+
+        if (subjects.isEmpty()) {
+            System.out.println("Không có môn học nào trong hệ thống.");
+        } else {
+            System.out.println("Danh sách môn học:");
+            for (Subject subject : subjects) {
+                System.out.println("ID: " + subject.getSubjectId() + " | Tên: " + subject.getSubjectName());
+            }
+        }
     }
 }

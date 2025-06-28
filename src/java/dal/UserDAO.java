@@ -16,7 +16,8 @@ import java.sql.SQLException;
  *
  */
 public class UserDAO {
-
+    private TeacherClassDAO tcDao = new TeacherClassDAO();
+    private SubjectDAO subjectDao = new SubjectDAO();
     //lấy ra người dùng theo email và mật khẩu
     public User login(String emailOrPhone, String password) {
         //tìm người dùng có mail và mật khẩu trùng khớp
@@ -33,24 +34,33 @@ public class UserDAO {
             ps.setString(3, password);
             //truy vấn có kết quả thì tạo và trả về đối tượng user
             ResultSet rs = ps.executeQuery();
+            
             while (rs.next()) {
-                return new User(rs.getInt("UserID"),
+                int userId = rs.getInt("UserID");
+                User user = new User(userId, 
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"),
+                        rs.getString("pass"), 
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        rs.getInt("SchoolClassID"),
+                        null, 
+                        null,
                         rs.getInt("roleID"),
+                        rs.getBoolean("isHot"), 
                         rs.getString("ParentEmail"),
-                        rs.getString("ParentPhone"));
+                        rs.getString("ParentPhone")
+                );
+               
+                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+            return user;
             }
             //xảy ra lỗi hoặc không có kết quả thì hiển thị ra lỗi và trả về null
         } catch (SQLException e) {
@@ -73,23 +83,31 @@ public class UserDAO {
             //tìm thấy user theo id đó thì trả về user
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt("UserID"),
+                int userId = rs.getInt("UserID");
+                User user = new User(userId, 
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"),
+                        rs.getString("pass"), 
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        rs.getInt("SchoolClassID"),
+                        null, 
+                        null,
                         rs.getInt("roleID"),
+                        rs.getBoolean("isHot"), 
                         rs.getString("ParentEmail"),
-                        rs.getString("ParentPhone"));
+                        rs.getString("ParentPhone")
+                );
+               
+                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+            return user;
             }
             //xảy ra lỗi sẽ trả về null và hiển thị thông báo lỗi
         } catch (SQLException e) {
@@ -126,23 +144,31 @@ public class UserDAO {
             //nếu có dữ liệu thì trả về đối tượng user
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt("UserID"),
+                int userId = rs.getInt("UserID");
+                User user = new User(userId, 
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"),
+                        rs.getString("pass"), 
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        rs.getInt("SchoolClassID"),
+                        null, 
+                        null,
                         rs.getInt("roleID"),
+                        rs.getBoolean("isHot"), 
                         rs.getString("ParentEmail"),
-                        rs.getString("ParentPhone"));
+                        rs.getString("ParentPhone")
+                );
+               
+                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+            return user;
             }
         } catch (SQLException e) {
             System.out.println("Lỗi " + e.getMessage());
@@ -164,11 +190,11 @@ public class UserDAO {
         return false;
     }
 
-    public boolean updateUser(int userId, String email, String phone, String avatarFileName, String certi, String description, int schoolId, int schoolClassId) {
+    public boolean updateUser(int userId, String email, String phone, String avatarFileName, String certi, String description, int schoolId) {
         String sql = "update [user] \n"
                 + "set email = ?, phone = ?, avatar = ?,Certi =?,\n"
                 + "descrip = ?,\n"
-                + "SchoolID = ?, SchoolClassID = ?\n"
+                + "SchoolID = ?\n"
                 + "where userid = ?";
         try {
             Connection conn = new DBContext().connection;
@@ -179,8 +205,7 @@ public class UserDAO {
             ps.setString(4, certi);
             ps.setString(5, description);
             ps.setInt(6, schoolId);
-            ps.setInt(7, schoolClassId);
-            ps.setInt(8, userId);
+            ps.setInt(7, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

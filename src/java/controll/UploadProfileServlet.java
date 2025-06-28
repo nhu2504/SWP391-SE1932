@@ -4,6 +4,8 @@
  */
 package controll;
 
+import dal.SubjectDAO;
+import dal.TeacherClassDAO;
 import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -90,47 +94,64 @@ public class UploadProfileServlet extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         int schoolId = Integer.parseInt(request.getParameter("school"));
-        int schoolClassId = Integer.parseInt(request.getParameter("schoolClass"));
         String certi = request.getParameter("certi");
         String description = request.getParameter("description");
 
+        // Lấy danh sách classIds và subjectIds từ form (checkbox/multiselect)
+        String[] classIdsStr = request.getParameterValues("classIds");
+        String[] subjectIdsStr = request.getParameterValues("subjectIds");
+        List<Integer> classIds = new ArrayList<>();
+        List<Integer> subjectIds = new ArrayList<>();
+        if (classIdsStr != null) {
+            for (String c : classIdsStr) {
+                classIds.add(Integer.parseInt(c));
+            }
+        }
+        if (subjectIdsStr != null) {
+            for (String s : subjectIdsStr) {
+                subjectIds.add(Integer.parseInt(s));
+            }
+        }
+
+        // Xử lý upload ảnh đại diện
         Part avatarPart = request.getPart("avatarFile");
         String avatarFilePath;
-
         String realPath = request.getServletContext().getRealPath("/images");
         File uploadDir = new File(realPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
+        UserDAO userDao = new UserDAO();
+
         if (avatarPart != null && avatarPart.getSize() > 0) {
-            // Tạo tên file ngẫu nhiên
             String originalFilename = Paths.get(avatarPart.getSubmittedFileName()).getFileName().toString();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String randomFileName = System.currentTimeMillis() + "_" + (int) (Math.random() * 10000) + fileExtension;
-
             avatarFilePath = "images/" + randomFileName;
             File file = new File(uploadDir, randomFileName);
             avatarPart.write(file.getAbsolutePath());
         } else {
-            // Không có ảnh mới => lấy đường dẫn ảnh hiện tại trong DB
-
-            avatarFilePath = userDao.getCurrentAvatar(userId); // Trả về "images/xxx.jpg"
+            avatarFilePath = userDao.getCurrentAvatar(userId); // ảnh cũ
         }
 
-        UserDAO userDao = new UserDAO();
+        boolean ok1 = userDao.updateUser(userId, email, phone, avatarFilePath, certi, description, schoolId);
 
-        boolean updated = userDao.updateUser(
-                userId, email, phone, avatarFilePath, certi, description, schoolId, schoolClassId
-        );
+        // Cập nhật bảng trung gian
+        TeacherClassDAO teacherClassDao = new TeacherClassDAO();
+        SubjectDAO subjectDao = new SubjectDAO();
+        boolean ok2 = teacherClassDao.updateSchoolClassDAO(userId, classIds);
+        boolean ok3 = subjectDao.updateSubjectOfTeacherDAO(userId, subjectIds);
 
-        if (updated) {
+        if (ok1 && ok2 && ok3) {
             User updatedUser = userDao.getUserByID(userId);
             session.setAttribute("user", updatedUser);
             session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
         } else {
             session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");
         }
+
+
 
         response.sendRedirect("profileservlet");
     }

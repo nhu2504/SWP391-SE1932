@@ -5,6 +5,7 @@
 package entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -26,7 +27,8 @@ public class User {
     private String certi;
     private String descrip;
     private int schoolID;
-    private int classID;
+    private List<SchoolClass> schoolClasses;
+    private List<Subject> subjects;
     private int roleID;
     private boolean isHot;
     private String parentEmail;
@@ -34,6 +36,29 @@ public class User {
 
     public User() {
     }
+
+    public User(int id, String name, String gender, Date birth, String phone, String email, String password, String avatar, int status, Date createDate, String certi, String descrip, int schoolID, List<SchoolClass> schoolClasses, List<Subject> subjects, int roleID, boolean isHot, String parentEmail, String parentPhone) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.birth = birth;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.avatar = avatar;
+        this.status = status;
+        this.createDate = createDate;
+        this.certi = certi;
+        this.descrip = descrip;
+        this.schoolID = schoolID;
+        this.schoolClasses = schoolClasses;
+        this.subjects = subjects;
+        this.roleID = roleID;
+        this.isHot = isHot;
+        this.parentEmail = parentEmail;
+        this.parentPhone = parentPhone;
+    }
+    
 
     public User(int id, String name, String email, String password) {
         this.id = id;
@@ -71,25 +96,8 @@ public class User {
        
     }
 
-    public User(int id, String name, String gender, Date birth, String phone, String email, String password, String avatar, int status, Date createDate, String certi, String descrip, int schoolID, int classID, int roleID, String parentEmail, String parentPhone) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.birth = birth;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.avatar = avatar;
-        this.status = status;
-        this.createDate = createDate;
-        this.certi = certi;
-        this.descrip = descrip;
-        this.schoolID = schoolID;
-        this.classID = classID;
-        this.roleID = roleID;
-        this.parentEmail = parentEmail;
-        this.parentPhone = parentPhone;
-    }
+    
+    
 
     public User(int id, String name, String gender, String phone, String email, String avatar, int status, String certi, String descrip) {
         this.id = id;
@@ -103,28 +111,24 @@ public class User {
         this.descrip = descrip;
     }
 
-    public User(int id, String name, String gender, Date birth, String phone, String email, String password, String avatar, int status, Date createDate, String certi, String descrip, int schoolID, int classID, int roleID, boolean isHot, String parentEmail, String parentPhone) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.birth = birth;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.avatar = avatar;
-        this.status = status;
-        this.createDate = createDate;
-        this.certi = certi;
-        this.descrip = descrip;
-        this.schoolID = schoolID;
-        this.classID = classID;
-        this.roleID = roleID;
-        this.isHot = isHot;
-        this.parentEmail = parentEmail;
-        this.parentPhone = parentPhone;
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
     
 
+    public List<SchoolClass> getSchoolClasses() {
+        return schoolClasses;
+    }
+
+    public void setSchoolClasses(List<SchoolClass> schoolClasses) {
+        this.schoolClasses = schoolClasses;
+    }
+
+    
     public int getId() {
         return id;
     }
@@ -157,14 +161,7 @@ public class User {
         this.schoolID = schoolID;
     }
 
-    public int getClassID() {
-        return classID;
-    }
-
-    public void setClassID(int classID) {
-        this.classID = classID;
-    }
-
+    
     public int getRoleID() {
         return roleID;
     }
@@ -275,9 +272,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", birth=" + birth + ", phone=" + phone + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", status=" + status + ", createDate=" + createDate + ", certi=" + certi + ", descrip=" + descrip + ", schoolID=" + schoolID + ", classID=" + classID + ", roleID=" + roleID + ", isHot=" + isHot + ", parentEmail=" + parentEmail + ", parentPhone=" + parentPhone + '}';
+        return "User{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", birth=" + birth + ", phone=" + phone + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", status=" + status + ", createDate=" + createDate + ", certi=" + certi + ", descrip=" + descrip + ", schoolID=" + schoolID + ", schoolClasses=" + schoolClasses + ", roleID=" + roleID + ", isHot=" + isHot + ", parentEmail=" + parentEmail + ", parentPhone=" + parentPhone + '}';
     }
 
+   
     
 
 }
