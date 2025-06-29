@@ -687,7 +687,7 @@
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
-                    <a href="login_register.jsp"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
@@ -708,32 +708,46 @@
                                 <label>Số điện thoại</label>
                                 <input type="text" name="phone" value="${user.phone}">
 
-                                <label>Trường</label>
-                                <select name="school">
-                                    <c:forEach var="sch" items="${allSchools}">
-                                        <option value="${sch.schoolID}" <c:if test="${user.schoolID == sch.schoolID}">selected</c:if>>
-                                            ${sch.name}
+
+
+                                <label>Trường học đang giảng dạy:</label>
+                                <select name="school" onchange="loadClassesBySchool(this.value)">
+                                    <c:forEach var="school" items="${allSchools}">
+                                        <option value="${school.schoolID}" <c:if test="${schoolIdSelected == school.schoolID}">selected</c:if>>
+                                            ${school.name}
                                         </option>
                                     </c:forEach>
                                 </select>
 
-                                <label>Lớp (tick nhiều lớp):</label>
-                                <div style="margin-bottom: 10px;">
+                                <br/><br/>
+
+                                <label>Lớp học đang giảng dạy tại trường:</label>
+                                <div id="class-checkbox-container">
                                     <c:forEach var="cls" items="${allClasses}">
-                                        <label style="display: inline-block; margin-right: 10px;">
-                                            <input type="checkbox" name="classIds" value="${cls.schoolClassID}"
-                                                   <c:if test="${fn:contains(classIdsOfUserAsString, ',' + cls.schoolClassID + ',')}">checked</c:if> />
+                                        <c:set var="checked" value="false" scope="page" />
+                                        <c:forEach var="id" items="${classIdsOfUser}">
+                                            <c:if test="${id == cls.schoolClassID || id == cls.schoolClassID.toString()}">
+                                                <c:set var="checked" value="true" scope="page" />
+                                            </c:if>
+                                        </c:forEach>
+                                        <label style="display: block; margin-bottom: 5px;">
+                                            <input type="checkbox" name="classIds" value="${cls.schoolClassID}" <c:if test="${checked}">checked</c:if> />
                                             ${cls.className}
                                         </label>
                                     </c:forEach>
                                 </div>
 
-                                <label>Chuyên môn (tick nhiều chuyên môn):</label>
+                                <label>Chuyên môn:</label>
                                 <div style="margin-bottom: 10px;">
                                     <c:forEach var="sub" items="${allSubjects}">
+                                        <c:set var="checked" value="false" scope="page" />
+                                        <c:forEach var="id" items="${subjectIdsOfUser}">
+                                            <c:if test="${id == sub.subjectId || id == sub.subjectId.toString()}">
+                                                <c:set var="checked" value="true" scope="page" />
+                                            </c:if>
+                                        </c:forEach>
                                         <label style="display: inline-block; margin-right: 10px;">
-                                            <input type="checkbox" name="subjectIds" value="${sub.subjectId}"
-                                                   <c:if test="${fn:contains(subjectIdsOfUserAsString, ',' + sub.subjectId + ',')}">checked</c:if> />
+                                            <input type="checkbox" name="subjectIds" value="${sub.subjectId}" <c:if test="${checked}">checked</c:if> />
                                             ${sub.subjectName}
                                         </label>
                                     </c:forEach>
@@ -770,7 +784,20 @@
 
                                 <button type="submit" class="btn">Đổi Mật Khẩu</button>
                             </form>
+                            <c:if test="${not empty errorOldPass}">
+                                <div style="color:red;">${errorOldPass}</div>
+                            </c:if>
+                            <c:if test="${not empty errorConfirmPass}">
+                                <div style="color:red;">${errorConfirmPass}</div>
+                            </c:if>
+                            <c:if test="${not empty errorUpdate}">
+                                <div style="color:red;">${errorUpdate}</div>
+                            </c:if>
+                            <c:if test="${not empty sessionScope.SuccessMessage}">
+                                <div style="color:green;">${sessionScope.SuccessMessage}</div>
+                            </c:if>
                         </div>
+
                     </div>
 
                 </div>
@@ -854,6 +881,58 @@
     <!-- <script src="js/custom.js"></script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                                    var selectedClassIds = [
+        <c:forEach var="id" items="${classIdsOfUser}" varStatus="loop">
+            ${id}<c:if test="${!loop.last}">,</c:if>
+        </c:forEach>
+                                    ];
 
+                                    function loadClassesBySchool(schoolId) {
+                                        fetch('GetClassesBySchoolServlet?schoolId=' + schoolId)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    let classCheckboxes = '';
+                                                    data.forEach(function (cls) {
+                                                        let checked = selectedClassIds.includes(cls.schoolClassID) ? 'checked' : '';
+                                                        classCheckboxes += '<label style="display: block; margin-bottom: 5px;">' +
+                                                                '<input type="checkbox" name="classIds" value="' + cls.schoolClassID + '" ' + checked + ' />' +
+                                                                cls.className +
+                                                                '</label>';
+                                                    });
+                                                    document.getElementById('class-checkbox-container').innerHTML = classCheckboxes;
+                                                });
+                                    }
+
+                                    // Cập nhật selectedClassIds khi tick/untick
+                                    document.addEventListener('change', function (e) {
+                                        if (e.target.name === 'classIds') {
+                                            let value = parseInt(e.target.value);
+                                            if (e.target.checked) {
+                                                if (!selectedClassIds.includes(value)) {
+                                                    selectedClassIds.push(value);
+                                                }
+                                            } else {
+                                                selectedClassIds = selectedClassIds.filter(id => id !== value);
+                                            }
+                                        }
+                                    });
+
+                                    // Trước khi submit form, thêm input hidden cho từng id
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        let form = document.querySelector('form');
+                                        form.addEventListener('submit', function (e) {
+                                            let div = document.getElementById('selected-ids-inputs');
+                                            div.innerHTML = '';
+                                            selectedClassIds.forEach(function (id) {
+                                                let input = document.createElement('input');
+                                                input.type = 'hidden';
+                                                input.name = 'classIds';
+                                                input.value = id;
+                                                div.appendChild(input);
+                                            });
+                                        });
+                                    });
+    </script>
 </body>
 </html>

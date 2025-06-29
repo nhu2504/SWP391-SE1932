@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controll;
+package UserProfile;
 
 import dal.SubjectDAO;
 import dal.TeacherClassDAO;
@@ -11,6 +11,7 @@ import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ import java.util.List;
  *
  * @author NGOC ANH
  */
-@jakarta.servlet.annotation.MultipartConfig
+@MultipartConfig
 public class UploadProfileServlet extends HttpServlet {
 
     private UserDAO userDao = new UserDAO();
@@ -68,8 +69,7 @@ public class UploadProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
+ request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);    }
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -112,30 +112,48 @@ public class UploadProfileServlet extends HttpServlet {
                 subjectIds.add(Integer.parseInt(s));
             }
         }
+         UserDAO userDao = new UserDAO();
 
         // Xử lý upload ảnh đại diện
-        Part avatarPart = request.getPart("avatarFile");
-        String avatarFilePath;
-        String realPath = request.getServletContext().getRealPath("/images");
-        File uploadDir = new File(realPath);
+        Part part = request.getPart("avatarFile");
+
+        // Thư mục lưu ảnh ngoài project
+        String uploadDirPath = "D:/MyUploads/Images";
+        File uploadDir = new File(uploadDirPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
-        UserDAO userDao = new UserDAO();
+        String avatarPath = null;
+        String randomFileName = null;
 
-        if (avatarPart != null && avatarPart.getSize() > 0) {
-            String originalFilename = Paths.get(avatarPart.getSubmittedFileName()).getFileName().toString();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String randomFileName = System.currentTimeMillis() + "_" + (int) (Math.random() * 10000) + fileExtension;
-            avatarFilePath = "images/" + randomFileName;
-            File file = new File(uploadDir, randomFileName);
-            avatarPart.write(file.getAbsolutePath());
+        if (part != null && part.getSize() > 0) {
+            // Xóa ảnh cũ nếu có
+            String oldAvatarPath = userDao.getUserByID(userId).getAvatar(); 
+            if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
+                String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
+                File oldFile = new File(uploadDir, oldFileName);
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                }
+            }
+
+            // Tạo tên ngẫu nhiên cho file
+            String fileExtension = part.getSubmittedFileName().substring(part.getSubmittedFileName().lastIndexOf("."));
+            randomFileName = java.util.UUID.randomUUID().toString() + fileExtension;
+
+            // Ghi file
+            File newFile = new File(uploadDir, randomFileName);
+            part.write(newFile.getAbsolutePath());
+
+            // Gán đường dẫn lưu DB
+            avatarPath = request.getContextPath() + "/image-loader/" + randomFileName;
         } else {
-            avatarFilePath = userDao.getCurrentAvatar(userId); // ảnh cũ
+            // Không upload ảnh mới → giữ nguyên ảnh cũ
+            avatarPath = userDao.getUserByID(userId).getAvatar();
         }
 
-        boolean ok1 = userDao.updateUser(userId, email, phone, avatarFilePath, certi, description, schoolId);
+        boolean ok1 = userDao.updateUser(userId, email, phone, avatarPath, certi, description, schoolId);
 
         // Cập nhật bảng trung gian
         TeacherClassDAO teacherClassDao = new TeacherClassDAO();
@@ -145,7 +163,8 @@ public class UploadProfileServlet extends HttpServlet {
 
         if (ok1 && ok2 && ok3) {
             User updatedUser = userDao.getUserByID(userId);
-            session.setAttribute("user", updatedUser);
+           
+            request.getSession().setAttribute("user", updatedUser);
             session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
         } else {
             session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");

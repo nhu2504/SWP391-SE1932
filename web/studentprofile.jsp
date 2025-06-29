@@ -1,12 +1,15 @@
 <%-- 
-    Document   : studentprofile
-    Created on : Jun 23, 2025, 10:17:38 AM
+    Document   : teacherprofile
+    Created on : Jun 23, 2025, 10:20:36 AM
     Author     : NGOC ANH
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="entity.User" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -497,11 +500,124 @@
                 transition: color 0.3s ease;
             }
 
+            .container {
+                display: flex;
+                justify-content: space-between;
+                gap: 50px;
+            }
+            .section {
+                flex: 1;
+            }
+            h2 {
+                margin-bottom: 20px;
+            }
+            label {
+                display: block;
+                margin-top: 15px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 90%;
+                padding: 10px;
+                border: 2px solid black;
+                border-radius: 999px;
+                font-size: 14px;
+            }
+            .avatar {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .avatar img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 2px solid black;
+            }
+            .btn {
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #f8b6b6;
+                border: none;
+                border-radius: 999px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .btn:hover {
+                background-color: #f29494;
+            }
+            .sidebar a.active {
+                background-color: #ffcad4;
+                border-radius: 10px;
+                font-weight: bold;
+            }
+            /*css cho phần tải avata*/
+            .avatar {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                margin-bottom: 24px;
+            }
+
+            .avatar-img {
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #ccc;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                flex-shrink: 0;
+            }
+
+            .avatar form {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .avatar form input[type="file"] {
+                font-size: 1rem;
+                padding: 6px 8px;
+                width: 220px;
+                max-width: 60vw;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+            }
+
+            .avatar form .btn {
+                background: #f8b6b6;
+                border: none;
+                border-radius: 999px;
+                padding: 8px 22px;
+                font-weight: bold;
+                color: #222;
+                transition: background 0.2s;
+                margin-left: 8px;
+            }
+
+            .avatar form .btn:hover {
+                background: #f29494;
+                color: #fff;
+            }
 
         </style>
     </head>
 
     <body id="top">
+        <c:if test="${not empty sessionScope.SuccessMessage}">
+            <script>
+                alert('${sessionScope.SuccessMessage}');
+            </script>
+            <c:remove var="SuccessMessage" scope="session"/>
+        </c:if>
+
+        <c:if test="${not empty sessionScope.FailMessage}">
+            <script>
+                alert('${sessionScope.FailMessage}');
+            </script>
+            <c:remove var="FailMessage" scope="session"/>
+        </c:if>
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -547,35 +663,31 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="Home.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Bảng Điều Khiển</h3>
+            <h3 class="schedule-title text-center w-100 m-0">Hồ sơ cá nhân</h3>
         </div>
 
         <div >
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
-        String userName = (String) session.getAttribute("userName");
-        String userAvatar = (String) session.getAttribute("userAvatar");
-        if (userAvatar == null || userAvatar.isEmpty()) {
-            userAvatar = "default-avatar.jpg";
-        }
-        if (userName == null || userName.isEmpty()) {
-            userName = "Tên người dùng";
-        }
+                        User user = (User) session.getAttribute("user");
                     %>
 
-                    <div class="avatar">
-                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
-                    </div>
-                    <div class="username"><%= userName %></div>
 
-                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <div class="avatar">
+                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                    </div>
+                    <div class="username">${user.name}</div>
+
+
+                    <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
@@ -583,29 +695,56 @@
                     <div class="container">
                         <!-- THÔNG TIN CÁ NHÂN -->
                         <div class="section">
-                            <p><strong>Id người dùng:</strong> ...</p>
-                            <p><strong>Vai trò:</strong> ...</p>
+                            <p><strong>Id người dùng:</strong> ${user.id}</p>
+                            <p><strong>Vai trò:</strong> ${roleNameVi}</p>
 
-                            <div class="avatar">
-                                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Avatar">
-                                <br>
-                                <button class="btn">Tải Ảnh</button>
-                            </div>
+                            <form action="uploadprofile" method="post" enctype="multipart/form-data">
+                                <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                                <input type="file" name="avatarFile" accept="image/*" style="margin-top:10px;">
 
-                            <form action="updateProfile" method="post">
                                 <label>Email</label>
-                                <input type="text" name="email" value="">
+                                <input type="text" name="email" value="${user.email}">
 
                                 <label>Số điện thoại</label>
-                                <input type="text" name="phone" value="">
+                                <input type="text" name="phone" value="${user.phone}">
 
-                                <label>Trường</label>
-                                <input type="text" name="school" value="">
 
-                                <label>Lớp</label>
-                                <input type="text" name="class" value="">
+
+                                <label>Trường đang học:</label>
+                                <select name="school" onchange="loadClassesBySchool(this.value)">
+                                    <c:forEach var="school" items="${allSchools}">
+                                        <option value="${school.schoolID}" <c:if test="${schoolIdSelected == school.schoolID}">selected</c:if>>
+                                            ${school.name}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+
+                                <br/><br/>
+
+                                <label>Lớp đang theo học tại trường:</label>
+                                <select name="classId" id="class-select">
+                                    <c:forEach var="cls" items="${allClasses}">
+                                        <option value="${cls.schoolClassID}"
+                                                <c:if test="${classIdOfUser == cls.schoolClassID || classIdOfUser == cls.schoolClassID.toString()}">selected</c:if>
+                                                >${cls.className}</option>
+                                    </c:forEach>
+                                </select>
+                                <label>Email phụ huynh</label>
+                                <input type="text" name="emailparent" value="${user.email}">
+
+                                <label>Số điện thoại</label>
+                                <input type="text" name="phoneparent" value="${user.phone}">
+
+                                <label>Mô tả</label>
+                                <textarea name="description" rows="5" cols="57" maxlength="1000">${user.descrip}</textarea>
 
                                 <button type="submit" class="btn">Lưu Thay Đổi</button>
+                                <c:if test="${not empty SuccessMessage}">
+                                    <div style="color: green; margin-top: 10px;">${SuccessMessage}</div>
+                                </c:if>
+                                <c:if test="${not empty FailMessage}">
+                                    <div style="color: red; margin-top: 10px;">${FailMessage}</div>
+                                </c:if>
                             </form>
                         </div>
 
@@ -624,89 +763,155 @@
 
                                 <button type="submit" class="btn">Đổi Mật Khẩu</button>
                             </form>
+                            <c:if test="${not empty errorOldPass}">
+                                <div style="color:red;">${errorOldPass}</div>
+                            </c:if>
+                            <c:if test="${not empty errorConfirmPass}">
+                                <div style="color:red;">${errorConfirmPass}</div>
+                            </c:if>
+                            <c:if test="${not empty errorUpdate}">
+                                <div style="color:red;">${errorUpdate}</div>
+                            </c:if>
+                            <c:if test="${not empty sessionScope.SuccessMessage}">
+                                <div style="color:green;">${sessionScope.SuccessMessage}</div>
+                            </c:if>
                         </div>
+
                     </div>
 
                 </div>
             </div>
         </div>
+    </div>
 
-        <footer class="site-footer">
-            <!-- Footer Start -->
-            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-                <div class="row pt-5">
-                    <div class="col-lg-5 col-md-12 mb-5">
-                        <a href="" class="text-decoration-none">
+    <footer class="site-footer">
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+            <div class="row pt-5">
+                <div class="col-lg-5 col-md-12 mb-5">
+                    <a href="" class="text-decoration-none">
 
-                            <div class="logo-container">
-                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+                        <div class="logo-container">
+                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
 
+                        </div>
+                        <div class="slogan-group text-left mt-2">
+
+                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                        </div>
+
+                    </a>
+                </div>
+                <div class="col-lg-7 col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                            <div class="d-flex justify-content-start mt-4">
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
-                            <div class="slogan-group text-left mt-2">
-
-                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                            </div>
-
-                        </a>
-                    </div>
-                    <div class="col-lg-7 col-md-12">
-                        <div class="row">
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                                <div class="d-flex justify-content-start mt-4">
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-5">
-                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                                <div class="d-flex flex-column justify-content-start">
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                    </a>
-                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                    </a>
+                        </div>
+                        <div class="col-md-6 mb-5">
+                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                </a>
+                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                </a>
 
 
-                                </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
+
             </div>
-            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </footer>
+        </div>
+        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
+
+    </footer>
 
 
-        <!-- JAVASCRIPT FILES -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- <script src="js/owl.carousel.min.js"></script>
-        <!-- <script src="js/counter.js"></script> -->
-        <!-- <script src="js/custom.js"></script> -->
+    <!-- JAVASCRIPT FILES -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script src="js/owl.carousel.min.js"></script>
+    <!-- <script src="js/counter.js"></script> -->
+    <!-- <script src="js/custom.js"></script> -->
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                                    var selectedClassIds = [
+        <c:forEach var="id" items="${classIdsOfUser}" varStatus="loop">
+            ${id}<c:if test="${!loop.last}">,</c:if>
+        </c:forEach>
+                                    ];
 
-    </body>
+                                    function loadClassesBySchool(schoolId) {
+                                        fetch('GetClassesBySchoolServlet?schoolId=' + schoolId)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    let classCheckboxes = '';
+                                                    data.forEach(function (cls) {
+                                                        let checked = selectedClassIds.includes(cls.schoolClassID) ? 'checked' : '';
+                                                        classCheckboxes += '<label style="display: block; margin-bottom: 5px;">' +
+                                                                '<input type="checkbox" name="classIds" value="' + cls.schoolClassID + '" ' + checked + ' />' +
+                                                                cls.className +
+                                                                '</label>';
+                                                    });
+                                                    document.getElementById('class-checkbox-container').innerHTML = classCheckboxes;
+                                                });
+                                    }
+
+                                    // Cập nhật selectedClassIds khi tick/untick
+                                    document.addEventListener('change', function (e) {
+                                        if (e.target.name === 'classIds') {
+                                            let value = parseInt(e.target.value);
+                                            if (e.target.checked) {
+                                                if (!selectedClassIds.includes(value)) {
+                                                    selectedClassIds.push(value);
+                                                }
+                                            } else {
+                                                selectedClassIds = selectedClassIds.filter(id => id !== value);
+                                            }
+                                        }
+                                    });
+
+                                    // Trước khi submit form, thêm input hidden cho từng id
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        let form = document.querySelector('form');
+                                        form.addEventListener('submit', function (e) {
+                                            let div = document.getElementById('selected-ids-inputs');
+                                            div.innerHTML = '';
+                                            selectedClassIds.forEach(function (id) {
+                                                let input = document.createElement('input');
+                                                input.type = 'hidden';
+                                                input.name = 'classIds';
+                                                input.value = id;
+                                                div.appendChild(input);
+                                            });
+                                        });
+                                    });
+    </script>
+</body>
 </html>

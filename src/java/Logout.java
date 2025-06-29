@@ -3,25 +3,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll;
 
-import dal.GradeDAO;
-import dal.SubjectDAO;
-import entity.Grade;
-import entity.Subject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
+import jakarta.servlet.http.HttpSession;
+
 
 /**
  *
  * @author NGOC ANH
  */
-public class GetListSubGrade extends HttpServlet {
+@WebServlet(urlPatterns={"/logout"})
+public class Logout extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +36,10 @@ public class GetListSubGrade extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetListSubGrade</title>");  
+            out.println("<title>Servlet Logout</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetListSubGrade at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet Logout at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,16 +56,9 @@ public class GetListSubGrade extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-         SubjectDAO subjectDAO = new SubjectDAO();
-    GradeDAO gradeDAO = new GradeDAO();
-
-    List<Subject> subjectList = subjectDAO.getAllSubjects();
-    List<Grade> gradeList = gradeDAO.getAllGrades();
-
-    request.setAttribute("subjectList", subjectList);
-    request.setAttribute("gradeList", gradeList);
-
-    request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
+        HttpSession ss = request.getSession();
+        ss.invalidate();
+        response.sendRedirect("home");
     } 
 
     /** 
