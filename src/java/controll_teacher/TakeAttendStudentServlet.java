@@ -5,8 +5,7 @@
 
 package controll_teacher;
 
-import dal.ClassGroupDAO;
-import entity.ClassGroup;
+import dal.ClassGroup_StudentDAO;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,7 +20,7 @@ import java.util.List;
  *
  * @author NGOC ANH
  */
-public class GetClassListServlet extends HttpServlet {
+public class TakeAttendStudentServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +37,10 @@ public class GetClassListServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetClassListServlet</title>");  
+            out.println("<title>Servlet TakeAttendStudentServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetClassListServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet TakeAttendStudentServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,23 +57,22 @@ public class GetClassListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Get session without creating a new one
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            // No session or userId, redirect to login page
             response.sendRedirect("login_register.jsp");
             return;
         }
-    User sessionUser = (User) session.getAttribute("user");
-        int userId = sessionUser.getId();
+
         
-         ClassGroupDAO dao = new ClassGroupDAO();
-        List<ClassGroup> classList = dao.getAllClassGroupByUserId(userId);
+        
+        int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
+       
+            ClassGroup_StudentDAO dao = new ClassGroup_StudentDAO();
+            List<User> students = dao.getStudentsByClassGroupId(classGroupId);// bạn đã có hàm này
 
-        // Đưa dữ liệu lên request để JSP hiển thị
-        request.setAttribute("classList", classList);
-
-        // Chuyển tiếp đến trang hiển thị
-        request.getRequestDispatcher("getclasslist.jsp").forward(request, response);
+        request.setAttribute("students", students);
+        request.setAttribute("classGroupId", classGroupId);
+        request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
     } 
 
     /** 

@@ -617,12 +617,12 @@
                     <div class="avatar">
                         <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                     </div>
-                   <div class="username">${user.name}</div>
+                    <div class="username">${user.name}</div>
 
                     <a href="profileservlet"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
@@ -657,40 +657,42 @@
                                 </div></a>
                         </div>
                         <div class="attend">
-                            <a href="#">
-                                <div class="card">
+
+                            <div class="card">
+                                <a href="#">
                                     <i class="fas fa-calendar-check"></i> Điểm Danh
-                                    <div>
-                                        <strong>Các lớp học hôm nay:</strong><br>
-                                        <c:choose>
-                                            <c:when test="${not empty todayClasses}">
-                                                <c:forEach var="c" items="${todayClasses}">
-                                                    <div class="class-row">
-                                                        <div class="class-name">
-                                                            <a href="#">${c.name}</a>
-                                                        </div>
-                                                        <div style="display: flex; gap: 13px;">
-                                                            <a href="#">take</a>
-                                                            <a href="#">edit</a>
-                                                        </div>
-                                                        <br/>
+                                </a>
+                                <div>
+                                    <strong>Các lớp học hôm nay:</strong><br>
+                                    <c:choose>
+                                        <c:when test="${not empty sessionScope.todayClasses}">
+                                            <c:forEach var="c" items="${sessionScope.todayClasses}">
+                                                <div class="class-row">
+                                                    <div class="class-name">
+                                                        <a href="#">${c.name}</a>
                                                     </div>
-                                                </c:forEach>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span>Không có lớp học nào hôm nay.</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                </div></a>
-                            
+                                                    <div style="display: flex; gap: 13px;">
+                                                        <a href="takeattendancestudent?classGroupId=${c.classGroupId}">take</a>
+                                                        <a href="#">edit</a>
+                                                    </div>
+                                                    <br/>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>Không có lớp học nào hôm nay.</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="header-container">
-                            <a href="#">
-                                <div class="card">
-                                    <i class="fas fa-users"></i> Danh sách lớp
 
-                            </a>
+                            <a href="getclasslist"> <div class="card">
+                                    <i class="fas fa-users"></i> Danh sách lớp </a>
+
+
 
                             <div class="search-box">
                                 <input type="text" placeholder="Tìm kiếm lớp">
@@ -698,51 +700,53 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#"><div class="card"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập
-                            <form method="post" action="upload" enctype="multipart/form-data">
-                                <table>
+                    <div class="card">
+                        <a href="viewdocument"><i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu học tập</a>
+                        <form action="${pageContext.request.contextPath}/upload" method="post" enctype="multipart/form-data">
+                            <table>
 
-                                    <tbody>
-                                        <tr>
-                                            <td>Tiêu đề:</td>
-                                            <td><input type="text" name="title"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mô tả:</td>
-                                            <td><input type="text" name="descrip"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Môn học:</td>
-                                            <td>
-                                                <select name="subjectId" required>
-                                                    <option value="">--Chọn môn học--</option>
-                                                    <c:forEach var="subject" items="${subjectList}">
-                                                        <option value="${subject.subjectID}">${subject.subjectName}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Khối lớp:</td>
-                                            <td>
-                                                <select name="gradeId" required>
-                                                    <option value="">--Chọn khối lớp--</option>
-                                                    <c:forEach var="grade" items="${gradeList}">
-                                                        <option value="${grade.gradeID}">${grade.gradeName}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>File PDF:</td>
-                                            <td><input type="file" name="pdf"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <input type="submit" value="Upload">
-                            </form>
+                                <tbody>
+                                    <tr>
+                                        <td>Tiêu đề:</td>
+                                        <td><input type="text" name="title"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mô tả:</td>
+                                        <td><input type="text" name="descrip"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Môn học:</td>
+                                        <td>
+                                            <select name="subjectId" required>
+                                                <option value="">--Chọn môn học--</option>
+                                                <c:forEach var="subject" items="${sessionScope.listsub}">
+                                                    <option value="${subject.subjectId}">${subject.subjectName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Khối lớp:</td>
+                                        <td>
+                                            <select name="gradeId" required>
+                                                <option value="">--Chọn khối lớp--</option>
+                                                <c:forEach var="grade" items="${sessionScope.listgrade}">
+                                                    <option value="${grade.gradeID}">${grade.gradeName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>File PDF:</td>
+                                        <td><input type="file" name="pdf"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="submit" value="Tải lên">
 
-                        </div></a>
+                        </form>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -824,6 +828,19 @@
     <!-- <script src="js/custom.js"></script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <%-- Kiểm tra param uploadSuccess từ URL --%>
+    <c:if test="${param.uploadSuccess == 'true'}">
+        <script>
+            alert("Tải tài liệu lên thành công!");
+            // Xóa ?uploadSuccess=true khỏi URL để tránh alert hiển thị lại khi F5
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete("uploadSuccess");
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        </script>
+    </c:if>
 
 </body>
 </html>

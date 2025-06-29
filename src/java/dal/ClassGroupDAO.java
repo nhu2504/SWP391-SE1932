@@ -19,19 +19,14 @@ import java.sql.SQLException;
  */
 public class ClassGroupDAO {
 
-       /**
-     * Lấy thông tin 1 lịch học đầu tiên (phòng, giáo viên, ca học) cho mỗi nhóm lớp
-     * thuộc lớp học thêm có ID tương ứng.
-     * 
-     * Mỗi nhóm lớp chỉ lấy duy nhất 1 bản ghi đầu tiên (sắp xếp theo ngày học và giờ bắt đầu).
-     * Trả về danh sách Object[] với:
-     *    [0] ClassGroupName
-     *    [1] MaxStudent
-     *    [2] RoomName
-     *    [3] TeacherName
-     *    [4] Start_time
-     *    [5] End_time
-     *    [6] StudyDate
+    /**
+     * Lấy thông tin 1 lịch học đầu tiên (phòng, giáo viên, ca học) cho mỗi nhóm
+     * lớp thuộc lớp học thêm có ID tương ứng.
+     *
+     * Mỗi nhóm lớp chỉ lấy duy nhất 1 bản ghi đầu tiên (sắp xếp theo ngày học
+     * và giờ bắt đầu). Trả về danh sách Object[] với: [0] ClassGroupName [1]
+     * MaxStudent [2] RoomName [3] TeacherName [4] Start_time [5] End_time [6]
+     * StudyDate
      */
     public List<Object[]> getClassGroupsWithRoomAndShift(int tutoringClassID) {
         List<Object[]> list = new ArrayList<>();
@@ -55,8 +50,7 @@ public class ClassGroupDAO {
                 + ") t\n"
                 + "WHERE t.rn = 1";
 
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, tutoringClassID);
             ResultSet rs = stmt.executeQuery();
@@ -80,44 +74,57 @@ public class ClassGroupDAO {
 
         return list;
     }
+
     public List<ClassGroup> getAllClassGroupByUserId(int userId) {
         List<ClassGroup> list = new ArrayList<>();
-        String sql = "SELECT * FROM ClassGroup WHERE TeacherID = ?";
-        
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+        String sql = "SELECT cg.ClassGroupID, \n"
+                + "       cg.ClassGroupName, \n"
+                + "       cg.MaxStudent, \n"
+                + "       cg.TutoringClassID,\n"
+                + "       COUNT(DISTINCT cgs.StudentID) AS StudentCount,\n"
+                + "       r.RoomName\n"
+                + "FROM ClassGroup cg\n"
+                + "LEFT JOIN ClassGroup_Student cgs ON cg.ClassGroupID = cgs.ClassGroupID AND cgs.IsActive = 1\n"
+                + "LEFT JOIN Schedule s ON cg.ClassGroupID = s.ClassGroupID\n"
+                + "LEFT JOIN Room r ON s.RoomID = r.id\n"
+                + "WHERE cg.TeacherID = ?\n"
+                + "GROUP BY cg.ClassGroupID, cg.ClassGroupName, cg.MaxStudent, cg.TutoringClassID, r.RoomName";
+
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 ClassGroup cg = new ClassGroup();
                 cg.setClassGroupId(rs.getInt("ClassGroupID"));
                 cg.setToturID(rs.getInt("TutoringClassID"));
                 cg.setName(rs.getString("ClassGroupName"));
                 cg.setMaxStudent(rs.getInt("MaxStudent"));
-                cg.setTeachId(rs.getInt("TeacherID"));
+                
+                cg.setCurrentStudentCount(rs.getInt("StudentCount"));
+                cg.setRoomName(rs.getString("RoomName"));
                 list.add(cg);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return list;
     }
 
     /**
-     * Lấy danh sách các nhóm lớp theo tutoringClassID (ID lớp học thêm)
-     * Trả về danh sách ClassGroup có thông tin cơ bản: ID, tên nhóm, max student, giáo viên
+     * Lấy danh sách các nhóm lớp theo tutoringClassID (ID lớp học thêm) Trả về
+     * danh sách ClassGroup có thông tin cơ bản: ID, tên nhóm, max student, giáo
+     * viên
      */
     public List<ClassGroup> getClassGroupsByTutoringClassId(int tutoringClassID) {
         List<ClassGroup> classGroups = new ArrayList<>();
         String sql = "SELECT ClassGroupID, TutoringClassID, ClassGroupName, MaxStudent, RoomID, ShiftID, TeacherID "
-                   + "FROM ClassGroup WHERE TutoringClassID = ?";
+                + "FROM ClassGroup WHERE TutoringClassID = ?";
 
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, tutoringClassID);
             ResultSet rs = stmt.executeQuery();
@@ -147,8 +154,7 @@ public class ClassGroupDAO {
                 + "WHERE s.UserID = ?\n"
                 + "  AND s.DateLearn = CONVERT(date, GETDATE())\n"
                 + "ORDER BY s.ShiftID ASC";
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, teacherId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -161,17 +167,17 @@ public class ClassGroupDAO {
         }
         return list;
     }
+
     public ArrayList<TutoringClassStu> getClassesByUserID(int userID) {
         ArrayList<TutoringClassStu> classes = new ArrayList<>();
-        String query = "SELECT DISTINCT tc.TutoringClassID, tc.ClassName, tc.StartDate, tc.Tuitionfee, " +
-                      "CASE WHEN p.PaymentID IS NOT NULL THEN 1 ELSE 0 END AS isPaid " +
-                      "FROM TutoringClass tc " +
-                      "JOIN ClassGroup cg ON tc.TutoringClassID = cg.TutoringClassID " +
-                      "JOIN ClassGroup_Student cgs ON cg.ClassGroupID = cgs.ClassGroupID " +
-                      "LEFT JOIN Payment p ON tc.TutoringClassID = p.TutoringClassID AND p.UserID = ? " +
-                      "WHERE cgs.StudentID = ? AND cgs.IsActive = 1";
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "SELECT DISTINCT tc.TutoringClassID, tc.ClassName, tc.StartDate, tc.Tuitionfee, "
+                + "CASE WHEN p.PaymentID IS NOT NULL THEN 1 ELSE 0 END AS isPaid "
+                + "FROM TutoringClass tc "
+                + "JOIN ClassGroup cg ON tc.TutoringClassID = cg.TutoringClassID "
+                + "JOIN ClassGroup_Student cgs ON cg.ClassGroupID = cgs.ClassGroupID "
+                + "LEFT JOIN Payment p ON tc.TutoringClassID = p.TutoringClassID AND p.UserID = ? "
+                + "WHERE cgs.StudentID = ? AND cgs.IsActive = 1";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userID);
             ps.setInt(2, userID);
             ResultSet rs = ps.executeQuery();
@@ -191,13 +197,12 @@ public class ClassGroupDAO {
     }
 
     public void updatePaymentStatus(int tutoringClassID, int userID) throws SQLException {
-        String query = "IF EXISTS (SELECT 1 FROM Payment WHERE TutoringClassID = ? AND UserID = ?) " +
-                      "UPDATE Payment SET PaymentDate = GETDATE() " +
-                      "ELSE " +
-                      "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) " +
-                      "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(query)) {
+        String query = "IF EXISTS (SELECT 1 FROM Payment WHERE TutoringClassID = ? AND UserID = ?) "
+                + "UPDATE Payment SET PaymentDate = GETDATE() "
+                + "ELSE "
+                + "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) "
+                + "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
             ps.setInt(3, userID);
@@ -209,7 +214,7 @@ public class ClassGroupDAO {
 
     public static void main(String[] args) {
         ClassGroupDAO dao = new ClassGroupDAO(); // Đổi tên nếu class của bạn khác
-        int teacherId = 2; // Nhập ID giáo viên bạn muốn test
+        int teacherId = 3; // Nhập ID giáo viên bạn muốn test
 
 //        try {
 //            List<ClassGroup> todayClasses = dao.getTodayClasses(teacherId);
@@ -227,13 +232,20 @@ public class ClassGroupDAO {
 //        }
         List<ClassGroup> classGroups = dao.getAllClassGroupByUserId(teacherId);
 
-        System.out.println("Danh sách lớp của giáo viên có ID = " + teacherId + ":");
-        for (ClassGroup cg : classGroups) {
-            System.out.println(cg);
-        }
-
         if (classGroups.isEmpty()) {
-            System.out.println("Không tìm thấy lớp nào cho giáo viên này.");
+            System.out.println("Không tìm thấy lớp nào cho giáo viên có ID: " + teacherId);
+        } else {
+            for (ClassGroup cg : classGroups) {
+                System.out.println("=== Lớp học ===");
+                System.out.println("ID: " + cg.getClassGroupId());
+                System.out.println("Tên lớp: " + cg.getName());
+                System.out.println("Khóa học ID: " + cg.getToturID());
+                System.out.println("Giáo viên ID: " + cg.getTeachId());
+                System.out.println("Số học sinh hiện tại: " + cg.getCurrentStudentCount());
+                System.out.println("Số học sinh tối đa: " + cg.getMaxStudent());
+                System.out.println("Phòng học: " + cg.getRoomName());
+                System.out.println();
+            }
         }
     }
 }

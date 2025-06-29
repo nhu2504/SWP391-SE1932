@@ -16,6 +16,8 @@ public class ClassGroup {
     private String name;
     private int maxStudent;
     private int teachId;
+    private int currentStudentCount;
+    private String roomName;
 
     public ClassGroup() {
     }
@@ -28,6 +30,32 @@ public class ClassGroup {
         this.teachId = teachId;
     }
 
+    public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int teachId, int currentStudentCount) {
+        this.classGroupId = classGroupId;
+        this.toturID = toturID;
+        this.name = name;
+        this.maxStudent = maxStudent;
+        this.teachId = teachId;
+        this.currentStudentCount = currentStudentCount;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+    
+
+    public int getCurrentStudentCount() {
+        return currentStudentCount;
+    }
+
+    public void setCurrentStudentCount(int currentStudentCount) {
+        this.currentStudentCount = currentStudentCount;
+    }
+    
     public int getClassGroupId() {
         return classGroupId;
     }

@@ -88,4 +88,16 @@ public class GradeDAO {
 
         return gradeName;
     }
+    
+     public static void main(String[] args) {
+        GradeDAO dao = new GradeDAO();
+        List<Grade> gradeList = dao.getAllGrades();
+
+        System.out.println("Danh sách khối lớp:");
+        for (Grade grade : gradeList) {
+            System.out.println(grade); // Đảm bảo bạn đã override phương thức toString trong class Grade
+        }
+
+        
+    }
 }

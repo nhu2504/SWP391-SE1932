@@ -3,25 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll_teacher;
+package controll;
 
-import dal.ClassGroupDAO;
-import entity.ClassGroup;
-import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 
 /**
  *
  * @author NGOC ANH
  */
-public class GetClassListServlet extends HttpServlet {
+@WebServlet("/image-loader/*")
+public class ImagesLoaderServlett extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +38,10 @@ public class GetClassListServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetClassListServlet</title>");  
+            out.println("<title>Servlet ImagesLoaderServlett</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetClassListServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ImagesLoaderServlett at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,26 +55,20 @@ public class GetClassListServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private final String imageBasePath = "D:/MyUploads/Images";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Get session without creating a new one
-        if (session == null || session.getAttribute("user") == null) {
-            // No session or userId, redirect to login page
-            response.sendRedirect("login_register.jsp");
+          String filename = request.getPathInfo(); // /abc.jpg
+        File file = new File(imageBasePath, filename);
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-    User sessionUser = (User) session.getAttribute("user");
-        int userId = sessionUser.getId();
-        
-         ClassGroupDAO dao = new ClassGroupDAO();
-        List<ClassGroup> classList = dao.getAllClassGroupByUserId(userId);
-
-        // Đưa dữ liệu lên request để JSP hiển thị
-        request.setAttribute("classList", classList);
-
-        // Chuyển tiếp đến trang hiển thị
-        request.getRequestDispatcher("getclasslist.jsp").forward(request, response);
+        response.setContentType(getServletContext().getMimeType(file.getName()));
+        try (FileInputStream in = new FileInputStream(file); OutputStream out = response.getOutputStream()) {
+            in.transferTo(out);
+        }
     } 
 
     /** 

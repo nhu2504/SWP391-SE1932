@@ -1,19 +1,13 @@
 <%-- 
-    Document   : teacherdashboard
-    Created on : May 24, 2025, 11:31:10 PM
-    Author     : DO NGOC ANH HE180661
+    Document   : studentprofile
+    Created on : Jun 23, 2025, 10:17:38 AM
+    Author     : NGOC ANH
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="entity.Shift" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="entity.Schedule" %>
 <%@ page import="entity.User" %>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,6 +21,7 @@
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,6 +171,23 @@
                 transform: scale(1.1);
                 box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
             }
+            .logo-container {
+                position: relative;
+                width: 100px; /* Giữ kích thước cố định của div */
+                height: 100px; /* Giữ tỷ lệ vuông */
+                overflow: hidden; /* Ẩn phần vượt ra ngoài */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Logo image */
+            .logo-image {
+                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
+                height: auto;
+                transform: scale(2); /* Phóng to mặc định */
+                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
+            }
 
             @media (max-width: 576px) {
                 .back-top-icon {
@@ -240,23 +252,6 @@
                 font-size:20px;
                 margin-bottom: 4px;
             }
-            .logo-container {
-                position: relative;
-                width: 100px; /* Giữ kích thước cố định của div */
-                height: 100px; /* Giữ tỷ lệ vuông */
-                overflow: hidden; /* Ẩn phần vượt ra ngoài */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            /* Logo image */
-            .logo-image {
-                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
-                height: auto;
-                transform: scale(2); /* Phóng to mặc định */
-                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
-            }
             /* Style cho navbar nền xám nhạt */
             .navbar {
                 background-color: #f8f9fa !important; /* Xám nhạt */
@@ -276,45 +271,19 @@
                 color: #EC6F69 !important;
                 font-weight: 700;
             }
-            .table-time {
-                width: 100%;
-                margin: 20px auto; /* Add margin */
-                border-collapse: collapse; /* Collapse borders */
+
+            /* Hover link */
+            .navbar .nav-link:hover {
+                color: #EC6F69 !important;
             }
-            .table-time th, .table-time td {
-                padding: 10px; /* Add padding for better look */
-                text-align: center;
+            .navbar{
+                margin-bottom: 30px;
             }
-            .schedule-title-container {
-                position: relative;
-                height: 70px; /* Chiều cao container để dễ căn giữa */
-                align-items: center;
-                display: flex;
-                justify-content: center;
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                background-color: #f5f5f5;
             }
 
-            .schedule-title {
-                font-size: 40px;
-                font-weight: 600;
-            }
-
-            /* Nhóm chứa các slogan */
-            .slogan-group {
-                display: flex;
-                flex-direction: column;
-                gap: 5px; /* Khoảng cách giữa các câu */
-                align-items: flex-start; /* Căn trái để thẳng hàng với logo */
-            }
-
-            /* Định dạng từng slogan */
-            .slogan {
-                font-size: 1.2rem; /* Tăng kích thước chữ (trước đây là 0.9rem) */
-                font-weight: 700; /* In đậm (trước đây là 500) */
-                color: #333;
-                margin: 0; /* Xóa margin mặc định */
-                line-height: 1.4;
-                transition: color 0.3s ease;
-            }
             .sidebar {
                 background-color: #fdeaf3;
                 height: 100%;
@@ -344,6 +313,44 @@
                 text-align: center;
                 margin: 30px 0;
             }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 0 20px 40px;
+            }
+
+            .card {
+                background-color: #fef1f6;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: 0.3s ease;
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .card:hover {
+                background-color: #fcd9e6;
+            }
+
+            .card i {
+                font-size: 28px;
+            }
+
+            .highlight {
+                border-color: #a58cf5;
+            }
+            body {
+                background-color: #f5f5f5;
+                font-family: Arial, sans-serif;
+            }
+
             .sidebar {
                 background-color: #FFF1F1;
                 padding: 30px 20px;
@@ -432,6 +439,66 @@
                 object-fit: cover;   /* đảm bảo ảnh không bị méo */
                 border: 2px solid #ccc;
             }
+            .card.h-100.text-center.shadow-sm {
+                border: 3px solid #FF6B6B !important; /* Viền đỏ hồng */
+                transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng mượt */
+                position: relative; /* Đảm bảo phóng to không ảnh hưởng bố cục */
+            }
+
+            .card.h-100.text-center.shadow-sm:hover {
+                transform: scale(1.05); /* Phóng to 5% */
+                box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4); /* Bóng đậm hơn */
+            }
+            .schedule-title {
+                font-size: 40px;
+                font-weight: 500;
+            }
+            .schedule-title-container {
+                position: relative;
+                height: 70px; /* Chiều cao container để dễ căn giữa */
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+            .navbar {
+                background-color: #f8f9fa !important; /* Xám nhạt */
+                padding: 12px 24px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Nhẹ nhàng */
+            }
+
+            /* Style cho các mục menu */
+            .navbar .nav-link {
+                color: #555;
+                font-weight: 500;
+                transition: color 0.3s ease;
+            }
+
+            /* Mục đang active */
+            .navbar .nav-link.active {
+                color: #EC6F69 !important;
+                font-weight: 700;
+            }
+            body{
+                background-color: white;
+            }
+            /* Nhóm chứa các slogan */
+            .slogan-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px; /* Khoảng cách giữa các câu */
+                align-items: flex-start; /* Căn trái để thẳng hàng với logo */
+            }
+
+            /* Định dạng từng slogan */
+            .slogan {
+                font-size: 1.2rem; /* Tăng kích thước chữ (trước đây là 0.9rem) */
+                font-weight: 700; /* In đậm (trước đây là 500) */
+                color: #333;
+                margin: 0; /* Xóa margin mặc định */
+                line-height: 1.4;
+                transition: color 0.3s ease;
+            }
+
 
         </style>
     </head>
@@ -481,15 +548,14 @@
                 </div>
             </div>
         </div>
-
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="getclasslist" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Lịch Giảng Dạy</h3>
+            <h3 class="schedule-title text-center w-100 m-0">Danh sách học sinh</h3>
         </div>
 
-        <div>
+        <div >
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
@@ -512,55 +578,35 @@
 
                 <!-- Main -->
                 <div class="col-md-9 main">
-                    <div style="text-align:center; margin-bottom: 20px;margin-top:10px">
-                        <form method="get" action="showschedule" style="display:inline;">
-                            <input type="hidden" name="weekOffset" value="${weekOffset - 1}"/>
-                            <button type="submit" class="btn btn-primary">&lt; Tuần trước</button>
-                        </form>
-                        <span style="margin: 0 20px; font-weight: bold;"> ${weekLabel}</span>
-                        <form method="get" action="showschedule" style="display:inline;">
-                            <input type="hidden" name="weekOffset" value="${weekOffset + 1}"/>
-                            <button type="submit" class="btn btn-primary">Tuần tiếp &gt;</button>
-                        </form>
-                    </div>
-                    <table border="1" class="table-time">
-                        <tr>
-                            <th>Ca / Thứ</th>
-                            <th>Thứ 2</th>
-                            <th>Thứ 3</th>
-                            <th>Thứ 4</th>
-                            <th>Thứ 5</th>
-                            <th>Thứ 6</th>
-                            <th>Thứ 7</th>
-                            <th>Chủ nhật</th>
-                        </tr>
-
-                        <c:forEach var="shift" items="${listShift}">
-                            <tr>
-                                <td>
-                                    Ca ${shift.id} <br/>
-                                    <fmt:formatDate value="${shift.startTime}" pattern="HH:mm"/> - 
-                                    <fmt:formatDate value="${shift.endTime}" pattern="HH:mm"/>
-                                </td>
-                                <c:forEach var="day" begin="2" end="8">
+                    <form action="submitattend" method="post">
+                        <input type="hidden" name="classGroupId" value="${classGroupId}" />
+                        <table class="table table-striped table-hover table-bordered">
+                           <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">STT</th>
+                                        <th scope="col">Tên học sinh</th>
+                                        <th scope="col">Ảnh học sinh</th>
+                                        <th scope="col">Trạng thái</th>
+                                        
+                                    </tr>
+                                </thead>
+                            <c:forEach var="s" items="${students}">
+                                <tr>
+                                    <th scope="row">${loop.index + 1}</th>
+                                    <td>${s.name}</td>
+                                    <td><img class="avatar" src="images/${s.avatar}" alt="avatar" /></td>
                                     <td>
-                                        <c:set var="shiftKey" value="${shift.startTime}-${shift.endTime}" />
-                                        <c:set var="realDay" value="${day == 8 ? 1 : day}" />
-                                        <c:forEach var="st" items="${scheduleMap[shiftKey][realDay]}">
-                                            Lớp: ${st.classGroupName}<br/>
-                                            GV: ${st.teacherName}<br/>
-                                            Phòng: ${st.roomName}<br/>
-                                            Ngày: <fmt:formatDate value="${st.dateLearn}" pattern="dd/MM/yyyy"/><br/>
-                                        </c:forEach>
+                                        <input type="radio" name="status_${s.id}" value="0" checked> Vắng mặt
+                                        <input type="radio" name="status_${s.id}" value="1"> Có mặt
                                     </td>
-                                </c:forEach>
-                            </tr>
-                        </c:forEach>
-                    </table>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                        <input type="submit" value="Lưu điểm danh"/>
+                    </form>
                 </div>
             </div>
         </div>
-
 
         <footer class="site-footer">
             <!-- Footer Start -->
@@ -638,6 +684,16 @@
         <!-- <script src="js/custom.js"></script> -->
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+        <c:if test="${param.attendSuccess == 'true'}">
+        <script>
+            alert("Lưu điểm danh thành công!");
+            // Xóa ?uploadSuccess=true khỏi URL để tránh alert hiển thị lại khi F5
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete("attendSuccess");
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        </script>
+    </c:if>
     </body>
 </html>

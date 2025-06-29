@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controll;
+package controll_teacher;
 
 import dal.DocumentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +22,8 @@ import java.sql.SQLException;
  *
  * @author NGOC ANH
  */
+
+@MultipartConfig
 public class UploadServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "uploads";
@@ -135,7 +138,7 @@ public class UploadServlet extends HttpServlet {
             e.printStackTrace();
             response.getWriter().println("Lỗi lưu vào database: " + e.getMessage());
         }
-
+        
     }
 
     /**

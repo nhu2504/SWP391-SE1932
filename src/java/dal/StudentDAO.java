@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Ngày tạo: 23/06/2025  
+ * Người viết: Van Nhu
+ */
 public class StudentDAO {
     // Lấy top 10 học sinh có đánh giá và thành tích cao
     public List<Map<String, Object>> getTopStudents() {

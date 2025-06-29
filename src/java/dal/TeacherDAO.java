@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Ngày tạo: 23/06/2025  
+ * Người viết: Van Nhu
+ */
 public class TeacherDAO {
     // Lấy danh sách giáo viên (roleID = 2)
     public List<User> getAllTeachers() {

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controll;
+package controll_teacher;
 
 import dal.ClassGroupDAO;
 import dal.GradeDAO;
@@ -92,11 +92,25 @@ public class DashboardAttendServlet extends HttpServlet {
             e.printStackTrace();
             // Optionally, set an error attribute or redirect to an error page
         }
+        SubjectDAO subdao = new SubjectDAO();
+        ArrayList<Subject> listsub = new ArrayList<>();
+        try {
+            listsub = (ArrayList<Subject>) subdao.getAllSubjects();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        GradeDAO gdao = new GradeDAO();
+        ArrayList<Grade> listgrade = new ArrayList<>();
+        try {
+            listgrade = (ArrayList<Grade>) gdao.getAllGrades();
+        } catch (Exception e) {
+        }
        
         // Set the nextSchedule in session scope for EL access
         session.setAttribute("nextSchedule", nextSchedule);
-        request.setAttribute("todayClasses", todayClasses);
-        
+        session.setAttribute("todayClasses", todayClasses);
+        session.setAttribute("listsub", listsub);
+        session.setAttribute("listgrade", listgrade);
         request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
     }
 

@@ -5,23 +5,22 @@
 
 package controll_teacher;
 
-import dal.ClassGroupDAO;
-import entity.ClassGroup;
-import entity.User;
+import com.google.gson.Gson;
+import dal.SchoolClassDAO;
+import entity.SchoolClass;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
-public class GetClassListServlet extends HttpServlet {
+public class GetClassBySchoolServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +37,10 @@ public class GetClassListServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetClassListServlet</title>");  
+            out.println("<title>Servlet GetClassBySchoolServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetClassListServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet GetClassBySchoolServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,24 +57,23 @@ public class GetClassListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Get session without creating a new one
-        if (session == null || session.getAttribute("user") == null) {
-            // No session or userId, redirect to login page
-            response.sendRedirect("login_register.jsp");
+        String schoolIdStr = request.getParameter("schoolId");
+        int schoolId = 0;
+        try {
+            schoolId = Integer.parseInt(schoolIdStr);
+        } catch (Exception e) {
+            response.setStatus(400);
             return;
         }
-    User sessionUser = (User) session.getAttribute("user");
-        int userId = sessionUser.getId();
-        
-         ClassGroupDAO dao = new ClassGroupDAO();
-        List<ClassGroup> classList = dao.getAllClassGroupByUserId(userId);
+        SchoolClassDAO dao = new SchoolClassDAO();
+        List<SchoolClass> classes = dao.getAllClassesBySchoolId(schoolId);
 
-        // Đưa dữ liệu lên request để JSP hiển thị
-        request.setAttribute("classList", classList);
-
-        // Chuyển tiếp đến trang hiển thị
-        request.getRequestDispatcher("getclasslist.jsp").forward(request, response);
-    } 
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print(new Gson().toJson(classes));
+        out.flush();
+    }
+    
 
     /** 
      * Handles the HTTP <code>POST</code> method.

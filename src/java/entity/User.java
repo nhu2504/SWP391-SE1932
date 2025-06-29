@@ -33,6 +33,9 @@ public class User {
     private boolean isHot;
     private String parentEmail;
     private String parentPhone;
+    private String schoolName;
+private String schoolClassName;
+
 
     public User() {
     }
@@ -111,6 +114,22 @@ public class User {
         this.descrip = descrip;
     }
 
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getSchoolClassName() {
+        return schoolClassName;
+    }
+
+    public void setSchoolClassName(String schoolClassName) {
+        this.schoolClassName = schoolClassName;
+    }
+    
     public List<Subject> getSubjects() {
         return subjects;
     }

@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="entity.User" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,7 +22,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
@@ -558,26 +559,21 @@
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
-        String userName = (String) session.getAttribute("userName");
-        String userAvatar = (String) session.getAttribute("userAvatar");
-        if (userAvatar == null || userAvatar.isEmpty()) {
-            userAvatar = "default-avatar.jpg";
-        }
-        if (userName == null || userName.isEmpty()) {
-            userName = "Tên người dùng";
-        }
+                        User user = (User) session.getAttribute("user");
                     %>
 
-                    <div class="avatar">
-                        <img src="images/<%= userAvatar %>" alt="Avatar" class="avatar-img">
-                    </div>
-                    <div class="username"><%= userName %></div>
 
-                    <a href="#"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+                    <div class="avatar">
+                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
+                    </div>
+                    <div class="username">${user.name}</div>
+
+
+                    <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
                     <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
-                    <a href="login_register.jsp"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
@@ -589,8 +585,9 @@
                                     <tr>
                                         <th scope="col">STT</th>
                                         <th scope="col">Tên lớp</th>
-                                        <th scope="col">Số lượng tối đa</th>
-                                        <th scope="col">ID lớp học thêm</th>
+                                        <th scope="col">Phòng học</th>
+                                        <th scope="col">Số học sinh hiện tại</th>
+                                        <th scope="col">Xem học sinh trong lớp</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -598,8 +595,13 @@
                                         <tr>
                                             <th scope="row">${loop.index + 1}</th>
                                             <td>${cg.name}</td>
-                                            <td>${cg.maxStudent}</td>
-                                            <td>${cg.toturID}</td>
+                                            <td>${cg.roomName}</td>
+                                            <td>${cg.currentStudentCount}</td>
+                                            <td>
+                                                <a href="getstudentlist?classGroupId=${cg.classGroupId}" class="btn btn-info btn-sm">
+                                                    <i class="bi bi-people"></i> Xem học sinh
+                                                </a>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -692,6 +694,6 @@
         <!-- <script src="js/custom.js"></script> -->
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        
+
     </body>
 </html>

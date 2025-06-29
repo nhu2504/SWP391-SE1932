@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll;
+package controll_teacher;
 
 import dal.ScheduleDAO;
 import dal.ShiftlearnDAO;
