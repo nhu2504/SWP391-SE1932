@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-
 import dal.UserDAO;
 
 import entity.User;
@@ -64,45 +63,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String emailOrPhone = request.getParameter("loginEmail");
-        String pass = request.getParameter("loginPassword");
-        
-       
-
-        UserDAO ld = new UserDAO();
-        User acc = ld.login(emailOrPhone, pass);
-        if (acc == null) {
-            request.setAttribute("error", "Đăng nhập không thành công. Vui lòng kiểm tra lại email, số điện thoại và mật khẩu của bạn");
-            request.getRequestDispatcher("login_register.jsp").forward(request, response);
-            return;
-        } else {
-            HttpSession session = request.getSession();
-            session.setAttribute("account", acc);
-            session.setAttribute("userName", acc.getName());
-            session.setAttribute("userAvatar", acc.getAvatar());
-            session.setAttribute("userRoleID", acc.getRoleID());
-            // Điều hướng theo vai trò
-            int roleId = acc.getRoleID();
-            switch (roleId) {
-                case 1:
-                    response.sendRedirect(request.getContextPath() + "/home");
-                    break;
-
-                case 2:
-                    response.sendRedirect("teacherdashboard.jsp");
-                    break;
-                case 3:
-                    response.sendRedirect("dashboard.jsp");
-                    break;
-                
-                case 4:
-                    response.sendRedirect("manager_dashboard.jsp");
-                    break;
-                default:
-                    response.sendRedirect("Home.jsp");
-            }
-        }
 
     }
 
@@ -117,8 +77,40 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
 
+        String emailOrPhone = request.getParameter("loginEmail");
+        String pass = request.getParameter("loginPassword");
+
+        UserDAO ld = new UserDAO();
+        User acc = ld.login(emailOrPhone, pass);
+        if (acc == null) {
+            request.setAttribute("error", "Đăng nhập không thành công. Vui lòng kiểm tra lại email, số điện thoại và mật khẩu của bạn");
+            request.getRequestDispatcher("login_register.jsp").forward(request, response);
+            return;
+        }
+        HttpSession session = request.getSession();
+        session.setAttribute("user", acc);
+        session.setAttribute("userId", acc.getId());
+        // Điều hướng theo vai trò
+        int roleId = acc.getRoleID();
+        switch (roleId) {
+            case 1:
+                response.sendRedirect(request.getContextPath() + "/home");
+                break;
+
+            case 2:
+                response.sendRedirect("dashboardattendservlet");
+                break;
+            case 3:
+                response.sendRedirect("dashboard.jsp");
+                break;
+
+            case 4:
+                response.sendRedirect("manager_dashboard.jsp");
+                break;
+            default:
+                response.sendRedirect("Home.jsp");
+        }
     }
 
     /**

@@ -698,7 +698,7 @@
                             <p><strong>Id người dùng:</strong> ${user.id}</p>
                             <p><strong>Vai trò:</strong> ${roleNameVi}</p>
 
-                            <form action="uploadprofile" method="post" enctype="multipart/form-data">
+                            <form action="studentupdateprofile" method="post" enctype="multipart/form-data">
                                 <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                                 <input type="file" name="avatarFile" accept="image/*" style="margin-top:10px;">
 
@@ -710,23 +710,19 @@
 
 
 
-                                <label>Trường đang học:</label>
-                                <select name="school" onchange="loadClassesBySchool(this.value)">
-                                    <c:forEach var="school" items="${allSchools}">
-                                        <option value="${school.schoolID}" <c:if test="${schoolIdSelected == school.schoolID}">selected</c:if>>
-                                            ${school.name}
+                                <select id="schoolDropdown" name="schoolId">
+                                    <c:forEach var="s" items="${allSchools}">
+                                        <option value="${s.schoolID}" ${s.schoolID == schoolIdSelected ? 'selected' : ''}>
+                                            ${s.name}
                                         </option>
                                     </c:forEach>
                                 </select>
 
-                                <br/><br/>
-
-                                <label>Lớp đang theo học tại trường:</label>
-                                <select name="classId" id="class-select">
-                                    <c:forEach var="cls" items="${allClasses}">
-                                        <option value="${cls.schoolClassID}"
-                                                <c:if test="${classIdOfUser == cls.schoolClassID || classIdOfUser == cls.schoolClassID.toString()}">selected</c:if>
-                                                >${cls.className}</option>
+                                <select id="classDropdown" name="classId">
+                                    <c:forEach var="c" items="${allClasses}">
+                                        <option value="${c.schoolClassID}" ${c.schoolClassID == classIdOfUser ? 'selected' : ''}>
+                                            ${c.className}
+                                        </option>
                                     </c:forEach>
                                 </select>
                                 <label>Email phụ huynh</label>
@@ -860,58 +856,28 @@
     <!-- <script src="js/custom.js"></script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-                                    var selectedClassIds = [
-        <c:forEach var="id" items="${classIdsOfUser}" varStatus="loop">
-            ${id}<c:if test="${!loop.last}">,</c:if>
-        </c:forEach>
-                                    ];
+                document.getElementById("schoolDropdown").addEventListener("change", function () {
+                    let schoolId = this.value;
 
-                                    function loadClassesBySchool(schoolId) {
-                                        fetch('GetClassesBySchoolServlet?schoolId=' + schoolId)
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    let classCheckboxes = '';
-                                                    data.forEach(function (cls) {
-                                                        let checked = selectedClassIds.includes(cls.schoolClassID) ? 'checked' : '';
-                                                        classCheckboxes += '<label style="display: block; margin-bottom: 5px;">' +
-                                                                '<input type="checkbox" name="classIds" value="' + cls.schoolClassID + '" ' + checked + ' />' +
-                                                                cls.className +
-                                                                '</label>';
-                                                    });
-                                                    document.getElementById('class-checkbox-container').innerHTML = classCheckboxes;
-                                                });
-                                    }
-
-                                    // Cập nhật selectedClassIds khi tick/untick
-                                    document.addEventListener('change', function (e) {
-                                        if (e.target.name === 'classIds') {
-                                            let value = parseInt(e.target.value);
-                                            if (e.target.checked) {
-                                                if (!selectedClassIds.includes(value)) {
-                                                    selectedClassIds.push(value);
-                                                }
-                                            } else {
-                                                selectedClassIds = selectedClassIds.filter(id => id !== value);
-                                            }
-                                        }
-                                    });
-
-                                    // Trước khi submit form, thêm input hidden cho từng id
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        let form = document.querySelector('form');
-                                        form.addEventListener('submit', function (e) {
-                                            let div = document.getElementById('selected-ids-inputs');
-                                            div.innerHTML = '';
-                                            selectedClassIds.forEach(function (id) {
-                                                let input = document.createElement('input');
-                                                input.type = 'hidden';
-                                                input.name = 'classIds';
-                                                input.value = id;
-                                                div.appendChild(input);
-                                            });
-                                        });
-                                    });
+                    fetch("GetClassesBySchoolServlet?schoolId=" + schoolId)
+                            .then(response => response.json())
+                            .then(data => {
+                                let classDropdown = document.getElementById("classDropdown");
+                                classDropdown.innerHTML = "";
+                                data.forEach(cls => {
+                                    let option = document.createElement("option");
+                                    option.value = cls.schoolClassID;
+                                    option.text = cls.className;
+                                    classDropdown.appendChild(option);
+                                });
+                            })
+                            .catch(error => {
+                                console.error("Lỗi khi tải lớp học: ", error);
+                            });
+                });
     </script>
+
 </body>
 </html>

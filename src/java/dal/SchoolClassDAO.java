@@ -59,6 +59,7 @@ public class SchoolClassDAO {
         return ClassName;
     }
     
+    
     public List<SchoolClass> getAllClassesBySchoolId(int schoolId) {
     List<SchoolClass> list = new ArrayList<>();
     String sql = "SELECT schoolClassID, className, schoolID, gradeID FROM SchoolClass WHERE schoolID = ?";

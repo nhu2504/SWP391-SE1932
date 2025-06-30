@@ -13,7 +13,7 @@ import dal.TeacherClassDAO;
 import dal.UserDAO;
 import entity.School;
 import entity.SchoolClass;
-import entity.Subject;
+import entity.TeacherClass;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,10 +22,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 /**
  *
@@ -78,6 +77,7 @@ public class StudentProfileServlet extends HttpServlet {
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
         User user = userDAO.getUserByID(userId);
+        
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -85,20 +85,21 @@ public class StudentProfileServlet extends HttpServlet {
         }
         SchoolDAO schoolDAO = new SchoolDAO();
         SchoolClassDAO scdao = new SchoolClassDAO();
-        SubjectDAO subjectDAO = new SubjectDAO();
-
-        // Lấy tất cả trường học để hiển thị select
-        List<School> allSchools = schoolDAO.getAllSchools();
-
-        // Lấy tất cả lớp của trường hiện tại hoặc toàn hệ thống 
-        List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(user.getSchoolID());
         
-        SchoolClass userSchoolClass = null;
-        List<SchoolClass> userSchoolClasses = user.getSchoolClasses();
-        if (userSchoolClasses != null && !userSchoolClasses.isEmpty()) {
-            userSchoolClass = userSchoolClasses.get(0);
-        }
-        String classIdOfUser = (userSchoolClass != null) ? String.valueOf(userSchoolClass.getSchoolClassID()) : "";
+        // Lấy danh sách tất cả trường
+        List<School> allSchools = schoolDAO.getAllSchools();
+        
+
+        // Trường đã chọn
+        Integer schoolIdSelected = user.getSchoolID();
+        
+
+        // Lấy danh sách lớp tương ứng với trường đang học
+        List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(schoolIdSelected);
+        request.setAttribute("allClasses", allClasses);
+
+        // Lấy lớp hiện tại của người dùng
+        request.setAttribute("classIdOfUser", user.getSchoolClassId());
 
         
         
@@ -126,8 +127,8 @@ public class StudentProfileServlet extends HttpServlet {
         request.setAttribute("schoolName", schoolName);
         request.setAttribute("roleNameVi", roleNameVi);
         request.setAttribute("allSchools", allSchools);
-        request.setAttribute("allClasses", allClasses);
-        request.setAttribute("classIdOfUser", classIdOfUser);
+        
+        
         request.setAttribute("schoolIdSelected", user.getSchoolID());
 
         request.getRequestDispatcher("studentprofile.jsp").forward(request, response);

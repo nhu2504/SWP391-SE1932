@@ -212,6 +212,28 @@ public class UserDAO {
         }
         return false;
     }
+    
+    public boolean updateStudent(int userId, String email, String phone, String avatarFileName, String description, int schoolId) {
+        String sql = "update [user] \n"
+                + "set email = ?, phone = ?, avatar = ?,\n"
+                + "descrip = ?,\n"
+                + "SchoolID = ?\n"
+                + "where userid = ?";
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, phone);
+            ps.setString(3, avatarFileName);
+            ps.setString(4, description);
+            ps.setInt(5, schoolId);
+            ps.setInt(6, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {

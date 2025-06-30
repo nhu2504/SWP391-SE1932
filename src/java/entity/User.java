@@ -35,6 +35,7 @@ public class User {
     private String parentPhone;
     private String schoolName;
 private String schoolClassName;
+private int schoolClassId;
 
 
     public User() {
@@ -113,6 +114,15 @@ private String schoolClassName;
         this.certi = certi;
         this.descrip = descrip;
     }
+
+    public int getSchoolClassId() {
+        return schoolClassId;
+    }
+
+    public void setSchoolClassId(int schoolClassId) {
+        this.schoolClassId = schoolClassId;
+    }
+    
 
     public String getSchoolName() {
         return schoolName;
