@@ -1,10 +1,11 @@
+package controller;
+
 import dal.DBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,8 +26,14 @@ public class LogoServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
-            // Sử dụng DBContext dạng singleton
-            conn = DBContext.getInstance().getConnection();
+            // Sử dụng DBContext để lấy kết nối
+            conn = new DBContext().connection;
+
+            if (conn == null) {
+                System.out.println("Lỗi: Kết nối cơ sở dữ liệu là null");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi kết nối cơ sở dữ liệu");
+                return;
+            }
 
             String sql = "SELECT Logo FROM CenterInfo WHERE CenterID = 1";
             ps = conn.prepareStatement(sql);
@@ -35,7 +42,7 @@ public class LogoServlet extends HttpServlet {
             if (rs.next()) {
                 byte[] imgData = rs.getBytes("Logo");
                 if (imgData != null) {
-                    response.setContentType("image/png"); // hoặc image/jpeg tùy ảnh
+                    response.setContentType("image/png"); // Hoặc image/jpeg tùy ảnh
                     response.getOutputStream().write(imgData);
                     System.out.println("Hình ảnh logo được phục vụ thành công");
                 } else {
