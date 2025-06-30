@@ -1,30 +1,65 @@
 package entity;
 
+import java.util.Date;
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class TutoringClass {
     private int tutoringClassID;
     private String className;
+    private String image;
+    private String descrip;
+    private boolean isHot;
     private int subjectID;
-    private int teacherID;
-    private String startDate;
-    private String endDate;
-    private int roomID;
-    private int shiftID;
-    private int thuID;
+    private Date startDate;
+    private Date endDate;
+    private double price;
+    private int gradeID;
 
     public TutoringClass() {
     }
 
-    public TutoringClass(int tutoringClassID, String className, int subjectID, int teacherID, String startDate, String endDate, int roomID, int shiftID, int thuID) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price) {
+        this.tutoringClassID = tutoringClassID;
+        this.className = className;
+        this.image = image;
+        this.descrip = descrip;
+        this.isHot = isHot;
+        this.subjectID = subjectID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
+    }
+    
+
+    public TutoringClass(int tutoringClassID, String className, int subjectID, Date startDate, Date endDate) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.subjectID = subjectID;
-        this.teacherID = teacherID;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.roomID = roomID;
-        this.shiftID = shiftID;
-        this.thuID = thuID;
+        
     }
+
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int gradeID) {
+        this.tutoringClassID = tutoringClassID;
+        this.className = className;
+        this.image = image;
+        this.descrip = descrip;
+        this.isHot = isHot;
+        this.subjectID = subjectID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
+        this.gradeID = gradeID;
+    }
+    
+    
+    
+    
+    
 
     public int getTutoringClassID() {
         return tutoringClassID;
@@ -42,6 +77,71 @@ public class TutoringClass {
         this.className = className;
     }
 
+    public int getGradeID() {
+        return gradeID;
+    }
+
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
+    }
+
+    
+    
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    
+
+    
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescrip() {
+        return descrip;
+    }
+
+    public void setDescrip(String descrip) {
+        this.descrip = descrip;
+    }
+
+    public boolean isIsHot() {
+        return isHot;
+    }
+
+    public void setIsHot(boolean isHot) {
+        this.isHot = isHot;
+    }
+
+    
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+
     public int getSubjectID() {
         return subjectID;
     }
@@ -50,51 +150,11 @@ public class TutoringClass {
         this.subjectID = subjectID;
     }
 
-    public int getTeacherID() {
-        return teacherID;
+    @Override
+    public String toString() {
+        return "TutoringClass{" + "tutoringClassID=" + tutoringClassID + ", className=" + className + ", image=" + image + ", descrip=" + descrip + ", isHot=" + isHot + ", subjectID=" + subjectID + ", startDate=" + startDate + ", endDate=" + endDate + ", price=" + price + ", gradeID=" + gradeID + '}';
     }
 
-    public void setTeacherID(int teacherID) {
-        this.teacherID = teacherID;
-    }
+   
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public int getRoomID() {
-        return roomID;
-    }
-
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
-    }
-
-    public int getShiftID() {
-        return shiftID;
-    }
-
-    public void setShiftID(int shiftID) {
-        this.shiftID = shiftID;
-    }
-
-    public int getThuID() {
-        return thuID;
-    }
-
-    public void setThuID(int thuID) {
-        this.thuID = thuID;
-    }
 }

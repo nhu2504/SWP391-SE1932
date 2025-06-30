@@ -1,48 +1,86 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package entity;
 
 import java.util.Date;
-
+import java.sql.Time;
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ *
+ */
 public class Schedule {
-    private int scheduleID;
-    private int classGroupID;
-    private int shiftID;
-    private int roomID;
+
+    private int scheID;
+    private int classgroupID;
+    private int shiftId;
+    private int roomId;
     private Date dateLearn;
-    private int teacherID;
-    private String subjectName;
+    private int userId;
+    private String classgroupName;
+    private String shiftName;
     private String roomName;
+    private Time startTime;
+    private Time endTime;
+    private String teacherName;
 
-    // Getters and Setters
-    public int getScheduleID() {
-        return scheduleID;
+    public Schedule() {
     }
 
-    public void setScheduleID(int scheduleID) {
-        this.scheduleID = scheduleID;
+    public Schedule(int scheID, int classgroupID, int shiftId, int roomId, Date dateLearn, int userId) {
+        this.scheID = scheID;
+        this.classgroupID = classgroupID;
+        this.shiftId = shiftId;
+        this.roomId = roomId;
+        this.dateLearn = dateLearn;
+        this.userId = userId;
+    }
+    
+
+    public Schedule(int scheID, int classgroupID, int shiftId, int roomId, Date dateLearn, int userId, String classgroupName, String shiftName, String roomName) {
+        this.scheID = scheID;
+        this.classgroupID = classgroupID;
+        this.shiftId = shiftId;
+        this.roomId = roomId;
+        this.dateLearn = dateLearn;
+        this.userId = userId;
+        this.classgroupName = classgroupName;
+        this.shiftName = shiftName;
+        this.roomName = roomName;
     }
 
-    public int getClassGroupID() {
-        return classGroupID;
+    public Schedule(int scheID, int classgroupID, int shiftId, int roomId, Date dateLearn, int userId, String classgroupName, String shiftName, String roomName, Time startTime, Time endTime) {
+        this.scheID = scheID;
+        this.classgroupID = classgroupID;
+        this.shiftId = shiftId;
+        this.roomId = roomId;
+        this.dateLearn = dateLearn;
+        this.userId = userId;
+        this.classgroupName = classgroupName;
+        this.shiftName = shiftName;
+        this.roomName = roomName;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public void setClassGroupID(int classGroupID) {
-        this.classGroupID = classGroupID;
+    public String getTeacherName() {
+        return teacherName;
     }
 
-    public int getShiftID() {
-        return shiftID;
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+    
+    
+
+    public int getScheID() {
+        return scheID;
     }
 
-    public void setShiftID(int shiftID) {
-        this.shiftID = shiftID;
-    }
-
-    public int getRoomID() {
-        return roomID;
-    }
-
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
+    public void setScheID(int scheID) {
+        this.scheID = scheID;
     }
 
     public Date getDateLearn() {
@@ -53,20 +91,52 @@ public class Schedule {
         this.dateLearn = dateLearn;
     }
 
-    public int getTeacherID() {
-        return teacherID;
+    public int getClassgroupID() {
+        return classgroupID;
     }
 
-    public void setTeacherID(int teacherID) {
-        this.teacherID = teacherID;
+    public void setClassgroupID(int classgroupID) {
+        this.classgroupID = classgroupID;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public int getShiftId() {
+        return shiftId;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setShiftId(int shiftId) {
+        this.shiftId = shiftId;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getClassgroupName() {
+        return classgroupName;
+    }
+
+    public void setClassgroupName(String classgroupName) {
+        this.classgroupName = classgroupName;
+    }
+
+    public String getShiftName() {
+        return shiftName;
+    }
+
+    public void setShiftName(String shiftName) {
+        this.shiftName = shiftName;
     }
 
     public String getRoomName() {
@@ -76,4 +146,28 @@ public class Schedule {
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
+
+    public Time getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+
+    public Time getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        return "Schedule{" + "scheID=" + scheID + ", classgroupID=" + classgroupID + ", shiftId=" + shiftId + ", roomId=" + roomId + ", dateLearn=" + dateLearn + ", userId=" + userId + '}';
+    }
+
 }

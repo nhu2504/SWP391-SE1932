@@ -3,7 +3,7 @@
 import dal.CenterInfoDAO;
 import dal.TutoringClassStuDAO;
 import entity.TutoringClassStu;
-import entity.account;
+import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,27 +28,27 @@ public class PaymentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        account acc = (account) session.getAttribute("account");
+        User user = (User) session.getAttribute("user");
         int userID;
         String userName;
         String userAvatar;
 
-        // Nếu không có account trong session, sử dụng userID mặc định
-        if (acc == null) {
+        // Nếu không có user trong session, sử dụng userID mặc định
+        if (user == null) {
             userID = 23;
             userName = "Khách";
             userAvatar = "/images/default-avatar.png";
         } else {
-            userID = acc.getId();
-            userName = acc.getName();
-            userAvatar = acc.getAvatar();
+            userID = user.getId();
+            userName = user.getName();
+            userAvatar = user.getAvatar();
         }
 
         try {
             // Lấy danh sách khóa học của học sinh
             ArrayList<TutoringClassStu> courses = tutoringClassDAO.getClassesByUserID(userID);
             // Lấy thông tin trung tâm
-            Map<String, String> centerInfo = centerInfoDAO.getCenterInfo();
+            Map<String, String> centerInfo = centerInfoDAO.getCenterInfo(1); // Giả định CenterID = 1
 
             // Lưu dữ liệu vào request và session
             request.setAttribute("courses", courses);
@@ -73,10 +73,10 @@ public class PaymentServlet extends HttpServlet {
 
         if (confirm != null && courseID != null) {
             try {
-                // Lấy userID (mặc định hoặc từ account)
+                // Lấy userID (mặc định hoặc từ user)
                 HttpSession session = request.getSession();
-                account acc = (account) session.getAttribute("account");
-                int userID = (acc == null) ? 23 : acc.getId();
+                User user = (User) session.getAttribute("user");
+                int userID = (user == null) ? 23 : user.getId();
 
                 // Cập nhật trạng thái thanh toán trong cơ sở dữ liệu
                 tutoringClassDAO.updatePaymentStatus(Integer.parseInt(courseID), userID);

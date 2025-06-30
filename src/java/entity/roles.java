@@ -1,40 +1,44 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package entity;
 
 /**
- * Lớp roles đại diện cho vai trò của người dùng (ví dụ: học sinh, giáo viên, quản lý).
+ *
  * @author DO NGOC ANH HE180661
  */
 public class roles {
-    private int roleID; // ID của vai trò (ví dụ: 3 cho học sinh)
-    private String roleName; // Tên vai trò (ví dụ: "Student")
+    private int id;
+    private String role;
 
-    // Constructor mặc định
     public roles() {
     }
 
-    // Constructor với roleID và roleName
-    public roles(int roleID, String roleName) {
-        this.roleID = roleID;
-        this.roleName = roleName;
+    public roles(int id, String role) {
+        this.id = id;
+        this.role = role;
     }
 
-    // Getter cho roleID
-    public int getRoleID() {
-        return roleID;
+    public int getId() {
+        return id;
     }
 
-    // Setter cho roleID
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // Getter cho roleName
-    public String getRoleName() {
-        return roleName;
+    public String getRole() {
+        return role;
     }
 
-    // Setter cho roleName
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setRole(String role) {
+        this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "roles{" + "id=" + id + ", role=" + role + '}';
+    }
+    
 }

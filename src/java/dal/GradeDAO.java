@@ -1,79 +1,103 @@
 package dal;
 
+import dal.DBContext;
+import entity.Grade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import entity.Grade;
+import java.util.List;
 
-/**
- *
- */
 public class GradeDAO {
-    private static final Logger LOGGER = Logger.getLogger(GradeDAO.class.getName());
-    private DBContext dbContext;
-
-    public GradeDAO() {
-         dbContext = DBContext.getInstance();
-    }
-    public ArrayList<Grade> getGradesByUserID(int userID) throws SQLException {
-        ArrayList<Grade> grades = new ArrayList<>();
-        String sql = "SELECT * FROM Grade WHERE UserID = ?";
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+    public Grade getGradeByID(int id) {
+        String query = "select * from Grade\n"
+                + "where GradeID = ?";
         try {
-            conn = dbContext.getConnection();
-            if (conn == null) {
-                throw new SQLException("Không thể lấy kết nối cơ sở dữ liệu");
-            }
-            stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, userID);
-            rs = stmt.executeQuery();
+            Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query); 
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    return new Grade(rs.getInt(1), rs.getString(2));
+                   
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+     /**
+     * Lấy toàn bộ danh sách khối lớp từ bảng Grade
+     *
+     * @return List chứa các đối tượng Grade
+     */
+    public List<Grade> getAllGrades() {
+        List<Grade> grades = new ArrayList<>();
+
+        try (
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT GradeID, GradeName FROM Grade ORDER BY GradeID ASC"
+            );
+            ResultSet rs = ps.executeQuery()
+        ) {
             while (rs.next()) {
-                Grade grade = new Grade(
-                    rs.getInt("GradeID"),
-                    rs.getInt("TutoringClassID"),
-                    rs.getInt("UserID"),
-                    rs.getFloat("Score"),
-                    rs.getString("AssessmentDate"),
-                    rs.getString("Note")
-                );
-                grades.add(grade);
+                Grade grade = new Grade();
+                grade.setGradeID(rs.getInt("GradeID"));
+                grade.setGradeName(rs.getString("GradeName"));
+                grades.add(grade); // Thêm vào danh sách
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy điểm số cho userID: " + userID, e);
-            throw e;
-        } finally {
-            closeResources(rs, stmt, conn);
+            // In lỗi nếu có
+            e.printStackTrace();
         }
+
         return grades;
     }
-    private void closeResources(ResultSet rs, PreparedStatement stmt, Connection conn) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING, "Không thể đóng ResultSet", e);
+
+    /**
+     * Lấy tên khối lớp theo ID (GradeID)
+     *
+     * @param gradeId ID của khối lớp
+     * @return Tên khối lớp (GradeName) hoặc null nếu không tìm thấy
+     */
+    public String getGradeNameById(int gradeId) {
+        String gradeName = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DBContext().connection;
+            String sql = "SELECT GradeName FROM Grade WHERE GradeID = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, gradeId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                gradeName = rs.getString("GradeName");
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        
         }
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING, "Không thể đóng PreparedStatement", e);
-            }
+
+        return gradeName;
+    }
+    
+     public static void main(String[] args) {
+        GradeDAO dao = new GradeDAO();
+        List<Grade> gradeList = dao.getAllGrades();
+
+        System.out.println("Danh sách khối lớp:");
+        for (Grade grade : gradeList) {
+            System.out.println(grade); // Đảm bảo bạn đã override phương thức toString trong class Grade
         }
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING, "Không thể đóng Connection", e);
-            }
-        }
+
+        
     }
 }

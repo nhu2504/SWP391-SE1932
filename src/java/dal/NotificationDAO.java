@@ -9,22 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationDAO {
-    private DBContext dbContext;
-
-    public NotificationDAO() {
-        dbContext = DBContext.getInstance();
-    }
-
     public List<Notification> getPublicNotifications() throws SQLException {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT NotificationID, Title, Content, CreatedAt, TargetRole, CreatedBy " +
                      "FROM Notifications WHERE TargetRole = 3 OR TargetRole IS NULL " +
                      "ORDER BY CreatedAt DESC";
 
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
-
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Notification notification = new Notification();
                 notification.setNotificationID(rs.getInt("NotificationID"));
@@ -37,6 +34,13 @@ public class NotificationDAO {
                 notification.setImportant(rs.getInt("NotificationID") % 2 == 0);
                 notifications.add(notification);
             }
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return notifications;
     }
@@ -44,11 +48,14 @@ public class NotificationDAO {
     public Notification getNotificationById(int notificationID) throws SQLException {
         String sql = "SELECT NotificationID, Title, Content, CreatedAt, TargetRole, CreatedBy " +
                      "FROM Notifications WHERE NotificationID = ?";
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            stmt = conn.prepareStatement(sql);
             stmt.setInt(1, notificationID);
-            ResultSet rs = stmt.executeQuery();
-
+            rs = stmt.executeQuery();
             if (rs.next()) {
                 Notification notification = new Notification();
                 notification.setNotificationID(rs.getInt("NotificationID"));
@@ -60,6 +67,13 @@ public class NotificationDAO {
                 notification.setRead(false);
                 notification.setImportant(rs.getInt("NotificationID") % 2 == 0);
                 return notification;
+            }
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         return null;

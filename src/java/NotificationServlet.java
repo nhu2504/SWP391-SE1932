@@ -29,7 +29,7 @@ public class NotificationServlet extends HttpServlet {
             List<Notification> notifications = notificationDAO.getPublicNotifications();
             request.setAttribute("notifications", notifications);
             request.setAttribute("userName", "Khách");
-            request.setAttribute("centerInfo", centerInfoDAO.getCenterInfo());
+            request.setAttribute("centerInfo", centerInfoDAO.getCenterInfo(1)); // Sử dụng CenterID = 1
 
             request.getRequestDispatcher("/notification.jsp").forward(request, response);
         } catch (SQLException e) {

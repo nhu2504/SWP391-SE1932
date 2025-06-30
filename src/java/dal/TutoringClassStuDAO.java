@@ -12,7 +12,6 @@ import java.sql.SQLException;
  * @author DO NGOC ANH HE180661
  */
 public class TutoringClassStuDAO {
-
     public ArrayList<TutoringClassStu> getClassesByUserID(int userID) {
         ArrayList<TutoringClassStu> classes = new ArrayList<>();
         String query = "SELECT DISTINCT tc.TutoringClassID, tc.ClassName, tc.StartDate, tc.Tuitionfee, " +
@@ -22,11 +21,15 @@ public class TutoringClassStuDAO {
                       "JOIN ClassGroup_Student cgs ON cg.ClassGroupID = cgs.ClassGroupID " +
                       "LEFT JOIN Payment p ON tc.TutoringClassID = p.TutoringClassID AND p.UserID = ? " +
                       "WHERE cgs.StudentID = ? AND cgs.IsActive = 1";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            ps = conn.prepareStatement(query);
             ps.setInt(1, userID);
             ps.setInt(2, userID);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 TutoringClassStu tutoringClass = new TutoringClassStu();
                 tutoringClass.setTutoringClassID(rs.getInt("TutoringClassID"));
@@ -38,6 +41,13 @@ public class TutoringClassStuDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return classes;
     }
@@ -48,14 +58,23 @@ public class TutoringClassStuDAO {
                       "ELSE " +
                       "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) " +
                       "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DBContext().connection;
+            ps = conn.prepareStatement(query);
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
             ps.setInt(3, userID);
             ps.setInt(4, tutoringClassID);
             ps.setInt(5, tutoringClassID);
             ps.executeUpdate();
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -1,73 +1,40 @@
 package entity;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Grade {
-    private int GradeID;
-    private int TutoringClassID;
-    private int UserID;
-    private float Score;
-    private String AssessmentDate;
-    private String Note;
+    private int gradeID;
+   private String gradeName;
 
     public Grade() {
     }
 
-    public Grade(int GradeID, int TutoringClassID, int UserID, float Score, String AssessmentDate, String Note) {
-        this.GradeID = GradeID;
-        this.TutoringClassID = TutoringClassID;
-        this.UserID = UserID;
-        this.Score = Score;
-        this.AssessmentDate = AssessmentDate;
-        this.Note = Note;
+    public Grade(int gradeID, String gradeName) {
+        this.gradeID = gradeID;
+        this.gradeName = gradeName;
     }
 
     public int getGradeID() {
-        return GradeID;
+        return gradeID;
     }
 
-    public void setGradeID(int GradeID) {
-        this.GradeID = GradeID;
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
     }
 
-    public int getTutoringClassID() {
-        return TutoringClassID;
+    public String getGradeName() {
+        return gradeName;
     }
 
-    public void setTutoringClassID(int TutoringClassID) {
-        this.TutoringClassID = TutoringClassID;
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
     }
 
-    public int getUserID() {
-        return UserID;
+    @Override
+    public String toString() {
+        return "Grade{" + "gradeID=" + gradeID + ", gradeName=" + gradeName + '}';
     }
 
-    public void setUserID(int UserID) {
-        this.UserID = UserID;
-    }
-
-    public float getScore() {
-        return Score;
-    }
-
-    public void setScore(float Score) {
-        this.Score = Score;
-    }
-
-    public String getAssessmentDate() {
-        return AssessmentDate;
-    }
-
-    public void setAssessmentDate(String AssessmentDate) {
-        this.AssessmentDate = AssessmentDate;
-    }
-
-    public String getNote() {
-        return Note;
-    }
-
-    public void setNote(String Note) {
-        this.Note = Note;
-    }
-
-   
-   
 }

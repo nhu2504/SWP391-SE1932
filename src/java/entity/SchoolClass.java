@@ -6,22 +6,30 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class SchoolClass {
     private int schoolClassID;
     private String className;
-    private School school;
+    private int schoolID;
+    private int gradeID;
 
     public SchoolClass() {
     }
 
-    public SchoolClass(int schoolClassID, String className, School school) {
+    public SchoolClass(int schoolClassID, String className, int schoolID) {
         this.schoolClassID = schoolClassID;
         this.className = className;
-        this.school = school;
+        this.schoolID = schoolID;
     }
 
+    public SchoolClass(int schoolClassID, String className, int schoolID, int gradeID) {
+        this.schoolClassID = schoolClassID;
+        this.className = className;
+        this.schoolID = schoolID;
+        this.gradeID = gradeID;
+    }
     public int getSchoolClassID() {
         return schoolClassID;
     }
@@ -38,17 +46,23 @@ public class SchoolClass {
         this.className = className;
     }
 
-    public School getSchool() {
-        return school;
+    public int getSchoolID() {
+        return schoolID;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setSchoolID(int schoolID) {
+        this.schoolID = schoolID;
     }
 
+    public int getGradeID() {
+        return gradeID;
+    }
+
+    public void setGradeID(int gradeID) {
+        this.gradeID = gradeID;
+    }
     @Override
     public String toString() {
-        return "SchoolClass{" + "schoolClassID=" + schoolClassID + ", className=" + className + ", school=" + school + '}';
+        return "SchoolClass{" + "schoolClassID=" + schoolClassID + ", className=" + className + ", schoolID=" + schoolID + ", gradeID=" + gradeID + '}';
     }
-    
 }

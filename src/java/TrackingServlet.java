@@ -1,7 +1,7 @@
 
 
 import dal.ScheduleDAO;
-import entity.Schedule;
+import entity.ScheduleStu;
 import entity.Attendance;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -58,7 +58,7 @@ public class TrackingServlet extends HttpServlet {
         int userID = 1;
 
         // Truy vấn dữ liệu
-        List<Schedule> schedules;
+        List<ScheduleStu> schedules;
         List<Attendance> attendances;
         try {
             schedules = scheduleDAO.getSchedulesByStudentAndWeek(userID, startOfWeek, endOfWeek);

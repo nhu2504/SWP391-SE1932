@@ -1,48 +1,104 @@
 package dal;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import entity.TutoringClass;
-
+import java.sql.*;
+import java.util.*;
+/**
+ * Ngày tạo: 23/06/2025  
+ * Người viết: Van Nhu
+ */
 public class TutoringClassDAO {
-    private DBContext dbContext;
 
-    public TutoringClassDAO() {
-        dbContext = DBContext.getInstance();
-    }
-
-    public ArrayList<TutoringClass> getClassesByUserID(int userID) {
-        ArrayList<TutoringClass> classes = new ArrayList<>();
-        String sql = "SELECT tc.TutoringClassID, tc.ClassName, tc.SubjectID, tc.userID AS TeacherID, " +
-                     "tc.StartDate, tc.EndDate, tc.roomID, tc.shiftID, tc.ThuID " +
-                     "FROM TutoringClass tc " +
-                     "JOIN TutoringRegistration tr ON tc.TutoringClassID = tr.TutoringClassID " +
-                     "WHERE tr.UserID = ?";
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, userID);
-            ResultSet rs = stmt.executeQuery();
+    // Lấy tất cả các lớp học
+    public List<TutoringClass> getAllClasses() {
+        List<TutoringClass> classes = new ArrayList<>();
+        String sql = "SELECT DISTINCT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, " +
+                     "SubjectID, StartDate, EndDate, Tuitionfee, GradeID FROM TutoringClass";
+        try (Connection conn = new DBContext().connection; 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                TutoringClass tc = new TutoringClass(
-                    rs.getInt("TutoringClassID"),
-                    rs.getString("ClassName"),
-                    rs.getInt("SubjectID"),
-                    rs.getInt("TeacherID"),
-                    rs.getString("StartDate"),
-                    rs.getString("EndDate"),
-                    rs.getInt("roomID"),
-                    rs.getInt("shiftID"),
-                    rs.getInt("ThuID")
-                );
-                classes.add(tc);
+                TutoringClass cls = new TutoringClass();
+                cls.setTutoringClassID(rs.getInt("TutoringClassID"));
+                cls.setClassName(rs.getString("ClassName"));
+                cls.setImage(rs.getString("ImageTutoring"));
+                cls.setDescrip(rs.getString("Descrip"));
+                cls.setIsHot(rs.getBoolean("isHot"));
+                cls.setSubjectID(rs.getInt("SubjectID"));
+                cls.setStartDate(rs.getDate("StartDate"));
+                cls.setEndDate(rs.getDate("EndDate"));
+                cls.setPrice(rs.getDouble("Tuitionfee"));
+                cls.setGradeID(rs.getInt("GradeID"));
+                classes.add(cls);
             }
-            System.out.println("TutoringClassDAO: classes size for userID " + userID + " = " + classes.size());
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Lỗi khi lấy danh sách tất cả lớp học: " + e.getMessage());
         }
         return classes;
     }
-}
+
+    // Lấy danh sách lớp học theo trạng thái nổi bật (isHot)
+    public List<TutoringClass> getTutoringClassesByHotStatus(boolean isHot) {
+        List<TutoringClass> classes = new ArrayList<>();
+        String sql = "SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID, " +
+                     "StartDate, EndDate, Tuitionfee, GradeID FROM TutoringClass WHERE isHot = ?";
+        try (Connection conn = new DBContext().connection; 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, isHot);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TutoringClass cls = new TutoringClass();
+                cls.setTutoringClassID(rs.getInt("TutoringClassID"));
+                cls.setClassName(rs.getString("ClassName"));
+                cls.setImage(rs.getString("ImageTutoring"));
+                cls.setDescrip(rs.getString("Descrip"));
+                cls.setIsHot(rs.getBoolean("isHot"));
+                cls.setSubjectID(rs.getInt("SubjectID"));
+                cls.setStartDate(rs.getDate("StartDate"));
+                cls.setEndDate(rs.getDate("EndDate"));
+                cls.setPrice(rs.getDouble("Tuitionfee"));
+                cls.setGradeID(rs.getInt("GradeID"));
+                classes.add(cls);
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy danh sách lớp học theo trạng thái: " + e.getMessage());
+        }
+        return classes;
+    }
+
+    public List<TutoringClass> getFeaturedTutoringClasses() {
+        return getTutoringClassesByHotStatus(true);
+    }
+
+    public List<TutoringClass> getYearRoundTutoringClasses() {
+        return getTutoringClassesByHotStatus(false);
+    }
+
+    // Lấy chi tiết một lớp học
+    public TutoringClass getTutoringClassDetail(int tutoringClassID) {
+        String sql = "SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID, " +
+                     "StartDate, EndDate, Tuitionfee, GradeID FROM TutoringClass WHERE TutoringClassID = ?";
+        try (Connection conn = new DBContext().connection; 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tutoringClassID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                TutoringClass cls = new TutoringClass();
+                cls.setTutoringClassID(rs.getInt("TutoringClassID"));
+                cls.setClassName(rs.getString("ClassName"));
+                cls.setImage(rs.getString("ImageTutoring"));
+                cls.setDescrip(rs.getString("Descrip"));
+                cls.setIsHot(rs.getBoolean("isHot"));
+                cls.setSubjectID(rs.getInt("SubjectID"));
+                cls.setStartDate(rs.getDate("StartDate"));
+                cls.setEndDate(rs.getDate("EndDate"));
+                cls.setPrice(rs.getDouble("Tuitionfee"));
+                cls.setGradeID(rs.getInt("GradeID"));
+                return cls;
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy chi tiết lớp học: " + e.getMessage());
+        }
+        return null;
+    }
+}    

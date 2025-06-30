@@ -3,6 +3,9 @@
 import dal.CenterInfoDAO;
 import dal.TutoringClassStuDAO;
 import dal.AttendanceStuDAO;
+import entity.TutoringClassStu;
+import entity.AttendanceStu;
+import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,9 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
-import entity.TutoringClassStu;
-import entity.AttendanceStu;
-import entity.account;
 
 @WebServlet(name = "AttendanceStuServlet", urlPatterns = {"/AttendanceStuServlet"})
 public class AttendanceStuServlet extends HttpServlet {
@@ -30,18 +30,18 @@ public class AttendanceStuServlet extends HttpServlet {
             throws ServletException, IOException {
         // Lấy session để kiểm tra thông tin người dùng
         HttpSession session = request.getSession();
-        account acc = (account) session.getAttribute("account");
+        User user = (User) session.getAttribute("user");
 
         // Kiểm tra xem người dùng đã đăng nhập chưa
-        if (acc == null) {
+        if (user == null) {
             // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
             response.sendRedirect(request.getContextPath() + "/login_register.jsp");
             return;
         }
 
         // Lấy ID và vai trò của người dùng
-        int userID = acc.getId();
-        int roleID = acc.getRole().getRoleID(); // Đảm bảo gọi đúng getRoleID()
+        int userID = user.getId();
+        int roleID = user.getRoleID();
 
         try {
             // Lấy danh sách khóa học mà học sinh tham gia
@@ -108,14 +108,14 @@ public class AttendanceStuServlet extends HttpServlet {
             }
 
             // Lấy thông tin trung tâm từ CenterInfoDAO
-            Map<String, String> centerInfo = centerInfoDAO.getCenterInfo();
+            Map<String, String> centerInfo = centerInfoDAO.getCenterInfo(1);
 
             // Lưu dữ liệu vào request để gửi đến attendance.jsp
             request.setAttribute("courses", courses);
             request.setAttribute("attendances", attendances);
             request.setAttribute("centerInfo", centerInfo);
-            session.setAttribute("userName", acc.getName());
-            session.setAttribute("userAvatar", acc.getAvatar());
+            session.setAttribute("userName", user.getName());
+            session.setAttribute("userAvatar", user.getAvatar());
 
             // Chuyển hướng đến trang attendance.jsp
             request.getRequestDispatcher("/attendance.jsp").forward(request, response);

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class AttendanceStuDAO {
-
     public ArrayList<AttendanceStu> getAttendanceByUserID(int userID) {
         ArrayList<AttendanceStu> attendances = new ArrayList<>();
         String query = "SELECT a.ClassGroupID, a.UserID, a.AttendanceDate, a.IsPresent, " +
@@ -23,10 +22,14 @@ public class AttendanceStuDAO {
                       "JOIN ClassGroup cg ON a.ClassGroupID = cg.ClassGroupID " +
                       "JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID " +
                       "WHERE a.UserID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            ps = conn.prepareStatement(query);
             ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE dd/MM/yyyy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             while (rs.next()) {
@@ -46,6 +49,13 @@ public class AttendanceStuDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return attendances;
     }
@@ -63,11 +73,15 @@ public class AttendanceStuDAO {
                       "JOIN ClassGroup cg ON a.ClassGroupID = cg.ClassGroupID " +
                       "JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID " +
                       "WHERE tc.TutoringClassID = ? AND a.UserID = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            ps = conn.prepareStatement(query);
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE dd/MM/yyyy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             while (rs.next()) {
@@ -87,6 +101,13 @@ public class AttendanceStuDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return attendances;
     }
