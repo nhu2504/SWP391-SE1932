@@ -10,74 +10,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GradeDAO - Xử lý truy xuất dữ liệu bảng Grade (khối lớp)
- *
- * - Lấy danh sách tất cả khối lớp
- * - Lấy tên khối lớp theo ID
- *
- * Ngày tạo: 23/06/2025  
- * Người viết: Van Nhu
+ * Ngày update: 30/06/2025  
+ * Người viết: Văn Thị Như
+ * Mục đích: Truy xuất dữ liệu các khối lớp từ cơ sở dữ liệu
  */
 public class GradeDAO {
 
     /**
-     * Lấy toàn bộ danh sách khối lớp từ bảng Grade
+     *  Lấy danh sách tất cả các khối lớp từ bảng Grade trong DB
      *
-     * @return List chứa các đối tượng Grade
+     * @return List<Grade> - danh sách các khối lớp (GradeID + GradeName)
      */
     public List<Grade> getAllGrades() {
         List<Grade> grades = new ArrayList<>();
 
-        try (
-            Connection conn = new DBContext().connection;
-            PreparedStatement ps = conn.prepareStatement(
-                "SELECT GradeID, GradeName FROM Grade ORDER BY GradeID ASC"
-            );
-            ResultSet rs = ps.executeQuery()
-        ) {
+        // Truy vấn tất cả khối lớp, sắp xếp theo ID tăng dần
+        String sql = "SELECT GradeID, GradeName FROM Grade ORDER BY GradeID ASC";
+
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            // Lặp qua từng dòng kết quả và thêm vào danh sách
             while (rs.next()) {
                 Grade grade = new Grade();
-                grade.setGradeID(rs.getInt("GradeID"));
-                grade.setGradeName(rs.getString("GradeName"));
-                grades.add(grade); // Thêm vào danh sách
+                grade.setGradeID(rs.getInt("GradeID"));       // ID khối lớp
+                grade.setGradeName(rs.getString("GradeName")); // Tên khối lớp
+                grades.add(grade);
             }
+
         } catch (SQLException e) {
-            // In lỗi nếu có
-            e.printStackTrace();
+            e.printStackTrace(); // In lỗi nếu có
         }
 
-        return grades;
+        return grades; // Trả về danh sách khối lớp
     }
 
     /**
-     * Lấy tên khối lớp theo ID (GradeID)
+     *  Trả về tên khối lớp (GradeName) theo ID
      *
      * @param gradeId ID của khối lớp
      * @return Tên khối lớp (GradeName) hoặc null nếu không tìm thấy
      */
     public String getGradeNameById(int gradeId) {
         String gradeName = null;
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        String sql = "SELECT GradeName FROM Grade WHERE GradeID = ?";
 
-        try {
-            conn = new DBContext().connection;
-            String sql = "SELECT GradeName FROM Grade WHERE GradeID = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, gradeId);
-            rs = ps.executeQuery();
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, gradeId);                      // Gán tham số ID
+            ResultSet rs = ps.executeQuery();           // Thực thi truy vấn
 
             if (rs.next()) {
-                gradeName = rs.getString("GradeName");
+                gradeName = rs.getString("GradeName");  // Lấy tên lớp nếu có
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-
-        
+            e.printStackTrace(); // In lỗi nếu có
         }
 
-        return gradeName;
+        return gradeName; // Trả về tên khối lớp hoặc null nếu không tìm thấy
     }
 }

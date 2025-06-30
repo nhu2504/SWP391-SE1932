@@ -9,8 +9,36 @@
         <servlet-class>LogoServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>LoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>RegisterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShiftServlet</servlet-name>
+        <servlet-class>ShiftServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GradeServlet</servlet-name>
+        <servlet-class>GradeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateLogoServlet</servlet-name>
+        <servlet-class>UpdateLogoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCenterInfoServlet</servlet-name>
+        <servlet-class>UpdateCenterInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>BannerServlet</servlet-name>
         <servlet-class>BannerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>AdminServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
@@ -29,12 +57,40 @@
         <url-pattern>/teacher</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/setting</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>LogoServlet</servlet-name>
         <url-pattern>/LogoServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShiftServlet</servlet-name>
+        <url-pattern>/shiftservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateLogoServlet</servlet-name>
+        <url-pattern>/UpdateLogoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCenterInfoServlet</servlet-name>
+        <url-pattern>/UpdateCenterInfoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>BannerServlet</servlet-name>
         <url-pattern>/BannerServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>

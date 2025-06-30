@@ -1,88 +1,85 @@
-/*
- * Tác giả: Van Nhu
- * Ngày tạo: 23/06/2025
- * Mô tả: DAO truy xuất và thao tác với bảng Banner trong cơ sở dữ liệu
- *  - Lấy danh sách banner
- *  - Thêm banner mới (ảnh)
- *  - Xóa banner theo ID
- */
-
 package dal;
 
 import entity.Banner;
 import java.util.ArrayList;
 import java.util.List;
+import dal.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Ngày update: 30/06/2025  
+ * Người viết: Văn Thị Như
+ * Mô tả: BannerDAO là lớp thực hiện các thao tác với bảng `banner` trong cơ sở dữ liệu:
+ *       - Lấy danh sách banner (trừ banner có ID = 1)
+ *       - Thêm banner mới
+ *       - Xóa banner theo ID
+ */
 public class BannerDAO {
 
-    // Lấy danh sách tất cả các banner (trừ bannerID = 1)
+    /**
+     *  Lấy danh sách tất cả banner từ bảng `banner`, trừ banner có ID = 1 (banner teacher).
+     * 
+     * @return Danh sách banner (List<Banner>)
+     */
     public List<Banner> getAllBanners() {
         List<Banner> banners = new ArrayList<>();
-        try (Connection conn = new DBContext().connection;
+
+        try (Connection conn = new DBContext().connection; // Kết nối CSDL
              PreparedStatement ps = conn.prepareStatement(
                      "SELECT bannerID, bannerImg FROM banner WHERE bannerID <> 1 ORDER BY bannerID ASC");
              ResultSet rs = ps.executeQuery()) {
 
+            // Duyệt kết quả và đưa vào danh sách banner
             while (rs.next()) {
                 Banner banner = new Banner();
-                banner.setBannerID(rs.getInt("bannerID"));
-                banner.setBannerImg(rs.getString("bannerImg"));
-                banners.add(banner);
+                banner.setBannerID(rs.getInt("bannerID"));           // Gán ID banner
+                banner.setBannerImg(rs.getString("bannerImg"));      // Gán đường dẫn hình ảnh
+                banners.add(banner);                                 // Thêm vào danh sách
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // In lỗi nếu có
         }
-        return banners;
+
+        return banners; // Trả về danh sách banner
     }
 
-    // Thêm banner mới vào cơ sở dữ liệu
+    /**
+     *  Thêm một banner mới vào bảng `banner`
+     * 
+     * @param fileName Tên file hình ảnh banner
+     */
     public void addBanner(String fileName) {
-        try (Connection conn = new DBContext().connection;
+        try (Connection conn = new DBContext().connection; // Kết nối CSDL
              PreparedStatement ps = conn.prepareStatement(
                      "INSERT INTO banner (bannerImg) VALUES (?)")) {
 
-            ps.setString(1, fileName); // tên file ảnh
-            ps.executeUpdate();
+            ps.setString(1, fileName); // Gán tên ảnh vào truy vấn
+            ps.executeUpdate();        // Thực thi truy vấn thêm mới
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // In lỗi nếu có
         }
     }
 
-    // Xóa banner theo ID
+    /**
+     *  Xóa banner dựa trên bannerID
+     * 
+     * @param bannerID ID của banner cần xóa
+     */
     public void deleteBanner(int bannerID) {
-        try (Connection conn = new DBContext().connection;
+        try (Connection conn = new DBContext().connection; // Kết nối CSDL
              PreparedStatement ps = conn.prepareStatement(
                      "DELETE FROM banner WHERE bannerID = ?")) {
 
-            ps.setInt(1, bannerID); // truyền ID cần xóa
-            ps.executeUpdate();
+            ps.setInt(1, bannerID); // Gán giá trị ID cần xóa
+            ps.executeUpdate();     // Thực thi lệnh xóa
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // In lỗi nếu có
         }
-    }
-
-    // (Tùy chọn) Lấy tên file ảnh banner theo ID (dùng khi cần xóa file trên ổ đĩa)
-    public String getFileNameById(int bannerID) {
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT bannerImg FROM banner WHERE bannerID = ?")) {
-
-            ps.setInt(1, bannerID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("bannerImg");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

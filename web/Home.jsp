@@ -1182,7 +1182,7 @@ Ngày update 23/6/2025-->
                                 <label id="fieldLabel">Nhập giá trị:</label>
                                 <input type="hidden" name="fieldName" id="fieldNameInput" />
                                 <input type="hidden" name="action" id="actionInput" value="update" />
-                                <input type="text" class="form-control" name="fieldValue" id="fieldValueInput" required />
+                                <textarea class="form-control" name="fieldValue" id="fieldValueInput" rows="15" style="min-height: 80px;" required></textarea>
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-end gap-2">
