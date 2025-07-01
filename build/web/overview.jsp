@@ -114,7 +114,7 @@
 
 
             <!-- New Reviews -->
-            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
+<!--            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-semibold text-lg">Đánh giá mới</h2>
                     <button class="text-blue-500 text-sm">Xem tất cả</button>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Payment Status -->
             <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
@@ -215,14 +215,14 @@
             </div>
 
             <!-- Growth Chart -->
-            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
+<!--            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <h2 class="font-semibold text-lg mb-4">Tăng trưởng số lượng</h2>
                 <canvas id="growthChart" height="250"></canvas>
-            </div>
+            </div>-->
         </div>
 
         <!-- Feedback Distribution Chart -->
-        <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300 mb-8">
+<!--        <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300 mb-8">
             <h2 class="font-semibold text-lg mb-4">Phản hồi đánh giá</h2>
             <div class="flex justify-center">
                 <canvas id="feedbackChart" height="300" width="300"></canvas>
@@ -241,7 +241,7 @@
                     <span class="text-sm">Không hài lòng (5%)</span>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!-- Schedule and Quick Actions -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -304,7 +304,7 @@
 
 
             <!-- Quick Actions -->
-            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
+<!--            <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-semibold text-lg">Cần xử lý</h2>
                     <button class="text-blue-500 text-sm">Xem tất cả</button>
@@ -331,7 +331,7 @@
                         <button class="mt-1 text-sm text-blue-500 hover:text-blue-700">Xử lý ngay</button>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </main>
 </div>
@@ -377,40 +377,40 @@
         }
     });
 
-    // Growth Chart
-    const growthCtx = document.getElementById('growthChart').getContext('2d');
-    const growthChart = new Chart(growthCtx, {
-        type: 'line',
-        data: {
-            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7'],
-            datasets: [
-                {
-                    label: 'Số lớp học',
-                    data: [12, 15, 17, 18, 20, 22, 24],
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    tension: 0.3,
-                    fill: true
-                },
-                {
-                    label: 'Số học sinh',
-                    data: [350, 410, 470, 520, 580, 630, 687],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    tension: 0.3,
-                    fill: true
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+//    // Growth Chart
+//    const growthCtx = document.getElementById('growthChart').getContext('2d');
+//    const growthChart = new Chart(growthCtx, {
+//        type: 'line',
+//        data: {
+//            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7'],
+//            datasets: [
+//                {
+//                    label: 'Số lớp học',
+//                    data: [12, 15, 17, 18, 20, 22, 24],
+//                    borderColor: 'rgba(54, 162, 235, 1)',
+//                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+//                    tension: 0.3,
+//                    fill: true
+//                },
+//                {
+//                    label: 'Số học sinh',
+//                    data: [350, 410, 470, 520, 580, 630, 687],
+//                    borderColor: 'rgba(75, 192, 192, 1)',
+//                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+//                    tension: 0.3,
+//                    fill: true
+//                }
+//            ]
+//        },
+//        options: {
+//            responsive: true,
+//            scales: {
+//                y: {
+//                    beginAtZero: true
+//                }
+//            }
+//        }
+//    });
 
     // Feedback Chart
     const feedbackCtx = document.getElementById('feedbackChart').getContext('2d');
