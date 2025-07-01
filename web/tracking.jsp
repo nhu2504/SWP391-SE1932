@@ -1,25 +1,37 @@
+<%-- Khai báo loại nội dung của trang là HTML và mã hóa UTF-8 để hỗ trợ tiếng Việt --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- Import các thư viện JSTL để sử dụng vòng lặp, điều kiện và định dạng ngày giờ --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%-- Khai báo tài liệu HTML với ngôn ngữ tiếng Việt --%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <%-- Thiết lập mã hóa ký tự UTF-8 --%>
     <meta charset="utf-8">
+    <%-- Thiết lập viewport để hỗ trợ responsive trên các thiết bị di động --%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%-- Mô tả nội dung trang --%>
     <meta name="description" content="Trang theo dõi lớp học cho trung tâm dạy văn hóa">
+    <%-- Tác giả của trang --%>
     <meta name="author" content="Edura Team">
+    <%-- Tiêu đề của trang --%>
     <title>Theo dõi lớp học - Edura</title>
 
-    <!-- Thư viện CSS -->
+    <%-- Liên kết đến các tệp CSS bên ngoài --%>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <%-- Kết nối font League Spartan từ Google Fonts --%>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.carousel.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.theme.default.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/tooplate-gotto-job.css" rel="stylesheet">
 
+    <%-- CSS tùy chỉnh cho giao diện trang --%>
     <style>
+        /* Định dạng cơ bản cho body */
         body {
             font-family: 'League Spartan', 'Segoe UI Emoji', sans-serif;
             margin: 0;
@@ -27,6 +39,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
+        /* Định dạng header trên cùng */
         .top-header {
             background-color: #FFF1F1;
             color: #000;
@@ -36,10 +49,12 @@
             align-items: center;
             text-align: left;
         }
+        /* Logo trong header */
         .top-header .logo img {
             max-width: 150px;
             height: auto;
         }
+        /* Các mục liên hệ trong header */
         .top-header .contact-item {
             display: flex;
             align-items: center;
@@ -59,12 +74,15 @@
             font-size: 14px;
             color: #333;
         }
+        /* Ẩn header trên các thiết bị nhỏ hơn 992px */
         @media (max-width: 992px) {
             .top-header { display: none; }
         }
+        /* Định dạng khu vực nội dung chính */
         .main {
             padding: 20px;
         }
+        /* Định dạng tiêu đề dashboard */
         h1.dashboard-title {
             text-align: center;
             background-color: #f0f0f0;
@@ -78,10 +96,12 @@
             justify-content: space-between;
             align-items: center;
         }
+        /* Nội dung tiêu đề */
         h1.dashboard-title .title-content {
             flex-grow: 1;
             text-align: center;
         }
+        /* Nút quay lại */
         h1.dashboard-title .back-arrow {
             margin-left: 20px;
             color: #333;
@@ -91,12 +111,14 @@
         h1.dashboard-title .back-arrow:hover {
             color: #FF6B6B;
         }
+        /* Nhóm các biểu tượng trong tiêu đề */
         h1.dashboard-title .header-icons {
             margin-right: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
         }
+        /* Dropdown người dùng */
         h1.dashboard-title .header-icons .user-dropdown {
             position: relative;
             display: flex;
@@ -137,6 +159,7 @@
         h1.dashboard-title .header-icons .user-dropdown .dropdown-content a:hover {
             color: #FF6B6B;
         }
+        /* Định dạng bảng lịch học */
         .grid {
             width: 100%;
             border-collapse: collapse;
@@ -152,18 +175,23 @@
         .grid th {
             background-color: #f2f2f2;
         }
+        /* Định dạng trạng thái có mặt */
         .present {
             background-color: #b2fab4;
         }
+        /* Định dạng trạng thái vắng mặt */
         .absent {
             background-color: #ffb3b3;
         }
+        /* Định dạng trạng thái chưa học */
         .notyet {
             background-color: #ffe5e5;
         }
+        /* Định dạng khi không có dữ liệu */
         .nodata {
             color: #888;
         }
+        /* Định dạng chú thích */
         .legend {
             margin: 20px 0;
             font-size: 14px;
@@ -172,6 +200,7 @@
             margin-right: 15px;
             padding: 2px 8px;
         }
+        /* Định dạng footer */
         .site-footer {
             margin-top: 90px;
         }
@@ -211,6 +240,7 @@
             color: #fff !important;
             border-color: #FF6B6B !important;
         }
+        /* Định dạng logo trong footer */
         .logo-container {
             position: relative;
             width: 150px;
@@ -226,6 +256,7 @@
             transform: scale(2);
             transition: transform 0.3s ease;
         }
+        /* Định dạng nhóm slogan */
         .slogan-group {
             display: flex;
             flex-direction: column;
@@ -240,6 +271,7 @@
             line-height: 1.4;
             transition: color 0.3s ease;
         }
+        /* Định dạng nút quay lại đầu trang */
         .back-top-icon {
             position: fixed;
             bottom: 30px;
@@ -270,6 +302,7 @@
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
+        /* Responsive cho nút quay lại đầu trang */
         @media (max-width: 991px) {
             .back-top-icon {
                 width: 40px;
@@ -287,11 +320,13 @@
                 font-size: 18px;
             }
         }
+        /* Responsive cho footer */
         @media (max-width: 991px) {
             .container-fluid.bg-dark.text-white {
                 padding: 60px 45px !important;
             }
         }
+        /* Định dạng bộ lọc tuần */
         .week-filter {
             margin-bottom: 20px;
             display: flex;
@@ -316,6 +351,7 @@
         .week-filter button:hover {
             background-color: #45a049;
         }
+        /* Định dạng thông báo lỗi */
         .error-message {
             color: red;
             text-align: center;
@@ -323,12 +359,15 @@
         }
     </style>
 
+    <%-- JavaScript để xử lý tương tác --%>
     <script>
+        // Hàm hiển thị/ẩn dropdown người dùng
         function toggleDropdown() {
             const dropdown = document.getElementById('userDropdown');
             dropdown.classList.toggle('show');
         }
 
+        // Ẩn dropdown khi nhấp ra ngoài
         window.addEventListener('click', function(e) {
             const button = document.getElementById('userButton');
             const dropdown = document.getElementById('userDropdown');
@@ -337,7 +376,9 @@
             }
         });
 
+        // Xử lý sự kiện khi trang được tải
         document.addEventListener('DOMContentLoaded', () => {
+            // Hiển thị/ẩn nút quay lại đầu trang dựa trên vị trí cuộn
             window.addEventListener('scroll', function () {
                 const backTop = document.querySelector('.back-top-icon');
                 if (window.scrollY > 300) {
@@ -350,15 +391,18 @@
     </script>
 </head>
 <body id="top">
+    <%-- Header trên cùng hiển thị logo và thông tin liên hệ --%>
     <div class="container-fluid top-header">
         <div class="row w-100 justify-content-around align-items-center">
             <div class="logo">
+                <%-- Hiển thị logo từ servlet với fallback nếu không tải được --%>
                 <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo EDURA" class="logo-img">
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                     <h6>Địa chỉ</h6>
+                    <%-- Hiển thị địa chỉ, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small>${not empty centerInfo['AddressCenter'] ? centerInfo['AddressCenter'] : 'Chưa cập nhật'}</small>
                 </div>
             </div>
@@ -366,6 +410,7 @@
                 <i class="fas fa-envelope"></i>
                 <div>
                     <h6>Email</h6>
+                    <%-- Hiển thị email với liên kết mailto, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small><a href="mailto:${not empty centerInfo['Email'] ? centerInfo['Email'] : ''}">${not empty centerInfo['Email'] ? centerInfo['Email'] : 'Chưa cập nhật'}</a></small>
                 </div>
             </div>
@@ -373,18 +418,21 @@
                 <i class="fas fa-phone"></i>
                 <div>
                     <h6>Điện thoại</h6>
+                    <%-- Hiển thị số điện thoại, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small>${not empty centerInfo['Phone'] ? centerInfo['Phone'] : 'Chưa cập nhật'}</small>
                 </div>
             </div>
         </div>
     </div>
 
+    <%-- Tiêu đề dashboard với nút quay lại và dropdown người dùng --%>
     <h1 class="dashboard-title">
         <a href="${pageContext.request.contextPath}/DashboardServlet" class="back-arrow" title="Quay lại" onclick="console.log('Navigating to DashboardServlet')"><i class="fas fa-arrow-left"></i></a>
         <div class="title-content">Theo dõi lớp học</div>
         <div class="header-icons">
             <div class="user-dropdown">
-                <button class="dropbtn" id="userButton">${not empty userName ? userName : 'Khách'} <span class="ml-1">▼</span></button>
+                <%-- Hiển thị tên người dùng --%>
+                <button class="dropbtn" id="userButton">${user.name} <span class="ml-1">▼</span></button>
                 <div class="dropdown-content" id="userDropdown">
                     <a href="${pageContext.request.contextPath}/profile" title="Hồ sơ">Hồ sơ</a>
                     <a href="${pageContext.request.contextPath}/logout" title="Đăng xuất">Đăng xuất</a>
@@ -393,22 +441,26 @@
         </div>
     </h1>
 
+    <%-- Nội dung chính của trang --%>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 main">
-                <!-- Bộ lọc tuần -->
+                <%-- Bộ lọc tuần để chọn khoảng thời gian hiển thị lịch học --%>
                 <div class="week-filter">
                     <form action="${pageContext.request.contextPath}/tracking" method="get">
                         <select name="weekStart" onchange="this.form.submit()">
+                            <%-- Lấy ngày hiện tại và thiết lập lịch --%>
                             <c:set var="today" value="<%= new java.util.Date() %>"/>
                             <c:set var="calendar" value="<%= java.util.Calendar.getInstance() %>"/>
                             <%
+                                // Tính ngày bắt đầu của tuần hiện tại (Thứ 2)
                                 java.util.Calendar cal = java.util.Calendar.getInstance();
                                 cal.setTime(new java.util.Date());
                                 int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK);
                                 int daysUntilMonday = (dayOfWeek - java.util.Calendar.MONDAY + 7) % 7;
                                 cal.add(java.util.Calendar.DAY_OF_MONTH, -daysUntilMonday);
                                 pageContext.setAttribute("currentWeekStart", cal.getTime());
+                                // Tạo các tùy chọn cho 9 tuần (4 tuần trước, tuần hiện tại, 4 tuần sau)
                                 for (int i = -4; i <= 4; i++) {
                                     java.util.Calendar tempCal = java.util.Calendar.getInstance();
                                     tempCal.setTime(new java.util.Date());
@@ -430,7 +482,7 @@
                     </form>
                 </div>
 
-                <!-- Bảng lịch học -->
+                <%-- Bảng lịch học --%>
                 <c:choose>
                     <c:when test="${empty schedules or empty startOfWeek or empty endOfWeek}">
                         <div class="error-message">Không có dữ liệu lịch học để hiển thị. Vui lòng thử lại sau.</div>
@@ -438,6 +490,7 @@
                     <c:otherwise>
                         <table class="grid">
                             <tr>
+                                <%-- Hiển thị tiêu đề tuần --%>
                                 <th>Tuần: <fmt:formatDate value="${startOfWeek}" pattern="dd/MM"/> - <fmt:formatDate value="${endOfWeek}" pattern="dd/MM"/></th>
                                 <th>Thứ 2</th>
                                 <th>Thứ 3</th>
@@ -447,12 +500,15 @@
                                 <th>Thứ 7</th>
                                 <th>Chủ nhật</th>
                             </tr>
+                            <%-- Vòng lặp qua 6 ca học mỗi ngày --%>
                             <c:forEach begin="1" end="6" var="shift">
                                 <tr>
                                     <td>Ca ${shift}</td>
+                                    <%-- Vòng lặp qua 7 ngày trong tuần --%>
                                     <c:forEach begin="0" end="6" var="dayOffset">
                                         <c:set var="found" value="false"/>
                                         <%
+                                            // Tính ngày hiện tại trong tuần dựa trên startOfWeek và dayOffset
                                             java.util.Calendar tempCal = java.util.Calendar.getInstance();
                                             tempCal.setTime((java.util.Date)pageContext.getAttribute("startOfWeek"));
                                             int dayOffset = ((Integer)pageContext.getAttribute("dayOffset"));
@@ -461,11 +517,13 @@
                                             pageContext.setAttribute("currentDate", currentDate);
                                         %>
                                         <fmt:formatDate value="${currentDate}" pattern="yyyy-MM-dd" var="currentDateStr"/>
+                                        <%-- Kiểm tra lịch học cho ca và ngày hiện tại --%>
                                         <c:forEach var="schedule" items="${schedules}">
                                             <fmt:formatDate value="${schedule.dateLearn}" pattern="yyyy-MM-dd" var="scheduleDateStr"/>
                                             <c:if test="${schedule.shiftID == shift && scheduleDateStr == currentDateStr}">
                                                 <c:set var="found" value="true"/>
                                                 <c:set var="attendance" value="${null}"/>
+                                                <%-- Kiểm tra điểm danh cho lịch học này --%>
                                                 <c:forEach var="att" items="${attendances}">
                                                     <fmt:formatDate value="${att.attendanceDate}" pattern="yyyy-MM-dd" var="attendanceDateStr"/>
                                                     <c:if test="${att.classGroupID == schedule.classGroupID && attendanceDateStr == currentDateStr}">
@@ -479,6 +537,7 @@
                                                 </td>
                                             </c:if>
                                         </c:forEach>
+                                        <%-- Hiển thị ô trống nếu không có lịch học --%>
                                         <c:if test="${!found}">
                                             <td class="nodata">...</td>
                                         </c:if>
@@ -487,6 +546,7 @@
                             </c:forEach>
                         </table>
 
+                        <%-- Chú thích trạng thái --%>
                         <div class="legend">
                             <strong>Chú thích:</strong>
                             <span style="background-color:#b2fab4;">Có mặt</span>
@@ -500,6 +560,7 @@
         </div>
     </div>
 
+    <%-- Footer của trang --%>
     <footer class="site-footer">
         <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5">
             <div class="row pt-5">
@@ -543,9 +604,11 @@
                 </div>
             </div>
         </div>
+        <%-- Nút quay lại đầu trang --%>
         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
     </footer>
 
+    <%-- Các tệp JavaScript hỗ trợ tương tác --%>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

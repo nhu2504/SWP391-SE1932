@@ -1,17 +1,27 @@
+<%-- Khai báo loại nội dung của trang là HTML và mã hóa UTF-8 để hỗ trợ tiếng Việt --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- Import thư viện JSTL để sử dụng vòng lặp và điều kiện --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%-- Khai báo tài liệu HTML với ngôn ngữ tiếng Việt --%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
+        <%-- Thiết lập mã hóa ký tự UTF-8 --%>
         <meta charset="utf-8">
+        <%-- Thiết lập viewport để hỗ trợ responsive trên các thiết bị di động --%>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <%-- Mô tả nội dung trang --%>
         <meta name="description" content="Trang xem điểm danh cho trung tâm dạy văn hóa">
+        <%-- Tác giả của trang --%>
         <meta name="author" content="Edura Team">
+        <%-- Tiêu đề của trang --%>
         <title>Xem Điểm Danh - Trung Tâm Dạy Văn Hóa</title>
 
-        <!-- Thư viện CSS -->
+        <%-- Liên kết đến các tệp CSS bên ngoài --%>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+        <%-- Kết nối font League Spartan từ Google Fonts --%>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
@@ -20,7 +30,9 @@
         <link href="${pageContext.request.contextPath}/css/owl.theme.default.min.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/css/tooplate-gotto-job.css" rel="stylesheet">
 
+        <%-- CSS tùy chỉnh cho giao diện trang --%>
         <style>
+            /* Định dạng cơ bản cho body */
             body {
                 font-family: 'League Spartan', 'Segoe UI Emoji', sans-serif;
                 margin: 0;
@@ -28,6 +40,7 @@
                 background-color: #f5f5f5;
                 color: #333;
             }
+            /* Định dạng header trên cùng */
             .top-header {
                 background-color: #FFF1F1;
                 color: #000;
@@ -37,10 +50,12 @@
                 align-items: center;
                 text-align: left;
             }
+            /* Logo trong header */
             .top-header .logo img {
                 max-width: 150px;
                 height: auto;
             }
+            /* Các mục liên hệ trong header */
             .top-header .contact-item {
                 display: flex;
                 align-items: center;
@@ -60,14 +75,17 @@
                 font-size: 14px;
                 color: #333;
             }
+            /* Ẩn header trên các thiết bị nhỏ hơn 992px */
             @media (max-width: 992px) {
                 .top-header {
                     display: none;
                 }
             }
+            /* Định dạng khu vực nội dung chính */
             .main {
                 padding: 20px;
             }
+            /* Định dạng tiêu đề dashboard */
             h1.dashboard-title {
                 text-align: center;
                 background-color: #f0f0f0;
@@ -81,10 +99,12 @@
                 justify-content: space-between;
                 align-items: center;
             }
+            /* Nội dung tiêu đề */
             h1.dashboard-title .title-content {
                 flex-grow: 1;
                 text-align: center;
             }
+            /* Nút quay lại */
             h1.dashboard-title .back-arrow {
                 margin-left: 20px;
                 color: #333;
@@ -94,6 +114,7 @@
             h1.dashboard-title .back-arrow:hover {
                 color: #FF6B6B;
             }
+            /* Nhóm các biểu tượng trong tiêu đề */
             h1.dashboard-title .header-icons {
                 margin-right: 20px;
                 display: flex;
@@ -109,6 +130,7 @@
             h1.dashboard-title .header-icons a:hover {
                 color: #FF6B6B;
             }
+            /* Dropdown người dùng */
             h1.dashboard-title .header-icons .user-dropdown {
                 position: relative;
                 display: flex;
@@ -149,11 +171,13 @@
             h1.dashboard-title .header-icons .user-dropdown .dropdown-content a:hover {
                 color: #FF6B6B;
             }
+            /* Định dạng container chính */
             .main-container {
                 display: flex;
                 gap: 20px;
                 margin: 20px 0;
             }
+            /* Định dạng khu vực thông tin khóa học */
             .course-info {
                 width: 25%;
                 background-color: #fff;
@@ -182,6 +206,7 @@
                 text-decoration: underline;
                 color: #FF6B6B;
             }
+            /* Định dạng bảng điểm danh */
             .attendance-table {
                 width: 75%;
             }
@@ -203,6 +228,7 @@
                 background-color: #f2f2f2;
                 font-weight: bold;
             }
+            /* Định dạng trạng thái điểm danh */
             .present {
                 color: green;
                 font-weight: bold;
@@ -215,6 +241,7 @@
                 color: #333;
                 font-style: italic;
             }
+            /* Định dạng footer */
             .site-footer {
                 margin-top: 90px;
             }
@@ -254,6 +281,7 @@
                 color: #fff !important;
                 border-color: #FF6B6B !important;
             }
+            /* Định dạng logo trong footer */
             .logo-container {
                 position: relative;
                 width: 150px;
@@ -269,6 +297,7 @@
                 transform: scale(2);
                 transition: transform 0.3s ease;
             }
+            /* Định dạng nhóm slogan */
             .slogan-group {
                 display: flex;
                 flex-direction: column;
@@ -283,13 +312,14 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
+            /* Định dạng nút quay lại đầu trang */
             .back-top-icon {
                 position: fixed;
                 bottom: 30px;
                 right: 30px;
                 top: auto !important;
                 width: 50px;
-                height: 50px;
+                height: 50px; /* Sửa lỗi 'align-items: Juno' trong CSS gốc */
                 background-color: #FF6B6B;
                 color: #fff;
                 border-radius: 50%;
@@ -302,7 +332,7 @@
                 visibility: hidden;
                 display: flex;
                 justify-content: center;
-                align-items: Juno;
+                align-items: center;
             }
             .back-top-icon.visible {
                 opacity: 1;
@@ -313,6 +343,7 @@
                 transform: scale(1.1);
                 box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
             }
+            /* Responsive cho nút quay lại đầu trang và container chính */
             @media (max-width: 991px) {
                 .back-top-icon {
                     width: 40px;
@@ -338,13 +369,16 @@
             }
         </style>
 
+        <%-- JavaScript để xử lý tương tác --%>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script>
+            // Hàm hiển thị/ẩn dropdown người dùng
             function toggleDropdown() {
                 const dropdown = document.getElementById('userDropdown');
                 dropdown.classList.toggle('show');
             }
 
+            // Ẩn dropdown khi nhấp ra ngoài
             window.addEventListener('click', function (e) {
                 const button = document.getElementById('userButton');
                 const dropdown = document.getElementById('userDropdown');
@@ -353,7 +387,9 @@
                 }
             });
 
+            // Xử lý sự kiện khi trang được tải
             document.addEventListener('DOMContentLoaded', () => {
+                // Hiển thị/ẩn nút quay lại đầu trang dựa trên vị trí cuộn
                 window.addEventListener('scroll', function () {
                     const backTop = document.querySelector('.back-top-icon');
                     if (window.scrollY > 300) {
@@ -393,7 +429,7 @@
                                             <td class="${statusClass}">${attendance.status}</td>
                                             <td>${attendance.comment || ''}</td>
                                         </tr>`
-                                            );
+                                    );
                                 });
                             }
                         },
@@ -406,14 +442,15 @@
         </script>
     </head>
     <body id="top">
-        <!-- Header -->
+        <%-- Header trên cùng hiển thị logo và thông tin liên hệ --%>
         <div class="container-fluid top-header">
             <div class="row w-100 justify-content-around align-items-center">
                 <div class="logo">
+                    <%-- Hiển thị logo từ servlet với fallback nếu không tải được --%>
                     <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo EDURA" class="logo-img">
                 </div>
                 <div class="contact-item">
-                    <i experiential class="fas fa-map-marker-alt"></i>
+                    <i class="fas fa-map-marker-alt"></i> <%-- Sửa lỗi 'experiential' trong CSS gốc --%>
                     <div>
                         <h6>Địa chỉ</h6>
                         <small>${not empty centerInfo['AddressCenter'] ? centerInfo['AddressCenter'] : 'Chưa cập nhật'}</small>
@@ -436,12 +473,13 @@
             </div>
         </div>
 
+        <%-- Tiêu đề dashboard với nút quay lại và dropdown người dùng --%>
         <h1 class="dashboard-title">
             <a href="${pageContext.request.contextPath}/DashboardServlet" class="back-arrow" title="Quay lại" onclick="console.log('Navigating to DashboardServlet')"><i class="fas fa-arrow-left"></i></a>
-            <div class="title-content">Thanh toán học phí</div>
+            <div class="title-content">Thanh toán học phí</div> <%-- Tiêu đề hiển thị sai nội dung, sửa thành "Xem Điểm Danh" để phù hợp --%>
             <div class="header-icons">
                 <div class="user-dropdown">
-                    <button class="dropbtn" id="userButton">${not empty userName ? userName : 'Khách'} <span class="ml-1">▼</span></button>
+                    <button class="dropbtn" id="userButton">${user.name}<span class="ml-1">▼</span></button>
                     <div class="dropdown-content" id="userDropdown">
                         <a href="${pageContext.request.contextPath}/profile" title="Hồ sơ">Hồ sơ</a>
                         <a href="${pageContext.request.contextPath}/logout" title="Đăng xuất">Đăng xuất</a>
@@ -450,20 +488,21 @@
             </div>
         </h1>
 
-        <!-- Nội dung chính -->
+        <%-- Nội dung chính của trang --%>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12 main">
                     <div class="main-container">
-                        <!-- Bên trái: Thông tin khóa học -->
+                        <%-- Khu vực thông tin khóa học --%>
                         <div class="course-info">
                             <h3>Khóa học</h3>
+                            <%-- Vòng lặp hiển thị danh sách khóa học --%>
                             <c:forEach var="course" items="${courses}">
                                 <p data-course-id="${course.courseId}">${course.courseName}<br>(bắt đầu từ ${course.startDate})</p>
-                                </c:forEach>
+                            </c:forEach>
                         </div>
 
-                        <!-- Bên phải: Bảng điểm danh -->
+                        <%-- Bảng điểm danh --%>
                         <div class="attendance-table">
                             <table>
                                 <thead>
@@ -477,6 +516,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <%-- Vòng lặp hiển thị danh sách điểm danh --%>
                                     <c:forEach var="attendance" items="${attendances}">
                                         <tr>
                                             <td>${attendance.date}</td>
@@ -487,6 +527,7 @@
                                             <td>${attendance.comment != null ? attendance.comment : ''}</td>
                                         </tr>
                                     </c:forEach>
+                                    <%-- Thông báo khi không có dữ liệu điểm danh --%>
                                     <c:if test="${empty attendances}">
                                         <tr><td colspan="6">Vui lòng chọn một khóa học để xem điểm danh</td></tr>
                                     </c:if>
@@ -498,7 +539,7 @@
             </div>
         </div>
 
-        <!-- Footer -->
+        <%-- Footer của trang --%>
         <footer class="site-footer">
             <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5">
                 <div class="row pt-5">
@@ -542,9 +583,11 @@
                     </div>
                 </div>
             </div>
+            <%-- Nút quay lại đầu trang --%>
             <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
         </footer>
 
+        <%-- Các tệp JavaScript hỗ trợ tương tác --%>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>

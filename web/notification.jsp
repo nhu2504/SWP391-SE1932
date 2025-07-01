@@ -1,24 +1,37 @@
+<%-- Khai báo loại nội dung của trang là HTML và mã hóa UTF-8 để hỗ trợ tiếng Việt --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- Import các thư viện JSTL để sử dụng vòng lặp, điều kiện và định dạng ngày giờ --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%-- Khai báo tài liệu HTML với ngôn ngữ tiếng Việt --%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <%-- Thiết lập mã hóa ký tự UTF-8 --%>
     <meta charset="utf-8">
+    <%-- Thiết lập viewport để hỗ trợ responsive trên các thiết bị di động --%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%-- Mô tả nội dung trang --%>
     <meta name="description" content="Trang thông báo cho học sinh - Edura">
+    <%-- Tác giả của trang --%>
     <meta name="author" content="Edura Team">
+    <%-- Tiêu đề của trang --%>
     <title>Thông báo của học sinh - Edura</title>
 
+    <%-- Liên kết đến các tệp CSS bên ngoài --%>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <%-- Kết nối font League Spartan từ Google Fonts --%>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.carousel.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.theme.default.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/tooplate-gotto-job.css" rel="stylesheet">
 
+    <%-- CSS tùy chỉnh cho giao diện trang --%>
     <style>
+        /* Định dạng cơ bản cho body */
         body {
             font-family: 'League Spartan', 'Segoe UI Emoji', sans-serif;
             margin: 0;
@@ -26,6 +39,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
+        /* Định dạng header trên cùng */
         .top-header {
             background-color: #FFF1F1;
             color: #000;
@@ -35,10 +49,12 @@
             align-items: center;
             text-align: left;
         }
+        /* Logo trong header */
         .top-header .logo img {
             max-width: 150px;
             height: auto;
         }
+        /* Các mục liên hệ trong header */
         .top-header .contact-item {
             display: flex;
             align-items: center;
@@ -58,12 +74,15 @@
             font-size: 14px;
             color: #333;
         }
+        /* Ẩn header trên các thiết bị nhỏ hơn 992px */
         @media (max-width: 992px) {
             .top-header { display: none; }
         }
+        /* Định dạng khu vực nội dung chính */
         .main {
             padding: 20px;
         }
+        /* Định dạng tiêu đề dashboard */
         h1.dashboard-title {
             text-align: center;
             background-color: #f0f0f0;
@@ -77,10 +96,12 @@
             justify-content: space-between;
             align-items: center;
         }
+        /* Nội dung tiêu đề */
         h1.dashboard-title .title-content {
             flex-grow: 1;
             text-align: center;
         }
+        /* Nút quay lại */
         h1.dashboard-title .back-arrow {
             margin-left: 20px;
             color: #333;
@@ -90,12 +111,14 @@
         h1.dashboard-title .back-arrow:hover {
             color: #FF6B6B;
         }
+        /* Nhóm các biểu tượng trong tiêu đề */
         h1.dashboard-title .header-icons {
             margin-right: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
         }
+        /* Dropdown người dùng */
         h1.dashboard-title .header-icons .user-dropdown {
             position: relative;
             display: flex;
@@ -136,9 +159,11 @@
         h1.dashboard-title .header-icons .user-dropdown .dropdown-content a:hover {
             color: #FF6B6B;
         }
+        /* Định dạng container nội dung */
         .container {
             padding: 20px;
         }
+        /* Thanh lọc thông báo */
         .filter-bar {
             text-align: right;
             margin-bottom: 20px;
@@ -150,6 +175,7 @@
             border: 1px solid #ddd;
             height: 37px;
         }
+        /* Định dạng từng thông báo */
         .notification {
             background-color: #fff;
             border-left: 5px solid #FF6B6B;
@@ -186,6 +212,7 @@
             color: #FF6B6B;
             font-weight: bold;
         }
+        /* Định dạng footer */
         .site-footer {
             margin-top: 90px;
         }
@@ -225,6 +252,7 @@
             color: #fff !important;
             border-color: #FF6B6B !important;
         }
+        /* Định dạng logo trong footer */
         .logo-container {
             position: relative;
             width: 150px;
@@ -240,6 +268,7 @@
             transform: scale(2);
             transition: transform 0.3s ease;
         }
+        /* Định dạng nhóm slogan */
         .slogan-group {
             display: flex;
             flex-direction: column;
@@ -254,6 +283,7 @@
             line-height: 1.4;
             transition: color 0.3s ease;
         }
+        /* Định dạng nút quay lại đầu trang */
         .back-top-icon {
             position: fixed;
             bottom: 30px;
@@ -284,6 +314,7 @@
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
+        /* Responsive cho nút quay lại đầu trang */
         @media (max-width: 991px) {
             .back-top-icon {
                 width: 40px;
@@ -301,11 +332,13 @@
                 font-size: 18px;
             }
         }
+        /* Responsive cho footer */
         @media (max-width: 991px) {
             .container-fluid.bg-dark.text-white {
                 padding: 60px 45px !important;
             }
         }
+        /* Responsive cho kích thước chữ của thông báo */
         @media (max-width: 768px) {
             .notification h4, .notification .meta, .notification .content {
                 font-size: 14px;
@@ -313,12 +346,15 @@
         }
     </style>
 
+    <%-- JavaScript để xử lý tương tác --%>
     <script>
+        // Hàm hiển thị/ẩn dropdown người dùng
         function toggleDropdown() {
             const dropdown = document.getElementById('userDropdown');
             dropdown.classList.toggle('show');
         }
 
+        // Ẩn dropdown khi nhấp ra ngoài
         window.addEventListener('click', function(e) {
             const button = document.getElementById('userButton');
             const dropdown = document.getElementById('userDropdown');
@@ -327,16 +363,19 @@
             }
         });
 
+        // Xử lý sự kiện khi trang được tải
         document.addEventListener('DOMContentLoaded', () => {
+            // Hiển thị/ẩn nút quay lại đầu trang dựa trên vị trí cuộn
             window.addEventListener('scroll', function () {
                 const backTop = document.querySelector('.back-top-icon');
                 if (window.scrollY > 300) {
                     backTop.classList.add('visible');
                 } else {
-                    backTop.classList.remove('visible');
+                    backTop.classList.removebord('visible');
                 }
             });
 
+            // Hàm lọc thông báo dựa trên lựa chọn của người dùng
             function filterNotifications() {
                 const filter = document.getElementById("filter").value;
                 const notis = document.querySelectorAll(".notification");
@@ -365,20 +404,24 @@
                 });
             }
 
+            // Gắn sự kiện thay đổi cho bộ lọc
             document.getElementById("filter").addEventListener("change", filterNotifications);
         });
     </script>
 </head>
 <body id="top">
+    <%-- Header trên cùng hiển thị logo và thông tin liên hệ --%>
     <div class="container-fluid top-header">
         <div class="row w-100 justify-content-around align-items-center">
             <div class="logo">
+                <%-- Hiển thị logo từ server với fallback nếu không tải được --%>
                 <img src="${pageContext.request.contextPath}/images/${centerInfo['Logo']}" alt="Logo EDURA" class="logo-img" onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                     <h6>Địa chỉ</h6>
+                    <%-- Hiển thị địa chỉ, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small>${not empty centerInfo['AddressCenter'] ? centerInfo['AddressCenter'] : 'Chưa cập nhật'}</small>
                 </div>
             </div>
@@ -386,6 +429,7 @@
                 <i class="fas fa-envelope"></i>
                 <div>
                     <h6>Email</h6>
+                    <%-- Hiển thị email với liên kết mailto, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small><a href="mailto:${not empty centerInfo['Email'] ? centerInfo['Email'] : ''}">${not empty centerInfo['Email'] ? centerInfo['Email'] : 'Chưa cập nhật'}</a></small>
                 </div>
             </div>
@@ -393,28 +437,34 @@
                 <i class="fas fa-phone"></i>
                 <div>
                     <h6>Điện thoại</h6>
+                    <%-- Hiển thị số điện thoại, mặc định là 'Chưa cập nhật' nếu không có dữ liệu --%>
                     <small>${not empty centerInfo['Phone'] ? centerInfo['Phone'] : 'Chưa cập nhật'}</small>
                 </div>
             </div>
         </div>
     </div>
 
+    <%-- Tiêu đề dashboard với nút quay lại và dropdown người dùng --%>
     <h1 class="dashboard-title">
         <a href="${pageContext.request.contextPath}/DashboardServlet" class="back-arrow" title="Quay lại" onclick="console.log('Navigating to DashboardServlet')"><i class="fas fa-arrow-left"></i></a>
         <div class="title-content">Thông báo của học sinh</div>
         <div class="header-icons">
             <div class="user-dropdown">
-                <button class="dropbtn" id="userButton">${not empty userName ? userName : 'Khách'} <span class="ml-1">▼</span></button>
+                <%-- Hiển thị tên người dùng hoặc 'Khách' nếu chưa đăng nhập --%>
+                <button class="dropbtn" id="userButton">${user.name} <span class="ml-1">▼</span></button>
                 <div class="dropdown-content" id="userDropdown">
+                    <%-- Hiển thị liên kết đăng nhập --%>
                     <a href="${pageContext.request.contextPath}/login" title="Đăng nhập">Đăng nhập</a>
                 </div>
             </div>
         </div>
     </h1>
 
+    <%-- Nội dung chính của trang --%>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 main">
+                <%-- Thanh lọc thông báo --%>
                 <div class="filter-bar">
                     <label for="filter">Lọc: </label>
                     <select id="filter">
@@ -426,11 +476,13 @@
                     </select>
                 </div>
 
+                <%-- Kiểm tra và hiển thị danh sách thông báo hoặc thông báo lỗi --%>
                 <c:choose>
                     <c:when test="${empty notifications}">
                         <div class="error-message">Không có thông báo để hiển thị. Vui lòng thử lại sau.</div>
                     </c:when>
                     <c:otherwise>
+                        <%-- Vòng lặp hiển thị danh sách thông báo --%>
                         <c:forEach var="notification" items="${notifications}">
                             <div class="notification ${notification.read ? 'read' : 'unread'}" data-read="${notification.read}" data-important="${notification.important}">
                                 <h4>
@@ -438,6 +490,7 @@
                                     <span class="status">${notification.read ? '✅ Đã đọc' : '🔴 Chưa đọc'}${notification.important ? ' *' : ''}</span>
                                 </h4>
                                 <div class="meta">
+                                    <%-- Định dạng ngày giờ của thông báo --%>
                                     Gửi lúc: <fmt:formatDate value="${notification.createdAt}" pattern="dd/MM/yyyy - HH:mm"/>
                                 </div>
                                 <div class="content">
@@ -451,6 +504,7 @@
         </div>
     </div>
 
+    <%-- Footer của trang --%>
     <footer class="site-footer">
         <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5">
             <div class="row pt-5">
@@ -494,9 +548,11 @@
                 </div>
             </div>
         </div>
+        <%-- Nút quay lại đầu trang --%>
         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
     </footer>
 
+    <%-- Các tệp JavaScript hỗ trợ tương tác --%>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

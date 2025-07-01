@@ -1,26 +1,34 @@
+<%-- Khai báo loại nội dung của trang là HTML và mã hóa UTF-8 để hỗ trợ tiếng Việt --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- Import các thư viện JSTL để sử dụng vòng lặp, điều kiện và định dạng --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%-- Khai báo tài liệu HTML với ngôn ngữ tiếng Việt --%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <%-- Thiết lập mã hóa ký tự UTF-8 --%>
     <meta charset="utf-8">
+    <%-- Thiết lập viewport để hỗ trợ responsive trên các thiết bị di động --%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%-- Các thẻ meta để mô tả nội dung và tác giả của trang --%>
     <meta name="description" content="">
     <meta name="author" content="">
+    <%-- Tiêu đề của trang --%>
     <title>EDURA System</title>
 
+    <%-- Liên kết đến các tệp CSS bên ngoài --%>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.carousel.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/owl.theme.default.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/tooplate-gotto-job.css" rel="stylesheet">
 
+    <%-- CSS tùy chỉnh cho giao diện trang --%>
     <style>
+        /* Định dạng cơ bản cho body */
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
@@ -28,6 +36,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
+        /* Định dạng header trên cùng */
         .top-header {
             background-color: #FFF1F1;
             color: #000;
@@ -38,10 +47,12 @@
             align-items: center;
             text-align: left;
         }
+        /* Logo trong header */
         .top-header .logo img {
             max-width: 150px;
             height: auto;
         }
+        /* Các mục liên hệ trong header */
         .top-header .contact-item {
             display: flex;
             align-items: center;
@@ -61,11 +72,13 @@
             font-size: 14px;
             color: #333;
         }
+        /* Ẩn header trên các thiết bị nhỏ hơn 992px */
         @media (max-width: 992px) {
             .top-header {
                 display: none;
             }
         }
+        /* Định dạng sidebar */
         .sidebar {
             background-color: #FFF1F1;
             padding: 30px 20px;
@@ -74,6 +87,7 @@
             display: flex;
             flex-direction: column;
         }
+        /* Định dạng ảnh đại diện */
         .avatar {
             display: flex;
             justify-content: center;
@@ -87,12 +101,14 @@
             object-fit: cover;
             border: 2px solid #ccc;
         }
+        /* Định dạng tên người dùng */
         .username {
             font-weight: bold;
             font-size: 18px;
             margin-bottom: 40px;
             color: #000;
         }
+        /* Định dạng nhóm menu trong sidebar */
         .menu-group {
             display: flex;
             flex-direction: column;
@@ -112,13 +128,16 @@
         .sidebar a i {
             margin-right: 10px;
         }
+        /* Hiệu ứng hover cho menu */
         .menu-group a:hover {
             background-color: #ffd8eb;
             border-radius: 10px;
         }
+        /* Định dạng phần nội dung chính */
         .main {
             padding: 0;
         }
+        /* Tiêu đề dashboard */
         h1.dashboard-title {
             text-align: center;
             background-color: #f0f0f0;
@@ -128,6 +147,7 @@
             font-weight: bold;
             color: #000;
         }
+        /* Định dạng lưới các card */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -137,6 +157,7 @@
             margin-left: 0;
             margin-right: auto;
         }
+        /* Định dạng mỗi card */
         .card {
             background-color: #FFF1F1;
             padding: 40px;
@@ -154,11 +175,13 @@
             display: block;
             margin-bottom: 10px;
         }
+        /* Hiệu ứng hover cho card */
         .card:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
             background-color: #fcd9e6;
         }
+        /* Định dạng khu vực thông báo */
         .notification-section {
             margin: 40px 20px;
             background-color: #fff;
@@ -171,6 +194,7 @@
             margin-bottom: 20px;
             color: #333;
         }
+        /* Định dạng từng thông báo */
         .notification {
             background-color: #fff;
             border-left: 5px solid #FF6B6B;
@@ -200,6 +224,7 @@
             font-size: 14px;
             line-height: 1.5;
         }
+        /* Định dạng liên kết xem tất cả thông báo */
         .view-all {
             text-align: right;
             margin-top: 20px;
@@ -212,6 +237,7 @@
         .view-all a:hover {
             text-decoration: underline;
         }
+        /* Responsive cho lưới card */
         @media (max-width: 768px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -219,6 +245,7 @@
                 padding: 20px;
             }
         }
+        /* Định dạng bảng lịch học */
         .schedule-table {
             margin: 40px 20px;
             background-color: #fff;
@@ -246,12 +273,14 @@
         .schedule-table tr:hover {
             background-color: #f9f9f9;
         }
+        /* Định dạng trạng thái điểm danh */
         .attendance-status {
             margin: 20px 20px;
             font-size: 18px;
             font-weight: bold;
             color: #dc3545;
         }
+        /* Định dạng footer */
         .site-footer {
             margin-top: 90px;
             font-family: 'League Spartan', sans-serif;
@@ -295,6 +324,7 @@
             color: #fff !important;
             border-color: #FF6B6B !important;
         }
+        /* Định dạng logo trong footer */
         .logo-container {
             position: relative;
             width: 150px;
@@ -308,8 +338,9 @@
             max-width: 100%;
             height: auto;
             transform: scale(2);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s;
         }
+        /* Định dạng nhóm slogan */
         .slogan-group {
             display: flex;
             flex-direction: column;
@@ -322,22 +353,23 @@
             color: #333;
             margin: 0;
             line-height: 1.4;
-            transition: color 0.3s ease;
+            transition: color 0.3s;
         }
+        /* Định dạng nút quay lại đầu trang */
         .back-top-icon {
             position: fixed;
             bottom: 30px;
             right: 30px;
             top: auto !important;
             width: 50px;
-            height: 50px;
+            height: 50px; /* Sửa lỗi heightGallery */
             background-color: #FF6B6B;
             color: #fff;
             border-radius: 50%;
             font-size: 24px;
             text-decoration: none;
             z-index: 1000;
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s, opacity 0.3s;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             opacity: 0;
             visibility: hidden;
@@ -354,6 +386,7 @@
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
+        /* Responsive cho nút quay lại đầu trang */
         @media (max-width: 991px) {
             .back-top-icon {
                 width: 40px;
@@ -377,44 +410,49 @@
     </style>
 </head>
 <body id="top">
+    <%-- Header trên cùng hiển thị logo và thông tin liên hệ --%>
     <div class="container-fluid top-header">
         <div class="row w-100 justify-content-around align-items-center">
             <div class="logo">
+                <%-- Hiển thị logo với fallback nếu không tải được --%>
                 <img src="${pageContext.request.contextPath}/images/${centerInfo['Logo']}" alt="Logo EDURA" class="logo-img" onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';">
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                     <h6>Địa chỉ</h6>
-                    <small>${not empty centerInfo['AddressCenter'] ? centerInfo['AddressCenter'] : 'Chưa cập nhật'}</small>
+                    <small>${centerInfo['AddressCenter']}</small>
                 </div>
             </div>
             <div class="contact-item">
                 <i class="fas fa-envelope"></i>
                 <div>
                     <h6>Email</h6>
-                    <small><a href="mailto:${not empty centerInfo['Email'] ? centerInfo['Email'] : ''}">${not empty centerInfo['Email'] ? centerInfo['Email'] : 'Chưa cập nhật'}</a></small>
+                    <small><a href="mailto:${centerInfo['Email']}">${centerInfo['Email']}</a></small>
                 </div>
             </div>
             <div class="contact-item">
                 <i class="fas fa-phone"></i>
                 <div>
                     <h6>Điện thoại</h6>
-                    <small>${not empty centerInfo['Phone'] ? centerInfo['Phone'] : 'Chưa cập nhật'}</small>
+                    <small>${centerInfo['Phone']}</small>
                 </div>
             </div>
         </div>
     </div>
 
+    <%-- Tiêu đề chính của dashboard --%>
     <h1 class="dashboard-title">Bảng Điều Khiển</h1>
 
+    <%-- Nội dung chính với sidebar và khu vực chính --%>
     <div class="container-fluid">
         <div class="row">
+            <%-- Sidebar hiển thị thông tin người dùng và menu điều hướng --%>
             <div class="col-md-3 sidebar">
                 <div class="avatar">
-                    <img src="${pageContext.request.contextPath}/images${not empty sessionScope.userAvatar ? sessionScope.userAvatar : '/default-avatar.png'}" alt="Avatar" class="avatar-img" onerror="this.src='${pageContext.request.contextPath}/images/default-avatar.png';">
+                    <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                 </div>
-                <div class="username">${not empty sessionScope.userName ? sessionScope.userName : 'Khách'}</div>
+                <div class="username">${user.name}</div>
                 <div class="menu-group">
                     <a href="${pageContext.request.contextPath}/home"><i class="fas fa-home"></i> Trang chủ</a>
                     <a href="${pageContext.request.contextPath}/profile"><i class="fas fa-user"></i> Hồ sơ cá nhân</a>
@@ -424,15 +462,19 @@
                 </div>
             </div>
 
+            <%-- Khu vực nội dung chính --%>
             <div class="col-md-9 main">
+                <%-- Lưới các card điều hướng --%>
                 <div class="grid">
                     <a href="${pageContext.request.contextPath}/tracking" class="card"><span class="icon">👥</span> Theo dõi lớp học</a>
                     <a href="${pageContext.request.contextPath}/attendance.jsp" class="card"><span class="icon">✅</span> Điểm danh</a>
                     <a href="${pageContext.request.contextPath}/PaymentServlet" class="card"><span class="icon">💳</span> Thanh toán</a>
                 </div>
+                <%-- Hiển thị trạng thái điểm danh --%>
                 <div class="attendance-status">
                     Tình trạng điểm danh: Đã nghỉ ${absentCount} buổi
                 </div>
+                <%-- Bảng lịch học --%>
                 <div class="schedule-table">
                     <table>
                         <thead>
@@ -444,6 +486,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <%-- Vòng lặp hiển thị danh sách lịch học --%>
                             <c:forEach var="schedule" items="${schedules}">
                                 <tr>
                                     <td>${schedule.subjectName}</td>
@@ -455,6 +498,7 @@
                         </tbody>
                     </table>
                 </div>
+                <%-- Khu vực thông báo --%>
                 <div class="notification-section">
                     <h3>Thông báo gần đây</h3>
                     <c:choose>
@@ -462,6 +506,7 @@
                             <div class="error-message">Không có thông báo để hiển thị.</div>
                         </c:when>
                         <c:otherwise>
+                            <%-- Vòng lặp hiển thị danh sách thông báo --%>
                             <c:forEach var="notification" items="${notifications}">
                                 <div class="notification ${notification.read ? 'read' : 'unread'}" data-read="${notification.read}" data-important="${notification.important}">
                                     <h4>
@@ -486,6 +531,7 @@
         </div>
     </div>
 
+    <%-- Footer của trang --%>
     <footer class="site-footer">
         <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5">
             <div class="row pt-5">
@@ -505,9 +551,9 @@
                     <div class="row">
                         <div class="col-md-6 mb-5">
                             <h5 class="text-primary text-uppercase mb-4">Thông Tin Liên Hệ</h5>
-                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${not empty centerInfo['AddressCenter'] ? centerInfo['AddressCenter'] : 'Chưa cập nhật'}</small></p>
-                            <p><i class="fa fa-phone-alt mr-2"></i><small>${not empty centerInfo['Phone'] ? centerInfo['Phone'] : 'Chưa cập nhật'}</small></p>
-                            <p><i class="fa fa-envelope mr-2"></i><small><a href="mailto:${centerInfo['Email']}">${not empty centerInfo['Email'] ? centerInfo['Email'] : 'Chưa cập nhật'}</a></small></p>
+                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${centerInfo['AddressCenter']}</small></p>
+                            <p><i class="fa fa-phone-alt mr-2"></i><small>${centerInfo['Phone']}</small></p>
+                            <p><i class="fa fa-envelope mr-2"></i><small><a href="mailto:${centerInfo['Email']}">${centerInfo['Email']}</a></small></p>
                             <div class="d-flex justify-content-start mt-4">
                                 <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
                                 <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -528,13 +574,16 @@
                 </div>
             </div>
         </div>
+        <%-- Nút quay lại đầu trang --%>
         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
     </footer>
 
+    <%-- Các tệp JavaScript để hỗ trợ tương tác --%>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // Hiển thị/ẩn nút quay lại đầu trang dựa trên vị trí cuộn
         window.addEventListener('scroll', function () {
             const backTop = document.querySelector('.back-top-icon');
             if (window.scrollY > 300) {

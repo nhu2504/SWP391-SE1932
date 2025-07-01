@@ -1,4 +1,4 @@
-
+package controller;
 
 import dal.CenterInfoDAO;
 import dal.DocumentDAO;
@@ -46,7 +46,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("documents", documents);
             request.setAttribute("subjects", subjects);
             request.setAttribute("centerInfo", centerInfo);
-            request.setAttribute("userName", "Khách"); // Tên người dùng mặc định
+           
 
             // Chuyển hướng tới dashboard.jsp
             request.getRequestDispatcher("dashboard.jsp").forward(request, response);
