@@ -5,10 +5,12 @@
 package controll_teacher;
 
 import dal.ClassGroupDAO;
+import dal.ClassifyDAO;
 import dal.GradeDAO;
 import dal.ScheduleDAO;
 import dal.SubjectDAO;
 import entity.ClassGroup;
+import entity.Classify;
 import entity.Grade;
 import entity.ScheduleJoin;
 import entity.Subject;
@@ -105,12 +107,19 @@ public class DashboardAttendServlet extends HttpServlet {
             listgrade = (ArrayList<Grade>) gdao.getAllGrades();
         } catch (Exception e) {
         }
+        ClassifyDAO cdao = new ClassifyDAO();
+        ArrayList<Classify> listclassify = new ArrayList<>();
+        try {
+            listclassify = (ArrayList<Classify>) cdao.getAllClassify();
+        } catch (Exception e) {
+        }
        
         // Set the nextSchedule in session scope for EL access
         session.setAttribute("nextSchedule", nextSchedule);
         session.setAttribute("todayClasses", todayClasses);
         session.setAttribute("listsub", listsub);
         session.setAttribute("listgrade", listgrade);
+        session.setAttribute("listclassify", listclassify);
         request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
     }
 

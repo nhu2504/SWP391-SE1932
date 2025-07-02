@@ -22,11 +22,13 @@ import java.sql.SQLException;
  *
  * @author NGOC ANH
  */
-
-@MultipartConfig
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 1,     
+    maxFileSize = 1024 * 1024 * 10,         
+    maxRequestSize = 1024 * 1024 * 15       
+)
 public class UploadServlet extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "uploads";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -92,53 +94,60 @@ public class UploadServlet extends HttpServlet {
         String descrip = request.getParameter("descrip");
         String subjectIdStr = request.getParameter("subjectId");
         String gradeIdStr = request.getParameter("gradeId");
+        String classifyStr = request.getParameter("classifyId");
         Part filePart = null;
+
         try {
             filePart = request.getPart("pdf");
         } catch (IllegalStateException ex) {
-            response.getWriter().println("File upload vượt quá giới hạn kích thước!");
+            response.sendRedirect("teacherdashboard.jsp?uploadError=size");
             return;
+
         }
 
-        // Validate
+        // Validate input
         if (title == null || title.isEmpty()
                 || subjectIdStr == null || subjectIdStr.isEmpty()
                 || gradeIdStr == null || gradeIdStr.isEmpty()
-                || filePart == null || filePart.getSize() == 0 || !filePart.getContentType().equals("application/pdf")) {
-            response.getWriter().println("Vui lòng nhập đầy đủ thông tin và chọn file PDF hợp lệ!");
+                || filePart == null || filePart.getSize() == 0
+                || !filePart.getContentType().equals("application/pdf")) {
+            response.sendRedirect("teacherdashboard.jsp?uploadError=missing");
             return;
+
         }
 
         int subjectId = Integer.parseInt(subjectIdStr);
         int gradeId = Integer.parseInt(gradeIdStr);
-
-        // Xử lý lưu file
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_"); // Loại bỏ ký tự đặc biệt
-        String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
-        String applicationPath = request.getServletContext().getRealPath("");
-        String uploadPath = applicationPath + File.separator + UPLOAD_DIR;
-
-        File uploadDir = new File(uploadPath);
+        int classifyId = Integer.parseInt(classifyStr);
+        String uploadDirPath = "D:/MyUploads/Files";
+        File uploadDir = new File(uploadDirPath);
         if (!uploadDir.exists()) {
-            uploadDir.mkdir();
+            uploadDir.mkdirs();
         }
 
-        String filePath = uploadPath + File.separator + uniqueFileName;
-        filePart.write(filePath);
+        // Tạo tên file an toàn và duy nhất
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+        String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
 
-        String dbFilePath = UPLOAD_DIR + "/" + uniqueFileName;
+        // Ghi file ra ổ đĩa
+        File fileToSave = new File(uploadDir, uniqueFileName);
+        filePart.write(fileToSave.getAbsolutePath());
+
+        // Ghi đường dẫn ảo để truy cập lại 
+        String dbFilePath = request.getContextPath() + "/file-loader/" + uniqueFileName;
+
         DocumentDAO documentDao = new DocumentDAO();
         // Lưu vào DB
         try {
-            documentDao.saveDocument(title, descrip, uploadedBy, subjectId, gradeId, dbFilePath);
+            documentDao.saveDocument(title, descrip, uploadedBy, subjectId, gradeId, dbFilePath,classifyId);
             // Chuyển hướng 
             response.sendRedirect("teacherdashboard.jsp?uploadSuccess=true");
         } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Lỗi lưu vào database: " + e.getMessage());
         }
-        
+
     }
 
     /**

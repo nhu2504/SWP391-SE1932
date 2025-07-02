@@ -14,6 +14,11 @@ values
 (N'Trường THPT Minh Khai',N'Phúc Diễn - Bắc Từ Liêm - Hà Nội'),
 (N'Trường THPT Thượng Cát',N'Thượng Cát - Bắc Từ Liêm - Hà Nội'),
 (N'Trường THPT Tây Đô',N'Phúc Lý - Bắc Từ Liêm - Hà Nội');
+
+insert into School(SchoolName,AddressSchool)
+values
+(N'Tự Do',N'Tự Do');
+select * from School 
 --3.Khối lớp 
 insert into Grade(GradeName)
 values
@@ -59,6 +64,9 @@ values
 (2,1),
 (2,2),
 (2,12);
+insert into TeacherClass(UserID,SchoolClassID)
+values
+(23,21);
 -- 5. Người dùng 1-admin 2-teacher 3-student 4-manager
 INSERT INTO [User] (
     FullName, Gender, BirthDate, phone, email, pass, avatar,
@@ -398,6 +406,18 @@ III. Kết bài
 - Khái quát giá trị nghệ thuật: xây dựng thành công hình tượng “sóng”ngôn từ, hình ảnh trong sáng bình dị, ...
 - Nội dung: qua hình tượng sóng diễn tả tình yêu thiết tha, nồng nàn của người phụ nữ, Xuân Quỳnh đã thể hiện quan niệm tình yêu mới mẻ, hiện đại: sự chủ động của người phụ nữ trong tình yêu nhưng vẫn giữ được nét truyền thống.',
 11,2,3);
+select*from Document
+insert into Classify(TypeDoc)
+values
+(N'Đề cương ôn thi THPTQG'),
+(N'Đề cương kiểm tra giữa kỳ'),
+(N'Đề cương kiểm tra cuối kỳ'),
+(N'Đề cương kiểm tra 1 tiết'),
+(N'Đề thi thử THPTQG'),
+(N'Đề thi thử giữa kỳ'),
+(N'Đề thi thử cuối kỳ'),
+(N'Đề thi thử 1 tiết'),
+(N'Ôn tập hàng ngày');
 
 
 -- 13. Thông báo (Notification)

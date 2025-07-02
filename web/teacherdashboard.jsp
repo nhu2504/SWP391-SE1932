@@ -621,7 +621,7 @@
 
                     <a href="profileservlet"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
@@ -708,11 +708,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Tiêu đề:</td>
-                                        <td><input type="text" name="title"></td>
+                                        <td><input type="text" name="title" placeholder="Tiêu đề:"></td>
                                     </tr>
                                     <tr>
                                         <td>Mô tả:</td>
-                                        <td><input type="text" name="descrip"></td>
+                                        <td><input type="text" name="descrip" placeholder="Mô tả:"></td>
                                     </tr>
                                     <tr>
                                         <td>Môn học:</td>
@@ -732,6 +732,17 @@
                                                 <option value="">--Chọn khối lớp--</option>
                                                 <c:forEach var="grade" items="${sessionScope.listgrade}">
                                                     <option value="${grade.gradeID}">${grade.gradeName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Loại tài liệu:</td>
+                                        <td>
+                                            <select name="classifyId" required>
+                                                <option value="">--Loại tài liệu--</option>
+                                                <c:forEach var="classify" items="${sessionScope.listclassify}">
+                                                    <option value="${classify.classifyId}">${classify.typeDoc}</option>
                                                 </c:forEach>
                                             </select>
                                         </td>
@@ -841,6 +852,28 @@
             }
         </script>
     </c:if>
+    <c:if test="${param.uploadError == 'size'}">
+        <script>
+            alert("File upload vượt quá giới hạn kích thước!");
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete("uploadError");
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        </script>
+    </c:if>
+
+    <c:if test="${param.uploadError == 'missing'}">
+        <script>
+            alert("Vui lòng nhập đầy đủ thông tin và chọn file PDF hợp lệ!");
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete("uploadError");
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        </script>
+    </c:if>
+
 
 </body>
 </html>

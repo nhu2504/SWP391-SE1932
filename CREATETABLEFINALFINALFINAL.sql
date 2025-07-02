@@ -19,7 +19,10 @@ CREATE TABLE Grade(
 	GradeID INT PRIMARY KEY IDENTITY,
 	GradeName NVARCHAR(10) not null
 )
-
+select * from Document
+select * from [user]
+select * from TeacherClass where userID = 2
+select * from TeacherSubjects where userID = 2
 -- 4. Lớp học trong trường (SchoolClass)
 CREATE TABLE SchoolClass (
     SchoolClassID INT PRIMARY KEY IDENTITY,
@@ -54,6 +57,9 @@ CREATE TABLE [User] (
 	FOREIGN KEY (roleID) REFERENCES roles(roleID)
 );
 ALTER TABLE [User] DROP CONSTRAINT FK__User__SchoolClas__440B1D61;
+ALTER TABLE [User]
+ALTER COLUMN avatar NVARCHAR(255);
+
 
 ALTER TABLE [User] DROP COLUMN SchoolClassID;
 CREATE TABLE TeacherClass (
@@ -298,3 +304,11 @@ CREATE TABLE TutoringRegistration (
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
 
+update [user]
+set avatar= '/WebApplication3/image-loader/team-5.jpg'
+where UserID = 6
+
+select * from [user]
+update [user]
+set SchoolID = 7
+where UserID in (5,11,15,18,21)

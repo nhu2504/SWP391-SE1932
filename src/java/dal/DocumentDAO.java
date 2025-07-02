@@ -81,8 +81,8 @@ public class DocumentDAO {
 
         return docs;
     }
-    public void saveDocument(String title, String descrip, int uploadedBy, int subjectId, int gradeId, String pdfPath) throws SQLException {
-        String sql = "INSERT INTO Document (Title, Descrip, UploadedBy, SubjectID, GradeID, PDFPath) VALUES (?, ?, ?, ?, ?, ?)";
+    public void saveDocument(String title, String descrip, int uploadedBy, int subjectId, int gradeId, String pdfPath,int classifyId) throws SQLException {
+        String sql = "INSERT INTO Document (Title, Descrip, UploadedBy, SubjectID, GradeID, PDFPath,ClassifyID) VALUES (?, ?, ?, ?, ?, ?,?)";
         try (
             Connection conn = new DBContext().connection;
          PreparedStatement ps = conn.prepareStatement(sql)
@@ -93,6 +93,7 @@ public class DocumentDAO {
             ps.setInt(4, subjectId);
             ps.setInt(5, gradeId);
             ps.setString(6, pdfPath);
+            ps.setInt(7,classifyId);
             ps.executeUpdate();
         }
     }

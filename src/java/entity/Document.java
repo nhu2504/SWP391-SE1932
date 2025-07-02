@@ -15,26 +15,14 @@ public class Document {
     private Date uploadDate;
     private int subjectId;
     private int gradeId;
+    private int classifyId;
 
     public Document() {
     }
 
-    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.pdfPath = pdfPath;
-        this.uploadedBy = uploadedBy;
-        this.uploadDate = uploadDate;
-    }
+    
 
-    public Document(String title, String description, String pdfPath) {
-        this.title = title;
-        this.description = description;
-        this.pdfPath = pdfPath;
-    }
-
-    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate, int subjectId, int gradeId) {
+    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate, int subjectId, int gradeId, int classifyId) {
         this.documentId = documentId;
         this.title = title;
         this.description = description;
@@ -43,42 +31,29 @@ public class Document {
         this.uploadDate = uploadDate;
         this.subjectId = subjectId;
         this.gradeId = gradeId;
+        this.classifyId = classifyId;
+    }
+
+    public Document(String title, String description, String pdfPath, int uploadedBy, int subjectId, int gradeId, int classifyId) {
+        this.title = title;
+        this.description = description;
+        this.pdfPath = pdfPath;
+        this.uploadedBy = uploadedBy;
+        this.subjectId = subjectId;
+        this.gradeId = gradeId;
+        this.classifyId = classifyId;
+    }
+
+    public int getClassifyId() {
+        return classifyId;
+    }
+
+    public void setClassifyId(int classifyId) {
+        this.classifyId = classifyId;
     }
     
 
-    public Document(int documentId, String title, String description, int uploadedBy, Date uploadDate, int subjectId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.uploadedBy = uploadedBy;
-        this.uploadDate = uploadDate;
-        this.subjectId = subjectId;
-    }
-
-    public Document(int documentId, String title, String description, int uploadedBy, Date uploadDate, int subjectId, int gradeId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.uploadedBy = uploadedBy;
-        this.uploadDate = uploadDate;
-        this.subjectId = subjectId;
-        this.gradeId = gradeId;
-    }
-
-    public Document(int documentId, String title, String description, int subjectId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.subjectId = subjectId;
-    }
-
-    public Document(int documentId, String title, String description, int subjectId, int gradeId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.subjectId = subjectId;
-        this.gradeId = gradeId;
-    }
+    
 
     public String getPdfPath() {
         return pdfPath;
