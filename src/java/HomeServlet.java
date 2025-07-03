@@ -1,4 +1,12 @@
-import dal.DBContext;
+/*
+ * Tác giả: Van Nhu
+ 
+ * Update: 30/6/2025
+ * Mô tả: Servlet xử lý logic cho các trang Home, About, Course, Teacher của hệ thống trung tâm dạy thêm Edura.
+ */
+
+import dal.*;
+import entity.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -6,93 +14,284 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.format.TextStyle;
 import java.util.*;
-// Văn Thị Như - HE181329
+import java.sql.Time;
 
 @WebServlet({"/home", "/about", "/course", "/teacher"})
 public class HomeServlet extends HttpServlet {
+
+    private final CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
+    private final GradeDAO gradeDAO = new GradeDAO();
+    private final SubjectDAO subjectDAO = new SubjectDAO();
+    private final DocumentDAO documentDAO = new DocumentDAO();
+    private final TutoringClassDAO tutoringClassDAO = new TutoringClassDAO();
+    private final TeacherDAO teacherDAO = new TeacherDAO();
+    private final StudentDAO studentDAO = new StudentDAO();
+    private final SchoolDAO schoolDAO = new SchoolDAO();
+    private final BannerDAO bannerDAO = new BannerDAO();
+    private final RoomDAO roomDAO = new RoomDAO();
+    private final ShiftLearnDAO shiftDAO = new ShiftLearnDAO();
+    private final ClassGroupDAO classGroupDAO = new ClassGroupDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("HomeServlet được gọi tại: " + request.getRequestURI());
-
-        try (Connection conn = new DBContext().connection) {
-            if (conn == null) {
-                System.out.println("Lỗi: Kết nối cơ sở dữ liệu là null");
-                request.setAttribute("error", "Không thể kết nối đến cơ sở dữ liệu");
-                forwardToJsp(request, response);
-                return;
+        try {
+            // 1. Thông tin trung tâm
+            CenterInfo info = centerInfoDAO.getCenterInfo(1);
+            if (info != null) {
+                request.setAttribute("centerName", info.getNameCenter());
+                request.setAttribute("address", info.getAddress());
+                request.setAttribute("email", info.getEmail());
+                request.setAttribute("phone", info.getPhone());
+                request.setAttribute("descripCenter", info.getDescrip());
             }
-            System.out.println("Kết nối cơ sở dữ liệu thành công");
 
-            // 1. Lấy thông tin trung tâm (KHÔNG bao gồm logo nữa)
-            try (PreparedStatement ps = conn.prepareStatement("SELECT Name, Address, Email, Phone FROM CenterInfo WHERE CenterID = 1");
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    request.setAttribute("centerName", rs.getString("Name"));
-                    request.setAttribute("address", rs.getString("Address"));
-                    request.setAttribute("email", rs.getString("Email"));
-                    request.setAttribute("phone", rs.getString("Phone"));
+            // 2. Khối lớp và môn học
+            List<Grade> grades = gradeDAO.getAllGrades();
+            List<Subject> subjects = subjectDAO.getSubjectsWithClassCount();
+            request.setAttribute("grades", grades);
+            request.setAttribute("subjects", subjects);
+
+            // Map tra cứu tên khối và tên môn
+            Map<Integer, String> gradeNames = new HashMap<>();
+            for (Grade g : grades) {
+                gradeNames.put(g.getGradeID(), g.getGradeName());
+            }
+            request.setAttribute("gradeNames", gradeNames);
+
+            Map<Integer, String> subjectNames = new HashMap<>();
+            for (Subject s : subjects) {
+                subjectNames.put(s.getSubjectId(), s.getSubjectName());
+            }
+            request.setAttribute("subjectNames", subjectNames);
+
+            // 3. Tài liệu theo khối và môn
+            int gradeId = parseIntOrDefault(request.getParameter("gradeId"), 0);
+            int subjectId = parseIntOrDefault(request.getParameter("subjectId"), 0);
+            request.setAttribute("documents", documentDAO.getDocumentsByGradeAndSubject(gradeId, subjectId));
+
+            // 4. Danh sách tất cả khóa học
+            request.setAttribute("classes", tutoringClassDAO.getClasses(null));
+
+            // 5. Banner và các thông số trung tâm
+            request.setAttribute("banners", bannerDAO.getAllBanners());
+            int establishmentYear = centerInfoDAO.getYearOfWork();
+            int yearsActive = Year.now().getValue() - establishmentYear;
+            request.setAttribute("yearsActive", yearsActive);
+            request.setAttribute("studentCount", studentDAO.getStudentCount());
+            request.setAttribute("partnerSchoolsCount", schoolDAO.getPartnerSchoolsCount());
+
+            // 6. Khóa học nổi bật và quanh năm
+            List<TutoringClass> featuredTutoringClasses = tutoringClassDAO.getFeaturedTutoringClasses();
+            List<TutoringClass> yearRoundTutoringClasses = tutoringClassDAO.getYearRoundTutoringClasses();
+            request.setAttribute("featuredTutoringClasses", featuredTutoringClasses);
+            request.setAttribute("yearRoundTutoringClasses", yearRoundTutoringClasses);
+
+            // Tạo formatter cho giờ phút
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+            // 7. Lấy shift list (giờ bắt đầu/kết thúc)
+            List<Shift> allShifts = shiftDAO.getAllShifts();
+            Map<Integer, String> shiftStartTimes = new HashMap<>();
+            Map<Integer, String> shiftEndTimes = new HashMap<>();
+            Map<Integer, Shift> shiftMap = new HashMap<>();
+
+            for (Shift s : allShifts) {
+                String formattedStart = s.getStartTime() != null ? timeFormat.format(s.getStartTime()) : "N/A";
+                String formattedEnd = s.getEndTime() != null ? timeFormat.format(s.getEndTime()) : "N/A";
+
+                shiftStartTimes.put(s.getId(), formattedStart);
+                shiftEndTimes.put(s.getId(), formattedEnd);
+                shiftMap.put(s.getId(), s); // vẫn giữ nguyên vì đây là đối tượng Shift
+            }
+
+            request.setAttribute("shiftStartTimes", shiftStartTimes);
+            request.setAttribute("shiftEndTimes", shiftEndTimes);
+            request.setAttribute("shiftMap", shiftMap);
+
+            // DEBUG: Log shift map
+            System.out.println("DEBUG: shiftMap:");
+            for (Shift s : allShifts) {
+                System.out.printf("  ShiftID=%d, Start=%s, End=%s, DurationText=%s\n", s.getId(), s.getStartTime(), s.getEndTime(), s.getDurationText());
+            }
+//
+            List<TutoringClass> allTutoringClasses = new ArrayList<>();
+            allTutoringClasses.addAll(tutoringClassDAO.getFeaturedTutoringClasses());
+            allTutoringClasses.addAll(tutoringClassDAO.getYearRoundTutoringClasses());
+
+            Map<Integer, String> groupStringMap = new HashMap<>();
+            Map<Integer, String> durationMap = new HashMap<>();
+            Set<Integer> addedClassIds = new HashSet<>();
+
+            for (TutoringClass tc : allTutoringClasses) {
+                int tutoringClassId = tc.getTutoringClassID();
+                if (addedClassIds.contains(tutoringClassId)) {
+                    continue;
+                }
+                addedClassIds.add(tutoringClassId);
+
+                // Sử dụng DAO mới đã cập nhật: mỗi group chỉ 1 dòng, có thêm trường ngày học
+                List<Object[]> groupList = classGroupDAO.getClassGroupsWithRoomAndShift(tutoringClassId);
+                StringBuilder sb = new StringBuilder();
+
+                String duration = "Chưa xác định";
+                if (groupList != null && !groupList.isEmpty()) {
+                    for (Object[] g : groupList) {
+                        // g[0]=ClassGroupName, g[1]=MaxStudent, g[2]=RoomName, 
+                        // g[3]=TeacherName, g[4]=StartTime, g[5]=EndTime, g[6]=StudyDate
+                        // Tính thứ từ ngày học
+                        String thu;
+                        if (g[6] != null) {
+                            LocalDate date = ((java.sql.Date) g[6]).toLocalDate();
+                            DayOfWeek dow = date.getDayOfWeek();
+                            thu = dow.getDisplayName(TextStyle.FULL, new Locale("vi", "VN"));
+                        } else {
+                            thu = "null";
+                        }
+
+                        sb//.append(g[0]).append("~") // groupId
+                                .append(g[0]).append("~") // groupName
+                                .append(g[1]).append("~") // maxStudent
+                                .append(g[2]).append("~") // roomName
+                                .append(g[3] != null ? g[3] : "Không xác định").append("~") // teacherName
+                                .append(thu).append("~") // thứ trong tuần
+                                .append(g[4] != null ? g[4] : "N/A").append("~") // startTime
+                                .append(g[5] != null ? g[5] : "N/A").append(";"); // endTime
+
+                        // DEBUG: Log group details
+                        System.out.println("DEBUG: TutoringClassID=" + tutoringClassId + ", GroupID=" + g[0]
+                                + ", GroupName=" + g[1] + ", TeacherName=" + g[4]
+                                + ", Thu=" + thu
+                                + ", StartTime=" + g[5] + ", EndTime=" + g[6]);
+                    }
+
+                    // Lấy duration từ ca đầu tiên
+                    Object[] firstGroup = groupList.get(0);
+
+                    String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
+                    String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
+
+                    try {
+                        // Làm sạch chuỗi thời gian nếu có định dạng lạ như "00.0000000"
+                        if (startStr != null && startStr.contains(".")) {
+                            startStr = startStr.split("\\.")[0]; // lấy phần trước dấu chấm
+                        }
+                        if (endStr != null && endStr.contains(".")) {
+                            endStr = endStr.split("\\.")[0];
+                        }
+
+                        // Thêm giây nếu thiếu
+                        if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
+                            startStr += ":00";
+                        }
+                        if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
+                            endStr += ":00";
+                        }
+
+                        // Kiểm tra lần cuối
+                        if (startStr != null && endStr != null
+                                && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
+                                && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
+
+                            Time startSqlTime = Time.valueOf(startStr);
+                            Time endSqlTime = Time.valueOf(endStr);
+
+                            Shift shift = new Shift(startSqlTime, endSqlTime);
+                            duration = shift.getDurationText();
+
+                            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+                            System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startSqlTime)
+                                    + ", End=" + fmt.format(endSqlTime) + ", Duration=" + duration);
+                        } else {
+                            System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
+                        }
+
+                    } catch (Exception e) {
+                        System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+
                 } else {
-                    System.out.println("Không tìm thấy bản ghi với CenterID = 1");
-                    request.setAttribute("error", "Không tìm thấy thông tin trung tâm");
+                    System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
                 }
+                groupStringMap.put(tutoringClassId, sb.toString());
+                durationMap.put(tutoringClassId, duration);
+                System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
+                System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
             }
 
-            // 2. Lấy danh sách môn học
-            try (PreparedStatement ps = conn.prepareStatement("SELECT SubjectId, SubjectName FROM Subject");
-                 ResultSet rs = ps.executeQuery()) {
-                List<Map<String, String>> subjects = new ArrayList<>();
-                while (rs.next()) {
-                    Map<String, String> subject = new HashMap<>();
-                    subject.put("id", rs.getString("SubjectId"));
-                    subject.put("name", rs.getString("SubjectName"));
-                    subjects.add(subject);
-                }
-                request.setAttribute("subjects", subjects);
-                System.out.println("Số môn học lấy được: " + subjects.size());
+            request.setAttribute("groupStringMap", groupStringMap);
+            request.setAttribute("durationMap", durationMap);
+
+            // 10. Các map tra cứu tên phòng, giáo viên
+            Map<Integer, String> roomNames = new HashMap<>();
+            for (Room r : roomDAO.getAllRooms()) {
+                roomNames.put(r.getId(), r.getName());
+            }
+            request.setAttribute("roomNames", roomNames);
+
+            Map<Integer, String> teacherNames = new HashMap<>();
+            for (User u : teacherDAO.getAllTeachers()) {
+                teacherNames.put(u.getId(), u.getName());
+            }
+            request.setAttribute("teacherNames", teacherNames);
+
+            // DEBUG: roomNames và teacherNames
+            System.out.println("DEBUG: roomNames:");
+            for (Map.Entry<Integer, String> entry : roomNames.entrySet()) {
+                System.out.println("  RoomID=" + entry.getKey() + ", Name=" + entry.getValue());
+            }
+            System.out.println("DEBUG: teacherNames:");
+            for (Map.Entry<Integer, String> entry : teacherNames.entrySet()) {
+                System.out.println("  TeacherID=" + entry.getKey() + ", Name=" + entry.getValue());
             }
 
-            // 3. Lấy danh sách tài liệu
-            try (PreparedStatement ps = conn.prepareStatement("SELECT DocumentId, Title, FilePath, SubjectId FROM Document");
-                 ResultSet rs = ps.executeQuery()) {
-                Map<String, List<Map<String, String>>> documents = new HashMap<>();
-                while (rs.next()) {
-                    String subjectId = rs.getString("SubjectId");
-                    Map<String, String> doc = new HashMap<>();
-                    doc.put("id", rs.getString("DocumentId"));
-                    doc.put("name", rs.getString("Title"));
-                    doc.put("url", rs.getString("FilePath"));
-                    documents.computeIfAbsent(subjectId, k -> new ArrayList<>()).add(doc);
-                }
-                request.setAttribute("documents", documents);
-                System.out.println("Số tài liệu lấy được: " + documents.values().stream().mapToInt(List::size).sum());
+            // 11. Giáo viên & trường liên kết
+            List<User> teachers = teacherDAO.getAllTeachers();
+            request.setAttribute("teachers", teachers);
+            Map<Integer, String> teacherSchoolNames = new HashMap<>();
+            for (User teacher : teachers) {
+                String schoolName = schoolDAO.getSchoolNameById(teacher.getSchoolID());
+                teacherSchoolNames.put(teacher.getId(), (schoolName == null || schoolName.trim().isEmpty()) ? "Giáo viên của Edura" : schoolName);
             }
+            request.setAttribute("teacherSchoolNames", teacherSchoolNames);
 
-            // 4. Lấy danh sách khóa học
-            try (PreparedStatement ps = conn.prepareStatement("SELECT TutoringClassID, ClassName, SubjectId FROM TutoringClass");
-                 ResultSet rs = ps.executeQuery()) {
-                Map<String, List<Map<String, String>>> classes = new HashMap<>();
-                while (rs.next()) {
-                    String subjectId = rs.getString("SubjectId");
-                    Map<String, String> cls = new HashMap<>();
-                    cls.put("id", rs.getString("TutoringClassID"));
-                    cls.put("name", rs.getString("ClassName"));
-                    classes.computeIfAbsent(subjectId, k -> new ArrayList<>()).add(cls);
+            // 12. Học sinh nổi bật và trường liên kết
+            request.setAttribute("students", studentDAO.getTopStudents());
+            request.setAttribute("schools", schoolDAO.getAllSchools());
+
+            // 13. Nếu có courseId: lấy chi tiết khóa học (TutoringClass và List<ClassGroup>)
+            String courseIdParam = request.getParameter("courseId");
+            TutoringClass selectedTutoringClass = null;
+            List<ClassGroup> selectedClassGroups = new ArrayList<>();
+            String selectedGradeName = "";
+
+            if (courseIdParam != null) {
+                int tutoringClassID = parseIntOrDefault(courseIdParam, -1);
+                if (tutoringClassID > 0) {
+                    selectedTutoringClass = tutoringClassDAO.getTutoringClassDetail(tutoringClassID);
+                    if (selectedTutoringClass != null) {
+                        // LẤY GROUP ĐÚNG TỪ CLASSGROUPDAO
+                        selectedClassGroups = classGroupDAO.getClassGroupsByTutoringClassId(tutoringClassID);
+                        selectedGradeName = gradeNames.get(selectedTutoringClass.getGradeID());
+                    }
                 }
-                request.setAttribute("classes", classes);
-                System.out.println("Số khóa học lấy được: " + classes.values().stream().mapToInt(List::size).sum());
             }
-
-            // Chuyển tiếp đến JSP
+            request.setAttribute("selectedTutoringClass", selectedTutoringClass);
+            request.setAttribute("selectedClassGroups", selectedClassGroups);
+            request.setAttribute("selectedGradeName", selectedGradeName);
+            // Điều hướng đến JSP
             forwardToJsp(request, response);
-        } catch (SQLException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi cơ sở dữ liệu: " + e.getMessage());
+            request.setAttribute("error", "Lỗi: " + e.getMessage());
             forwardToJsp(request, response);
         }
     }
@@ -124,7 +323,14 @@ public class HomeServlet extends HttpServlet {
                 jspPage = "Home.jsp";
                 break;
         }
-        System.out.println("Chuyển tiếp đến: " + jspPage);
         request.getRequestDispatcher("/" + jspPage).forward(request, response);
+    }
+
+    private int parseIntOrDefault(String value, int def) {
+        try {
+            return value == null ? def : Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return def;
+        }
     }
 }

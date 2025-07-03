@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="421b5706-a8cb-4ba9-8fa7-d1cb34ce90e8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/SWP391Team6" beforeDir="false" afterPath="$PROJECT_DIR$/SWP391Team6" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/Home.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/newjsp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/newjsp.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/WebApplication3.war" beforeDir="false" afterPath="$PROJECT_DIR$/dist/WebApplication3.war" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/Home.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/newjsp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/newjsp.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/About.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/About.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/blond-man-happy-expression.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/medium-shot-smiley-senior-man.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/portrait-beautiful-young-woman.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/portrait-charming-middle-aged-attractive-woman-with-blonde-hair.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/university-study-abroad-lifestyle-concept.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/course-5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/horizontal-shot-happy-mixed-race-females.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/coding-man.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/it-professional-works-startup-project.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/logo-designer-working-computer-desktop.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/marketing-assistant.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/paper-analysis.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/portrait-woman-customer-service-worker.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/pretty-blogger-posing-cozy-apartment.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/sound-engineer-working-studio-with-equipment.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/young-woman-teaching-english-lessons.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/left-quote.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/apple.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/creative-market.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/dropbox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/envato.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/google.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/meta.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/microsoft.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/paypal.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/salesforce.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/shopify.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/slack.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/soundcloud.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/spotify.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/twitter.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/logos/yelp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/professional-asian-businesswoman-gray-blazer.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/images/site-header/close-up-young-business-team-working.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,25 +51,30 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2xhnFBWB5dLUITeBQTu8YJWbikf" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "NhuVT",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/swp/WebApplication3",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/swp/WebApplication3&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -52,6 +91,9 @@
       <option name="presentableId" value="Default" />
       <updated>1748399066504</updated>
       <workItem from="1748399067684" duration="70000" />
+      <workItem from="1748792343241" duration="687000" />
+      <workItem from="1748827794486" duration="176000" />
+      <workItem from="1748834570038" duration="54000" />
     </task>
     <servers />
   </component>
