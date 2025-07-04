@@ -4,7 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%-- Khai báo tài liệu HTML với ngôn ngữ tiếng Việt --%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
