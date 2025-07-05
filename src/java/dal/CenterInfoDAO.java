@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Ngày update: 30/06/2025  
@@ -186,5 +188,38 @@ public class CenterInfoDAO {
             e.printStackTrace();
         }
         return 2000; // Mặc định nếu không có dữ liệu
+    }
+    //nam
+    public Map<String, String> getCenterInfo1(int centerId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().connection;
+            ps = conn.prepareStatement(
+                    "SELECT NameCenter, AddressCenter, Email, Phone, DescripCenter FROM CenterInfo WHERE CenterID = ?");
+            ps.setInt(1, centerId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                Map<String, String> centerInfo = new HashMap<>();
+                centerInfo.put("NameCenter", rs.getString("NameCenter"));
+                centerInfo.put("AddressCenter", rs.getString("AddressCenter"));
+                centerInfo.put("Email", rs.getString("Email"));
+                centerInfo.put("Phone", rs.getString("Phone"));
+                centerInfo.put("DescripCenter", rs.getString("DescripCenter"));
+                return centerInfo;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return new HashMap<>();
     }
 }

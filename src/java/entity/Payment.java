@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class Payment {
     private int paymentId;
@@ -18,7 +19,12 @@ public class Payment {
     private Date payDate;
     private boolean status;
 
-    public Payment() {
+    public Payment(int paymentId, int userId, int tutorId, double amount, Date payDate) {
+        this.paymentId = paymentId;
+        this.userId = userId;
+        this.tutorId = tutorId;
+        this.amount = amount;
+        this.payDate = payDate;
     }
 
     public Payment(int paymentId, int userId, int tutorId, double amount, Date payDate, boolean status) {
@@ -29,6 +35,15 @@ public class Payment {
         this.payDate = payDate;
         this.status = status;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
 
     public int getPaymentId() {
         return paymentId;
@@ -70,15 +85,10 @@ public class Payment {
         this.payDate = payDate;
     }
 
-    public boolean isStatus() {
-        return status;
+    @Override
+    public String toString() {
+        return "Payment{" + "paymentId=" + paymentId + ", userId=" + userId + ", tutorId=" + tutorId + ", amount=" + amount + ", payDate=" + payDate + '}';
     }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    
     
     
 }

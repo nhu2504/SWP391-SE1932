@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-
 import dal.RegisterDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,9 +12,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
-import java.io.File;
-import java.nio.file.Paths;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -92,31 +88,37 @@ public class RegisterServlet extends HttpServlet {
             String clAtSc = request.getParameter("classAtSchool");
             String parentPhone = request.getParameter("phonepar");
             String parentEmail = request.getParameter("emailpar");
+            String userIntroStr = request.getParameter("userIntro");
             boolean confirm = request.getParameter("verifi") != null;
-            
 
+            int userIntro = 0;
+            if (!userIntroStr.matches("^\\d+$")) {
+                mess = "Mã người giới thiệu không hợp lệ (chỉ được chứa số)";
+            } else {
+                userIntro = Integer.parseInt(userIntroStr);
+            }
             Date birthDate;
             if (birth.isEmpty()) {
                 birthDate = null;
             } else {
                 birthDate = Date.valueOf(birth);
             }
-            if ( !email.matches("^[A-Za-z0-9]+@(.+)$")) {
+            if (!email.matches("^[A-Za-z0-9]+@(.+)$")) {
                 mess = "Email không hợp lệ";
-            } else if ( !phone.matches("^0\\d{9}$")) {
+            } else if (!phone.matches("^0\\d{9}$")) {
                 mess = "Số điện thoại không hợp lệ ";
-//            } else if (!parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
-//                mess = "Email phụ huynh không hợp lệ ";
-//            } else if (!parentPhone.matches("^0\\d{9}$")) {
-//                mess = "Số điện thoại phụ huynh không hợp lệ ";
+            } else if (!parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
+                mess = "Email phụ huynh không hợp lệ ";
+            } else if (!parentPhone.matches("^0\\d{9}$")) {
+                mess = "Số điện thoại phụ huynh không hợp lệ ";
             }
             try {
                 LocalDate birthDate1 = LocalDate.parse(birth);
                 LocalDate today = LocalDate.now();
-                if(!birthDate1.isBefore(today)){
-                    mess ="Ngày sinh không hợp lệ";
+                if (!birthDate1.isBefore(today)) {
+                    mess = "Ngày sinh không hợp lệ";
                 }
-            } catch (DateTimeParseException  e) {
+            } catch (DateTimeParseException e) {
                 mess = "Ngày sinh không hợp lệ";
             }
 
@@ -127,9 +129,10 @@ public class RegisterServlet extends HttpServlet {
             }
 
             RegisterDAO rd = new RegisterDAO();
-            boolean success = rd.register(fName, phone, email, gender, birthDate, 
-                    school, address, clAtSc, parentPhone, parentEmail, confirm);
-            
+            boolean success = rd.register(fName, phone, email, gender,
+                    birthDate, school, address, clAtSc, parentPhone,
+                    parentEmail, userIntro, confirm);
+
             if (success) {
                 request.getRequestDispatcher("SuccessRegister.jsp").forward(request, response);
 
@@ -142,7 +145,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *

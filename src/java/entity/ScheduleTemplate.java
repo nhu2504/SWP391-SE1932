@@ -6,43 +6,40 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class ScheduleTemplate {
-    private int templateID;
-    private int classGroupID;
+    private int tempID;
+    private int classgroupID;
     private int dayOfWeek;
-    private int shiftID;
-    private int roomID;
-    private int teacherID;
+    private int shiftId;
+    private int roomId;
+    private int userId;
 
     public ScheduleTemplate() {
     }
 
-    public ScheduleTemplate(int templateID, int classGroupID, int dayOfWeek, int shiftID, int roomID, int teacherID) {
-        this.templateID = templateID;
-        this.classGroupID = classGroupID;
+    public ScheduleTemplate(int tempID, int classgroupID, int dayOfWeek, int shiftId, int roomId, int userId) {
+        this.tempID = tempID;
+        this.classgroupID = classgroupID;
         this.dayOfWeek = dayOfWeek;
-        this.shiftID = shiftID;
-        this.roomID = roomID;
-        this.teacherID = teacherID;
+        this.shiftId = shiftId;
+        this.roomId = roomId;
+        this.userId = userId;
     }
 
-    public int getTemplateID() {
-        return templateID;
+    
+
+    public int getTempID() {
+        return tempID;
     }
 
-    public void setTemplateID(int templateID) {
-        this.templateID = templateID;
+    public void setTempID(int tempID) {
+        this.tempID = tempID;
     }
 
-    public int getClassGroupID() {
-        return classGroupID;
-    }
-
-    public void setClassGroupID(int classGroupID) {
-        this.classGroupID = classGroupID;
-    }
+   
 
     public int getDayOfWeek() {
         return dayOfWeek;
@@ -52,39 +49,46 @@ public class ScheduleTemplate {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public int getShiftID() {
-        return shiftID;
+    public int getClassgroupID() {
+        return classgroupID;
     }
 
-    public void setShiftID(int shiftID) {
-        this.shiftID = shiftID;
+    public void setClassgroupID(int classgroupID) {
+        this.classgroupID = classgroupID;
     }
 
-    public int getRoomID() {
-        return roomID;
+   
+
+    public int getShiftId() {
+        return shiftId;
     }
 
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
+    public void setShiftId(int shiftId) {
+        this.shiftId = shiftId;
     }
 
-    public int getTeacherID() {
-        return teacherID;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public void setTeacherID(int teacherID) {
-        this.teacherID = teacherID;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override
     public String toString() {
-        return "ScheduleTemplate{" +
-                "templateID=" + templateID +
-                ", classGroupID=" + classGroupID +
-                ", dayOfWeek=" + dayOfWeek +
-                ", shiftID=" + shiftID +
-                ", roomID=" + roomID +
-                ", teacherID=" + teacherID +
-                '}';
+        return "ScheduleTemplate{" + "tempID=" + tempID + ", classgroupID=" + classgroupID + ", dayOfWeek=" + dayOfWeek + ", shiftId=" + shiftId + ", roomId=" + roomId + ", userId=" + userId + '}';
     }
+
+    
+    
+    
 }

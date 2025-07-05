@@ -38,4 +38,28 @@ public class RoomDAO {
 
         return list; // Trả về danh sách phòng học
     }
+    
+    // Ngọc Anh
+    public Room getRoomByID(int id) {
+        //câu lệnh lấy thông tin phòng học theo id
+        String query = """
+                       select * from Room
+                         where id = ?""";
+        //mở kết nối
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(query);
+            //gán giá trị id vào dấu ? 
+            ps.setInt(1, id);
+            //thực hiện truy vấn, nếu tìm thấy phòng thì tạo đối tượng room và trả về 
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return new Room(rs.getInt("id"), rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
+    }
 }

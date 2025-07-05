@@ -40,6 +40,30 @@
         <servlet-name>AdminServlet</servlet-name>
         <servlet-class>AdminServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShowScheduleServlet</servlet-name>
+        <servlet-class>controll_teacher.ShowScheduleServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DashboardAttendServlet</servlet-name>
+        <servlet-class>controll_teacher.DashboardAttendServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetClassListServlet</servlet-name>
+        <servlet-class>controll_teacher.GetClassListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetStudentListServlet</servlet-name>
+        <servlet-class>controll_teacher.GetStudentListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>controll_teacher.UploadServlet</servlet-class>
+    </servlet>
+    
+    
+    
+    
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -92,6 +116,28 @@
         <servlet-name>AdminServlet</servlet-name>
         <url-pattern>/admin</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShowScheduleServlet</servlet-name>
+        <url-pattern>/showschedule</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DashboardAttendServlet</servlet-name>
+        <url-pattern>/dashboardattendservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetClassListServlet</servlet-name>
+        <url-pattern>/getclasslist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetStudentListServlet</servlet-name>
+        <url-pattern>/getstudentlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+    
+    
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>

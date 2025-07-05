@@ -33,7 +33,7 @@ public class ShiftLearnDAO {
                 Shift s = new Shift();
                 s.setId(rs.getInt("ShiftID"));
 
-                // ✅ Đọc dữ liệu thời gian bắt đầu và kết thúc dưới dạng java.sql.Time
+                // Đọc dữ liệu thời gian bắt đầu và kết thúc dưới dạng java.sql.Time
                 s.setStartTime(rs.getTime("Start_time"));
                 s.setEndTime(rs.getTime("End_time"));
 
@@ -60,5 +60,31 @@ public class ShiftLearnDAO {
             map.put(s.getId(), s.getDurationText()); // durationText = "HH:mm - HH:mm"
         }
         return map;
+    }
+    
+    // Ngọc Anh
+    //lấy ra 1 ca học theo id
+    public Shift getShiftByID(int id) {
+        //truy vấn lấy ra ca học theo id
+        String query = """
+                       select * from Shiftlearn
+                         where ShiftID=?""";
+        //tạo kết nối, gán tham số id vào vị trí ?
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            //nếu có kết quả thì trả về đối tượng shift đã khởi tạo bằng constructor có 3 tham số
+            if (rs.next()) {
+                return new Shift(rs.getInt("ShiftID"), 
+                        rs.getTime("Start_time"), 
+                        rs.getTime("End_time"));
+            }
+          
+        } catch (SQLException e) {
+             System.out.println("Lỗi"+e.getMessage());
+        }
+        return null;
     }
 }

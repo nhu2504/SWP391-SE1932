@@ -1,5 +1,9 @@
 package entity;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Room {
     private int id;
     private String name;
@@ -27,10 +31,4 @@ public class Room {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public String toString() {
-        return "Room{" + "id=" + id + ", name=" + name + '}';
-    }
-    
 }

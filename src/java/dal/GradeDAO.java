@@ -72,4 +72,23 @@ public class GradeDAO {
 
         return gradeName; // Trả về tên khối lớp hoặc null nếu không tìm thấy
     }
+    
+    // Ngọc Anh
+    public Grade getGradeByID(int id) {
+        String query = "select * from Grade\n"
+                + "where GradeID = ?";
+        try {
+            Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query); 
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    return new Grade(rs.getInt(1), rs.getString(2));
+                   
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

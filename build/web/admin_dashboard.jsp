@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!-- Văn Thị Như - HE181329 
+Ngày update 3/7/2025-->
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -392,7 +394,7 @@
                             <jsp:include page="schedule_class.jsp" />
                         </c:when>
                         <c:when test="${tab eq 'paymentReport'}">
-                            <jsp:include page="payment.jsp" />
+                            <jsp:include page="payment_student.jsp" />
                         </c:when>
                         <c:otherwise>
                             <jsp:include page="overview.jsp" />

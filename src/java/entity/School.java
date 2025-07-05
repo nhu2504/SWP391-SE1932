@@ -6,7 +6,8 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class School {
     private int schoolID;
@@ -59,6 +60,5 @@ public class School {
     
     
     
-    
-    
+
 }
