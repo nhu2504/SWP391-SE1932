@@ -6,7 +6,8 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class Banner {
     private int bannerID;
@@ -55,4 +56,5 @@ public class Banner {
 
     
     
+
 }

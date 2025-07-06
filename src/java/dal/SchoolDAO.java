@@ -45,17 +45,23 @@ public class SchoolDAO {
      * @return đối tượng School nếu tìm thấy, ngược lại trả về null
      */
     public School getSchoolByID(int id) {
-        String query = "SELECT * FROM School WHERE SchoolID = ?";
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new School(rs.getInt(1), rs.getString(2));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String query = """
+                       select * from School
+                         where SchoolID = ?""";
+        try {
+            //mở kết nối,tạo truy vấn
+            Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(query); 
+                //gán id vào tham số thứ nhất
+                ps.setInt(1, id);
+                //truy vấn và lấy kết quả
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    return new School(rs.getInt(1), 
+                            rs.getString(2));
+                }
+        } catch (SQLException e) {
+            System.out.println("Lỗi "+e.getMessage());
         }
         return null;
     }

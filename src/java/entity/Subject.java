@@ -10,7 +10,6 @@ public class Subject {
     }
 
     
-    
     // Constructor cho danh sách môn học
     public Subject(int subjectId, String subjectName) {
         this.subjectId = subjectId;
@@ -62,7 +61,6 @@ public class Subject {
     public void setClassCount(int classCount) {
         this.classCount = classCount;
     }
-    
     
 
     @Override

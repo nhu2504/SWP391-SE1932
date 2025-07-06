@@ -7,20 +7,12 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entity.Subject" %>
 
-<%
-    Integer roleID = (Integer) session.getAttribute("userRoleID");
-    if (roleID != null && roleID == 1) {
-%>
-<!-- Chèn các tính năng hoặc thông báo dành riêng cho admin ở đây -->
-<!--    <div class="alert alert-info">Bạn đang đăng nhập với quyền ADMIN.</div>-->
-<!-- Thêm link quản trị, chỉnh sửa, quản lý tài khoản, ... -->
-<%
-    }
-%>
+
 
 <!DOCTYPE html>
 <!-- Văn Thị Như - HE181329 
 Ngày update 23/6/2025-->
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -791,25 +783,25 @@ Ngày update 23/6/2025-->
                 }
             }
             @media (max-width: 768px) {
-    #course-content {
-        position: relative !important; /* Không dùng absolute trên mobile */
-        top: auto !important;
-        left: auto !important;
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-top: 10px;
-        z-index: auto;
-    }
+                #course-content {
+                    position: relative !important; /* Không dùng absolute trên mobile */
+                    top: auto !important;
+                    left: auto !important;
+                    width: 100% !important;
+                    margin-left: 0 !important;
+                    margin-top: 10px;
+                    z-index: auto;
+                }
 
-    #navbar-vertical {
-        width: 100%;
-    }
+                #navbar-vertical {
+                    width: 100%;
+                }
 
-    .content-container {
-        flex-direction: column !important;
-        align-items: stretch;
-    }
-}
+                .content-container {
+                    flex-direction: column !important;
+                    align-items: stretch;
+                }
+            }
 
 
 
@@ -1035,11 +1027,19 @@ Ngày update 23/6/2025-->
                 border-top-left-radius: 0.3rem;
                 border-top-right-radius: 0.3rem;
             }
+            .team-item .img-fluid {
+                width: 200px;
+                height: 350px;
+                object-fit: cover; /* Đảm bảo ảnh không bị méo */
+                border-style: none;
+                vertical-align: middle;
+            }
+
 
         </style>
     </head>
     <body id="top">
-<!--        Header-->
+        <!--        Header-->
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -1049,71 +1049,15 @@ Ngày update 23/6/2025-->
                              alt="Logo Trung Tâm"
                              class="logo-image"
                              style="max-height:120px;max-width:100%;"/>
-                        <!-- Icon camera: mở modal đổi logo, vị trí như cũ -->
-                        <span class="edit-icon position-absolute"
-                              data-bs-toggle="modal" data-bs-target="#editLogoModal"
-                              style="bottom: 0px; right: 0px; cursor:pointer; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                            <i class="fa fa-camera"></i>
-                        </span>
+
                     </div>
                     <h6 class="slogan mb-0 ml-2 d-flex align-items-center small">
                         ${centerName}
-                        <span class="edit-icon ml-2" data-field="centerName" data-value="${centerName}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                            <i class="fa fa-pencil-alt"></i>
-                        </span>
+
                     </h6>
                 </div>
 
-                <!-- Modal đổi logo giống banner, có nút xoá -->
-                <div class="modal fade" id="editLogoModal" tabindex="-1" aria-labelledby="editLogoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
 
-                            <!-- Nút đóng -->
-                            <div class="modal-header d-flex justify-content-between align-items-center">
-                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa logo</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <!-- Ảnh logo hiện tại -->
-                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                        <img src="${pageContext.request.contextPath}/LogoServlet"
-                                             class="img-fluid"
-                                             style="max-height: 120px; max-width: 100%;"
-                                             alt="Logo hiện tại"/>
-                                    </div>
-                                    <!-- Nút xoá logo -->
-                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                        <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                              method="post"
-                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá logo?');">
-                                            <input type="hidden" name="action" value="delete" />
-                                            <input type="hidden" name="fieldName" value="logo"/>
-                                            <button type="submit" class="btn btn-danger">Xoá</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- Form cập nhật logo nằm bên dưới, full width -->
-                                <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                      method="post"
-                                      enctype="multipart/form-data"
-                                      class="d-flex w-100 align-items-center justify-content-between">
-                                    <input type="hidden" name="action" value="updateLogo" />
-                                    <div class="flex-grow-1 me-3">
-                                        <input type="file" name="logoFile" accept="image/*" class="form-control" required>
-                                    </div>
-                                    <div class="d-flex">
-                                        <button type="submit" class="btn btn-success me-2">Lưu</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Địa chỉ -->
                 <div class="col-lg-3 text-center">
@@ -1122,9 +1066,7 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
                             <small class="field-value" data-field="address">${address}</small>
-                            <span class="edit-icon ml-2" data-field="address" data-value="${address}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
@@ -1135,9 +1077,7 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email</h6>
                             <small class="field-value" data-field="email">${email}</small>
-                            <span class="edit-icon ml-2" data-field="email" data-value="${email}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
@@ -1148,48 +1088,14 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Điện thoại</h6>
                             <small class="field-value" data-field="phone">${phone}</small>
-                            <span class="edit-icon ml-2" data-field="phone" data-value="${phone}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal chỉnh sửa thông tin -->
-        <div class="modal fade" id="editFieldModal" tabindex="-1" role="dialog" aria-labelledby="editFieldModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form id="editFieldForm" method="post" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet">
-                        <div class="modal-header">
-                            <h5 class="modal-title1" id="editFieldModalLabel">Chỉnh sửa</h5>
-                            <button type="button" class="close position-absolute" style="right: 10px; top: 10px;" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label id="fieldLabel">Nhập giá trị:</label>
-                                <input type="hidden" name="fieldName" id="fieldNameInput" />
-                                <input type="hidden" name="action" id="actionInput" value="update" />
-                                <input type="text" class="form-control" name="fieldValue" id="fieldValueInput" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-end gap-2">
-                            <!-- Nút Xoá -->
-                            <button type="button" class="btn btn-danger" onclick="handleDelete()">Xoá</button>
 
-                            <!-- Nút Lưu (xanh lá) -->
-                            <button type="submit" class="btn btn-success">Lưu</button>
-
-                            <!-- Nút Huỷ -->
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModalEdit()">Huỷ</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
         <!-- Phần Header -->
         <div class="header-container", style="background: linear-gradient(to right, #FF9AA2, #FFF1F1)">
             <nav class="navbar navbar-expand-lg">
@@ -1217,22 +1123,9 @@ Ngày update 23/6/2025-->
                             <li class="nav-item flex-grow-1">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/teacher">Giáo viên</a>
                             </li>
-                            <c:choose>
-                                
-                                <c:when test="${sessionScope.userRoleID == '1'}">
-                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
-                                        <a class="nav-link custom-btn btn-login" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
-                                    </li>
-                                </c:when>
-
-                                
-                                <c:otherwise>
-                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
-                                        <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
-                                    </li>
-                                </c:otherwise>
-                            </c:choose>
-
+                            <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
+                                <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -1301,14 +1194,7 @@ Ngày update 23/6/2025-->
                                                      class="d-block w-100 h-100"
                                                      style="object-fit: contain;"
                                                      alt="Banner ${loop.index + 1}">
-                                            </a>
-
-                                            <span class="edit-icon ml-2"
-                                                  onclick="openBannerEditModal()"
-                                                  style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
-                                                  display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                                <i class="fa fa-camera"></i>
-                                            </span>
+                                            </a>                                            
                                         </div>
                                     </c:forEach>
                                 </c:when>
@@ -1316,14 +1202,7 @@ Ngày update 23/6/2025-->
                                 <c:otherwise>
                                     <div class="carousel-item active h-100 d-flex justify-content-center align-items-center bg-white"
                                          style="min-height: 300px; position: relative;">
-                                        <p class="text-muted mb-0">Chưa có banner nào.</p>
-
-                                        <span class="edit-icon ml-2"
-                                              onclick="openBannerEditModal()"
-                                              style="position: absolute; bottom: 10px; right: 10px; z-index: 10;
-                                              display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                            <i class="fa fa-camera"></i>
-                                        </span>
+                                        <p class="text-muted mb-0">Chưa có banner nào.</p>                                        
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -1343,80 +1222,12 @@ Ngày update 23/6/2025-->
                             </div>
                         </c:if>
                     </div>
-                </div>
-
-                <!-- Modal chỉnh sửa banner -->
-                <div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-
-                            <!-- Nút đóng -->
-                            <div class="modal-header d-flex justify-content-between align-items-center">
-                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa banner</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Danh sách banner hiện tại: mỗi dòng 1 ảnh và 1 nút xoá -->
-                                <div class="table-responsive mb-4">
-                                    <table class="table align-middle">
-                                        <tbody>
-                                            <c:forEach var="banner" items="${banners}" varStatus="loop">
-                                                <tr>
-                                                    <td style="width:70%;vertical-align:middle;">
-                                                        <img src="${pageContext.request.contextPath}/LogoServlet?type=banner&bannerID=${banner.bannerID}"
-                                                             class="img-fluid"
-                                                             style="max-height: 120px; max-width: 100%; border: 1px solid #eee; background: #fafbfc;"
-                                                             alt="Banner ${loop.index + 1}" />
-                                                    </td>
-                                                    <td style="width:30%;vertical-align:middle;">
-                                                        <form action="${pageContext.request.contextPath}/BannerServlet"
-                                                              method="post"
-                                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá banner này?');"
-                                                              class="d-inline-block">
-                                                            <input type="hidden" name="action" value="delete" />
-                                                            <input type="hidden" name="bannerID" value="${banner.bannerID}" />
-                                                            <button type="submit" class="btn btn-danger px-4">Xoá</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                            <c:if test="${empty banners}">
-                                                <tr>
-                                                    <td colspan="2" class="text-center text-muted">Chưa có banner nào.</td>
-                                                </tr>
-                                            </c:if>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Form thêm banner mới (upload 1 ảnh) -->
-
-                                <div class="w-100 px-3"> <!-- Cách hai đầu div lớn đều -->
-                                    <form action="${pageContext.request.contextPath}/BannerServlet"
-                                          method="post"
-                                          enctype="multipart/form-data"
-                                          class="d-flex justify-content-between align-items-center w-100 gap-2 m-0">
-                                        <input type="hidden" name="action" value="add" />
-                                        <input type="file" name="bannerImage" accept="image/*"
-                                               class="form-control flex-grow-1 me-2"
-                                               required>
-                                        <button type="submit" class="btn btn-success">Thêm</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>                
             </div>
-
         </div>
-
         <!-- Tài liệu và khoá học -->
         <div class="course-panel-container" id="course-content" style="width: 400px; display: none;
-     background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
+             background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
 
 
             <c:forEach var="grade" items="${grades}">
@@ -1526,62 +1337,8 @@ Ngày update 23/6/2025-->
                                         <!-- Ảnh imageCenter -->
                                         <img class="img-fluid rounded mb-4 mb-lg-0" 
                                              src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter" 
-                                             alt="Image Center" 
-
-                                             <!-- Icon camera: chỉ admin mới thấy -->
-                                        <span class="edit-icon position-absolute"
-                                              data-bs-toggle="modal" data-bs-target="#editImageCenterModal"
-                                              style="bottom: 0px; right: 0px; cursor:pointer; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1 ? "inline-block" : "none") %>;">
-                                            <i class="fa fa-camera"></i>
-                                        </span>
-                                    </div>
-                                    <%-- Modal đổi ảnh imageCenter, vẫn giữ form cũ, chỉ render cho admin --%>
-                                    <% if (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) { %>
-                                    <div class="modal fade" id="editImageCenterModal" tabindex="-1" aria-labelledby="editImageCenterModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header d-flex justify-content-between align-items-center">
-                                                    <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa logo</h5>
-                                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                                            <img src="${pageContext.request.contextPath}/LogoServlet?type=imageCenter"
-                                                                 class="img-fluid"
-                                                                 style="max-height: 120px; max-width: 100%;"
-                                                                 alt="Ảnh trung tâm hiện tại"/>
-                                                        </div>
-                                                        <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                                            <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                                                  method="post"
-                                                                  onsubmit="return confirm('Bạn chắc chắn muốn xoá ảnh trung tâm?');">
-                                                                <input type="hidden" name="action" value="delete" />
-                                                                <input type="hidden" name="fieldName" value="imageCenter"/>
-                                                                <button type="submit" class="btn btn-danger">Xoá</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                                          method="post"
-                                                          enctype="multipart/form-data"
-                                                          class="d-flex w-100 align-items-center justify-content-between">
-                                                        <input type="hidden" name="action" value="updateImageCenter" />
-                                                        <div class="flex-grow-1 me-3">
-                                                            <input type="file" name="imageCenterFile" accept="image/*" class="form-control" required>
-                                                        </div>
-                                                        <div class="d-flex">
-                                                            <button type="submit" class="btn btn-success me-2">Lưu</button>
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <% } %>
+                                             alt="Image Center">                                        
+                                    </div>                                    
                                 </div>
                                 <div class="col-lg-7" style="text-align: justify;">
                                     <div class="text-left mb-4">
@@ -1610,14 +1367,7 @@ Ngày update 23/6/2025-->
                                                         <p style="font-style: italic; color: gray;">Chưa có mô tả trung tâm.</p>
                                                     </c:otherwise>
                                                 </c:choose>
-                                                <!-- Icon chỉnh sửa (chỉ hiển thị với admin) -->
-                                                <span class="edit-icon ml-2"
-                                                      data-field="descripCenter"
-                                                      data-value="${descripCenter}"
-                                                      onclick="openEditModal(this)"
-                                                      style="position: absolute; bottom: 10px; right: 10px; z-index: 10; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                                    <i class="fa fa-pencil-alt"></i>
-                                                </span>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -1632,12 +1382,11 @@ Ngày update 23/6/2025-->
                 </div>
             </section>
             <!-- About end -->
-
-            
+           
             <!-- Ưu thế start -->
-            <section id="gioithieu" class="py-5 bg-light" mt-4>
+            <section id="gioithieu" class="py-3 bg-light" mt-4>
                 <div class="container">
-                    <h3 class="text-center mb-4">Ưu Thế Vượt Trội Của EDURA</h3>
+                    <h3 class="text-center py-3">Ưu Thế Vượt Trội Của EDURA</h3>
                     <div class="row g-4">
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 text-center shadow-sm">
@@ -1863,8 +1612,17 @@ Ngày update 23/6/2025-->
 
     </footer>
 
+   
 
-    <script>
+    <!-- JAVASCRIPT FILES -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script> 
+    
+     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const backTopBtn = document.querySelector('.back-top-icon');
 
@@ -1888,192 +1646,7 @@ Ngày update 23/6/2025-->
             }
         });
     </script>
-
-    <!-- JAVASCRIPT FILES -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <!-- Cuối <body>, trước các script tùy chỉnh -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <!-- <script src="js/counter.js"></script> -->
-    <!-- <script src="js/custom.js"></script> -->
-
-    <script>
-        let itemsPerPage = 8;
-        let totalItems = 0;
-        let totalPages = 0;
-        let currentPage = 1;
-
-        function displayPage(page) {
-            page = parseInt(page);
-            if (isNaN(page) || page < 1) {
-                console.warn(`Giá trị page không hợp lệ (${page}), mặc định về trang 1`);
-                page = 1;
-            }
-            if (page > totalPages && totalPages > 0) {
-                console.warn(`Trang ${page} vượt quá tổng số trang (${totalPages}), đặt về trang cuối`);
-                page = totalPages;
-            }
-            console.log("Đang hiển thị trang:", page, "currentPage:", currentPage);
-
-            const items = document.querySelectorAll('#courseContainer .col-lg-3');
-            if (!items.length) {
-                console.error("Không tìm thấy phần tử .col-lg-3 trong #courseContainer");
-                return;
-            }
-
-            if (itemsPerPage <= 0) {
-                console.error("itemsPerPage không hợp lệ:", itemsPerPage);
-                itemsPerPage = 8;
-            }
-
-            let visibleCount = 0;
-            items.forEach((item, index) => {
-                const pageIndex = Math.floor(index / itemsPerPage) + 1;
-                console.log(`Item ${index + 1}, Page Index: ${pageIndex}, Current Page: ${page}`);
-                item.classList.add('hidden');
-                if (pageIndex === page) {
-                    item.classList.remove('hidden');
-                    visibleCount++;
-                }
-            });
-            console.log(`Số mục hiển thị trên trang ${page}: ${visibleCount}`);
-
-            updatePagination(page);
-        }
-
-        function updatePagination(page) {
-            const pagination = document.getElementById('pagination');
-            if (!pagination) {
-                console.error('Không tìm thấy element #pagination');
-                return;
-            }
-            pagination.innerHTML = '';
-
-            // Nút Previous
-            const prevLi = document.createElement('li');
-            prevLi.className = page === 1 ? 'page-item disabled' : 'page-item';
-            const prevA = document.createElement('a');
-            prevA.className = 'page-link';
-            prevA.href = 'javascript:void(0)';
-            prevA.textContent = '«'; // Mũi tên trái
-            prevA.dataset.action = 'prev'; // Dùng dataset để xác định hành động
-            prevLi.appendChild(prevA);
-            pagination.appendChild(prevLi);
-
-            // Các nút trang số
-            for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.className = i === page ? 'page-item active' : 'page-item';
-                const a = document.createElement('a');
-                a.className = 'page-link';
-                a.href = 'javascript:void(0)';
-                a.textContent = i;
-                a.dataset.page = i; // Dùng dataset để lưu data-page
-                li.appendChild(a);
-                pagination.appendChild(li);
-            }
-
-            // Nút Next
-            const nextLi = document.createElement('li');
-            nextLi.className = page === totalPages ? 'page-item disabled' : 'page-item';
-            const nextA = document.createElement('a');
-            nextA.className = 'page-link';
-            nextA.href = 'javascript:void(0)';
-            nextA.textContent = '»'; // Mũi tên phải
-            nextA.dataset.action = 'next'; // Dùng dataset để xác định hành động
-            nextLi.appendChild(nextA);
-            pagination.appendChild(nextLi);
-
-            // Debug DOM
-            const links = pagination.querySelectorAll('.page-link');
-            links.forEach((link, index) => {
-                console.log(`Nút phân trang ${index + 1}:`, link.outerHTML);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Kiểm tra các phần tử không mong muốn có class page-link
-            const pageLinksOutsidePagination = document.querySelectorAll('.page-link:not(#pagination .page-link)');
-            if (pageLinksOutsidePagination.length > 0) {
-                console.warn("Có các phần tử ngoài #pagination sử dụng class page-link:", pageLinksOutsidePagination);
-                pageLinksOutsidePagination.forEach(el => {
-                    console.log("Phần tử:", el.outerHTML);
-                });
-            }
-
-            // Lấy trang hiện tại từ URL
-            const urlParams = new URLSearchParams(window.location.search);
-            currentPage = parseInt(urlParams.get('page')) || 1;
-            console.log("Trang hiện tại từ URL:", currentPage);
-
-            const items = document.querySelectorAll('#courseContainer .col-lg-3');
-            totalItems = items.length;
-            console.log("Tổng số phần tử:", totalItems);
-            if (totalItems > 0) {
-                totalPages = Math.ceil(totalItems / itemsPerPage);
-                console.log("Tổng số trang:", totalPages);
-                displayPage(currentPage);
-            } else {
-                console.error('Không tìm thấy phần tử .col-lg-3 trong #courseContainer');
-            }
-
-            // Sử dụng event delegation để xử lý click
-            const pagination = document.getElementById('pagination');
-            if (pagination) {
-                pagination.addEventListener('click', (e) => {
-                    const link = e.target.closest('.page-link');
-                    if (!link)
-                        return;
-
-                    e.preventDefault();
-                    console.log("Phần tử được click:", link.outerHTML);
-
-                    // Xử lý nút Previous/Next
-                    if (link.dataset.action) {
-                        if (link.dataset.action === 'prev' && currentPage > 1) {
-                            currentPage--;
-                        } else if (link.dataset.action === 'next' && currentPage < totalPages) {
-                            currentPage++;
-                        } else {
-                            console.log("Không thể chuyển trang: Đã ở giới hạn (trang đầu/cuối)");
-                            return;
-                        }
-                    } else {
-                        // Xử lý nút trang số
-                        const pageNum = link.dataset.page;
-                        console.log("Nhấn vào trang (raw data-page):", pageNum);
-                        if (!pageNum || isNaN(parseInt(pageNum))) {
-                            console.error("data-page không hợp lệ hoặc không tồn tại:", pageNum);
-                            return;
-                        }
-                        currentPage = parseInt(pageNum);
-                    }
-
-                    console.log("Cập nhật currentPage:", currentPage);
-
-                    // Cập nhật URL
-                    const url = new URL(window.location);
-                    url.searchParams.set('page', currentPage);
-                    window.history.pushState({}, '', url);
-
-                    displayPage(currentPage);
-                });
-
-                // Kiểm tra nếu #pagination bị thay đổi
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        console.warn("Phần tử #pagination bị thay đổi:", mutation);
-                    });
-                });
-                observer.observe(pagination, {childList: true, subtree: true});
-            } else {
-                console.error("Không tìm thấy #pagination để gắn sự kiện");
-            }
-        });
-    </script>
+    
     <script>
         $(document).ready(function () {
             // Debug tất cả grade-link
@@ -2306,597 +1879,27 @@ Ngày update 23/6/2025-->
             });
         });
     </script>
-    <!-- Chấm tròn điều hướng -->
-    <!--    <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const carousel = document.querySelector('#testimonialCarousel');
-                const indicators = document.querySelectorAll('#testimonial-indicators button');
     
-                // Lắng nghe sự kiện chuyển slide (tự động hoặc ấn nút)
-                carousel.addEventListener('slid.bs.carousel', function (event) {
-                    indicators.forEach(btn => btn.classList.remove('active'));
-                    if (indicators[event.to]) {
-                        indicators[event.to].classList.add('active');
-                    }
-                });
-            });
-        </script>-->
-
-    <script>
-        document.querySelectorAll('[class]').forEach(el => {
-            if (el.className.includes('.')) {
-                console.error('❌ Có dấu chấm dư trong class:', el);
-            }
-        });
-    </script>
-    <!-- JavaScript để khởi tạo Owl Carousel -->
     <script>
         $(document).ready(function () {
-            console.log("Khởi tạo Owl Carousel...");
-            var $carousel = $('.owl-carousel.team-carousel');
+            const $navbarVertical = $('#navbar-vertical');
+            const $courseContent = $('#course-content');
 
-            if ($carousel.length === 0) {
-                console.error("Không tìm thấy .owl-carousel.team-carousel trong DOM");
-                return;
-            }
+            if ($navbarVertical.length && $courseContent.length) {
+                const verticalOffset = $navbarVertical.offset();
+                const verticalWidth = $navbarVertical.outerWidth();
+                const verticalHeight = $navbarVertical.outerHeight();
 
-            $carousel.owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: true,
-                navText: ['', '']
-                ,
-                // Xóa nội dung mặc định của <span>
-                responsive: {
-                    0: {items: 1},
-                    600: {items: 2},
-                    1000: {items: 4}
-                }
-            }).on('initialized.owl.carousel', function (event) {
-                console.log("Owl Carousel đã khởi tạo thành công!");
-
-                // Kiểm tra và xóa <span> trong nút
-                var $buttons = $('.owl-nav button');
-                if ($buttons.length === 0) {
-                    console.error("Không tìm thấy .owl-nav button trong DOM sau khi khởi tạo");
-                    return;
-                }
-
-                $buttons.each(function (index) {
-                    var $span = $(this).find('span');
-                    console.log(`Nút điều hướng ${index + 1} trước khi xử lý:`, $(this).html());
-                    if ($span.length > 0) {
-                        $span.remove(); // Xóa <span> khỏi DOM
-                        console.log(`Nút điều hướng ${index + 1} sau khi xóa <span>:`, $(this).html());
-                    } else {
-                        console.log(`Nút điều hướng ${index + 1} không chứa <span>`);
-                    }
-                });
-
-                // Đảm bảo .owl-nav hiển thị
-                $('.owl-nav').css({
-                    'display': 'block !important',
-                    'visibility': 'visible !important',
-                    'opacity': '1 !important'
-                });
-
-                // Debug DOM
-                var $nav = $('.owl-nav');
-                if ($nav.length) {
-                    console.log("Tìm thấy .owl-nav trong DOM:", $nav.html());
-                } else {
-                    console.error("Không tìm thấy .owl-nav sau khi khởi tạo Owl Carousel");
-                }
-            }).on('changed.owl.carousel', function (event) {
-                console.log("Carousel đã chuyển sang slide:", event.item.index);
-            });
-        });
-    </script>
-    <!--     Tách chuỗi DiscrepCenter 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const descriptionText = document.getElementById("descriptionText");
-                if (descriptionText && descriptionText.textContent.trim()) {
-                    const paragraphs = descriptionText.textContent.split('\n').filter(line => line.trim() !== '');
-                    const container = document.getElementById("descriptionContainer");
-                    container.innerHTML = ''; // Xóa nội dung ban đầu
-                    paragraphs.forEach(paragraph => {
-                        const p = document.createElement('p');
-                        p.textContent = paragraph;
-                        container.appendChild(p);
-                    });
-                } else {
-                    const p = document.createElement('p');
-                    p.textContent = 'Không có mô tả trung tâm.';
-                    descriptionText.replaceWith(p);
-                }
-            });
-        </script>-->
-    <script>
-        function clean(value) {
-            return (value && value !== "false") ? value : '';
-        }
-
-
-        window.showCourseDetail = function (btn) {
-            const get = key => btn.getAttribute('data-' + key) || '';
-
-            // Cập nhật thông tin cơ bản
-            document.getElementById('modalCourseName').textContent = get('classname') || 'Chưa xác định';
-            document.getElementById('modalCourseDescrip').textContent = get('descrip') || 'Chưa có mô tả';
-            document.getElementById('modalIsHot').textContent = (get('ishot') === "true" || get('ishot') === "1") ? "Nổi bật" : "Quanh năm";
-            document.getElementById('modalgradeName').textContent = get('gradename') || 'Chưa xác định';
-            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';
-//            let maxStudents = get('maxstudents');
-//            document.getElementById('modalMaxStudents').textContent = maxStudents ? (maxStudents + " học sinh") : 'Chưa xác định';
-            document.getElementById('modalDuration').textContent = (get('duration') || 'Chưa xác định') + ' / 1 buổi';
-            document.getElementById('modalStartDate').textContent = get('startdate') || 'Chưa xác định';
-            document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';
-
-            console.log("maxstudents = ", get('maxstudents'));
-
-            // Format học phí
-            function formatMoneyVND(amount) {
-                if (!amount || isNaN(amount))
-                    return 'Chưa xác định';
-                return Number(amount).toLocaleString('vi-VN') + " VNĐ / 1 buổi";
-            }
-            document.getElementById('modalTuitionFee').textContent = formatMoneyVND(get('tuition'));
-
-            // Gán link nút đăng ký
-            document.getElementById('joinCourseBtn').href = 'login_register.jsp?redirect=course&courseId=' + (get('classid') || '');
-
-            // Ghi log kiểm tra
-            const container = document.getElementById('classGroupContent');
-            console.log("📌 DOM container:", container);
-
-            const classGroupsStr = get('classgroups');
-            console.log("📦 classGroupsStr raw:", classGroupsStr);
-
-
-            let html = '<p>Chưa có nhóm lớp nào.</p>';
-
-            if (classGroupsStr) {
-                const groupsArr = classGroupsStr.split(';').filter(Boolean);
-                console.log("📦 groupsArr parsed:", groupsArr);
-                console.log("📏 groupsArr.length:", groupsArr.length);
-
-                if (groupsArr.length > 0) {
-                    html = `
-                <h6>Danh sách nhóm lớp:</h6>
-                <table class="table table-bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            
-                            <th>Tên nhóm</th>
-                            <th>Sĩ số tối đa</th>
-                            <th>Phòng</th>
-                            <th>Giáo viên</th>
-                            <th>Thứ trong tuần</th>
-                            <th>Bắt đầu</th>
-                            <th>Kết thúc</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-
-                    groupsArr.forEach((item, index) => {
-                        const parts = item.split('~');
-                        while (parts.length < 7)
-                            parts.push('');
-                        function formatTime(str) {
-                            if (!str || typeof str !== 'string')
-                                return '';
-                            return str.length >= 5 ? str.substring(0, 5) : str;
-                        }
-
-//                        const groupId = parts[0];
-                        const groupName = parts[0];
-                        const maxStudent = parts[1];
-                        const room = parts[2];
-                        const teacher = parts[3];
-                        const thu = parts[4];
-                        const start = formatTime(parts[5]);
-                        const end = formatTime(parts[6]);
-
-                        // Log từng phần
-                        console.log(`🔍 Group ${index + 1} parts:`, parts);
-//                        console.log("📋 groupId:", groupId);
-                        console.log("📋 groupName:", groupName);
-                        console.log("📋 maxStudent:", maxStudent);
-                        console.log("📋 room:", room);
-                        console.log("📋 teacher:", teacher);
-                        console.log("📋 start:", start);
-                        console.log("📋 end:", end);
-
-
-
-
-                        html += `
-    <tr>
-        
-        <td>` + clean(groupName) + `</td>
-        <td>` + clean(maxStudent) + `</td>
-        <td>` + clean(room) + `</td>
-        <td>` + clean(teacher) + `</td>
-        <td>` + (thu === "null" ? "Chưa xếp lịch" : clean(thu)) + `</td>
-        <td>` + clean(start) + `</td>
-        <td>` + clean(end) + `</td>
-    </tr>`;
-
-                    });
-
-                    html += `
-                    </tbody>
-                </table>`;
-                }
-            }
-
-            // Cập nhật vào DOM
-            if (container) {
-                container.innerHTML = html;
-                console.log("🧱 HTML sinh ra:", html);
-                console.log("✅ Đã cập nhật bảng nhóm lớp.");
-            } else {
-                console.warn("⚠️ Không tìm thấy #classGroupContent");
-            }
-
-            // Hiển thị modal
-            document.getElementById('courseDetailModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        };
-
-// Hàm đóng modal
-        window.closeModalClass = function () {
-            document.getElementById('courseDetailModal').style.display = 'none';
-            document.body.style.overflow = '';
-        };
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const loadMoreFeaturedBtn = document.getElementById('loadMoreFeaturedBtn');
-            if (loadMoreFeaturedBtn) {
-                loadMoreFeaturedBtn.addEventListener('click', function () {
-                    document.querySelectorAll('.featured-course-item.d-none').forEach(function (el) {
-                        el.classList.remove('d-none');
-                    });
-                    this.style.display = 'none';
-                });
-            }
-
-            const loadMoreYearRoundBtn = document.getElementById('loadMoreYearRoundBtn');
-            if (loadMoreYearRoundBtn) {
-                loadMoreYearRoundBtn.addEventListener('click', function () {
-                    document.querySelectorAll('.year-round-course-item.d-none').forEach(function (el) {
-                        el.classList.remove('d-none');
-                    });
-                    this.style.display = 'none';
+                $courseContent.css({
+                    position: 'absolute',
+                    top: verticalOffset.top + 'px', // Ngay hàng với navbar dọc
+                    left: (verticalOffset.left + verticalWidth) + 'px', // Ngay bên phải
+                    zIndex: 9999
                 });
             }
         });
+
     </script>
-
-
-
-
-    <script>
-        $(document).ready(function () {
-            var grades = ${grades != null ? grades : '[]'};
-            console.log("JSP đã tải, kiểm tra grades: ", JSON.stringify(grades));
-        });
-    </script>
-
-    <!--    Chỉnh sửa thông tin header-->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editFieldForm = document.getElementById("editFieldForm");
-            if (editFieldForm) {
-                editFieldForm.addEventListener("submit", handleFormSubmit);
-                console.log("Attached submit event to #editFieldForm");
-            } else {
-                console.error("Form #editFieldForm not found");
-            }
-
-            // Bắt sự kiện click icon chỉnh sửa (trừ logo)
-            $(document).on('click', '.edit-icon', function () {
-                const field = $(this).attr('data-field');
-                if (field && field !== 'logo') {
-                    console.log("Clicked .edit-icon:", this, "data-field:", field);
-                    openEditModal(this);
-                }
-            });
-
-            // Reset form khi đóng modal
-            $('#editFieldModal').on('hidden.bs.modal', function () {
-                const form = document.getElementById("editFieldForm");
-                if (form) {
-                    form.reset();
-                    console.log("Reset form on modal close");
-                }
-            });
-        });
-
-        function openEditModal(el) {
-            console.log("Opening edit modal for:", el);
-            if (!el || !el.getAttribute) {
-                console.error("Phần tử không hợp lệ:", el);
-                alert("Lỗi hệ thống: Phần tử không hợp lệ.");
-                return;
-            }
-
-            const field = el.getAttribute("data-field");
-            const value = el.getAttribute("data-value") || '';
-            const fieldNameInput = document.getElementById("fieldNameInput");
-            const fieldValueInput = document.getElementById("fieldValueInput");
-            const fieldLabel = document.getElementById("fieldLabel");
-            const modalLabel = document.getElementById("editFieldModalLabel");
-            const actionInput = document.getElementById("actionInput");
-
-            if (!fieldNameInput || !fieldValueInput || !fieldLabel || !modalLabel || !actionInput) {
-                console.error("Phần tử không tồn tại:", {fieldNameInput, fieldValueInput, fieldLabel, modalLabel, actionInput});
-                alert("Lỗi hệ thống: Không tìm thấy phần tử.");
-                return;
-            }
-
-            fieldNameInput.value = field;
-            fieldValueInput.value = decodeURIComponent(value);
-            fieldLabel.textContent = "Nhập " + convertFieldName(field) + ":";
-            modalLabel.textContent = "Chỉnh sửa " + convertFieldName(field).toLocaleLowerCase();
-            actionInput.value = "update";
-
-            $('#editFieldModal').modal('show');
-        }
-
-        function convertFieldName(field) {
-            switch (field) {
-                case "centerName":
-                    return "Tên trung tâm";
-                case "address":
-                    return "Địa chỉ";
-                case "email":
-                    return "Email";
-                case "phone":
-                    return "Số điện thoại";
-                case "descripCenter":
-                    return "Mô tả trung tâm";
-                default:
-                    return field;
-            }
-        }
-
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const form = event.currentTarget;
-
-            if (!(form instanceof HTMLFormElement)) {
-                console.error("Sự kiện submit không được gọi từ form:", form);
-                alert("Lỗi hệ thống: Form không hợp lệ.");
-                return;
-            }
-
-            const actionAttr = form.getAttribute("action");
-            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
-                    ? actionAttr.trim()
-                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
-
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-
-            if (!data.fieldName || !data.action) {
-                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
-                return;
-            }
-
-            if (data.action === "update" && (!data.fieldValue || data.fieldValue.trim() === "")) {
-                alert("Vui lòng nhập giá trị hợp lệ.");
-                return;
-            }
-
-            fetch(formAction, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(data).toString()
-            })
-                    .then(response => response.text().then(text => ({status: response.status, text})))
-                    .then(({ status, text }) => {
-                        if (status >= 200 && status < 300 && text.includes("thành công")) {
-                            alert('Thao tác thành công!');
-                            $('#editFieldModal').modal('hide');
-                            updateContent(data.fieldName, data.fieldValue);
-                            refreshDisplay(data.fieldName, data.fieldValue);
-                            location.reload();
-                        } else {
-                            alert('Thao tác thất bại! Lỗi: ' + (text || 'Không xác định'));
-                    }
-                    })
-                    .catch(error => {
-                        alert('Lỗi khi gửi yêu cầu: ' + error.message);
-                    });
-        }
-
-        function handleDelete() {
-            if (!confirm('Bạn có chắc muốn xóa nội dung này không?'))
-                return;
-
-            const field = document.getElementById("fieldNameInput")?.value;
-            const form = document.getElementById("editFieldForm");
-
-            if (!form || !(form instanceof HTMLFormElement)) {
-                alert("Lỗi hệ thống: Form không hợp lệ.");
-                return;
-            }
-
-            if (!field) {
-                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
-                return;
-            }
-
-            const actionAttr = form.getAttribute("action");
-            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
-                    ? actionAttr.trim()
-                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
-
-            const data = {fieldName: field, action: "delete"};
-
-            fetch(formAction, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(data).toString()
-            })
-                    .then(response => response.text().then(text => ({status: response.status, text})))
-                    .then(({ status, text }) => {
-                        if (status >= 200 && status < 300 && text.includes("thành công")) {
-                            alert('Xóa thành công!');
-                            $('#editFieldModal').modal('hide');
-                            updateContent(field, '');
-                            refreshDisplay(field, '');
-                            location.reload();
-                        } else {
-                            alert('Xóa thất bại! Lỗi: ' + (text || 'Không xác định'));
-                    }
-                    })
-                    .catch(error => {
-                        alert('Lỗi khi gửi yêu cầu xóa: ' + error.message);
-                    });
-        }
-
-        function updateContent(fieldName, fieldValue) {
-            const element = document.querySelector(`[data-field="${fieldName}"]`);
-            if (element) {
-                element.textContent = fieldValue || '';
-            }
-        }
-        function closeModalEdit() {
-            $('#editFieldModal').modal('hide');
-            location.reload(); // Tự động tải lại trang sau khi modal đóng
-        }
-
-
-        function refreshDisplay(fieldName, fieldValue) {
-            // Có thể AJAX reload, cập nhật bảng hoặc đồng bộ nhiều phần tử cùng field
-        }
-    </script>
-
-
-    <script>
-        window.showTeacherDetail = function (fullName, gender, phone, email, certi, descrip, onlineStatus, schoolName) {
-            document.getElementById('modalTeacherFullName').textContent = fullName || 'Chưa xác định';
-            document.getElementById('modalTeacherTitle').textContent = fullName || 'Chưa xác định';
-            document.getElementById('modalTeacherGender').textContent = gender || 'Chưa xác định';
-            document.getElementById('modalTeacherPhone').textContent = phone || 'Chưa xác định';
-            document.getElementById('modalTeacherEmail').textContent = email || 'Chưa xác định';
-            document.getElementById('modalTeacherCerti').textContent = certi || 'Chưa xác định';
-            document.getElementById('modalTeacherDescrip').textContent = descrip || 'Chưa có mô tả';
-            document.getElementById('modalTeacherOnlineStatus').textContent = onlineStatus || 'Không hoạt động';
-            document.getElementById('modalTeacherSchool').textContent = schoolName || 'Giáo viên của Edura';
-            $('#teacherDetailModal').modal('show');
-        };
-        function closeTeacherModal() {
-            $('#teacherDetailModal').modal('hide');
-        }
-    </script>
-    <script>
-        function closeModal() {
-            const modal = document.querySelector('.modal.show'); // hoặc theo id modal bạn dùng
-            if (modal) {
-                const backdrop = document.querySelector('.modal-backdrop');
-                modal.classList.remove('show');
-                modal.style.display = 'none';
-                if (backdrop)
-                    backdrop.remove();
-                document.body.classList.remove('modal-open');
-            }
-        }
-
-        function deleteField() {
-            if (confirm("Bạn có chắc muốn xoá nội dung này không?")) {
-                const fieldName = document.getElementById("editFieldName").value;
-
-                fetch("${pageContext.request.contextPath}/UpdateCenterInfoServlet", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                    body: `fieldName=${fieldName}&fieldValue=`
-                }).then(response => {
-                    if (response.ok) {
-                        location.reload(); // tải lại trang nếu xoá thành công
-                    } else {
-                        alert("Xoá thất bại!");
-                    }
-                }).catch(error => {
-                    console.error("Lỗi khi xoá:", error);
-                    alert("Lỗi khi gửi yêu cầu xoá.");
-                });
-            }
-        }
-    </script>
-    <script>
-        function equalizeTeamItemHeights() {
-            var maxHeight = 0;
-            $('.team-item').css('height', 'auto'); // Reset trước
-            $('.team-item').each(function () {
-                var h = $(this).outerHeight();
-                if (h > maxHeight)
-                    maxHeight = h;
-            });
-            $('.team-item').css('height', maxHeight + 'px');
-        }
-
-        $(document).ready(function () {
-            // Khởi tạo owlCarousel
-            $('.owl-carousel').owlCarousel({
-                loop: true,
-                margin: 20,
-                nav: true,
-                dots: true,
-                responsive: {
-                    0: {items: 1},
-                    600: {items: 2},
-                    1000: {items: 3}
-                }
-            });
-
-            // Đồng bộ chiều cao sau khi owlCarousel render hoặc thay đổi
-            $(".owl-carousel").on('initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel changed.owl.carousel', function () {
-                setTimeout(equalizeTeamItemHeights, 200); // Đợi để render xong
-            });
-
-            // Đồng bộ lại khi resize cửa sổ
-            $(window).on('resize', function () {
-                setTimeout(equalizeTeamItemHeights, 200);
-            });
-        });
-    </script>
-    <!--    Chỉnh sửa banner-->
-    <script>
-        function openBannerEditModal() {
-            const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
-            modal.show();
-        }
-    </script>
-    <script>
-    $(document).ready(function () {
-    const $navbarVertical = $('#navbar-vertical');
-    const $courseContent = $('#course-content');
-
-    if ($navbarVertical.length && $courseContent.length) {
-        const verticalOffset = $navbarVertical.offset();
-        const verticalWidth = $navbarVertical.outerWidth();
-        const verticalHeight = $navbarVertical.outerHeight();
-
-        $courseContent.css({
-            position: 'absolute',
-            top: verticalOffset.top + 'px',          // Ngay hàng với navbar dọc
-            left: (verticalOffset.left + verticalWidth) + 'px', // Ngay bên phải
-            zIndex: 9999
-        });
-    }
-});
-
-</script>
-
-
 
 </body>
 </html>

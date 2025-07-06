@@ -16,8 +16,8 @@ https://www.tooplate.com/view/2134-gotto-job
   --section-bg-color:             #f0f8ff;
   --custom-btn-bg-color:          #f65129;
   --social-icon-link-bg-color:    #7f73eb;
-  --dark-color:                   #000000;
-  --p-color:                      #717275;
+  --dark-color:                   #333;
+  --p-color:                      #333;
   --border-color:                 #e9eaeb;
 
   --body-font-family:             'League Spartan', sans-serif;
@@ -1278,7 +1278,7 @@ nav[aria-label="breadcrumb"] {
   SITE FOOTER              
 -----------------------------------------*/
 .site-footer {
-  padding-top: 100px;
+  padding-top: 0px;
   padding-bottom: 0;
 }
 

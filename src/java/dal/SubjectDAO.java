@@ -79,4 +79,62 @@ public class SubjectDAO {
         }
         return list;
     }
+    
+    // Ngọc Anh
+    public List<Subject> getSubjectsByTeacherId(int teacherId) {
+        List<Subject> subjects = new ArrayList<>();
+        String sql = "SELECT s.* \n"
+                + "                   FROM TeacherSubjects ts \n"
+                + "                   JOIN Subjects s ON ts.SubjectID = s.SubjectID \n"
+                + "                   WHERE ts.UserID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, teacherId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Subject sub = new Subject();
+                sub.setSubjectId(rs.getInt("SubjectID"));
+                sub.setSubjectName(rs.getString("SubjectName"));
+                sub.setImageSubject(rs.getString("ImageSubject"));
+                subjects.add(sub);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+    
+    public boolean updateSubjectOfTeacherDAO(int teacherId, List<Integer> subjectIds) {
+        String deleteSql = "DELETE FROM TeacherSubjects WHERE UserID = ?";
+        String insertSql = "INSERT INTO TeacherSubjects (UserID, SubjectID) VALUES (?, ?)";
+        Connection conn = null;
+        try {
+            conn = new DBContext().connection;
+            conn.setAutoCommit(false);
+
+            // Xóa hết chuyên môn cũ
+            try (PreparedStatement ps = conn.prepareStatement(deleteSql)) {
+                ps.setInt(1, teacherId);
+                ps.executeUpdate();
+            }
+
+            // Thêm các chuyên môn mới (nếu có)
+            if (subjectIds != null) {
+                try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                    for (Integer subjectId : subjectIds) {
+                        ps.setInt(1, teacherId);
+                        ps.setInt(2, subjectId);
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+            }
+
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
 }

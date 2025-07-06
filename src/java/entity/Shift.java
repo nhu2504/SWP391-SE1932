@@ -3,17 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package entity;
-
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
-
 /**
  *
  * @author DO NGOC ANH HE180661
+ * 
  */
 public class Shift {
-
     private int id;
     private Time startTime;
     private Time endTime;
@@ -26,10 +24,16 @@ public class Shift {
         this.startTime = startTime;
         this.endTime = endTime;
     }
-public Shift(Time startTime, Time endTime) {
+
+    public Shift(Time startTime, Time endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public Shift(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
@@ -53,9 +57,6 @@ public Shift(Time startTime, Time endTime) {
     public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
-
-    
-
     public String getDurationText() {
         try {
             if (startTime == null || endTime == null) {
@@ -86,5 +87,14 @@ public Shift(Time startTime, Time endTime) {
             return "Chưa xác định";
         }
     }
+   
 
+    @Override
+    public String toString() {
+        return "Shift{" + "id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + '}';
+    }
+
+    
+    
+    
 }

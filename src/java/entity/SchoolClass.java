@@ -6,7 +6,8 @@ package entity;
 
 /**
  *
- * @author NGOC ANH
+ * @author DO NGOC ANH HE180661
+ * 
  */
 public class SchoolClass {
     private int schoolClassID;
@@ -29,11 +30,6 @@ public class SchoolClass {
         this.schoolID = schoolID;
         this.gradeID = gradeID;
     }
-
-    
-
-    
-    
     public int getSchoolClassID() {
         return schoolClassID;
     }
@@ -65,14 +61,8 @@ public class SchoolClass {
     public void setGradeID(int gradeID) {
         this.gradeID = gradeID;
     }
-
     @Override
     public String toString() {
         return "SchoolClass{" + "schoolClassID=" + schoolClassID + ", className=" + className + ", schoolID=" + schoolID + ", gradeID=" + gradeID + '}';
     }
-
-    
-    
-    
-    
 }

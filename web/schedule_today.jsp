@@ -9,9 +9,10 @@
     int[] weekOrder = {2, 3, 4, 5, 6, 7, 1}; // Thứ 2 -> Chủ nhật
     pageContext.setAttribute("weekOrder", weekOrder);
 %>
-
+<!-- Văn Thị Như - HE181329 
+Ngày update 3/7/2025-->
 <style>
-    
+
     h2 {
         text-align: center;
         color: #333;
@@ -81,82 +82,88 @@
 </style>
 
 
-    <form method="get" action="admin">
-        <input type="hidden" name="tab" value="todaySchedule" />
+<form method="get" action="admin">
+    <input type="hidden" name="tab" value="todaySchedule" />
 
-        <div class="form-group" style="width: 350px;">
-            <label>Chọn tuần:</label>
-            <select name="weekStart" onchange="this.form.submit()">
-                <c:forEach var="ws" items="${weekStartList}">
-                    <%
-                        java.sql.Date wsDate = (java.sql.Date) pageContext.findAttribute("ws");
-                        java.sql.Date weDate = new java.sql.Date(wsDate.getTime() + 6L * 24 * 60 * 60 * 1000);
-                        pageContext.setAttribute("weDate", weDate);
-                    %>
-                    <option value="${ws}" ${ws eq selectedWeekStart ? 'selected' : ''}>
-                        <fmt:formatDate value="${ws}" pattern="dd/MM/yyyy"/>
-                        -
-                        <fmt:formatDate value="${weDate}" pattern="dd/MM/yyyy"/>
-                    </option>
-                </c:forEach>
-            </select>
+    <div class="form-group" style="width: 350px;">
+    <label>Chọn tuần:</label>
+    <select name="weekStart" onchange="this.form.submit()">
+        <c:forEach var="ws" items="${weekStartList}">
+            <fmt:formatDate var="wsFormatted" value="${ws}" pattern="yyyy-MM-dd"/>
+            <%
+                java.util.Date wsDate = (java.util.Date) pageContext.findAttribute("ws");
+                java.util.Date weDate = new java.util.Date(wsDate.getTime() + 6L * 24 * 60 * 60 * 1000);
+                pageContext.setAttribute("weDate", weDate);
+            %>
+            <option value="${wsFormatted}" ${ws eq selectedWeekStart ? 'selected' : ''}>
+                <fmt:formatDate value="${ws}" pattern="dd/MM/yyyy"/>
+                -
+                <fmt:formatDate value="${weDate}" pattern="dd/MM/yyyy"/>
+            </option>
+        </c:forEach>
+    </select>
+</div>
+
+    <div class="form-group d-flex align-items-end" style="gap: 10px;">
+        <div>
+            <label>Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
+            <input type="date" name="anyDate" value="${param.anyDate}" class="form-control"/>
         </div>
-
-        <div class="form-group d-flex align-items-end" style="gap: 10px;">
-            <div>
-                <label>Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
-                <input type="date" name="anyDate" value="${param.anyDate}" class="form-control"/>
-            </div>
-            <div>
-                <button type="submit" class="btn1" style="margin-bottom: 4px;">Xem</button>
-            </div>
+        <div>
+            <button type="submit" class="btn1" style="margin-bottom: 4px;">Xem</button>
         </div>
+    </div>
+</form>
 
-    </form>
-
-    <table class="min-w-full text-sm mt-4">
-        <thead>
-            <tr>
-                <th>Ca học</th>
-                <c:forEach var="day" items="${weekOrder}">
-                    <th class="${weekdayDates[day].time == todayDate.time ? 'today' : ''}">
-                        <c:out value="${weekdays[day]}" default="Thứ ${day}" />
-                    </th>
-                </c:forEach>
-            </tr>
-            <tr>
-                <th></th>
-                <c:forEach var="day" items="${weekOrder}">
-                    <th class="${weekdayDates[day].time == todayDate.time ? 'today' : ''}">
-                        <fmt:formatDate value="${weekdayDates[day]}" pattern="dd/MM/yyyy"/>
-                    </th>
-                </c:forEach>
-            </tr>
-        </thead>
-
-        <tbody>
-            <c:forEach var="shift" items="${shifts}">
-                <tr>
-                    <td class="font-medium whitespace-nowrap">
-                        Ca ${shift.id}<br/>
-                        <fmt:formatDate value="${shift.startTime}" pattern="HH:mm"/>
-                        -
-                        <fmt:formatDate value="${shift.endTime}" pattern="HH:mm"/>
-                    </td>
-                    <c:forEach var="day" items="${weekOrder}">
-                        <td class="${weekdayDates[day].time == todayDate.time ? 'today' : ''}">
-                            <c:forEach var="entry" items="${weeklySchedules}">
-                                <c:if test="${entry[0] == day && entry[1] == shift.id}">
-                                    <div class="mb-2">
-                                        <strong>${entry[2]}</strong><br/>
-                                        GV: ${entry[3]}<br/>
-                                        Phòng: ${entry[4]}
-                                    </div>
-                                </c:if>
-                            </c:forEach>
-                        </td>
-                    </c:forEach>
-                </tr>
+<table class="min-w-full text-sm mt-4">
+    <thead>
+        <tr>
+            <th>Ca học</th>
+            <c:forEach var="day" items="${weekOrder}">
+                <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
+                <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
+                <th class="${wDate == tDate ? 'today' : ''}">
+                    <c:out value="${weekdays[day]}" default="Thứ ${day}" />
+                </th>
             </c:forEach>
-        </tbody>
-    </table>
+        </tr>
+        <tr>
+            <th></th>
+            <c:forEach var="day" items="${weekOrder}">
+                <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
+                <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
+                <th class="${wDate == tDate ? 'today' : ''}">
+                    <fmt:formatDate value="${weekdayDates[day]}" pattern="dd/MM/yyyy"/>
+                </th>
+            </c:forEach>
+        </tr>
+    </thead>
+
+    <tbody>
+        <c:forEach var="shift" items="${shifts}">
+            <tr>
+                <td class="font-medium whitespace-nowrap">
+                    Ca ${shift.id}<br/>
+                    <fmt:formatDate value="${shift.startTime}" pattern="HH:mm"/>
+                    -
+                    <fmt:formatDate value="${shift.endTime}" pattern="HH:mm"/>
+                </td>
+                <c:forEach var="day" items="${weekOrder}">
+                    <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
+                    <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
+                    <td class="${wDate == tDate ? 'today' : ''}">
+                        <c:forEach var="entry" items="${weeklySchedules}">
+                            <c:if test="${entry[0] == day && entry[1] == shift.id}">
+                                <div class="mb-2">
+                                    <strong>${entry[2]}</strong><br/>
+                                    GV: ${entry[3]}<br/>
+                                    Phòng: ${entry[4]}
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </td>
+                </c:forEach>
+            </tr>
+        </c:forEach>
+    </tbody>
+</table>

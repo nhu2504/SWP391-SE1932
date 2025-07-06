@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
+<!-- Văn Thị Như - HE181329 
+Ngày update 3/7/2025-->
 <div class="max-w-4xl mx-auto">
 
     <!-- FORM CHỈNH SỬA THÔNG TIN TRUNG TÂM -->

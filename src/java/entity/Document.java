@@ -1,51 +1,66 @@
 package entity;
 
 import java.util.Date;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Document {
-    private int documentId;
+   private int documentId;
     private String title;
     private String description;
+    private String pdfPath;
     private int uploadedBy;
     private Date uploadDate;
     private int subjectId;
     private int gradeId;
+    private int classifyId;
 
     public Document() {
     }
 
-    public Document(int documentId, String title, String description, int uploadedBy, Date uploadDate, int subjectId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
-        this.uploadedBy = uploadedBy;
-        this.uploadDate = uploadDate;
-        this.subjectId = subjectId;
-    }
+    
 
-    public Document(int documentId, String title, String description, int uploadedBy, Date uploadDate, int subjectId, int gradeId) {
+    public Document(int documentId, String title, String description, String pdfPath, int uploadedBy, Date uploadDate, int subjectId, int gradeId, int classifyId) {
         this.documentId = documentId;
         this.title = title;
         this.description = description;
+        this.pdfPath = pdfPath;
         this.uploadedBy = uploadedBy;
         this.uploadDate = uploadDate;
         this.subjectId = subjectId;
         this.gradeId = gradeId;
+        this.classifyId = classifyId;
     }
 
-    public Document(int documentId, String title, String description, int subjectId) {
-        this.documentId = documentId;
+    public Document(String title, String description, String pdfPath, int uploadedBy, int subjectId, int gradeId, int classifyId) {
         this.title = title;
         this.description = description;
-        this.subjectId = subjectId;
-    }
-
-    public Document(int documentId, String title, String description, int subjectId, int gradeId) {
-        this.documentId = documentId;
-        this.title = title;
-        this.description = description;
+        this.pdfPath = pdfPath;
+        this.uploadedBy = uploadedBy;
         this.subjectId = subjectId;
         this.gradeId = gradeId;
+        this.classifyId = classifyId;
+    }
+
+    public int getClassifyId() {
+        return classifyId;
+    }
+
+    public void setClassifyId(int classifyId) {
+        this.classifyId = classifyId;
+    }
+    
+
+    
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
     
@@ -53,7 +68,7 @@ public class Document {
     
     
     
-
+    
     
 
     public String getTitle() {
@@ -116,14 +131,11 @@ public class Document {
 
     @Override
     public String toString() {
-        return "Document{" + "documentId=" + documentId + ", title=" + title + ", description=" + description + ", uploadedBy=" + uploadedBy + ", uploadDate=" + uploadDate + ", subjectId=" + subjectId + ", gradeId=" + gradeId + '}';
+        return "Document{" + "documentId=" + documentId + ", title=" + title + ", description=" + description + ", pdfPath=" + pdfPath + ", uploadedBy=" + uploadedBy + ", uploadDate=" + uploadDate + ", subjectId=" + subjectId + ", gradeId=" + gradeId + '}';
     }
 
     
-    
 
-    
-    
     
     
 }

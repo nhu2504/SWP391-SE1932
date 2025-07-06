@@ -1,7 +1,11 @@
 package entity;
-
+/**
+ *
+ * @author DO NGOC ANH HE180661
+ * 
+ */
 public class Grade {
-   private int gradeID;
+    private int gradeID;
    private String gradeName;
 
     public Grade() {
@@ -32,5 +36,5 @@ public class Grade {
     public String toString() {
         return "Grade{" + "gradeID=" + gradeID + ", gradeName=" + gradeName + '}';
     }
-   
+
 }
