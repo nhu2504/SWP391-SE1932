@@ -174,6 +174,17 @@ CREATE TABLE Document (
 	FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID),
 	FOREIGN KEY (GradeID) REFERENCES Grade(GradeID)
 );
+ALTER TABLE Document
+ADD ClassifyID INT;
+
+ALTER TABLE Document
+ADD CONSTRAINT FK_Document_Classify
+FOREIGN KEY (ClassifyID) REFERENCES Classify(ClassifyID);
+
+create table Classify(
+	ClassifyID INT PRIMARY KEY IDENTITY,
+	TypeDoc nvarchar(255)
+);
 alter table Document
 add PDFPath NVARCHAR(255)
 

@@ -18,6 +18,7 @@ values
 insert into School(SchoolName,AddressSchool)
 values
 (N'Tự Do',N'Tự Do');
+
 select * from School 
 --3.Khối lớp 
 insert into Grade(GradeName)
@@ -376,36 +377,7 @@ VALUES
 
 
 -- 12. Tài liệu (Document)
-insert into Document(Title,Descrip,UploadedBy,SubjectID,GradeID)
-values
-(N'Dàn ý bài thơ Sóng',N'I. Mở bài
-- Giới thiệu tác giả: Xuân Quỳnh là một trong những nhà thơ tiêu biểu của thế hệ các nhà thơ trẻ thời kì chống Mĩ cứu nước, là thi sĩ của tình thương, lòng trắc ẩn và hồn thơ nữ tính.
-- Giới thiệu bài thơ Sóng: sáng tác năm 1967, in trong tập Hoa dọc chiến hào, là bài thơ viết về tình yêu tiêu biểu cho hồn thơ giàu chất nữ tính của Xuân Quỳnh.
-II. Thân bài
-1. Bản chất, quy luật của “sóng” và “em”
-- Khổ 1: + sử dụng nghệ thuật tương phản: dữ dội – dịu êm, ồn ào – lặng lẽ, từ đó khái quát trạng thái đối lập của sóng, gợi liên tưởng đến tâm lí của người phụ nữ khi yêu (khi mãnh liệt khi lại dịu dàng).
-    + Nghệ thuật nhân hóa: “sông không hiểu” được bản tính của sóng, nên “sóng ” muốn tìm đến không gian rộng lớn, hành trình của sóng là hành trình khám phá chính bản thân mình, khát khao vươn tới giá trị tuyệt đích trong tình yêu của người phụ nữ.
-- Khổ 2: +“Ôi con sóng ... và ngày sau vẫn thế”: dù trong quá khứ hay hiện tại sóng luôn dạt dào, sôi nổi, luôn khát vọng. Đó cũng là khát vọng và bản tính của người phụ nữ muôn đời.
-    + “Nỗi khát vọng tình yêu ... ngực trẻ”: liên hệ tình yêu của tuổi trẻ với con sóng của đại dương, khát vọng tình yêu là khát vọng đặc trưng muôn đời của tuổi trẻ.
-2. Những suy nghĩ trăn trở về cội nguồn tình yêu
-    + Khổ 3: Điệp ngữ “em nghĩ về” và câu hỏi: “Từ nơi nào sóng lên” nhấn mạnh niềm khát khao nhận thức bản thân, người mình yêu và nhận thức về tình yêu muôn đời.
-- Khổ 4: Xuân Quỳnh dựa vào quy luật tự nhiên để tìm khởi nguồn của sóng, của tình yêu, gợi lên sự trăn trở trước bí ẩn của tình yêu, thời điểm bắt đầu tình tình yêu.
-3. Nỗi nhớ, lòng thủy chung của người con gái trong tình yêu
-- Khổ 5: +Nghệ thuật tương phản để gợi ra những phạm vi không gian khác nhau “dưới lòng sâu”, “trên mặt nước”, phạm vi thời gian khác nhau: ‘”ngày” – “đêm”, nghệ thuật nhân hóa: “ngày đêm không ngủ được”, diễn tả nỗi nhớ dạt dào, triền miên của sóng với bờ cũng là nỗi nhớ của người phụ nữ khi yêu.
-    + Người phụ nữ bày tỏ nỗi nhớ một cách trực tiếp, mạnh dạn, chân thành “Lòng em nhớ đến anh”, cách nói thậm xưng “Cả trong mơ còn thức” thể hiện nỗi nhớ ăn sâu vào tiềm thức, thường trực trong suy nghĩ.
-- Khổ 6: + Nghệ thuật tương phản “xuôi – ngược”, điệp ngữ “dẫu”, “vẫn”, “về” gợi hành trình của sóng ngoài biển lớn cũng như hành trình tình yêu của người phụ nữ giữa cuộc đời.
-    + Lời thề thủy chung của người phụ nữ, niềm tin chờ đợi trong tình yêu, dù ở đâu cũng “hướng về anh một phương”, nghĩ về người mình yêu bằng cả trái tim.
-4. Khát vọng tình yêu vĩnh cửu
-- Khổ 7: khẳng định quy luật vĩnh cửu của thiên nhiên “con nào chẳng tới bờ ... Dù muôn vời cách trở”, cũng giống như “em”, dù khó khăn, thử thách vẫn luôn hướng đến “anh”.
-- Khổ 8: + “Cuộc đời tuy dài thế / Năm tháng vẫn đi qua”: cảm giác cô đơn nhỏ bé trước cuộc đời, nỗi lo âu về sự hữu hạn của tình yêu trước thời gian vô tận.
-    + “Như biển kia ... bay về xa”: cảm giác bất an trước cái dễ đổi thay của lòng người giữa “muôn vời cách trở”. Nhưng đây còn là vượt lên sự lo âu phấp phỏng đặt niềm tin mãnh liệt vào sức mạnh của tình yêu như mây có thể vượt qua biển rộng.
-- Khổ 9: + “Làm sao” gọi sự băn khoăn, khắc khoải, ước ao được hóa thành “trăm con sóng nhỏ” để muôn đời vỗ mãi vào bờ.
-    + Đó là khát khao của người phụ được sống “biển lớn trong tình yêu ” bằng tình yêu và cùng tình yêu, khát khao hòa nhập tình yêu riêng tư trong tình yêu chung rộng lớn.
-III. Kết bài
-- Nêu cảm nhận về bài thơ Sóng
-- Khái quát giá trị nghệ thuật: xây dựng thành công hình tượng “sóng”ngôn từ, hình ảnh trong sáng bình dị, ...
-- Nội dung: qua hình tượng sóng diễn tả tình yêu thiết tha, nồng nàn của người phụ nữ, Xuân Quỳnh đã thể hiện quan niệm tình yêu mới mẻ, hiện đại: sự chủ động của người phụ nữ trong tình yêu nhưng vẫn giữ được nét truyền thống.',
-11,2,3);
+
 select*from Document
 insert into Classify(TypeDoc)
 values
