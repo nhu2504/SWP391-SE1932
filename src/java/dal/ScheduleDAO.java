@@ -24,6 +24,7 @@ import java.util.Map;
  * @author Văn Thị Như / Ngoc Anh
  */
 public class ScheduleDAO {
+// ngọc anh
 
     public List<ScheduleJoin> getScheduleByUserID(int userId) {
         List<ScheduleJoin> schedules = new ArrayList<>();
@@ -63,6 +64,7 @@ public class ScheduleDAO {
 
     }
 
+// như
     public List<Object[]> getTodaySchedules() {
         List<Object[]> list = new ArrayList<>();
         String sql = """

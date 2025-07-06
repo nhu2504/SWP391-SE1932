@@ -7,41 +7,37 @@
     <list default="true" id="421b5706-a8cb-4ba9-8fa7-d1cb34ce90e8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/web/About.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/About.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/blond-man-happy-expression.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/medium-shot-smiley-senior-man.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/portrait-beautiful-young-woman.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/portrait-charming-middle-aged-attractive-woman-with-blonde-hair.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/avatar/university-study-abroad-lifestyle-concept.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/course-5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/horizontal-shot-happy-mixed-race-females.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/coding-man.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/it-professional-works-startup-project.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/logo-designer-working-computer-desktop.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/marketing-assistant.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/paper-analysis.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/portrait-woman-customer-service-worker.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/pretty-blogger-posing-cozy-apartment.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/sound-engineer-working-studio-with-equipment.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/jobs/young-woman-teaching-english-lessons.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/left-quote.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/apple.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/creative-market.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/dropbox.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/envato.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/google.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/meta.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/microsoft.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/paypal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/salesforce.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/shopify.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/slack.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/soundcloud.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/spotify.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/twitter.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/logos/yelp.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/professional-asian-businesswoman-gray-blazer.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/web/images/site-header/close-up-young-business-team-working.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/Course.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/Course.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/Home.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/Teacher.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/Teacher.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/Google/GoogleLogin.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/WEB-INF/classes/Google/GoogleLogin.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/LogoServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/controll/ForgotPasswordServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/CenterInfoDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/DocumentDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/GradeDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/RegisterDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/RoleDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/RoomDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/ScheduleDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/SchoolDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/dal/TutoringClassDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/Banner.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/CenterInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/ClassGroup.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/Notification.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/Payment.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/School.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/SchoolClass.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/TutoringClass.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/WEB-INF/classes/entity/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/css/tooplate-gotto-job.css" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/css/tooplate-gotto-job.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/java/dal/ScheduleDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/dal/ScheduleDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/About.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/About.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/Course.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/Course.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/Home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/Home.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/Teacher.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/web/Teacher.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/css/tooplate-gotto-job.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/css/tooplate-gotto-job.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,30 +55,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/swp/WebApplication3&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/swp/WebApplication3",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
-      </set>
-    </attachedChunks>
-  </component>
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="421b5706-a8cb-4ba9-8fa7-d1cb34ce90e8" name="Changes" comment="" />

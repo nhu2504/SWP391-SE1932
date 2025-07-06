@@ -7,17 +7,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entity.Subject" %>
 
-<%
-    Integer roleID = (Integer) session.getAttribute("userRoleID");
-    if (roleID != null && roleID == 1) {
-%>
-<!-- Chèn các tính năng hoặc thông báo dành riêng cho admin ở đây -->
-<!--    <div class="alert alert-info">Bạn đang đăng nhập với quyền ADMIN.</div>-->
-<!-- Thêm link quản trị, chỉnh sửa, quản lý tài khoản, ... -->
-<%
-    }
-%>
-
 <!DOCTYPE html>
 <!-- Văn Thị Như - HE181329 
 Ngày update 23/6/2025-->
@@ -792,25 +781,25 @@ Ngày update 23/6/2025-->
                 }
             }
             @media (max-width: 768px) {
-    #course-content {
-        position: relative !important; /* Không dùng absolute trên mobile */
-        top: auto !important;
-        left: auto !important;
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-top: 10px;
-        z-index: auto;
-    }
+                #course-content {
+                    position: relative !important; /* Không dùng absolute trên mobile */
+                    top: auto !important;
+                    left: auto !important;
+                    width: 100% !important;
+                    margin-left: 0 !important;
+                    margin-top: 10px;
+                    z-index: auto;
+                }
 
-    #navbar-vertical {
-        width: 100%;
-    }
+                #navbar-vertical {
+                    width: 100%;
+                }
 
-    .content-container {
-        flex-direction: column !important;
-        align-items: stretch;
-    }
-}
+                .content-container {
+                    flex-direction: column !important;
+                    align-items: stretch;
+                }
+            }
 
 
 
@@ -1040,7 +1029,7 @@ Ngày update 23/6/2025-->
         </style>
     </head>
     <body id="top">
-<!--        Header-->
+        <!--        Header-->
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -1049,72 +1038,15 @@ Ngày update 23/6/2025-->
                         <img src="${pageContext.request.contextPath}/LogoServlet"
                              alt="Logo Trung Tâm"
                              class="logo-image"
-                             style="max-height:120px;max-width:100%;"/>
-                        <!-- Icon camera: mở modal đổi logo, vị trí như cũ -->
-                        <span class="edit-icon position-absolute"
-                              data-bs-toggle="modal" data-bs-target="#editLogoModal"
-                              style="bottom: 0px; right: 0px; cursor:pointer; display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                            <i class="fa fa-camera"></i>
-                        </span>
+                             style="max-height:120px;max-width:100%;"/>                        
                     </div>
                     <h6 class="slogan mb-0 ml-2 d-flex align-items-center small">
                         ${centerName}
-                        <span class="edit-icon ml-2" data-field="centerName" data-value="${centerName}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                            <i class="fa fa-pencil-alt"></i>
-                        </span>
+
                     </h6>
                 </div>
 
-                <!-- Modal đổi logo giống banner, có nút xoá -->
-                <div class="modal fade" id="editLogoModal" tabindex="-1" aria-labelledby="editLogoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
 
-                            <!-- Nút đóng -->
-                            <div class="modal-header d-flex justify-content-between align-items-center">
-                                <h5 class="modal-title font-weight-bold mb-0" style="color: black !important;">Chỉnh sửa logo</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <!-- Ảnh logo hiện tại -->
-                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                        <img src="${pageContext.request.contextPath}/LogoServlet"
-                                             class="img-fluid"
-                                             style="max-height: 120px; max-width: 100%;"
-                                             alt="Logo hiện tại"/>
-                                    </div>
-                                    <!-- Nút xoá logo -->
-                                    <div class="col-md-6 mb-4 d-flex align-items-center justify-content-center">
-                                        <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                              method="post"
-                                              onsubmit="return confirm('Bạn chắc chắn muốn xoá logo?');">
-                                            <input type="hidden" name="action" value="delete" />
-                                            <input type="hidden" name="fieldName" value="logo"/>
-                                            <button type="submit" class="btn btn-danger">Xoá</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- Form cập nhật logo nằm bên dưới, full width -->
-                                <form action="${pageContext.request.contextPath}/UpdateCenterInfoServlet"
-                                      method="post"
-                                      enctype="multipart/form-data"
-                                      class="d-flex w-100 align-items-center justify-content-between">
-                                    <input type="hidden" name="action" value="updateLogo" />
-                                    <div class="flex-grow-1 me-3">
-                                        <input type="file" name="logoFile" accept="image/*" class="form-control" required>
-                                    </div>
-                                    <div class="d-flex">
-                                        <button type="submit" class="btn btn-success me-2">Lưu</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Địa chỉ -->
                 <div class="col-lg-3 text-center">
@@ -1123,9 +1055,7 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Địa chỉ</h6>
                             <small class="field-value" data-field="address">${address}</small>
-                            <span class="edit-icon ml-2" data-field="address" data-value="${address}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
@@ -1136,9 +1066,7 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Email</h6>
                             <small class="field-value" data-field="email">${email}</small>
-                            <span class="edit-icon ml-2" data-field="email" data-value="${email}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
@@ -1149,48 +1077,14 @@ Ngày update 23/6/2025-->
                         <div class="text-left">
                             <h6 class="font-weight-semi-bold mb-1">Điện thoại</h6>
                             <small class="field-value" data-field="phone">${phone}</small>
-                            <span class="edit-icon ml-2" data-field="phone" data-value="${phone}" onclick="openEditModal(this)" style="display: <%= (session.getAttribute("userRoleID") != null && (Integer)session.getAttribute("userRoleID") == 1) ? "inline-block" : "none" %>;">
-                                <i class="fa fa-pencil-alt"></i>
-                            </span>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal chỉnh sửa thông tin -->
-        <div class="modal fade" id="editFieldModal" tabindex="-1" role="dialog" aria-labelledby="editFieldModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form id="editFieldForm" method="post" action="${pageContext.request.contextPath}/UpdateCenterInfoServlet">
-                        <div class="modal-header">
-                            <h5 class="modal-title1" id="editFieldModalLabel">Chỉnh sửa</h5>
-                            <button type="button" class="close position-absolute" style="right: 10px; top: 10px;" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label id="fieldLabel">Nhập giá trị:</label>
-                                <input type="hidden" name="fieldName" id="fieldNameInput" />
-                                <input type="hidden" name="action" id="actionInput" value="update" />
-                                <input type="text" class="form-control" name="fieldValue" id="fieldValueInput" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-end gap-2">
-                            <!-- Nút Xoá -->
-                            <button type="button" class="btn btn-danger" onclick="handleDelete()">Xoá</button>
 
-                            <!-- Nút Lưu (xanh lá) -->
-                            <button type="submit" class="btn btn-success">Lưu</button>
-
-                            <!-- Nút Huỷ -->
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModalEdit()">Huỷ</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
         <!-- Phần Header -->
         <div class="header-container", style="background: linear-gradient(to right, #FF9AA2, #FFF1F1)">
             <nav class="navbar navbar-expand-lg">
@@ -1217,23 +1111,10 @@ Ngày update 23/6/2025-->
                             </li>
                             <li class="nav-item flex-grow-1">
                                 <a class="nav-link  active" href="${pageContext.request.contextPath}/teacher">Giáo viên</a>
-                            </li>
-                            <c:choose>
-                                
-                                <c:when test="${sessionScope.userRoleID == '1'}">
-                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
-                                        <a class="nav-link custom-btn btn-login" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
-                                    </li>
-                                </c:when>
-
-                                
-                                <c:otherwise>
-                                    <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
-                                        <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
-                                    </li>
-                                </c:otherwise>
-                            </c:choose>
-
+                            </li>                                                                                           
+                            <li class="nav-item flex-grow-1 d-flex justify-content-center align-items-center">                            
+                                <a class="nav-link custom-btn btn-login" href="login_register.jsp">Đăng nhập/Đăng kí</a>
+                            </li>                               
                         </ul>
                     </div>
                 </div>
@@ -1309,7 +1190,7 @@ Ngày update 23/6/2025-->
 
         <!-- Tài liệu và khoá học -->
         <div class="course-panel-container" id="course-content" style="width: 400px; display: none;
-     background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
+             background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;">
 
 
             <c:forEach var="grade" items="${grades}">
@@ -1408,12 +1289,12 @@ Ngày update 23/6/2025-->
         </div>
 
         <main>
-            
+
             <!-- Gv Start -->
             <div class="container-fluid py-5">
                 <div class="container py-0">
-                    <div class="section-title text-center position-relative mb-5">
-                        <div class="text-center mb-5">
+                    <div class="section-title text-center position-relative">
+                        <div class="text-center py-3">
                             <h3>Đội Ngũ Giáo Viên</h3>
                         </div>
                     </div>
@@ -1533,1100 +1414,434 @@ Ngày update 23/6/2025-->
             </div>
             <!-- Gv End -->
 
-                      
-    </main>
 
-    <footer class="site-footer">
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-            <div class="row pt-5">
-                <div class="col-lg-5 col-md-12 mb-5">
-                    <a href="" class="text-decoration-none">
+        </main>
 
-                        <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"/>
-                        </div>
-                        <div class="slogan-group text-left mt-2">
-                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-7 col-md-12">
-                    <div class="row">
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+        <footer class="site-footer">
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+                <div class="row pt-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <a href="" class="text-decoration-none">
 
-                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                            <div class="logo-container">
+                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"/>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                </a>
+                            <div class="slogan-group text-left mt-2">
+                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-7 col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                                <div class="d-flex justify-content-start mt-4">
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
+            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-    </footer>
+        </footer>
 
+        <!-- JAVASCRIPT FILES -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>        
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const backTopBtn = document.querySelector('.back-top-icon');
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const backTopBtn = document.querySelector('.back-top-icon');
 
-            if (backTopBtn) {
-                // Hiển thị/ẩn nút khi cuộn
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) {
-                        backTopBtn.classList.add('visible');
-                    } else {
-                        backTopBtn.classList.remove('visible');
-                    }
-                });
-
-                // Cuộn mượt khi bấm
-                backTopBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
-                });
-            } else {
-                console.error('Back to Top button not found');
-            }
-        });
-    </script>
-
-    <!-- JAVASCRIPT FILES -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <!-- Cuối <body>, trước các script tùy chỉnh -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <!-- <script src="js/counter.js"></script> -->
-    <!-- <script src="js/custom.js"></script> -->
-
-    <script>
-        let itemsPerPage = 8;
-        let totalItems = 0;
-        let totalPages = 0;
-        let currentPage = 1;
-
-        function displayPage(page) {
-            page = parseInt(page);
-            if (isNaN(page) || page < 1) {
-                console.warn(`Giá trị page không hợp lệ (${page}), mặc định về trang 1`);
-                page = 1;
-            }
-            if (page > totalPages && totalPages > 0) {
-                console.warn(`Trang ${page} vượt quá tổng số trang (${totalPages}), đặt về trang cuối`);
-                page = totalPages;
-            }
-            console.log("Đang hiển thị trang:", page, "currentPage:", currentPage);
-
-            const items = document.querySelectorAll('#courseContainer .col-lg-3');
-            if (!items.length) {
-                console.error("Không tìm thấy phần tử .col-lg-3 trong #courseContainer");
-                return;
-            }
-
-            if (itemsPerPage <= 0) {
-                console.error("itemsPerPage không hợp lệ:", itemsPerPage);
-                itemsPerPage = 8;
-            }
-
-            let visibleCount = 0;
-            items.forEach((item, index) => {
-                const pageIndex = Math.floor(index / itemsPerPage) + 1;
-                console.log(`Item ${index + 1}, Page Index: ${pageIndex}, Current Page: ${page}`);
-                item.classList.add('hidden');
-                if (pageIndex === page) {
-                    item.classList.remove('hidden');
-                    visibleCount++;
-                }
-            });
-            console.log(`Số mục hiển thị trên trang ${page}: ${visibleCount}`);
-
-            updatePagination(page);
-        }
-
-        function updatePagination(page) {
-            const pagination = document.getElementById('pagination');
-            if (!pagination) {
-                console.error('Không tìm thấy element #pagination');
-                return;
-            }
-            pagination.innerHTML = '';
-
-            // Nút Previous
-            const prevLi = document.createElement('li');
-            prevLi.className = page === 1 ? 'page-item disabled' : 'page-item';
-            const prevA = document.createElement('a');
-            prevA.className = 'page-link';
-            prevA.href = 'javascript:void(0)';
-            prevA.textContent = '«'; // Mũi tên trái
-            prevA.dataset.action = 'prev'; // Dùng dataset để xác định hành động
-            prevLi.appendChild(prevA);
-            pagination.appendChild(prevLi);
-
-            // Các nút trang số
-            for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.className = i === page ? 'page-item active' : 'page-item';
-                const a = document.createElement('a');
-                a.className = 'page-link';
-                a.href = 'javascript:void(0)';
-                a.textContent = i;
-                a.dataset.page = i; // Dùng dataset để lưu data-page
-                li.appendChild(a);
-                pagination.appendChild(li);
-            }
-
-            // Nút Next
-            const nextLi = document.createElement('li');
-            nextLi.className = page === totalPages ? 'page-item disabled' : 'page-item';
-            const nextA = document.createElement('a');
-            nextA.className = 'page-link';
-            nextA.href = 'javascript:void(0)';
-            nextA.textContent = '»'; // Mũi tên phải
-            nextA.dataset.action = 'next'; // Dùng dataset để xác định hành động
-            nextLi.appendChild(nextA);
-            pagination.appendChild(nextLi);
-
-            // Debug DOM
-            const links = pagination.querySelectorAll('.page-link');
-            links.forEach((link, index) => {
-                console.log(`Nút phân trang ${index + 1}:`, link.outerHTML);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Kiểm tra các phần tử không mong muốn có class page-link
-            const pageLinksOutsidePagination = document.querySelectorAll('.page-link:not(#pagination .page-link)');
-            if (pageLinksOutsidePagination.length > 0) {
-                console.warn("Có các phần tử ngoài #pagination sử dụng class page-link:", pageLinksOutsidePagination);
-                pageLinksOutsidePagination.forEach(el => {
-                    console.log("Phần tử:", el.outerHTML);
-                });
-            }
-
-            // Lấy trang hiện tại từ URL
-            const urlParams = new URLSearchParams(window.location.search);
-            currentPage = parseInt(urlParams.get('page')) || 1;
-            console.log("Trang hiện tại từ URL:", currentPage);
-
-            const items = document.querySelectorAll('#courseContainer .col-lg-3');
-            totalItems = items.length;
-            console.log("Tổng số phần tử:", totalItems);
-            if (totalItems > 0) {
-                totalPages = Math.ceil(totalItems / itemsPerPage);
-                console.log("Tổng số trang:", totalPages);
-                displayPage(currentPage);
-            } else {
-                console.error('Không tìm thấy phần tử .col-lg-3 trong #courseContainer');
-            }
-
-            // Sử dụng event delegation để xử lý click
-            const pagination = document.getElementById('pagination');
-            if (pagination) {
-                pagination.addEventListener('click', (e) => {
-                    const link = e.target.closest('.page-link');
-                    if (!link)
-                        return;
-
-                    e.preventDefault();
-                    console.log("Phần tử được click:", link.outerHTML);
-
-                    // Xử lý nút Previous/Next
-                    if (link.dataset.action) {
-                        if (link.dataset.action === 'prev' && currentPage > 1) {
-                            currentPage--;
-                        } else if (link.dataset.action === 'next' && currentPage < totalPages) {
-                            currentPage++;
+                if (backTopBtn) {
+                    // Hiển thị/ẩn nút khi cuộn
+                    window.addEventListener('scroll', () => {
+                        if (window.scrollY > 300) {
+                            backTopBtn.classList.add('visible');
                         } else {
-                            console.log("Không thể chuyển trang: Đã ở giới hạn (trang đầu/cuối)");
-                            return;
+                            backTopBtn.classList.remove('visible');
                         }
-                    } else {
-                        // Xử lý nút trang số
-                        const pageNum = link.dataset.page;
-                        console.log("Nhấn vào trang (raw data-page):", pageNum);
-                        if (!pageNum || isNaN(parseInt(pageNum))) {
-                            console.error("data-page không hợp lệ hoặc không tồn tại:", pageNum);
-                            return;
-                        }
-                        currentPage = parseInt(pageNum);
-                    }
-
-                    console.log("Cập nhật currentPage:", currentPage);
-
-                    // Cập nhật URL
-                    const url = new URL(window.location);
-                    url.searchParams.set('page', currentPage);
-                    window.history.pushState({}, '', url);
-
-                    displayPage(currentPage);
-                });
-
-                // Kiểm tra nếu #pagination bị thay đổi
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        console.warn("Phần tử #pagination bị thay đổi:", mutation);
                     });
+
+                    // Cuộn mượt khi bấm
+                    backTopBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    });
+                } else {
+                    console.error('Back to Top button not found');
+                }
+            });
+        </script>
+        
+        <script>
+            $(document).ready(function () {
+                // Debug tất cả grade-link
+                $('.grade-link').each(function () {
+                    const gradeId = $(this).data('grade');
+                    console.log('Grade-link:', $(this).text().trim(), 'data-grade:', gradeId);
+                    if (!gradeId) {
+                        console.warn('Grade-link thiếu data-grade:', $(this).prop('outerHTML'));
+                    }
                 });
-                observer.observe(pagination, {childList: true, subtree: true});
-            } else {
-                console.error("Không tìm thấy #pagination để gắn sự kiện");
-            }
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            // Debug tất cả grade-link
-            $('.grade-link').each(function () {
-                const gradeId = $(this).data('grade');
-                console.log('Grade-link:', $(this).text().trim(), 'data-grade:', gradeId);
-                if (!gradeId) {
-                    console.warn('Grade-link thiếu data-grade:', $(this).prop('outerHTML'));
-                }
-            });
 
-            // Debug tất cả nav-link trong #navbar-vertical
-            $('#navbar-vertical .nav-link').each(function () {
-                const panelId = $(this).attr('data-panel');
-                console.log('Nav-link:', $(this).text().trim(), 'data-panel:', panelId);
-                if (!panelId) {
-                    console.warn('Nav-link thiếu data-panel:', $(this).prop('outerHTML'));
-                }
-            });
-
-            // Debug tất cả panel để lấy danh sách gradeID khả dụng
-            const availableGradeIds = [...new Set($('.course-panel').map(function () {
-                    return $(this).data('grade-id');
-                }).get())];
-            console.log('GradeIDs khả dụng trong DOM:', availableGradeIds);
-
-            // Debug tất cả panel
-            $('.course-panel').each(function () {
-                console.log('Panel tồn tại:', $(this).attr('id'), 'data-grade-id:', $(this).data('grade-id'), 'data-subject-id:', $(this).data('subject-id'));
-            });
-
-            // Khởi tạo trạng thái ban đầu
-            let currentGradeId = null;
-            $('.subjects-list').css('display', 'flex');
-            $('#course-content').css('display', 'none');
-            $('#navbar-vertical .nav-link').removeClass('active');
-            console.log('Khởi tạo: Hiển thị danh sách môn học, ẩn nội dung panel, không active môn học nào');
-
-            // Xử lý click vào nút Subjects
-            $('#subjects-btn').click(function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $('#course-content').css('display', 'none');
-                $('#navbar-vertical .nav-link').removeClass('active');
-                currentGradeId = null;
-                $('.grade-link').removeClass('active').removeClass('selected-grade');
-                console.log('Click nút Subjects: Ẩn nội dung panel, giữ danh sách môn học, không active môn học nào, reset grade');
-            });
-
-            // Xử lý click vào grade-link
-            $(document).on('click', '.grade-link', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const gradeId = $(this).data('grade');
-                if (!availableGradeIds.includes(gradeId)) {
-                    alert('Khối lớp ' + $(this).text().trim() + ' không có nội dung. Vui lòng chọn khối khác!');
-                    console.warn('GradeID không khả dụng:', gradeId, 'Danh sách khả dụng:', availableGradeIds);
-                    return;
-                }
-                $('.grade-link').removeClass('active').removeClass('selected-grade');
-                $(this).addClass('active').addClass('selected-grade');
-                currentGradeId = gradeId;
-                console.log('Clicked grade-link:', $(this).text().trim(), 'data-grade:', gradeId, 'currentGradeId:', currentGradeId);
-
-                // Ẩn tất cả panel khi thay đổi grade
-                $('#course-content').css('display', 'none');
-                $('#navbar-vertical .nav-link').removeClass('active');
-                // Cập nhật data-panel của nav-link dựa trên grade hiện tại
+                // Debug tất cả nav-link trong #navbar-vertical
                 $('#navbar-vertical .nav-link').each(function () {
-                    const $link = $(this);
-                    const originalPanel = $link.attr('data-panel');
-                    console.log('Processing nav-link:', $link.text().trim(), 'Original data-panel:', originalPanel);
-                    const originalPanelParts = originalPanel.split('-');
-                    if (originalPanelParts.length < 3 || originalPanelParts[0] !== 'panel' || !originalPanelParts[2]) {
-                        console.error('Định dạng data-panel không hợp lệ:', originalPanel, 'Element:', $link.prop('outerHTML'));
-                        return; // Bỏ qua nếu không hợp lệ
+                    const panelId = $(this).attr('data-panel');
+                    console.log('Nav-link:', $(this).text().trim(), 'data-panel:', panelId);
+                    if (!panelId) {
+                        console.warn('Nav-link thiếu data-panel:', $(this).prop('outerHTML'));
                     }
-                    const subjectId = originalPanelParts[2]; // Lấy subject.id
-                    console.log('Extracted subjectId:', subjectId, 'currentGradeId:', currentGradeId);
-                    const newPanelId = 'panel-' + currentGradeId + '-' + subjectId; // Sử dụng nối chuỗi thủ công
-                    console.log('Generated newPanelId:', newPanelId); // Debug giá trị trước khi gán
-                    $link.attr('data-panel', newPanelId);
-                    console.log('Cập nhật data-panel cho:', $link.text().trim(), 'từ:', originalPanel, 'thành:', newPanelId);
                 });
-            });
 
-            // Xử lý click vào nav-link trong #navbar-vertical
-            $('#navbar-vertical .nav-link').click(function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const panelId = $(this).attr('data-panel');
-                console.log('Clicked nav-link:', $(this).text().trim(), 'data-panel:', panelId);
+                // Debug tất cả panel để lấy danh sách gradeID khả dụng
+                const availableGradeIds = [...new Set($('.course-panel').map(function () {
+                        return $(this).data('grade-id');
+                    }).get())];
+                console.log('GradeIDs khả dụng trong DOM:', availableGradeIds);
 
-                if (!panelId || typeof panelId !== 'string' || panelId.trim() === '') {
-                    alert('Lỗi: Panel ID không hợp lệ. Vui lòng thử lại!');
-                    console.error('Panel ID không hợp lệ:', panelId, 'Element:', $(this).prop('outerHTML'));
-                    return;
-                }
+                // Debug tất cả panel
+                $('.course-panel').each(function () {
+                    console.log('Panel tồn tại:', $(this).attr('id'), 'data-grade-id:', $(this).data('grade-id'), 'data-subject-id:', $(this).data('subject-id'));
+                });
 
-                // Kiểm tra nếu chưa chọn grade
-                if (!currentGradeId) {
-                    alert('Vui lòng chọn khối lớp trước!');
-                    console.warn('Chưa chọn grade, hủy kích hoạt nav-link');
-                    return;
-                }
-
-                const cleanPanelId = panelId.trim();
-                console.log('Clean panelId:', cleanPanelId);
-
-                const panelElement = document.getElementById(cleanPanelId);
-                if (!panelElement) {
-                    alert('Nội dung cho "' + $(this).text().trim() + '" hiện chưa khả dụng. Vui lòng thử lại sau!');
-                    console.warn(`Panel ${cleanPanelId} không tồn tại trong DOM. Các panel hiện có:`, $('.course-panel').map(function () {
-                        return $(this).attr('id');
-                    }).get());
-                    return;
-                }
-
-                // Hiển thị nội dung panel
-                $('#course-content').css('display', 'block');
-                console.log('Hiển thị nội dung panel');
-
-                const $newPanel = $(panelElement);
-                console.log('Panel được chọn:', $newPanel.attr('id'), 'tồn tại:', $newPanel.length);
-
-                $('.course-panel').removeClass('active').css('display', 'none');
-                $('.course-panel .column').removeClass('active').css('display', 'none');
-                console.log('Ẩn tất cả panel và cột');
-
-                $newPanel.addClass('active').css('display', 'block');
-                console.log('Hiển thị panel:', $newPanel.attr('id'), 'active =', $newPanel.hasClass('active'), 'display =', $newPanel.css('display'));
-
-                $newPanel.find('.tab-link').removeClass('active');
-                const $documentsTab = $newPanel.find('.tab-link[data-tab="documents"]');
-                $documentsTab.addClass('active');
-                $newPanel.find('.column').removeClass('active').css('display', 'none');
-                const $documentsColumn = $newPanel.find('.column.documents');
-                if ($documentsColumn.length) {
-                    $documentsColumn.addClass('active').css('display', 'flex');
-                    console.log('Cột Tài liệu active =', $documentsColumn.hasClass('active'), 'display =', $documentsColumn.css('display'));
-                } else {
-                    console.warn('Cột Tài liệu không tồn tại trong panel:', $newPanel.attr('id'));
-                }
-
+                // Khởi tạo trạng thái ban đầu
+                let currentGradeId = null;
+                $('.subjects-list').css('display', 'flex');
+                $('#course-content').css('display', 'none');
                 $('#navbar-vertical .nav-link').removeClass('active');
-                $(this).addClass('active');
-                console.log('Nav-link active:', $(this).text().trim());
-            });
+                console.log('Khởi tạo: Hiển thị danh sách môn học, ẩn nội dung panel, không active môn học nào');
 
-            // Xử lý hover tab
-            $('.tab-link').on('mouseenter', function () {
-                const $panel = $(this).closest('.course-panel');
-                let tab = $(this).data('tab');
-                console.log('Tab value:', tab, 'Element:', $(this).prop('outerHTML'));
-
-                if (typeof tab !== 'string') {
-                    console.warn('Tab không phải chuỗi:', tab, 'Element:', $(this).prop('outerHTML'));
-                    tab = 'documents';
-                }
-
-                const cleanTab = tab.replace(/[^\w\s-]/g, '').trim();
-                console.log('Cleaned tab value:', cleanTab, 'Char codes:', cleanTab.split('').map(char => char.charCodeAt(0)));
-
-                if (cleanTab === '') {
-                    console.warn('Cleaned tab is empty, falling back to documents:', tab, 'Element:', $(this).prop('outerHTML'));
-                    tab = 'documents';
-                }
-
-                console.log('Hover tab:', cleanTab, 'trong panel', $panel.attr('id'));
-
-                $panel.find('.tab-link').removeClass('active');
-                $panel.find('.column').removeClass('active').css('display', 'none');
-
-                const selector = '.column.' + cleanTab;
-                console.log('Selector:', selector);
-                const $targetColumn = $panel.find(selector);
-                if ($targetColumn.length) {
-                    $targetColumn.addClass('active').css('display', 'flex');
-                    console.log('Cột', cleanTab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
-                } else {
-                    console.warn('Cột ' + selector + ' không tồn tại trong panel:', $panel.attr('id'));
-                    const $defaultColumn = $panel.find('.column.documents');
-                    if ($defaultColumn.length) {
-                        $panel.find('.tab-link[data-tab="documents"]').addClass('active');
-                        $defaultColumn.addClass('active').css('display', 'flex');
-                        console.log('Hiển thị cột Tài liệu mặc định');
-                    } else {
-                        console.warn('Cột .column.documents cũng không tồn tại trong panel:', $panel.attr('id'));
-                    }
-                }
-            });
-
-            // Xử lý click vào tab-link
-            $('.tab-link').on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const $panel = $(this).closest('.course-panel');
-                const tab = $(this).data('tab');
-                console.log('Clicked tab:', tab, 'trong panel', $panel.attr('id'));
-
-                $panel.find('.tab-link').removeClass('active');
-                $panel.find('.column').removeClass('active').css('display', 'none');
-
-                $(this).addClass('active');
-
-                const $targetColumn = $panel.find('.column.' + tab);
-                if ($targetColumn.length) {
-                    $targetColumn.addClass('active').css('display', 'flex');
-                    console.log('Cột', tab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
-                } else {
-                    console.warn('Cột .' + tab + ' không tồn tại trong panel:', $panel.attr('id'));
-                }
-            });
-
-            // Xử lý click ra ngoài
-            $(document).click(function (e) {
-                const $target = $(e.target);
-                const isInsideNavbarVertical = $target.closest('#navbar-vertical').length > 0;
-                const isInsideCourseContent = $target.closest('#course-content').length > 0;
-                const isSubjectsButton = $target.closest('#subjects-btn').length > 0;
-
-                if (!isInsideNavbarVertical && !isInsideCourseContent && !isSubjectsButton) {
+                // Xử lý click vào nút Subjects
+                $('#subjects-btn').click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     $('#course-content').css('display', 'none');
                     $('#navbar-vertical .nav-link').removeClass('active');
-                    $('.grade-link').removeClass('active').removeClass('selected-grade');
                     currentGradeId = null;
-                    console.log('Click ra ngoài: Ẩn nội dung panel, giữ danh sách môn học, không active môn học nào, reset grade');
-                }
-            });
-        });
-    </script>
-    <!-- Chấm tròn điều hướng -->
-    <!--    <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const carousel = document.querySelector('#testimonialCarousel');
-                const indicators = document.querySelectorAll('#testimonial-indicators button');
-    
-                // Lắng nghe sự kiện chuyển slide (tự động hoặc ấn nút)
-                carousel.addEventListener('slid.bs.carousel', function (event) {
-                    indicators.forEach(btn => btn.classList.remove('active'));
-                    if (indicators[event.to]) {
-                        indicators[event.to].classList.add('active');
+                    $('.grade-link').removeClass('active').removeClass('selected-grade');
+                    console.log('Click nút Subjects: Ẩn nội dung panel, giữ danh sách môn học, không active môn học nào, reset grade');
+                });
+
+                // Xử lý click vào grade-link
+                $(document).on('click', '.grade-link', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const gradeId = $(this).data('grade');
+                    if (!availableGradeIds.includes(gradeId)) {
+                        alert('Khối lớp ' + $(this).text().trim() + ' không có nội dung. Vui lòng chọn khối khác!');
+                        console.warn('GradeID không khả dụng:', gradeId, 'Danh sách khả dụng:', availableGradeIds);
+                        return;
+                    }
+                    $('.grade-link').removeClass('active').removeClass('selected-grade');
+                    $(this).addClass('active').addClass('selected-grade');
+                    currentGradeId = gradeId;
+                    console.log('Clicked grade-link:', $(this).text().trim(), 'data-grade:', gradeId, 'currentGradeId:', currentGradeId);
+
+                    // Ẩn tất cả panel khi thay đổi grade
+                    $('#course-content').css('display', 'none');
+                    $('#navbar-vertical .nav-link').removeClass('active');
+                    // Cập nhật data-panel của nav-link dựa trên grade hiện tại
+                    $('#navbar-vertical .nav-link').each(function () {
+                        const $link = $(this);
+                        const originalPanel = $link.attr('data-panel');
+                        console.log('Processing nav-link:', $link.text().trim(), 'Original data-panel:', originalPanel);
+                        const originalPanelParts = originalPanel.split('-');
+                        if (originalPanelParts.length < 3 || originalPanelParts[0] !== 'panel' || !originalPanelParts[2]) {
+                            console.error('Định dạng data-panel không hợp lệ:', originalPanel, 'Element:', $link.prop('outerHTML'));
+                            return; // Bỏ qua nếu không hợp lệ
+                        }
+                        const subjectId = originalPanelParts[2]; // Lấy subject.id
+                        console.log('Extracted subjectId:', subjectId, 'currentGradeId:', currentGradeId);
+                        const newPanelId = 'panel-' + currentGradeId + '-' + subjectId; // Sử dụng nối chuỗi thủ công
+                        console.log('Generated newPanelId:', newPanelId); // Debug giá trị trước khi gán
+                        $link.attr('data-panel', newPanelId);
+                        console.log('Cập nhật data-panel cho:', $link.text().trim(), 'từ:', originalPanel, 'thành:', newPanelId);
+                    });
+                });
+
+                // Xử lý click vào nav-link trong #navbar-vertical
+                $('#navbar-vertical .nav-link').click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const panelId = $(this).attr('data-panel');
+                    console.log('Clicked nav-link:', $(this).text().trim(), 'data-panel:', panelId);
+
+                    if (!panelId || typeof panelId !== 'string' || panelId.trim() === '') {
+                        alert('Lỗi: Panel ID không hợp lệ. Vui lòng thử lại!');
+                        console.error('Panel ID không hợp lệ:', panelId, 'Element:', $(this).prop('outerHTML'));
+                        return;
+                    }
+
+                    // Kiểm tra nếu chưa chọn grade
+                    if (!currentGradeId) {
+                        alert('Vui lòng chọn khối lớp trước!');
+                        console.warn('Chưa chọn grade, hủy kích hoạt nav-link');
+                        return;
+                    }
+
+                    const cleanPanelId = panelId.trim();
+                    console.log('Clean panelId:', cleanPanelId);
+
+                    const panelElement = document.getElementById(cleanPanelId);
+                    if (!panelElement) {
+                        alert('Nội dung cho "' + $(this).text().trim() + '" hiện chưa khả dụng. Vui lòng thử lại sau!');
+                        console.warn(`Panel ${cleanPanelId} không tồn tại trong DOM. Các panel hiện có:`, $('.course-panel').map(function () {
+                            return $(this).attr('id');
+                        }).get());
+                        return;
+                    }
+
+                    // Hiển thị nội dung panel
+                    $('#course-content').css('display', 'block');
+                    console.log('Hiển thị nội dung panel');
+
+                    const $newPanel = $(panelElement);
+                    console.log('Panel được chọn:', $newPanel.attr('id'), 'tồn tại:', $newPanel.length);
+
+                    $('.course-panel').removeClass('active').css('display', 'none');
+                    $('.course-panel .column').removeClass('active').css('display', 'none');
+                    console.log('Ẩn tất cả panel và cột');
+
+                    $newPanel.addClass('active').css('display', 'block');
+                    console.log('Hiển thị panel:', $newPanel.attr('id'), 'active =', $newPanel.hasClass('active'), 'display =', $newPanel.css('display'));
+
+                    $newPanel.find('.tab-link').removeClass('active');
+                    const $documentsTab = $newPanel.find('.tab-link[data-tab="documents"]');
+                    $documentsTab.addClass('active');
+                    $newPanel.find('.column').removeClass('active').css('display', 'none');
+                    const $documentsColumn = $newPanel.find('.column.documents');
+                    if ($documentsColumn.length) {
+                        $documentsColumn.addClass('active').css('display', 'flex');
+                        console.log('Cột Tài liệu active =', $documentsColumn.hasClass('active'), 'display =', $documentsColumn.css('display'));
+                    } else {
+                        console.warn('Cột Tài liệu không tồn tại trong panel:', $newPanel.attr('id'));
+                    }
+
+                    $('#navbar-vertical .nav-link').removeClass('active');
+                    $(this).addClass('active');
+                    console.log('Nav-link active:', $(this).text().trim());
+                });
+
+                // Xử lý hover tab
+                $('.tab-link').on('mouseenter', function () {
+                    const $panel = $(this).closest('.course-panel');
+                    let tab = $(this).data('tab');
+                    console.log('Tab value:', tab, 'Element:', $(this).prop('outerHTML'));
+
+                    if (typeof tab !== 'string') {
+                        console.warn('Tab không phải chuỗi:', tab, 'Element:', $(this).prop('outerHTML'));
+                        tab = 'documents';
+                    }
+
+                    const cleanTab = tab.replace(/[^\w\s-]/g, '').trim();
+                    console.log('Cleaned tab value:', cleanTab, 'Char codes:', cleanTab.split('').map(char => char.charCodeAt(0)));
+
+                    if (cleanTab === '') {
+                        console.warn('Cleaned tab is empty, falling back to documents:', tab, 'Element:', $(this).prop('outerHTML'));
+                        tab = 'documents';
+                    }
+
+                    console.log('Hover tab:', cleanTab, 'trong panel', $panel.attr('id'));
+
+                    $panel.find('.tab-link').removeClass('active');
+                    $panel.find('.column').removeClass('active').css('display', 'none');
+
+                    const selector = '.column.' + cleanTab;
+                    console.log('Selector:', selector);
+                    const $targetColumn = $panel.find(selector);
+                    if ($targetColumn.length) {
+                        $targetColumn.addClass('active').css('display', 'flex');
+                        console.log('Cột', cleanTab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
+                    } else {
+                        console.warn('Cột ' + selector + ' không tồn tại trong panel:', $panel.attr('id'));
+                        const $defaultColumn = $panel.find('.column.documents');
+                        if ($defaultColumn.length) {
+                            $panel.find('.tab-link[data-tab="documents"]').addClass('active');
+                            $defaultColumn.addClass('active').css('display', 'flex');
+                            console.log('Hiển thị cột Tài liệu mặc định');
+                        } else {
+                            console.warn('Cột .column.documents cũng không tồn tại trong panel:', $panel.attr('id'));
+                        }
+                    }
+                });
+
+                // Xử lý click vào tab-link
+                $('.tab-link').on('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const $panel = $(this).closest('.course-panel');
+                    const tab = $(this).data('tab');
+                    console.log('Clicked tab:', tab, 'trong panel', $panel.attr('id'));
+
+                    $panel.find('.tab-link').removeClass('active');
+                    $panel.find('.column').removeClass('active').css('display', 'none');
+
+                    $(this).addClass('active');
+
+                    const $targetColumn = $panel.find('.column.' + tab);
+                    if ($targetColumn.length) {
+                        $targetColumn.addClass('active').css('display', 'flex');
+                        console.log('Cột', tab, 'active =', $targetColumn.hasClass('active'), 'display =', $targetColumn.css('display'));
+                    } else {
+                        console.warn('Cột .' + tab + ' không tồn tại trong panel:', $panel.attr('id'));
+                    }
+                });
+
+                // Xử lý click ra ngoài
+                $(document).click(function (e) {
+                    const $target = $(e.target);
+                    const isInsideNavbarVertical = $target.closest('#navbar-vertical').length > 0;
+                    const isInsideCourseContent = $target.closest('#course-content').length > 0;
+                    const isSubjectsButton = $target.closest('#subjects-btn').length > 0;
+
+                    if (!isInsideNavbarVertical && !isInsideCourseContent && !isSubjectsButton) {
+                        $('#course-content').css('display', 'none');
+                        $('#navbar-vertical .nav-link').removeClass('active');
+                        $('.grade-link').removeClass('active').removeClass('selected-grade');
+                        currentGradeId = null;
+                        console.log('Click ra ngoài: Ẩn nội dung panel, giữ danh sách môn học, không active môn học nào, reset grade');
                     }
                 });
             });
-        </script>-->
+        </script>        
+        
+        <!-- JavaScript để khởi tạo Owl Carousel -->
+        <script>
+            $(document).ready(function () {
+                console.log("Khởi tạo Owl Carousel...");
+                var $carousel = $('.owl-carousel.team-carousel');
 
-    <script>
-        document.querySelectorAll('[class]').forEach(el => {
-            if (el.className.includes('.')) {
-                console.error('❌ Có dấu chấm dư trong class:', el);
-            }
-        });
-    </script>
-    <!-- JavaScript để khởi tạo Owl Carousel -->
-    <script>
-        $(document).ready(function () {
-            console.log("Khởi tạo Owl Carousel...");
-            var $carousel = $('.owl-carousel.team-carousel');
-
-            if ($carousel.length === 0) {
-                console.error("Không tìm thấy .owl-carousel.team-carousel trong DOM");
-                return;
-            }
-
-            $carousel.owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: true,
-                navText: ['', '']
-                ,
-                // Xóa nội dung mặc định của <span>
-                responsive: {
-                    0: {items: 1},
-                    600: {items: 2},
-                    1000: {items: 4}
-                }
-            }).on('initialized.owl.carousel', function (event) {
-                console.log("Owl Carousel đã khởi tạo thành công!");
-
-                // Kiểm tra và xóa <span> trong nút
-                var $buttons = $('.owl-nav button');
-                if ($buttons.length === 0) {
-                    console.error("Không tìm thấy .owl-nav button trong DOM sau khi khởi tạo");
+                if ($carousel.length === 0) {
+                    console.error("Không tìm thấy .owl-carousel.team-carousel trong DOM");
                     return;
                 }
 
-                $buttons.each(function (index) {
-                    var $span = $(this).find('span');
-                    console.log(`Nút điều hướng ${index + 1} trước khi xử lý:`, $(this).html());
-                    if ($span.length > 0) {
-                        $span.remove(); // Xóa <span> khỏi DOM
-                        console.log(`Nút điều hướng ${index + 1} sau khi xóa <span>:`, $(this).html());
-                    } else {
-                        console.log(`Nút điều hướng ${index + 1} không chứa <span>`);
+                $carousel.owlCarousel({
+                    loop: true,
+                    margin: 10,
+                    nav: true,
+                    navText: ['', '']
+                    ,
+                    // Xóa nội dung mặc định của <span>
+                    responsive: {
+                        0: {items: 1},
+                        600: {items: 2},
+                        1000: {items: 4}
                     }
-                });
+                }).on('initialized.owl.carousel', function (event) {
+                    console.log("Owl Carousel đã khởi tạo thành công!");
 
-                // Đảm bảo .owl-nav hiển thị
-                $('.owl-nav').css({
-                    'display': 'block !important',
-                    'visibility': 'visible !important',
-                    'opacity': '1 !important'
-                });
+                    // Kiểm tra và xóa <span> trong nút
+                    var $buttons = $('.owl-nav button');
+                    if ($buttons.length === 0) {
+                        console.error("Không tìm thấy .owl-nav button trong DOM sau khi khởi tạo");
+                        return;
+                    }
 
-                // Debug DOM
-                var $nav = $('.owl-nav');
-                if ($nav.length) {
-                    console.log("Tìm thấy .owl-nav trong DOM:", $nav.html());
-                } else {
-                    console.error("Không tìm thấy .owl-nav sau khi khởi tạo Owl Carousel");
-                }
-            }).on('changed.owl.carousel', function (event) {
-                console.log("Carousel đã chuyển sang slide:", event.item.index);
-            });
-        });
-    </script>
-    <!--     Tách chuỗi DiscrepCenter 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const descriptionText = document.getElementById("descriptionText");
-                if (descriptionText && descriptionText.textContent.trim()) {
-                    const paragraphs = descriptionText.textContent.split('\n').filter(line => line.trim() !== '');
-                    const container = document.getElementById("descriptionContainer");
-                    container.innerHTML = ''; // Xóa nội dung ban đầu
-                    paragraphs.forEach(paragraph => {
-                        const p = document.createElement('p');
-                        p.textContent = paragraph;
-                        container.appendChild(p);
-                    });
-                } else {
-                    const p = document.createElement('p');
-                    p.textContent = 'Không có mô tả trung tâm.';
-                    descriptionText.replaceWith(p);
-                }
-            });
-        </script>-->
-    <script>
-        function clean(value) {
-            return (value && value !== "false") ? value : '';
-        }
-
-
-        window.showCourseDetail = function (btn) {
-            const get = key => btn.getAttribute('data-' + key) || '';
-
-            // Cập nhật thông tin cơ bản
-            document.getElementById('modalCourseName').textContent = get('classname') || 'Chưa xác định';
-            document.getElementById('modalCourseDescrip').textContent = get('descrip') || 'Chưa có mô tả';
-            document.getElementById('modalIsHot').textContent = (get('ishot') === "true" || get('ishot') === "1") ? "Nổi bật" : "Quanh năm";
-            document.getElementById('modalgradeName').textContent = get('gradename') || 'Chưa xác định';
-            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';
-//            let maxStudents = get('maxstudents');
-//            document.getElementById('modalMaxStudents').textContent = maxStudents ? (maxStudents + " học sinh") : 'Chưa xác định';
-            document.getElementById('modalDuration').textContent = (get('duration') || 'Chưa xác định') + ' / 1 buổi';
-            document.getElementById('modalStartDate').textContent = get('startdate') || 'Chưa xác định';
-            document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';
-
-            console.log("maxstudents = ", get('maxstudents'));
-
-            // Format học phí
-            function formatMoneyVND(amount) {
-                if (!amount || isNaN(amount))
-                    return 'Chưa xác định';
-                return Number(amount).toLocaleString('vi-VN') + " VNĐ / 1 buổi";
-            }
-            document.getElementById('modalTuitionFee').textContent = formatMoneyVND(get('tuition'));
-
-            // Gán link nút đăng ký
-            document.getElementById('joinCourseBtn').href = 'login_register.jsp?redirect=course&courseId=' + (get('classid') || '');
-
-            // Ghi log kiểm tra
-            const container = document.getElementById('classGroupContent');
-            console.log("📌 DOM container:", container);
-
-            const classGroupsStr = get('classgroups');
-            console.log("📦 classGroupsStr raw:", classGroupsStr);
-
-
-            let html = '<p>Chưa có nhóm lớp nào.</p>';
-
-            if (classGroupsStr) {
-                const groupsArr = classGroupsStr.split(';').filter(Boolean);
-                console.log("📦 groupsArr parsed:", groupsArr);
-                console.log("📏 groupsArr.length:", groupsArr.length);
-
-                if (groupsArr.length > 0) {
-                    html = `
-                <h6>Danh sách nhóm lớp:</h6>
-                <table class="table table-bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            
-                            <th>Tên nhóm</th>
-                            <th>Sĩ số tối đa</th>
-                            <th>Phòng</th>
-                            <th>Giáo viên</th>
-                            <th>Thứ trong tuần</th>
-                            <th>Bắt đầu</th>
-                            <th>Kết thúc</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-
-                    groupsArr.forEach((item, index) => {
-                        const parts = item.split('~');
-                        while (parts.length < 7)
-                            parts.push('');
-                        function formatTime(str) {
-                            if (!str || typeof str !== 'string')
-                                return '';
-                            return str.length >= 5 ? str.substring(0, 5) : str;
+                    $buttons.each(function (index) {
+                        var $span = $(this).find('span');
+                        console.log(`Nút điều hướng ${index + 1} trước khi xử lý:`, $(this).html());
+                        if ($span.length > 0) {
+                            $span.remove(); // Xóa <span> khỏi DOM
+                            console.log(`Nút điều hướng ${index + 1} sau khi xóa <span>:`, $(this).html());
+                        } else {
+                            console.log(`Nút điều hướng ${index + 1} không chứa <span>`);
                         }
-
-//                        const groupId = parts[0];
-                        const groupName = parts[0];
-                        const maxStudent = parts[1];
-                        const room = parts[2];
-                        const teacher = parts[3];
-                        const thu = parts[4];
-                        const start = formatTime(parts[5]);
-                        const end = formatTime(parts[6]);
-
-                        // Log từng phần
-                        console.log(`🔍 Group ${index + 1} parts:`, parts);
-//                        console.log("📋 groupId:", groupId);
-                        console.log("📋 groupName:", groupName);
-                        console.log("📋 maxStudent:", maxStudent);
-                        console.log("📋 room:", room);
-                        console.log("📋 teacher:", teacher);
-                        console.log("📋 start:", start);
-                        console.log("📋 end:", end);
-
-
-
-
-                        html += `
-    <tr>
-        
-        <td>` + clean(groupName) + `</td>
-        <td>` + clean(maxStudent) + `</td>
-        <td>` + clean(room) + `</td>
-        <td>` + clean(teacher) + `</td>
-        <td>` + (thu === "null" ? "Chưa xếp lịch" : clean(thu)) + `</td>
-        <td>` + clean(start) + `</td>
-        <td>` + clean(end) + `</td>
-    </tr>`;
-
                     });
 
-                    html += `
-                    </tbody>
-                </table>`;
-                }
-            }
-
-            // Cập nhật vào DOM
-            if (container) {
-                container.innerHTML = html;
-                console.log("🧱 HTML sinh ra:", html);
-                console.log("✅ Đã cập nhật bảng nhóm lớp.");
-            } else {
-                console.warn("⚠️ Không tìm thấy #classGroupContent");
-            }
-
-            // Hiển thị modal
-            document.getElementById('courseDetailModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        };
-
-// Hàm đóng modal
-        window.closeModalClass = function () {
-            document.getElementById('courseDetailModal').style.display = 'none';
-            document.body.style.overflow = '';
-        };
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const loadMoreFeaturedBtn = document.getElementById('loadMoreFeaturedBtn');
-            if (loadMoreFeaturedBtn) {
-                loadMoreFeaturedBtn.addEventListener('click', function () {
-                    document.querySelectorAll('.featured-course-item.d-none').forEach(function (el) {
-                        el.classList.remove('d-none');
+                    // Đảm bảo .owl-nav hiển thị
+                    $('.owl-nav').css({
+                        'display': 'block !important',
+                        'visibility': 'visible !important',
+                        'opacity': '1 !important'
                     });
-                    this.style.display = 'none';
-                });
-            }
 
-            const loadMoreYearRoundBtn = document.getElementById('loadMoreYearRoundBtn');
-            if (loadMoreYearRoundBtn) {
-                loadMoreYearRoundBtn.addEventListener('click', function () {
-                    document.querySelectorAll('.year-round-course-item.d-none').forEach(function (el) {
-                        el.classList.remove('d-none');
-                    });
-                    this.style.display = 'none';
-                });
-            }
-        });
-    </script>
-
-
-
-
-    <script>
-        $(document).ready(function () {
-            var grades = ${grades != null ? grades : '[]'};
-            console.log("JSP đã tải, kiểm tra grades: ", JSON.stringify(grades));
-        });
-    </script>
-
-    <!--    Chỉnh sửa thông tin header-->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editFieldForm = document.getElementById("editFieldForm");
-            if (editFieldForm) {
-                editFieldForm.addEventListener("submit", handleFormSubmit);
-                console.log("Attached submit event to #editFieldForm");
-            } else {
-                console.error("Form #editFieldForm not found");
-            }
-
-            // Bắt sự kiện click icon chỉnh sửa (trừ logo)
-            $(document).on('click', '.edit-icon', function () {
-                const field = $(this).attr('data-field');
-                if (field && field !== 'logo') {
-                    console.log("Clicked .edit-icon:", this, "data-field:", field);
-                    openEditModal(this);
-                }
-            });
-
-            // Reset form khi đóng modal
-            $('#editFieldModal').on('hidden.bs.modal', function () {
-                const form = document.getElementById("editFieldForm");
-                if (form) {
-                    form.reset();
-                    console.log("Reset form on modal close");
-                }
-            });
-        });
-
-        function openEditModal(el) {
-            console.log("Opening edit modal for:", el);
-            if (!el || !el.getAttribute) {
-                console.error("Phần tử không hợp lệ:", el);
-                alert("Lỗi hệ thống: Phần tử không hợp lệ.");
-                return;
-            }
-
-            const field = el.getAttribute("data-field");
-            const value = el.getAttribute("data-value") || '';
-            const fieldNameInput = document.getElementById("fieldNameInput");
-            const fieldValueInput = document.getElementById("fieldValueInput");
-            const fieldLabel = document.getElementById("fieldLabel");
-            const modalLabel = document.getElementById("editFieldModalLabel");
-            const actionInput = document.getElementById("actionInput");
-
-            if (!fieldNameInput || !fieldValueInput || !fieldLabel || !modalLabel || !actionInput) {
-                console.error("Phần tử không tồn tại:", {fieldNameInput, fieldValueInput, fieldLabel, modalLabel, actionInput});
-                alert("Lỗi hệ thống: Không tìm thấy phần tử.");
-                return;
-            }
-
-            fieldNameInput.value = field;
-            fieldValueInput.value = decodeURIComponent(value);
-            fieldLabel.textContent = "Nhập " + convertFieldName(field) + ":";
-            modalLabel.textContent = "Chỉnh sửa " + convertFieldName(field).toLocaleLowerCase();
-            actionInput.value = "update";
-
-            $('#editFieldModal').modal('show');
-        }
-
-        function convertFieldName(field) {
-            switch (field) {
-                case "centerName":
-                    return "Tên trung tâm";
-                case "address":
-                    return "Địa chỉ";
-                case "email":
-                    return "Email";
-                case "phone":
-                    return "Số điện thoại";
-                case "descripCenter":
-                    return "Mô tả trung tâm";
-                default:
-                    return field;
-            }
-        }
-
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const form = event.currentTarget;
-
-            if (!(form instanceof HTMLFormElement)) {
-                console.error("Sự kiện submit không được gọi từ form:", form);
-                alert("Lỗi hệ thống: Form không hợp lệ.");
-                return;
-            }
-
-            const actionAttr = form.getAttribute("action");
-            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
-                    ? actionAttr.trim()
-                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
-
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-
-            if (!data.fieldName || !data.action) {
-                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
-                return;
-            }
-
-            if (data.action === "update" && (!data.fieldValue || data.fieldValue.trim() === "")) {
-                alert("Vui lòng nhập giá trị hợp lệ.");
-                return;
-            }
-
-            fetch(formAction, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(data).toString()
-            })
-                    .then(response => response.text().then(text => ({status: response.status, text})))
-                    .then(({ status, text }) => {
-                        if (status >= 200 && status < 300 && text.includes("thành công")) {
-                            alert('Thao tác thành công!');
-                            $('#editFieldModal').modal('hide');
-                            updateContent(data.fieldName, data.fieldValue);
-                            refreshDisplay(data.fieldName, data.fieldValue);
-                            location.reload();
-                        } else {
-                            alert('Thao tác thất bại! Lỗi: ' + (text || 'Không xác định'));
-                    }
-                    })
-                    .catch(error => {
-                        alert('Lỗi khi gửi yêu cầu: ' + error.message);
-                    });
-        }
-
-        function handleDelete() {
-            if (!confirm('Bạn có chắc muốn xóa nội dung này không?'))
-                return;
-
-            const field = document.getElementById("fieldNameInput")?.value;
-            const form = document.getElementById("editFieldForm");
-
-            if (!form || !(form instanceof HTMLFormElement)) {
-                alert("Lỗi hệ thống: Form không hợp lệ.");
-                return;
-            }
-
-            if (!field) {
-                alert("Dữ liệu không hợp lệ: Vui lòng kiểm tra lại.");
-                return;
-            }
-
-            const actionAttr = form.getAttribute("action");
-            const formAction = (typeof actionAttr === "string" && actionAttr.trim() !== "")
-                    ? actionAttr.trim()
-                    : "/WebApplication3_Test/UpdateCenterInfoServlet";
-
-            const data = {fieldName: field, action: "delete"};
-
-            fetch(formAction, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(data).toString()
-            })
-                    .then(response => response.text().then(text => ({status: response.status, text})))
-                    .then(({ status, text }) => {
-                        if (status >= 200 && status < 300 && text.includes("thành công")) {
-                            alert('Xóa thành công!');
-                            $('#editFieldModal').modal('hide');
-                            updateContent(field, '');
-                            refreshDisplay(field, '');
-                            location.reload();
-                        } else {
-                            alert('Xóa thất bại! Lỗi: ' + (text || 'Không xác định'));
-                    }
-                    })
-                    .catch(error => {
-                        alert('Lỗi khi gửi yêu cầu xóa: ' + error.message);
-                    });
-        }
-
-        function updateContent(fieldName, fieldValue) {
-            const element = document.querySelector(`[data-field="${fieldName}"]`);
-            if (element) {
-                element.textContent = fieldValue || '';
-            }
-        }
-        function closeModalEdit() {
-            $('#editFieldModal').modal('hide');
-            location.reload(); // Tự động tải lại trang sau khi modal đóng
-        }
-
-
-        function refreshDisplay(fieldName, fieldValue) {
-            // Có thể AJAX reload, cập nhật bảng hoặc đồng bộ nhiều phần tử cùng field
-        }
-    </script>
-
-
-    <script>
-        window.showTeacherDetail = function (fullName, gender, phone, email, certi, descrip, onlineStatus, schoolName) {
-            document.getElementById('modalTeacherFullName').textContent = fullName || 'Chưa xác định';
-            document.getElementById('modalTeacherTitle').textContent = fullName || 'Chưa xác định';
-            document.getElementById('modalTeacherGender').textContent = gender || 'Chưa xác định';
-            document.getElementById('modalTeacherPhone').textContent = phone || 'Chưa xác định';
-            document.getElementById('modalTeacherEmail').textContent = email || 'Chưa xác định';
-            document.getElementById('modalTeacherCerti').textContent = certi || 'Chưa xác định';
-            document.getElementById('modalTeacherDescrip').textContent = descrip || 'Chưa có mô tả';
-            document.getElementById('modalTeacherOnlineStatus').textContent = onlineStatus || 'Không hoạt động';
-            document.getElementById('modalTeacherSchool').textContent = schoolName || 'Giáo viên của Edura';
-            $('#teacherDetailModal').modal('show');
-        };
-        function closeTeacherModal() {
-            $('#teacherDetailModal').modal('hide');
-        }
-    </script>
-    <script>
-        function closeModal() {
-            const modal = document.querySelector('.modal.show'); // hoặc theo id modal bạn dùng
-            if (modal) {
-                const backdrop = document.querySelector('.modal-backdrop');
-                modal.classList.remove('show');
-                modal.style.display = 'none';
-                if (backdrop)
-                    backdrop.remove();
-                document.body.classList.remove('modal-open');
-            }
-        }
-
-        function deleteField() {
-            if (confirm("Bạn có chắc muốn xoá nội dung này không?")) {
-                const fieldName = document.getElementById("editFieldName").value;
-
-                fetch("${pageContext.request.contextPath}/UpdateCenterInfoServlet", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                    body: `fieldName=${fieldName}&fieldValue=`
-                }).then(response => {
-                    if (response.ok) {
-                        location.reload(); // tải lại trang nếu xoá thành công
+                    // Debug DOM
+                    var $nav = $('.owl-nav');
+                    if ($nav.length) {
+                        console.log("Tìm thấy .owl-nav trong DOM:", $nav.html());
                     } else {
-                        alert("Xoá thất bại!");
+                        console.error("Không tìm thấy .owl-nav sau khi khởi tạo Owl Carousel");
                     }
-                }).catch(error => {
-                    console.error("Lỗi khi xoá:", error);
-                    alert("Lỗi khi gửi yêu cầu xoá.");
+                }).on('changed.owl.carousel', function (event) {
+                    console.log("Carousel đã chuyển sang slide:", event.item.index);
                 });
-            }
-        }
-    </script>
-    <script>
-        function equalizeTeamItemHeights() {
-            var maxHeight = 0;
-            $('.team-item').css('height', 'auto'); // Reset trước
-            $('.team-item').each(function () {
-                var h = $(this).outerHeight();
-                if (h > maxHeight)
-                    maxHeight = h;
             });
-            $('.team-item').css('height', maxHeight + 'px');
-        }
+        </script>        
 
-        $(document).ready(function () {
-            // Khởi tạo owlCarousel
-            $('.owl-carousel').owlCarousel({
-                loop: true,
-                margin: 20,
-                nav: true,
-                dots: true,
-                responsive: {
-                    0: {items: 1},
-                    600: {items: 2},
-                    1000: {items: 3}
+        <script>
+            window.showTeacherDetail = function (fullName, gender, phone, email, certi, descrip, onlineStatus, schoolName) {
+                document.getElementById('modalTeacherFullName').textContent = fullName || 'Chưa xác định';
+                document.getElementById('modalTeacherTitle').textContent = fullName || 'Chưa xác định';
+                document.getElementById('modalTeacherGender').textContent = gender || 'Chưa xác định';
+                document.getElementById('modalTeacherPhone').textContent = phone || 'Chưa xác định';
+                document.getElementById('modalTeacherEmail').textContent = email || 'Chưa xác định';
+                document.getElementById('modalTeacherCerti').textContent = certi || 'Chưa xác định';
+                document.getElementById('modalTeacherDescrip').textContent = descrip || 'Chưa có mô tả';
+                document.getElementById('modalTeacherOnlineStatus').textContent = onlineStatus || 'Không hoạt động';
+                document.getElementById('modalTeacherSchool').textContent = schoolName || 'Giáo viên của Edura';
+                $('#teacherDetailModal').modal('show');
+            };
+            function closeTeacherModal() {
+                $('#teacherDetailModal').modal('hide');
+            }
+        </script>
+                
+        <script>
+            $(document).ready(function () {
+                const $navbarVertical = $('#navbar-vertical');
+                const $courseContent = $('#course-content');
+
+                if ($navbarVertical.length && $courseContent.length) {
+                    const verticalOffset = $navbarVertical.offset();
+                    const verticalWidth = $navbarVertical.outerWidth();
+                    const verticalHeight = $navbarVertical.outerHeight();
+
+                    $courseContent.css({
+                        position: 'absolute',
+                        top: verticalOffset.top + 'px', // Ngay hàng với navbar dọc
+                        left: (verticalOffset.left + verticalWidth) + 'px', // Ngay bên phải
+                        zIndex: 9999
+                    });
                 }
             });
 
-            // Đồng bộ chiều cao sau khi owlCarousel render hoặc thay đổi
-            $(".owl-carousel").on('initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel changed.owl.carousel', function () {
-                setTimeout(equalizeTeamItemHeights, 200); // Đợi để render xong
-            });
-
-            // Đồng bộ lại khi resize cửa sổ
-            $(window).on('resize', function () {
-                setTimeout(equalizeTeamItemHeights, 200);
-            });
-        });
-    </script>
-    <!--    Chỉnh sửa banner-->
-    <script>
-        function openBannerEditModal() {
-            const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
-            modal.show();
-        }
-    </script>
-    <script>
-    $(document).ready(function () {
-    const $navbarVertical = $('#navbar-vertical');
-    const $courseContent = $('#course-content');
-
-    if ($navbarVertical.length && $courseContent.length) {
-        const verticalOffset = $navbarVertical.offset();
-        const verticalWidth = $navbarVertical.outerWidth();
-        const verticalHeight = $navbarVertical.outerHeight();
-
-        $courseContent.css({
-            position: 'absolute',
-            top: verticalOffset.top + 'px',          // Ngay hàng với navbar dọc
-            left: (verticalOffset.left + verticalWidth) + 'px', // Ngay bên phải
-            zIndex: 9999
-        });
-    }
-});
-
-</script>
-
-
-
-</body>
+        </script>
+    </body>
 </html>
