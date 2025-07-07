@@ -296,9 +296,9 @@ Ngày update 3/7/2025-->
                             <i class="fas fa-chalkboard-teacher w-5"></i>
                             <span>Quản lý giáo viên</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin?tab=courseManagement" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-book w-5"></i>
-                            <span>Quản lý môn học</span>
+                            <span>Quản lý khoá học</span>
                         </a>
                         <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-calendar-alt w-5"></i>
@@ -315,7 +315,7 @@ Ngày update 3/7/2025-->
 
                         <!-- Cài đặt hệ thống -->
                         <a href="${pageContext.request.contextPath}/admin?tab=setting" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
-                             <i class="fas fa-cog w-5"></i>
+                            <i class="fas fa-cog w-5"></i>
                             <span>Cài đặt</span>
                         </a>
                     </div>
@@ -396,6 +396,9 @@ Ngày update 3/7/2025-->
                         <c:when test="${tab eq 'paymentReport'}">
                             <jsp:include page="payment_student.jsp" />
                         </c:when>
+                        <c:when test="${tab eq 'courseManagement'}">
+                            <jsp:include page="manager_tutoringClass.jsp" />
+                        </c:when>
                         <c:otherwise>
                             <jsp:include page="overview.jsp" />
                         </c:otherwise>
@@ -457,7 +460,7 @@ Ngày update 3/7/2025-->
             </div>
 
         </footer>
-        
+
         <script>
             $(document).ready(function () {
 //                $('.sidebar-settings-toggle').on('click', function (e) {
@@ -472,7 +475,7 @@ Ngày update 3/7/2025-->
                 // Set tiêu đề chính theo tab
                 if (tab === "setting") {
                     $('#main-title').text("Cài đặt");
-                    
+
                 } else if (tab === "todaySchedule") {
                     $('#main-title').text("Tổng quan > Lịch học hôm nay");
                 } else {

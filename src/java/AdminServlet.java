@@ -1,6 +1,8 @@
+
 import dal.BannerDAO;
 import dal.CenterInfoDAO;
 import dal.ClassGroupDAO;
+import dal.GradeDAO;
 import dal.PaymentDAO;
 import dal.ScheduleDAO;
 import dal.ShiftLearnDAO;
@@ -11,30 +13,26 @@ import dal.TutoringClassDAO;
 import entity.CenterInfo;
 import entity.Shift;
 import entity.Subject;
+import entity.TutoringClass;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.util.*;
 
-/**
- * Ngày tạo: 28/06/2025 ngày update: 30/6/2025 Người viết: Văn Thị Như
- */
+@MultipartConfig
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
-
-    private static final Logger LOGGER = Logger.getLogger(AdminServlet.class.getName());
 
     private final CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
     private final BannerDAO bannerDAO = new BannerDAO();
@@ -46,25 +44,22 @@ public class AdminServlet extends HttpServlet {
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final ShiftLearnDAO shiftLearnDAO = new ShiftLearnDAO();
     private final PaymentDAO paymentDAO = new PaymentDAO();
+    private final GradeDAO gradeDAO = new GradeDAO();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-
-        // Kiểm tra quyền admin
         if (session == null || !"1".equals(String.valueOf(session.getAttribute("userRoleID")))) {
             res.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
         try {
-            String tab = req.getParameter("tab");
-            if (tab == null || tab.isEmpty()) {
-                tab = "overview";
-            }
+            String tab = Optional.ofNullable(req.getParameter("tab")).orElse("overview");
             req.setAttribute("tab", tab);
 
-            // Lấy thông tin trung tâm (hiện ở header)
             CenterInfo center = centerInfoDAO.getCenterInfo(1);
             if (center != null) {
                 req.setAttribute("centerName", center.getNameCenter());
@@ -73,183 +68,177 @@ public class AdminServlet extends HttpServlet {
                 req.setAttribute("phone", center.getPhone());
                 req.setAttribute("email", center.getEmail());
                 req.setAttribute("website", center.getWebsite());
-            } else {
-                req.setAttribute("centerName", "");
-                req.setAttribute("descripCenter", "");
-                req.setAttribute("address", "");
-                req.setAttribute("phone", "");
-                req.setAttribute("email", "");
-                req.setAttribute("website", "");
             }
 
-            if ("overview".equals(tab)) {
-                // Đếm số lớp đang mở
-                List<Object[]> openClasses = classGroupDAO.getOpeningClassGroupsByCourseDate();
-                int openClassCount = openClasses.size();
-                req.setAttribute("openClassCount", openClassCount);
-
-                // Số lượng teacher
-                int totalTeachers = teacherDAO.getAllTeachers().size();
-                req.setAttribute("totalTeachers", totalTeachers);
-
-                // Số student
-                int studentCount = studentDAO.getStudentCount();
-                req.setAttribute("studentCount", studentCount);
-
-                // Số khoá học
-                req.setAttribute("classesCount", tutoringClassDAO.getClasses(null).size());
-
-                // Lịch học hôm nay
-                List<Object[]> todaySchedules = scheduleDAO.getTodaySchedules();
-                req.setAttribute("todaySchedules", todaySchedules);
-
-                // Số học sinh theo học từng môn
-                List<Object[]> studentCounts = studentDAO.getStudentCountPerSubject();
-                req.setAttribute("studentCounts", studentCounts);
-
-                // Lịch dạy của giáo viên
-                List<Object[]> teacherSchedules = teacherDAO.getTeacherSchedules();
-                req.setAttribute("teacherSchedules", teacherSchedules);
-
-                // Danh sách thứ trong tuần
-                Map<Integer, String> weekdays = scheduleDAO.getWeekdayMap();
-                req.setAttribute("weekdays", weekdays);
-
-                // Lịch học từng lớp
-                List<Object[]> weeklySchedules = scheduleDAO.getWeeklySchedule();
-                req.setAttribute("weeklySchedules", weeklySchedules);
-
-                // Tính phần trăm đã thanh toán
-                int paidPercentage = paymentDAO.getPaidPercentage();
-                int unpaidPercentage = 100 - paidPercentage;
-                req.setAttribute("percentPaid", paidPercentage);
-                req.setAttribute("percentUnpaid", unpaidPercentage);
-
-                // Danh sách lớp và số học sinh chưa thanh toán
-                List<Object[]> unpaidList = paymentDAO.getUnpaidCountPerClassList();
-                req.setAttribute("paymentSummaries", unpaidList);
-                for (Object[] row : unpaidList) {
-                    System.out.println("Lớp: " + row[0] + ", Còn nợ: " + row[1]);
+            switch (tab) {
+                case "overview":
+                    req.setAttribute("openClassCount", classGroupDAO.getOpeningClassGroupsByCourseDate().size());
+                    req.setAttribute("totalTeachers", teacherDAO.getAllTeachers().size());
+                    req.setAttribute("studentCount", studentDAO.getStudentCount());
+                    req.setAttribute("classesCount", tutoringClassDAO.getClasses(null).size());
+                    req.setAttribute("todaySchedules", scheduleDAO.getTodaySchedules());
+                    req.setAttribute("studentCounts", studentDAO.getStudentCountPerSubject());
+                    req.setAttribute("teacherSchedules", teacherDAO.getTeacherSchedules());
+                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule());
+                    int paidPercent = paymentDAO.getPaidPercentage();
+                    req.setAttribute("percentPaid", paidPercent);
+                    req.setAttribute("percentUnpaid", 100 - paidPercent);
+                    List<Object[]> unpaidList = paymentDAO.getUnpaidCountPerClassList();
+                    req.setAttribute("paymentSummaries", unpaidList);
+                    break;
+                case "courseManagement":
+                    String idRaw = req.getParameter("id");
+                    if (idRaw != null && !idRaw.isEmpty()) {
+                        try {
+                            int id = Integer.parseInt(idRaw);
+                            TutoringClass c = tutoringClassDAO.getTutoringClassDetail(id);
+                            req.setAttribute("c", c);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    req.setAttribute("data", tutoringClassDAO.getClasses(null));
+                    req.setAttribute("subjects", subjectDAO.getAllSubjects());
+                    req.setAttribute("grades", gradeDAO.getAllGrades());
+                    break;
+                case "paymentReport":
+                    req.setAttribute("paymentDetails", paymentDAO.getDetailedPaymentPerClass());
+                    break;
+                case "scheduleClass":
+                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule());
+                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                    break;
+                case "teacherSchedule":
+                    List<Object[]> teacherSchedules = teacherDAO.getTeacherSchedules();
+                    Map<String, List<Object[]>> teacherScheduleMap = new LinkedHashMap<>();
+                    for (Object[] row : teacherSchedules) {
+                        String teacher = (String) row[0];
+                        Object[] schedule = {row[1], row[2], row[3], row[4], row[5]};
+                        teacherScheduleMap.computeIfAbsent(teacher, k -> new ArrayList<>()).add(schedule);
+                    }
+                    req.setAttribute("teacherScheduleMap", teacherScheduleMap);
+                    req.setAttribute("subjectList", subjectDAO.getAllSubjects());
+                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                    break;
+                case "todaySchedule":
+                    try {
+                    LocalDate weekStartDate;
+                    String weekStartStr = req.getParameter("weekStart");
+                    String anyDateStr = req.getParameter("anyDate");
+                    if (anyDateStr != null && !anyDateStr.isEmpty()) {
+                        LocalDate anyDate = LocalDate.parse(anyDateStr);
+                        weekStartDate = anyDate.with(java.time.DayOfWeek.MONDAY);
+                        req.setAttribute("anyDate", anyDateStr);
+                    } else if (weekStartStr != null && !weekStartStr.isEmpty()) {
+                        weekStartDate = LocalDate.parse(weekStartStr);
+                    } else {
+                        weekStartDate = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+                    }
+                    Date weekStartUtil = Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
+                    req.setAttribute("selectedWeekStart", weekStartUtil);
+                    req.setAttribute("weekStartList", scheduleDAO.getWeekStartList());
+                    req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
+                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklyScheduleByWeek(weekStartUtil));
+                    Map<Integer, Date> weekdayDates = new LinkedHashMap<>();
+                    for (int i = 2; i <= 7; i++) {
+                        weekdayDates.put(i, Date.from(weekStartDate.plusDays(i - 2).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    }
+                    weekdayDates.put(1, Date.from(weekStartDate.plusDays(6).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                    req.setAttribute("weekdayDates", weekdayDates);
+                    req.setAttribute("todayDate", Date.from(LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                } catch (Exception e) {
+                    throw new ServletException("Invalid date", e);
                 }
-
-             } else if ("todaySchedule".equals(tab)) {
-    String weekStartStr = req.getParameter("weekStart");
-    String anyDateStr = req.getParameter("anyDate");
-    LocalDate weekStartDate;
-
-    try {
-        if (anyDateStr != null && !anyDateStr.isEmpty()) {
-            LocalDate anyDate = LocalDate.parse(anyDateStr);
-            weekStartDate = anyDate.with(java.time.DayOfWeek.MONDAY);
-            req.setAttribute("anyDate", anyDateStr);
-            req.setAttribute("selectedWeekStart", java.util.Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
-        } else if (weekStartStr != null && !weekStartStr.isEmpty()) {
-            weekStartDate = LocalDate.parse(weekStartStr, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            req.setAttribute("selectedWeekStart", java.util.Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
-        } else {
-            LocalDate today = LocalDate.now();
-            int dayOfWeek = today.getDayOfWeek().getValue();
-            weekStartDate = today.minusDays(dayOfWeek - 1); // Thứ 2 tuần này
-            req.setAttribute("selectedWeekStart", java.util.Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                break;
+                case "setting":
+                    req.setAttribute("banners", bannerDAO.getAllBanners());
+                    if ("1".equals(req.getParameter("ajax"))) {
+                        req.getRequestDispatcher("/setting.jsp").forward(req, res);
+                        return;
+                    }
+                    break;
+            }
+            req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServletException("Error processing admin request", e);
         }
-
-        java.util.Date weekStartUtil = java.util.Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
-
-        // Danh sách các tuần (java.util.Date)
-        List<Date> weekStartList = scheduleDAO.getWeekStartList();
-        req.setAttribute("weekStartList", weekStartList);
-
-        // Lấy shift
-        List<Shift> shifts = shiftLearnDAO.getAllShifts();
-        if (shifts == null || shifts.isEmpty()) {
-            LOGGER.warning("Shifts list is empty");
-        }
-        req.setAttribute("shifts", shifts);
-
-        // Lấy lịch 1 tuần (theo weekStart)
-        List<Object[]> weeklySchedules = scheduleDAO.getWeeklyScheduleByWeek(weekStartUtil);
-        if (weeklySchedules == null || weeklySchedules.isEmpty()) {
-            LOGGER.warning("weeklySchedules is empty for weekStart: " + weekStartUtil);
-        }
-        req.setAttribute("weeklySchedules", weeklySchedules);
-
-        // Map ngày trong tuần
-        Map<Integer, java.util.Date> weekdayDates = new LinkedHashMap<>();
-        for (int i = 2; i <= 7; i++) {
-            weekdayDates.put(i, java.util.Date.from(weekStartDate.plusDays(i - 2).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
-        }
-        weekdayDates.put(1, java.util.Date.from(weekStartDate.plusDays(6).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
-
-        java.util.Date todayDate = java.util.Date.from(LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
-
-        // Map tên các ngày trong tuần
-        req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
-        req.setAttribute("weekdayDates", weekdayDates);
-        req.setAttribute("todayDate", todayDate);
-    } catch (java.time.format.DateTimeParseException e) {
-        LOGGER.severe("Invalid date format for weekStartStr: " + weekStartStr + ", error: " + e.getMessage());
-        throw new ServletException("Invalid date format", e);
     }
-} else if ("teacherSchedule".equals(tab)) {
-                List<Object[]> teacherSchedules = teacherDAO.getTeacherSchedules();
 
-                // Nhóm lịch giáo viên theo tên
-                Map<String, List<Object[]>> teacherScheduleMap = new LinkedHashMap<>();
-                for (Object[] row : teacherSchedules) {
-                    String teacher = (String) row[0]; // giáo viên
-                    Object[] scheduleData = new Object[]{
-                        row[1], // Subject
-                        row[2], // Class
-                        row[3], // DayOfWeek
-                        row[4], // StartTime
-                        row[5] // EndTime
-                    };
-
-                    teacherScheduleMap.putIfAbsent(teacher, new ArrayList<>());
-                    teacherScheduleMap.get(teacher).add(scheduleData);
-                }
-
-                req.setAttribute("teacherScheduleMap", teacherScheduleMap);
-
-                // Môn học
-                List<Subject> subjects = subjectDAO.getAllSubjects();
-                req.setAttribute("subjectList", subjects);
-
-                // Thứ
-                Map<Integer, String> weekdays = scheduleDAO.getWeekdayMap();
-                req.setAttribute("weekdays", weekdays);
-
-            } else if ("scheduleClass".equals(tab)) {
-                List<Object[]> weeklySchedules = scheduleDAO.getWeeklySchedule();
-                Map<Integer, String> weekdays = scheduleDAO.getWeekdayMap();
-
-                req.setAttribute("weeklySchedules", weeklySchedules);
-                req.setAttribute("weekdays", weekdays);
-
-            } else if ("paymentReport".equals(tab)) {
-                PaymentDAO paymentDAO = new PaymentDAO();
-                List<Object[]> paymentDetails = paymentDAO.getDetailedPaymentPerClass();
-                req.setAttribute("paymentDetails", paymentDetails);
-            }
-
-            // Nếu là tab setting, set thêm banners
-            if ("setting".equals(tab)) {
-                req.setAttribute("banners", bannerDAO.getAllBanners());
-            }
-
-            // Nếu gọi bằng AJAX → trả về 1 phần page (setting.jsp)
-            if ("setting".equals(tab) && "1".equals(req.getParameter("ajax"))) {
-                req.getRequestDispatcher("/setting.jsp").forward(req, res);
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        String action = req.getParameter("action");
+        String idStr = req.getParameter("id");
+        System.out.println("POST received: action=" + action + ", id=" + idStr);
+        try {
+            if ("ADD".equals(action)) {
+                TutoringClass tc = extractFromRequest(req);
+                tutoringClassDAO.addTutoringClass(tc);
+            } else if ("UPDATE".equals(action) && idStr != null) {
+                int id = Integer.parseInt(idStr);
+                TutoringClass tc = extractFromRequest(req);
+                tc.setTutoringClassID(id);
+                tutoringClassDAO.updateTutoringClass(tc);
+            } else if ("DELETE".equals(action) && idStr != null) {
+                tutoringClassDAO.deleteTutoringClass(Integer.parseInt(idStr));
+            } else if ("SEARCH".equals(action)) {
+                String name = req.getParameter("name");
+                List<TutoringClass> result = tutoringClassDAO.searchTutoringClassByName(name);
+                req.setAttribute("tab", "courseManagement");
+                req.setAttribute("data", result);
+                req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
                 return;
             }
-
-            // Trả về toàn bộ layout admin
-            req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
-
         } catch (Exception e) {
-            LOGGER.severe("Error in AdminServlet: " + e.getMessage());
             e.printStackTrace();
-            throw new ServletException("Error processing request", e);
         }
+        res.sendRedirect("admin?tab=courseManagement");
     }
+
+    private TutoringClass extractFromRequest(HttpServletRequest req) throws Exception {
+        TutoringClass tc = new TutoringClass();
+        tc.setClassName(req.getParameter("name"));
+        tc.setDescrip(req.getParameter("description"));
+        tc.setGradeID(Integer.parseInt(req.getParameter("grade")));
+        tc.setSubjectID(Integer.parseInt(req.getParameter("subject")));
+        tc.setStartDate(sdf.parse(req.getParameter("startDate")));
+        tc.setEndDate(sdf.parse(req.getParameter("endDate")));
+        tc.setPrice(Double.parseDouble(req.getParameter("price")));
+
+        // Xử lý ảnh upload
+        Part imagePart = req.getPart("courseImageFile");
+        String imageFileName = null;
+
+        if (imagePart != null && imagePart.getSize() > 0 && imagePart.getSubmittedFileName() != null && !imagePart.getSubmittedFileName().isEmpty()) {
+            String originalName = imagePart.getSubmittedFileName();
+            String extension = originalName.substring(originalName.lastIndexOf(".")); // .jpg/.png
+            imageFileName = "course_" + System.nanoTime() + extension;
+
+            File dir = new File(EXTERNAL_IMG_DIR);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            File savedFile = new File(dir, imageFileName);
+            try {
+                imagePart.write(savedFile.getAbsolutePath());
+            } catch (Exception e) {
+                Files.copy(imagePart.getInputStream(), savedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // Lưu đường dẫn tương đối
+            tc.setImage("uploads/" + imageFileName);
+        } else {
+            // Không có ảnh mới: dùng lại ảnh cũ
+            tc.setImage(req.getParameter("oldImage"));
+        }
+
+        String isHotRaw = req.getParameter("isHot");
+        tc.setIsHot("1".equals(isHotRaw));
+        return tc;
+    }
+
 }
