@@ -1,7 +1,7 @@
 <%-- 
-    Document   : studentprofile
+    Document   : attendancestudent
     Created on : Jun 23, 2025, 10:17:38 AM
-    Author     : NGOC ANH
+    Author     : DO NGOC ANH HE180661
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -549,10 +549,10 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="getclasslist" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Danh sách học sinh</h3>
+            <h3 class="schedule-title text-center w-100 m-0">Điểm danh học sinh</h3>
         </div>
 
         <div >
@@ -572,7 +572,7 @@
                     <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
-                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
@@ -581,25 +581,29 @@
                     <form action="submitattend" method="post">
                         <input type="hidden" name="classGroupId" value="${classGroupId}" />
                         <table class="table table-striped table-hover table-bordered">
-                           <thead class="table-dark">
-                                    <tr>
-                                        <th scope="col">STT</th>
-                                        <th scope="col">Tên học sinh</th>
-                                        <th scope="col">Ảnh học sinh</th>
-                                        <th scope="col">Trạng thái</th>
-                                        
-                                    </tr>
-                                </thead>
+                            <thead style="background-color: pink; color: black;">
+                                <tr>
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Tên học sinh</th>
+                                    <th scope="col">Ảnh học sinh</th>
+                                    <th scope="col">Trạng thái</th>
+
+                                </tr>
+                            </thead>
                             <c:forEach var="s" items="${students}">
                                 <tr>
                                     <th scope="row">${loop.index + 1}</th>
                                     <td>${s.name}</td>
                                     <td><img class="avatar" src="images/${s.avatar}" alt="avatar" /></td>
                                     <td>
-                                        <input type="radio" name="status_${s.id}" value="0" checked> Vắng mặt
-                                        <input type="radio" name="status_${s.id}" value="1"> Có mặt
-                                    </td>
-                                </tr>
+                                        <input type="radio" name="status_${s.id}" value="0"
+                                               <c:if test="${attendanceMap[s.id] == false}">checked</c:if> 
+                                               <c:if test="${attendanceMap[s.id] == null}">checked</c:if>/> Vắng mặt
+
+                                               <input type="radio" name="status_${s.id}" value="1"
+                                               <c:if test="${attendanceMap[s.id] == true}">checked</c:if> /> Có mặt
+                                        </td>
+                                    </tr>
                             </c:forEach>
                         </table>
                         <input type="submit" value="Lưu điểm danh"/>
@@ -684,16 +688,11 @@
         <!-- <script src="js/custom.js"></script> -->
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <c:if test="${param.attendSuccess == 'true'}">
-        <script>
-            alert("Lưu điểm danh thành công!");
-            // Xóa ?uploadSuccess=true khỏi URL để tránh alert hiển thị lại khi F5
-            if (window.history.replaceState) {
-                const url = new URL(window.location);
-                url.searchParams.delete("attendSuccess");
-                window.history.replaceState({}, document.title, url.pathname + url.search);
-            }
-        </script>
-    </c:if>
+        <c:if test="${attendSuccess == true}">
+            <script>
+                alert("Lưu điểm danh thành công!");
+            </script>
+        </c:if>
+
     </body>
 </html>
