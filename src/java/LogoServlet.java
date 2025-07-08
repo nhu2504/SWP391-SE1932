@@ -1,3 +1,4 @@
+
 import dal.DBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,11 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.*;
+
 /**
- * 
  *
- * Ngày tạo: 23/06/2025  
- * Người viết: Van Nhu
+ *
+ * Ngày tạo: 23/06/2025 Người viết: Van Nhu
  */
 @WebServlet("/LogoServlet")
 public class LogoServlet extends HttpServlet {
@@ -29,18 +30,33 @@ public class LogoServlet extends HttpServlet {
         if (type == null || type.trim().isEmpty()) {
             type = "logo"; // Mặc định là logo
         }
-
+        if ("manual".equalsIgnoreCase(type)) {
+            String filename = request.getParameter("filename");
+            if (filename != null && !filename.trim().isEmpty()) {
+                File imageFile = resolveImageFile(filename, request);
+                if (imageFile != null && imageFile.exists()) {
+                    String mime = getServletContext().getMimeType(imageFile.getName());
+                    if (mime == null) {
+                        mime = "image/jpeg";
+                    }
+                    response.setContentType(mime);
+                    response.setContentLengthLong(imageFile.length());
+                    Files.copy(imageFile.toPath(), response.getOutputStream());
+                    response.getOutputStream().flush();
+                    return;
+                }
+            }
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
+        }
         // Đảm bảo thư mục chứa ảnh ngoài project tồn tại
         File externalDir = new File(EXTERNAL_IMAGE_DIR);
         if (!externalDir.exists() && !externalDir.mkdirs()) {
-            System.err.println("❌ Không thể tạo thư mục ảnh ngoài project: " + EXTERNAL_IMAGE_DIR);
+            System.err.println("Không thể tạo thư mục ảnh ngoài project: " + EXTERNAL_IMAGE_DIR);
         }
 
         try (
-            Connection conn = new DBContext().connection;
-            PreparedStatement ps = createPreparedStatement(conn, type, request);
-            ResultSet rs = (ps != null) ? ps.executeQuery() : null
-        ) {
+                Connection conn = new DBContext().connection; PreparedStatement ps = createPreparedStatement(conn, type, request); ResultSet rs = (ps != null) ? ps.executeQuery() : null) {
             if (rs != null && rs.next()) {
                 String imageFileName = rs.getString(1);
 
@@ -50,7 +66,9 @@ public class LogoServlet extends HttpServlet {
                     if (imageFile != null && imageFile.exists()) {
                         // Thiết lập MIME type và gửi ảnh
                         String mime = getServletContext().getMimeType(imageFile.getName());
-                        if (mime == null) mime = "image/jpeg";
+                        if (mime == null) {
+                            mime = "image/jpeg";
+                        }
                         response.setContentType(mime);
                         response.setContentLengthLong(imageFile.length());
                         Files.copy(imageFile.toPath(), response.getOutputStream());
@@ -122,6 +140,10 @@ public class LogoServlet extends HttpServlet {
                     ps.setString(1, userId);
                 }
                 break;
+            // Không cần truy vấn DB nếu là manual
+            case "manual":
+                return null;
+
             default:
                 break;
         }
@@ -130,15 +152,11 @@ public class LogoServlet extends HttpServlet {
     }
 
     /**
-     * Tìm file ảnh theo tên file, ưu tiên từ thư mục ngoài project,
-     * sau đó thử trong thư mục /Uploads và /images nội bộ
+     * Tìm file ảnh theo tên file, ưu tiên từ thư mục ngoài project, sau đó thử
+     * trong /images nội bộ
      */
     private File resolveImageFile(String imageFileName, HttpServletRequest request) {
         File imageFile = new File(EXTERNAL_IMAGE_DIR, imageFileName);
-
-        if (!imageFile.exists()) {
-            imageFile = new File(getServletContext().getRealPath("/Uploads"), imageFileName);
-        }
         if (!imageFile.exists()) {
             imageFile = new File(getServletContext().getRealPath("/images"), imageFileName);
         }

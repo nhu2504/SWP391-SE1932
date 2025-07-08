@@ -46,7 +46,7 @@ public class AdminServlet extends HttpServlet {
     private final PaymentDAO paymentDAO = new PaymentDAO();
     private final GradeDAO gradeDAO = new GradeDAO();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
+    private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -175,8 +175,31 @@ private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường d
         System.out.println("POST received: action=" + action + ", id=" + idStr);
         try {
             if ("ADD".equals(action)) {
-                TutoringClass tc = extractFromRequest(req);
-                tutoringClassDAO.addTutoringClass(tc);
+                try {
+                    TutoringClass tc = extractFromRequest(req);
+
+                    // Kiểm tra ngày bắt đầu
+                    if (tc.getStartDate().before(new Date())) {
+                        req.setAttribute("error", "Ngày bắt đầu phải từ hôm nay trở đi!");
+                        req.setAttribute("tab", "courseManagement");
+                        req.setAttribute("c", tc); // giữ lại object chứa image path
+                        req.setAttribute("data", tutoringClassDAO.getClasses(null));
+                        req.setAttribute("subjects", subjectDAO.getAllSubjects());
+                        req.setAttribute("grades", gradeDAO.getAllGrades());
+                        doGet(req, res);
+                        return;
+                    }
+
+                    tutoringClassDAO.addTutoringClass(tc);
+                    res.sendRedirect("admin?tab=courseManagement");
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    req.setAttribute("error", "Có lỗi xảy ra khi thêm khóa học!");
+                    req.setAttribute("tab", "courseManagement");
+                    req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+                    return;
+                }
             } else if ("UPDATE".equals(action) && idStr != null) {
                 int id = Integer.parseInt(idStr);
                 TutoringClass tc = extractFromRequest(req);
@@ -199,46 +222,46 @@ private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường d
     }
 
     private TutoringClass extractFromRequest(HttpServletRequest req) throws Exception {
-        TutoringClass tc = new TutoringClass();
-        tc.setClassName(req.getParameter("name"));
-        tc.setDescrip(req.getParameter("description"));
-        tc.setGradeID(Integer.parseInt(req.getParameter("grade")));
-        tc.setSubjectID(Integer.parseInt(req.getParameter("subject")));
-        tc.setStartDate(sdf.parse(req.getParameter("startDate")));
-        tc.setEndDate(sdf.parse(req.getParameter("endDate")));
-        tc.setPrice(Double.parseDouble(req.getParameter("price")));
+    TutoringClass tc = new TutoringClass();
+    tc.setClassName(req.getParameter("name"));
+    tc.setDescrip(req.getParameter("description"));
+    tc.setGradeID(Integer.parseInt(req.getParameter("grade")));
+    tc.setSubjectID(Integer.parseInt(req.getParameter("subject")));
+    tc.setStartDate(sdf.parse(req.getParameter("startDate")));
+    tc.setEndDate(sdf.parse(req.getParameter("endDate")));
+    tc.setPrice(Double.parseDouble(req.getParameter("price")));
 
-        // Xử lý ảnh upload
-        Part imagePart = req.getPart("courseImageFile");
-        String imageFileName = null;
+    Part imagePart = req.getPart("courseImageFile");
+    String imageFileName = null;
 
-        if (imagePart != null && imagePart.getSize() > 0 && imagePart.getSubmittedFileName() != null && !imagePart.getSubmittedFileName().isEmpty()) {
-            String originalName = imagePart.getSubmittedFileName();
-            String extension = originalName.substring(originalName.lastIndexOf(".")); // .jpg/.png
-            imageFileName = "course_" + System.nanoTime() + extension;
+    if (imagePart != null && imagePart.getSize() > 0
+        && imagePart.getSubmittedFileName() != null && !imagePart.getSubmittedFileName().isEmpty()) {
 
-            File dir = new File(EXTERNAL_IMG_DIR);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+        String originalName = imagePart.getSubmittedFileName();
+        String extension = originalName.substring(originalName.lastIndexOf(".")); // .jpg/.png
+        imageFileName = "course_" + System.nanoTime() + extension;
 
-            File savedFile = new File(dir, imageFileName);
-            try {
-                imagePart.write(savedFile.getAbsolutePath());
-            } catch (Exception e) {
-                Files.copy(imagePart.getInputStream(), savedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            // Lưu đường dẫn tương đối
-            tc.setImage("uploads/" + imageFileName);
-        } else {
-            // Không có ảnh mới: dùng lại ảnh cũ
-            tc.setImage(req.getParameter("oldImage"));
+        File dir = new File(EXTERNAL_IMG_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
 
-        String isHotRaw = req.getParameter("isHot");
-        tc.setIsHot("1".equals(isHotRaw));
-        return tc;
+        File savedFile = new File(dir, imageFileName);
+        try {
+            imagePart.write(savedFile.getAbsolutePath());
+        } catch (Exception e) {
+            Files.copy(imagePart.getInputStream(), savedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        tc.setImage(imageFileName); // Chỉ lưu tên file
+    } else {
+        tc.setImage(req.getParameter("oldImage")); // Giữ lại ảnh cũ nếu không upload mới
     }
+
+    String isHotRaw = req.getParameter("isHot");
+    tc.setIsHot("1".equals(isHotRaw));
+    return tc;
+}
+
 
 }

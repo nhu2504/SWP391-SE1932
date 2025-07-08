@@ -15,7 +15,7 @@
         <!-- Form thêm/sửa/tìm kiếm khóa học -->
         <div class="mb-8 bg-gray-50 p-6 rounded-xl shadow-sm">
             <h2 class="text-xl font-semibold text-gray-700 mb-6">Thêm, Sửa hoặc Tìm Kiếm Khóa Học</h2>
-            <form action="admin?tab=courseManagement" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form action="admin?tab=courseManagement" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">                
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tên Khóa Học</label>
                     <input type="text" name="name" value="${c.className}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
@@ -70,15 +70,16 @@
                             <img id="courseImagePreview"
                                  src="<c:choose>
                                      <c:when test='${not empty c.image}'>
-                                         ${pageContext.request.contextPath}/LogoServlet?type=tutoring&tutoringClassId=${c.tutoringClassID}
+                                         ${pageContext.request.contextPath}/LogoServlet?type=manual&filename=${fn:escapeXml(c.image)}
                                      </c:when>
                                      <c:otherwise>
-                                         data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=
+                                         https://via.placeholder.com/96
                                      </c:otherwise>
-
                                  </c:choose>"
                                  alt="Course preview"
                                  class="max-h-28 rounded-md object-contain border border-gray-300">
+
+
                         </div>
                         <div>
                             <input type="file" id="courseImage" name="courseImageFile" class="hidden" accept="image/*" onchange="previewCourseImage(this)">
@@ -97,20 +98,17 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Mô Tả</label>
                     <textarea name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>${c.descrip}</textarea>
-                </div>
-                <c:if test="${not empty c}">
-                    <input type="hidden" name="id" value="${c.tutoringClassID}">
+                </div> 
+                <c:if test="${not empty error}">
+                    <div class="text-red-600 font-medium mb-4">${error}</div>
                 </c:if>
-<c:if test="${not empty c}">
-    <p>ID đang chỉnh sửa: ${c.tutoringClassID}</p>
-</c:if>
-
                 <div class="md:col-span-2 flex space-x-4">
-                    <button type="submit" name="action" value="ADD" class="bg-blue-600 text-white px-4 py-3 rounded-lg">ADD</button>
-<button type="submit" name="action" value="UPDATE" class="bg-green-600 text-white px-4 py-3 rounded-lg">UPDATE</button>
-<button type="submit" name="action" value="DELETE" class="bg-red-600 text-white px-4 py-3 rounded-lg">DELETE</button>
-<button type="submit" name="action" value="SEARCH" class="bg-gray-600 text-white px-4 py-3 rounded-lg">SEARCH</button>
-</div>
+                    <button type="submit" name="action" value="ADD" class="bg-blue-600 text-white px-4 py-3 rounded-lg">Thêm</button>
+                    <button type="submit" name="action" value="UPDATE" class="bg-green-600 text-white px-4 py-3 rounded-lg">Sửa</button>
+                    <button type="submit" name="action" value="DELETE" class="bg-red-600 text-white px-4 py-3 rounded-lg">Xoá</button>
+                    <button type="submit" name="action" value="SEARCH" class="bg-gray-600 text-white px-4 py-3 rounded-lg">Tìm kiếm</button>
+                </div>
+
             </form>
         </div>
 
@@ -192,7 +190,7 @@
         </div>
     </div>
 </div>
-  
+
 
 <script>
     function previewCourseImage(input) {

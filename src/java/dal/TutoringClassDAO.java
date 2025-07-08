@@ -131,7 +131,7 @@ public class TutoringClassDAO {
             ps.setInt(9, cls.getGradeID());
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("❌ Lỗi thêm lớp học: " + e.getMessage());
+            System.out.println("Lỗi thêm lớp học: " + e.getMessage());
         }
     }
 
