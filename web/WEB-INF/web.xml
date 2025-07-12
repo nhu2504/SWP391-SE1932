@@ -60,10 +60,10 @@
         <servlet-name>UploadServlet</servlet-name>
         <servlet-class>controll_teacher.UploadServlet</servlet-class>
     </servlet>
-    
-    
-    
-    
+    <servlet>
+        <servlet-name>ScheduleOptionsServlet</servlet-name>
+        <servlet-class>ScheduleOptionsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -136,8 +136,10 @@
         <servlet-name>UploadServlet</servlet-name>
         <url-pattern>/upload</url-pattern>
     </servlet-mapping>
-    
-    
+    <servlet-mapping>
+        <servlet-name>ScheduleOptionsServlet</servlet-name>
+        <url-pattern>/ScheduleOptionsServlet</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
