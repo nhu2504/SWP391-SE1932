@@ -244,8 +244,8 @@ create table banner(
 	CenterID INT,
 	FOREIGN KEY (CenterID) REFERENCES CenterInfo(CenterID)
 );
-
-
+select * from TutoringRegistrationPending
+select * from [user]
 --18.Đăng ký dành cho người chưa có tài khoản
 CREATE TABLE TutoringRegistrationPending (
     RegistrationPendingID INT PRIMARY KEY IDENTITY,
@@ -261,10 +261,18 @@ CREATE TABLE TutoringRegistrationPending (
     Class NVARCHAR(50),
     ParentPhone NVARCHAR(20),
     ParentEmail NVARCHAR(255),
-	UserIntro INT,
+	
 	Confirmed BIT DEFAULT 0,
-	FOREIGN KEY (UserIntro) REFERENCES [User](UserID)
+	
 );
+-- Bước 1: Cho phép NULL
+ALTER TABLE TutoringRegistrationPending
+ALTER COLUMN UserIntro INT NULL;
+
+-- Bước 2: Thêm FOREIGN KEY nếu chưa có
+ALTER TABLE TutoringRegistrationPending
+ADD CONSTRAINT FK_UserIntro FOREIGN KEY (UserIntro) REFERENCES [User](UserID);
+
 
 --19.Bảng lịch học và lịch dạy
 CREATE TABLE Schedule (
@@ -314,12 +322,19 @@ CREATE TABLE TutoringRegistration (
     FOREIGN KEY (UserID) REFERENCES [User](UserID),
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
-
+select * from school
+select * from SchoolClass
 update [user]
 set avatar= '/WebApplication3/image-loader/team-5.jpg'
 where UserID = 6
-
+select * from teacherclass
 select * from [user]
 update [user]
 set SchoolID = 7
 where UserID in (5,11,15,18,21)
+update school set schoolname = N'Hà Thành' where schoolid = 1
+update school set schoolname = N'Xuân Đỉnh' where schoolid = 2
+update school set schoolname = N'Minh Khai' where schoolid = 3
+update school set schoolname = N'Thượng Cát' where schoolid = 4
+update school set schoolname = N'Tây Đô' where schoolid = 5
+

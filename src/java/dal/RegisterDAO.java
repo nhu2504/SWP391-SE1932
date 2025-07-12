@@ -4,10 +4,15 @@
  */
 package dal;
 
+import entity.Register;
+import java.sql.CallableStatement;
 import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -50,5 +55,63 @@ public class RegisterDAO {
         return check;
 
     }
+
+    public List<Register> getListRegister() {
+        List<Register> list = new ArrayList<>();
+        String sql = "SELECT * FROM TutoringRegistrationPending"; // Câu lệnh SQL lấy toàn bộ phòng
+
+        try (
+            Connection conn = new DBContext().connection;            // Mở kết nối đến DB
+            PreparedStatement ps = conn.prepareStatement(sql);       // Tạo PreparedStatement
+            ResultSet rs = ps.executeQuery()                         // Thực thi truy vấn
+        ) {
+            while (rs.next()) {
+                Register r = new Register();
+                r.setRegisID(rs.getInt("RegistrationPendingID"));
+                r.setFullName(rs.getString("FullName"));
+                r.setPhone(rs.getString("Phone"));
+                r.setEmail(rs.getString("Email"));
+                r.setRegisDate(rs.getDate("RegisterDate"));
+                r.setApprovalStatus(rs.getString("ApprovalStatus"));
+                r.setGender(rs.getString("Gender"));
+                r.setBirth(rs.getDate("BirthDate"));
+                r.setSchool(rs.getString("School"));
+                r.setAddress(rs.getString("AddressSchool"));
+                r.setClassAtSchool(rs.getString("Class"));
+                r.setParentPhone(rs.getString("ParentPhone"));
+                r.setParentEmail(rs.getString("ParentEmail"));
+                r.setConfirm(rs.getBoolean("Confirmed"));
+                r.setIdUserIntro(rs.getInt("UserIntro"));
+                list.add(r);                          
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi nếu xảy ra
+        }
+
+        return list; // Trả về danh sách phòng học
+    }
+    public void approveUserByProcedure(int regisID) {
+    String sql = "{call sp_ApprovePendingUser(?)}";
+    try (Connection conn = new DBContext().connection;
+         CallableStatement cs = conn.prepareCall(sql)) {
+        cs.setInt(1, regisID);
+        cs.execute();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+    public void updateStatus(int id, String status) {
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(
+             "UPDATE TutoringRegistrationPending SET ApprovalStatus = ? WHERE RegistrationPendingID = ?"
+         )) {
+        ps.setString(1, status);
+        ps.setInt(2, id);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 
 }

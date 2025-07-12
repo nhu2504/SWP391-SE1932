@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -233,6 +235,59 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    public boolean updateAdmin(int userId, String email, String phone, String avatarFileName, String description) {
+        String sql = "update [user] \n"
+                + "set email = ?, phone = ?, avatar = ?,\n"
+                + "descrip = ?\n"
+                
+                + "where userid = ?";
+        try {
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, phone);
+            ps.setString(3, avatarFileName);
+            ps.setString(4, description);
+            
+            ps.setInt(5, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    //Ngọc Anh update day: 9/7/2025
+    public List<Integer> getAllUserIds() {
+        List<Integer> list = new ArrayList<>();
+        String sql = "SELECT UserID FROM [User]";
+        try (Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("UserID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Integer> getUserIdsByRole(int roleId) {
+        List<Integer> list = new ArrayList<>();
+        String sql = "SELECT UserID FROM [User] WHERE roleID = ?";
+        try (Connection conn = new DBContext().connection; 
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("UserID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa

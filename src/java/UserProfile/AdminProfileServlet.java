@@ -3,9 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll_teacher;
+package UserProfile;
 
-import dal.ClassGroup_StudentDAO;
+import dal.RoleDAO;
+import dal.SchoolClassDAO;
+import dal.SchoolDAO;
+import dal.UserDAO;
+import entity.School;
+import entity.SchoolClass;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,13 +19,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author NGOC ANH
  */
-public class TakeAttendStudentServlet extends HttpServlet {
+public class AdminProfileServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +45,10 @@ public class TakeAttendStudentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TakeAttendStudentServlet</title>");  
+            out.println("<title>Servlet AdminProfileServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TakeAttendStudentServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet AdminProfileServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,21 +64,46 @@ public class TakeAttendStudentServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
             response.sendRedirect("login_register.jsp");
             return;
         }
-        int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
-       
-            ClassGroup_StudentDAO dao = new ClassGroup_StudentDAO();
-            List<User> students = dao.getStudentsByClassGroupId(classGroupId);
+        int userId = sessionUser.getId();
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserByID(userId);
+        if (user == null) {
+            request.setAttribute("error", "Không tìm thấy thông tin người dùng");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+            return;
+        }
+  
+        // Lấy tên vai trò
+        RoleDAO roleDAO = new RoleDAO();
+        String roleName = roleDAO.getRoleNameByID(user.getRoleID());
+        if (roleName == null) {
+            roleName = "Unknown";
+        }
 
-        request.setAttribute("students", students);
-        request.setAttribute("classGroupId", classGroupId);
-        request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
-    } 
+        Map<String, String> roleNameViMap = Map.of(
+                "admin", "Quản trị viên",
+                "teacher", "Giáo viên",
+                "student", "Học sinh",
+                "manager", "Quản lý",
+                "Unknown", "Không xác định"
+        );
+        String roleNameVi = roleNameViMap.getOrDefault(roleName, "Không xác định");
+
+        // Set các attribute cho JSP
+        request.setAttribute("user", user);
+      
+        request.setAttribute("roleNameVi", roleNameVi);
+
+
+        request.getRequestDispatcher("admin_managerprofile.jsp").forward(request, response);
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.

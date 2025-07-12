@@ -29,7 +29,6 @@ import java.util.List;
 @MultipartConfig
 public class UploadProfileServlet extends HttpServlet {
 
-    private UserDAO userDao = new UserDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -79,6 +78,7 @@ public class UploadProfileServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

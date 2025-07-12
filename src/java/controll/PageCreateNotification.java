@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll_teacher;
+package controll;
 
-import dal.ClassGroup_StudentDAO;
+import dal.RoleDAO;
+import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,13 +15,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
-public class TakeAttendStudentServlet extends HttpServlet {
+public class PageCreateNotification extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +37,10 @@ public class TakeAttendStudentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TakeAttendStudentServlet</title>");  
+            out.println("<title>Servlet PageCreateNotification</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TakeAttendStudentServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet PageCreateNotification at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,15 +62,19 @@ public class TakeAttendStudentServlet extends HttpServlet {
             response.sendRedirect("login_register.jsp");
             return;
         }
-        int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
-       
-            ClassGroup_StudentDAO dao = new ClassGroup_StudentDAO();
-            List<User> students = dao.getStudentsByClassGroupId(classGroupId);
+        User admin = (User) session.getAttribute("user");
+        int createdBy = admin.getId();
 
-        request.setAttribute("students", students);
-        request.setAttribute("classGroupId", classGroupId);
-        request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
-    } 
+        RoleDAO roleDao = new RoleDAO();
+        UserDAO userDao = new UserDAO();
+
+        request.setAttribute("allRoles", roleDao.getAllRoles());
+        request.setAttribute("allUsers", userDao.getAllUserIds());
+        request.setAttribute("tab", "createNotification");
+
+        request.getRequestDispatcher("admin_dashboard.jsp").forward(request, response);
+    }
+    
 
     /** 
      * Handles the HTTP <code>POST</code> method.
