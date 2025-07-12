@@ -778,7 +778,7 @@
                     <div class="d-inline-flex align-items-center">
                         <i class="fa fa-2x fa-envelope text-primary mr-3"></i>
                         <div class="text-left">
-                            <h6 class="font-weight-semi-bold mb-1">Email</h6>
+                            <h6 class="font-weight-semi-bold mb-1 ">Email</h6>
                             <small>${email}</small>
                         </div>
                     </div>
@@ -807,12 +807,12 @@
                     <form action="login" method="post">
                         <div class="form-group">
                             <label>Email hoặc Số Điện Thoại*</label>
-                            <input type="text" name="loginEmail"   />
+                            <input type="text" name="loginEmail"  placeholder="Email hoặc Số Điện Thoại*" />
                         </div>
                         <div class="form-group">
                             <label>Mật khẩu *</label>
                             <div class="position-relative">
-                                <input type="password" id="Password" name="loginPassword" class="form-control pe-5" required />
+                                <input type="password" id="Password" name="loginPassword" class="form-control pe-5" placeholder="Mật khẩu *" required />
                                 <i class="fa fa-eye-slash toggle-password" id="togglePass" onclick="togglePassword('Password', 'togglePass')"></i>
                             </div>
                         </div>
@@ -865,13 +865,15 @@
                             <input type="date" name="dob" />
                         </div>
                         <div class="form-group schoolclass sc">
-                            <input type="text" name="school" placeholder="Trường" required/>
+                            <label>Trường THPT</label>
+                            <input type="text" name="school" placeholder="Chỉ nhập tên trường của bạn. Ví dụ: Hà Thành" required/>
                         </div>
                         <div class="form-group schoolclass sc">
                             <input type="text" name="schoolAddress" placeholder="Địa Chỉ" required/>
                         </div>
                         <div class="form-group schoolclass cl">
-                            <input type="text" name="classAtSchool" placeholder="Lớp" required/>
+                            <label>Lớp</label>
+                            <input type="text" name="classAtSchool" placeholder="Ví dụ: 10A" required/>
                         </div>
                         <div class="form-group">
                             <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />

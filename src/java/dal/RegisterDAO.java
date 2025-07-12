@@ -5,10 +5,10 @@
 package dal;
 
 import entity.Register;
-import java.sql.CallableStatement;
 import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,10 +19,11 @@ import java.util.List;
  * @author DO NGOC ANH HE180661
  */
 public class RegisterDAO {
+
     //nhận vào các thông tin mà học sinh đăng kí và lưu trữ vào bảng TutoringRegistrationPending
     public boolean register(String fullName, String phone, String email, String gender, Date birth,
-            String school,String address, String classAtSchool, String parentPhone, String parentEmail,
-            int idUserIntro,
+            String school, String address, String classAtSchool, String parentPhone, String parentEmail,
+            Integer idUserIntro,
             boolean confirm) {
         boolean check = false;
         //lệnh insert vào 12 cột tương ứng từ 1 tới 12
@@ -44,7 +45,11 @@ public class RegisterDAO {
             ps.setString(8, classAtSchool);
             ps.setString(9, parentPhone);
             ps.setString(10, parentEmail);
-            ps.setInt(11, idUserIntro);
+            if (idUserIntro != null) {
+                ps.setInt(11, idUserIntro);
+            } else {
+                ps.setNull(11, java.sql.Types.INTEGER);
+            }
             ps.setBoolean(12, confirm);
             //trả về số dòng bị ảnh hưởng, nếu thành công thì số dòng > 0, check=true
             check = ps.executeUpdate() > 0;
@@ -58,13 +63,20 @@ public class RegisterDAO {
 
     public List<Register> getListRegister() {
         List<Register> list = new ArrayList<>();
-        String sql = "SELECT * FROM TutoringRegistrationPending"; // Câu lệnh SQL lấy toàn bộ phòng
+        String sql = "SELECT * \n"
+                + "FROM TutoringRegistrationPending\n"
+                + "ORDER BY \n"
+                + "    CASE \n"
+                + "        WHEN ApprovalStatus = 'Pending' THEN 0 \n"
+                + "        ELSE 1 \n"
+                + "    END,\n"
+                + "    RegisterDate ASC; "; // Câu lệnh SQL lấy toàn bộ 
 
         try (
-            Connection conn = new DBContext().connection;            // Mở kết nối đến DB
-            PreparedStatement ps = conn.prepareStatement(sql);       // Tạo PreparedStatement
-            ResultSet rs = ps.executeQuery()                         // Thực thi truy vấn
-        ) {
+                Connection conn = new DBContext().connection; // Mở kết nối đến DB
+                 PreparedStatement ps = conn.prepareStatement(sql); // Tạo PreparedStatement
+                 ResultSet rs = ps.executeQuery() // Thực thi truy vấn
+                ) {
             while (rs.next()) {
                 Register r = new Register();
                 r.setRegisID(rs.getInt("RegistrationPendingID"));
@@ -82,7 +94,7 @@ public class RegisterDAO {
                 r.setParentEmail(rs.getString("ParentEmail"));
                 r.setConfirm(rs.getBoolean("Confirmed"));
                 r.setIdUserIntro(rs.getInt("UserIntro"));
-                list.add(r);                          
+                list.add(r);
             }
         } catch (SQLException e) {
             e.printStackTrace(); // In lỗi nếu xảy ra
@@ -90,28 +102,27 @@ public class RegisterDAO {
 
         return list; // Trả về danh sách phòng học
     }
-    public void approveUserByProcedure(int regisID) {
-    String sql = "{call sp_ApprovePendingUser(?)}";
-    try (Connection conn = new DBContext().connection;
-         CallableStatement cs = conn.prepareCall(sql)) {
-        cs.setInt(1, regisID);
-        cs.execute();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-    public void updateStatus(int id, String status) {
-    try (Connection conn = new DBContext().connection;
-         PreparedStatement ps = conn.prepareStatement(
-             "UPDATE TutoringRegistrationPending SET ApprovalStatus = ? WHERE RegistrationPendingID = ?"
-         )) {
-        ps.setString(1, status);
-        ps.setInt(2, id);
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
 
+    public void approveUserByProcedure(int regisID) {
+        String sql = "{call sp_ApprovePendingUser(?)}";
+        try (Connection conn = new DBContext().connection; CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, regisID);
+            cs.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateStatus(int id, String status) {
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(
+                "UPDATE TutoringRegistrationPending SET ApprovalStatus = ? WHERE RegistrationPendingID = ?"
+        )) {
+            ps.setString(1, status);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

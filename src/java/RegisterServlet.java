@@ -83,20 +83,29 @@ public class RegisterServlet extends HttpServlet {
             String phone = request.getParameter("phone");
             String gender = request.getParameter("gender");
             String birth = request.getParameter("dob");
-            String school = request.getParameter("school");
+
+            String rawName = request.getParameter("school"); // "Hà Thành"
+            String fullSchoolName = "Trường THPT " + rawName;
+
             String address = request.getParameter("schoolAddress");
-            String clAtSc = request.getParameter("classAtSchool");
+            
+            String rawClass = request.getParameter("classAtSchool"); // "12A1"
+            String fullClassName = "Lớp " + rawClass;
+
             String parentPhone = request.getParameter("phonepar");
             String parentEmail = request.getParameter("emailpar");
             String userIntroStr = request.getParameter("userIntro");
             boolean confirm = request.getParameter("verifi") != null;
 
-            int userIntro = 0;
-            if (!userIntroStr.matches("^\\d+$")) {
-                mess = "Mã người giới thiệu không hợp lệ (chỉ được chứa số)";
-            } else {
-                userIntro = Integer.parseInt(userIntroStr);
+            Integer userIntro = null;
+            if (userIntroStr != null && !userIntroStr.trim().isEmpty()) {
+                try {
+                    userIntro = Integer.parseInt(userIntroStr);
+                } catch (NumberFormatException e) {
+                    mess = "ID người giới thiệu không hợp lệ";
+                }
             }
+
             Date birthDate;
             if (birth.isEmpty()) {
                 birthDate = null;
@@ -107,10 +116,6 @@ public class RegisterServlet extends HttpServlet {
                 mess = "Email không hợp lệ";
             } else if (!phone.matches("^0\\d{9}$")) {
                 mess = "Số điện thoại không hợp lệ ";
-            } else if (!parentEmail.matches("^[A-Za-z0-9]+@(.+)$")) {
-                mess = "Email phụ huynh không hợp lệ ";
-            } else if (!parentPhone.matches("^0\\d{9}$")) {
-                mess = "Số điện thoại phụ huynh không hợp lệ ";
             }
             try {
                 LocalDate birthDate1 = LocalDate.parse(birth);
@@ -130,7 +135,7 @@ public class RegisterServlet extends HttpServlet {
 
             RegisterDAO rd = new RegisterDAO();
             boolean success = rd.register(fName, phone, email, gender,
-                    birthDate, school, address, clAtSc, parentPhone,
+                    birthDate, fullSchoolName, address, fullClassName, parentPhone,
                     parentEmail, userIntro, confirm);
 
             if (success) {
