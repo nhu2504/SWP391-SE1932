@@ -113,9 +113,11 @@ public class TutoringClassDAO {
         return null;
     }
 
-    public void addTutoringClass(TutoringClass cls) {
+    public int addTutoringClass(TutoringClass cls) {
         String sql = """
-        INSERT INTO TutoringClass (ClassName, ImageTutoring, Descrip, isHot, SubjectID, StartDate, EndDate, Tuitionfee, GradeID)
+        INSERT INTO TutoringClass 
+        (ClassName, ImageTutoring, Descrip, isHot, SubjectID, StartDate, EndDate, Tuitionfee, GradeID)
+        OUTPUT INSERTED.TutoringClassID
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
@@ -129,10 +131,15 @@ public class TutoringClassDAO {
             ps.setDate(7, new java.sql.Date(cls.getEndDate().getTime()));
             ps.setDouble(8, cls.getPrice());
             ps.setInt(9, cls.getGradeID());
-            ps.executeUpdate();
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1); // trả về TutoringClassID mới
+            }
         } catch (SQLException e) {
             System.out.println("Lỗi thêm lớp học: " + e.getMessage());
         }
+        return -1; // hoặc ném exception nếu muốn kiểm soát lỗi nghiêm ngặt hơn
     }
 
     public void updateTutoringClass(TutoringClass cls) {

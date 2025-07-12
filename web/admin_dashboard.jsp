@@ -300,9 +300,9 @@ Ngày update 3/7/2025-->
                             <i class="fas fa-book w-5"></i>
                             <span>Quản lý khoá học</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin?tab=courseList" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-calendar-alt w-5"></i>
-                            <span>Lịch học</span>
+                            <span>Quản lí lớp học</span>
                         </a>
                         <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-money-bill-wave w-5"></i>
@@ -399,6 +399,13 @@ Ngày update 3/7/2025-->
                         <c:when test="${tab eq 'courseManagement'}">
                             <jsp:include page="manager_tutoringClass.jsp" />
                         </c:when>
+                        <c:when test="${tab eq 'courseList'}">
+                            <jsp:include page="course_list.jsp" />
+                        </c:when>
+                        <c:when test="${tab eq 'classManagement'}">
+                            <jsp:include page="class_management.jsp" />
+                        </c:when>
+                        
                         <c:otherwise>
                             <jsp:include page="overview.jsp" />
                         </c:otherwise>

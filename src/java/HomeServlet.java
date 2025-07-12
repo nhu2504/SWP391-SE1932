@@ -120,7 +120,7 @@ public class HomeServlet extends HttpServlet {
             for (Shift s : allShifts) {
                 System.out.printf("  ShiftID=%d, Start=%s, End=%s, DurationText=%s\n", s.getId(), s.getStartTime(), s.getEndTime(), s.getDurationText());
             }
-//
+            //
             List<TutoringClass> allTutoringClasses = new ArrayList<>();
             allTutoringClasses.addAll(tutoringClassDAO.getFeaturedTutoringClasses());
             allTutoringClasses.addAll(tutoringClassDAO.getYearRoundTutoringClasses());
@@ -137,7 +137,7 @@ public class HomeServlet extends HttpServlet {
                 addedClassIds.add(tutoringClassId);
 
                 // Sử dụng DAO mới đã cập nhật: mỗi group chỉ 1 dòng, có thêm trường ngày học
-                List<Object[]> groupList = classGroupDAO.getClassGroupsWithRoomAndShift(tutoringClassId);
+                List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
                 StringBuilder sb = new StringBuilder();
 
                 String duration = "Chưa xác định";
@@ -265,27 +265,7 @@ public class HomeServlet extends HttpServlet {
             // 12. Học sinh nổi bật và trường liên kết
             request.setAttribute("students", studentDAO.getTopStudents());
             request.setAttribute("schools", schoolDAO.getAllSchools());
-
-            // 13. Nếu có courseId: lấy chi tiết khóa học (TutoringClass và List<ClassGroup>)
-            String courseIdParam = request.getParameter("courseId");
-            TutoringClass selectedTutoringClass = null;
-            List<ClassGroup> selectedClassGroups = new ArrayList<>();
-            String selectedGradeName = "";
-
-            if (courseIdParam != null) {
-                int tutoringClassID = parseIntOrDefault(courseIdParam, -1);
-                if (tutoringClassID > 0) {
-                    selectedTutoringClass = tutoringClassDAO.getTutoringClassDetail(tutoringClassID);
-                    if (selectedTutoringClass != null) {
-                        // LẤY GROUP ĐÚNG TỪ CLASSGROUPDAO
-                        selectedClassGroups = classGroupDAO.getClassGroupsByTutoringClassId(tutoringClassID);
-                        selectedGradeName = gradeNames.get(selectedTutoringClass.getGradeID());
-                    }
-                }
-            }
-            request.setAttribute("selectedTutoringClass", selectedTutoringClass);
-            request.setAttribute("selectedClassGroups", selectedClassGroups);
-            request.setAttribute("selectedGradeName", selectedGradeName);
+           
             // Điều hướng đến JSP
             forwardToJsp(request, response);
 

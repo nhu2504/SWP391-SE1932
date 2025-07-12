@@ -18,10 +18,26 @@ public class ClassGroup {
     private int teachId;
     private int currentStudentCount;
     private String roomName;
+    private int roomId;
+    private int shiftId;
+    
+    
+    
 
     public ClassGroup() {
     }
 
+    public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int teachId, int roomId, int shiftId) {
+        this.classGroupId = classGroupId;
+        this.toturID = toturID;
+        this.name = name;
+        this.maxStudent = maxStudent;
+        this.teachId = teachId;
+        this.roomId = roomId;
+        this.shiftId = shiftId;
+    }
+
+    
     public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int teachId) {
         this.classGroupId = classGroupId;
         this.toturID = toturID;
@@ -95,6 +111,22 @@ public class ClassGroup {
 
     public void setTeachId(int teachId) {
         this.teachId = teachId;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public int getShiftId() {
+        return shiftId;
+    }
+
+    public void setShiftId(int shiftId) {
+        this.shiftId = shiftId;
     }
 
     @Override

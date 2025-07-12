@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,108 +11,114 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <div class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex flex-col items-center p-6 font-inter">
+
+
     <div class="w-full max-w-6xl bg-white rounded-2xl shadow-xl p-8">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Quản Lý Khóa Học</h1>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Quản lý Khoá Học</h1>
+
+            </div>
+            <button onclick="openAddCourseModal()" class="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-plus mr-2"></i> Thêm khoá học mới
+            </button>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <input type="text" id="searchClass" placeholder="🔍 Tìm khoá..." class="form-control w-full md:w-1/3">
+
+            <select id="filterSubject" class="form-control w-full md:w-1/3">
+                <option value="">📘 Tất cả môn học</option>
+                <c:forEach var="s" items="${subjects}">
+                    <option value="${s.subjectName}">${s.subjectName}</option>
+                </c:forEach>
+            </select>
+
+
+            <select id="filterGrade" class="form-control w-full md:w-1/3">
+                <option value="">🏷️ Tất cả khối</option>
+                <c:forEach var="g" items="${grades}">
+                    <option value="${g.gradeName}">${g.gradeName}</option>
+                </c:forEach>
+            </select>
+
+        </div>
 
         <!-- Form thêm/sửa/tìm kiếm khóa học -->
         <div class="mb-8 bg-gray-50 p-6 rounded-xl shadow-sm">
-            <h2 class="text-xl font-semibold text-gray-700 mb-6">Thêm, Sửa hoặc Tìm Kiếm Khóa Học</h2>
-            <form action="admin?tab=courseManagement" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">                
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Chi Tiết Khóa Học</h2>
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tên Khóa Học</label>
-                    <input type="text" name="name" value="${c.className}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <input type="text" value="${c.className}" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Loại Khóa Học</label>
-                    <select name="isHot" class="mt-1 block w-full border border-gray-300 rounded-lg p-3">
-                        <option value="0" ${!c.isHot ? 'selected="selected"' : ''}>Quanh Năm</option>
-                        <option value="1" ${c.isHot ? 'selected="selected"' : ''}>Nổi bật</option>
-
+                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
+                        <option value="0" ${!c.isHot ? 'selected' : ''}>Quanh Năm</option>
+                        <option value="1" ${c.isHot ? 'selected' : ''}>Nổi bật</option>
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Khối</label>
-                    <select name="grade" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                         <c:forEach items="${grades}" var="g">
-                            <option value="${g.gradeID}" ${g.gradeID == c.gradeID ? 'selected="selected"' : ''}>
-                                ${g.gradeName}
-                            </option>
+                            <option value="${g.gradeID}" ${g.gradeID == c.gradeID ? 'selected' : ''}>${g.gradeName}</option>
                         </c:forEach>
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Môn</label>
-                    <select name="subject" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                         <c:forEach items="${subjects}" var="s">
-                            <option value="${s.subjectId}" ${s.subjectId == c.subjectID ? 'selected="selected"' : ''}>
-                                ${s.subjectName}
-                            </option>
+                            <option value="${s.subjectId}" ${s.subjectId == c.subjectID ? 'selected' : ''}>${s.subjectName}</option>
                         </c:forEach>
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Ngày Bắt Đầu</label>
-                    <input type="date" name="startDate" value="${c.startDate}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <input type="date" value="${c.startDate}" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Ngày Kết Thúc</label>
-                    <input type="date" name="endDate" value="${c.endDate}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <input type="date" value="${c.endDate}" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Giá (VND)</label>
-                    <input type="number" name="price" value="${c.price}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <input type="number" value="${c.price}" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
                 </div>
+
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh khóa học</label>
-                    <div class="mt-1 flex items-center">
-                        <div class="mr-4">
-                            <img id="courseImagePreview"
-                                 src="<c:choose>
-                                     <c:when test='${not empty c.image}'>
-                                         ${pageContext.request.contextPath}/LogoServlet?type=manual&filename=${fn:escapeXml(c.image)}
-                                     </c:when>
-                                     <c:otherwise>
-                                         https://via.placeholder.com/96
-                                     </c:otherwise>
-                                 </c:choose>"
-                                 alt="Course preview"
-                                 class="max-h-28 rounded-md object-contain border border-gray-300">
-
-
-                        </div>
-                        <div>
-                            <input type="file" id="courseImage" name="courseImageFile" class="hidden" accept="image/*" onchange="previewCourseImage(this)">
-                            <button type="button" onclick="document.getElementById('courseImage').click()"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-md">
-                                <i class="fas fa-upload mr-2"></i> Chọn ảnh mới
-                            </button>
-                            <p class="mt-1 text-xs text-gray-500">PNG, JPG hoặc GIF (tối đa 2MB)</p>
-                        </div>
+                    <div class="mt-1">
+                        <img id="courseImagePreview"
+                             src="<c:choose>
+                                 <c:when test='${not empty c.image}'>
+                                     ${pageContext.request.contextPath}/LogoServlet?type=manual&filename=${fn:escapeXml(c.image)}
+                                 </c:when>
+                                 <c:otherwise>
+                                     https://via.placeholder.com/96
+                                 </c:otherwise>
+                             </c:choose>"
+                             alt="Course preview"
+                             class="max-h-28 rounded-md object-contain border border-gray-300">
                     </div>
-
-                    <!-- Tên ảnh cũ -->
-                    <input type="hidden" name="oldImage" value="${c.image}">
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Mô Tả</label>
-                    <textarea name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>${c.descrip}</textarea>
-                </div> 
-                <c:if test="${not empty error}">
-                    <div class="text-red-600 font-medium mb-4">${error}</div>
-                </c:if>
-                <div class="md:col-span-2 flex space-x-4">
-                    <button type="submit" name="action" value="ADD" class="bg-blue-600 text-white px-4 py-3 rounded-lg">Thêm</button>
-                    <button type="submit" name="action" value="UPDATE" class="bg-green-600 text-white px-4 py-3 rounded-lg">Sửa</button>
-                    <button type="submit" name="action" value="DELETE" class="bg-red-600 text-white px-4 py-3 rounded-lg">Xoá</button>
-                    <button type="submit" name="action" value="SEARCH" class="bg-gray-600 text-white px-4 py-3 rounded-lg">Tìm kiếm</button>
+                    <textarea rows="4" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">${c.descrip}</textarea>
                 </div>
-
             </form>
         </div>
+
+
 
         <!-- Danh sách khóa học -->
         <div>
@@ -176,12 +184,28 @@
                                     </c:choose>
                                 </td>
 
-                                <td class="p-4">${item.startDate}</td>
-                                <td class="p-4">${item.endDate}</td>
+                                <td class="p-4">
+                                    <fmt:formatDate value="${item.startDate}" pattern="dd/MM/yyyy" />
+                                </td>
+                                <td class="p-4">
+                                    <fmt:formatDate value="${item.endDate}" pattern="dd/MM/yyyy" />
+                                </td>
+
                                 <td class="p-4">${item.price}</td>
                                 <td class="p-4">
-                                    <a href="tutoringclass?id=${item.tutoringClassID}&mode=2" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition">Xóa</a>
+
+                                    <div class="col-span-1 flex space-x-2">
+                                        <button onclick="openEditClassModal('${item.tutoringClassID}')" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="confirmDeleteClass('${item.tutoringClassID}')" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+
                                 </td>
+
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -190,18 +214,199 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div id="addCourseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-3xl w-full relative max-h-[90vh] overflow-y-auto">
+        <!-- Nút đóng -->
+        <button onclick="closeAddCourseModal()" class="absolute top-3 right-3 text-gray-600 hover:text-red-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Thêm Khóa Học Mới</h2>
+        <form action="admin?tab=courseManagement" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4" id="addCourseFormModal">
+            <input type="hidden" name="selectedClassId" value="${c.tutoringClassID}">
+
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Tên Khóa Học</label>
+                <input type="text" name="name" value="${cModal.className}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Loại Khóa Học</label>
+                <select name="isHot" class="mt-1 block w-full border border-gray-300 rounded-lg p-3">
+                    <option value="0" ${cModal.isHot == false ? 'selected="selected"' : ''}>Quanh Năm</option>
+                    <option value="1" ${cModal.isHot == true ? 'selected="selected"' : ''}>Nổi bật</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Khối</label>
+                <select name="grade" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <c:forEach items="${grades}" var="g">
+    <option value="${g.gradeID}"
+        <c:if test="${g.gradeID == cModal.gradeID}">selected="selected"</c:if>>
+        ${g.gradeName}
+    </option>
+</c:forEach>
+
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Môn</label>
+                <select name="subject" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <c:forEach items="${subjects}" var="s">
+    <option value="${s.subjectId}"
+        <c:if test="${s.subjectId == cModal.subjectID}">selected="selected"</c:if>>
+        ${s.subjectName}
+    </option>
+</c:forEach>
+
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Ngày Bắt Đầu</label>
+                <input type="date" name="startDate" value="${cModal.startDate}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Ngày Kết Thúc</label>
+                <input type="date" name="endDate" value="${cModal.endDate}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">Giá (VND)</label>
+                <input type="number" name="price" value="${cModal.price}" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh khóa học</label>
+                <div class="mt-1 flex items-center">
+                    <div class="mr-4">
+                        <img id="modalCourseImagePreview"
+                             src="<c:choose>
+                                 <c:when test='${not empty cModal.image}'>
+                                     ${pageContext.request.contextPath}/LogoServlet?type=manual&filename=${fn:escapeXml(cModal.image)}
+                                 </c:when>
+                                 <c:otherwise>
+                                     https://via.placeholder.com/96
+                                 </c:otherwise>
+                             </c:choose>"
+                             alt="Course preview"
+                             class="max-h-28 rounded-md object-contain border border-gray-300">
+
+
+                    </div>
+                    <div>
+                        <input type="file" id="courseImage" name="courseImageFile" class="hidden" accept="image/*" onchange="previewModalCourseImage(this)">
+                        <button type="button" onclick="document.getElementById('courseImage').click()"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                            <i class="fas fa-upload mr-2"></i> Chọn ảnh mới
+                        </button>
+                        <p class="mt-1 text-xs text-gray-500">PNG, JPG hoặc GIF (tối đa 2MB)</p>
+                    </div>
+                </div>
+
+                <!-- Tên ảnh cũ -->
+                <input type="hidden" name="oldImage" value="${cModal.image}">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-600">Mô Tả</label>
+                <textarea name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>${cModal.descrip}</textarea>
+            </div>
+
+            <!-- THÔNG BÁO LỖI -->
+            <c:if test="${not empty error}">
+                <div class="md:col-span-2 text-red-600 font-medium">${error}</div>
+            </c:if>
+
+            <div class="md:col-span-2 flex justify-end">
+                <button type="submit" name="action" value="ADD" class="bg-blue-600 text-white px-6 py-3 rounded-lg">Thêm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<c:if test="${modalError}">
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            openAddCourseModal(true); // <-- mở lại modal mà không reset
+        });
+    </script>
+</c:if>
 
 
 <script>
-    function previewCourseImage(input) {
+    function openAddCourseModal(fromError = false) {
+        document.getElementById('addCourseModal').classList.remove('hidden');
+
+        if (!fromError) {
+            const form = document.getElementById('addCourseFormModal');
+            if (form)
+                form.reset();
+
+            const img = document.getElementById('modalCourseImagePreview');
+            if (img)
+                img.src = "https://placehold.co/96x96?text=No+Image";
+    }
+    }
+
+
+    function closeAddCourseModal() {
+        document.getElementById('addCourseModal').classList.add('hidden');
+    }
+
+    function previewModalCourseImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                document.getElementById('courseImagePreview').src = e.target.result;
+                document.getElementById('modalCourseImagePreview').src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
+
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchClass = document.getElementById("searchClass");
+        const filterSubject = document.getElementById("filterSubject");
+        const filterGrade = document.getElementById("filterGrade");
+
+        const rows = document.querySelectorAll("tbody tr");
+
+        function normalize(str) {
+            return (str || "")
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toLowerCase()
+                    .trim();
+        }
+
+        function applyFilters() {
+            const classKeyword = normalize(searchClass.value);
+            const selectedSubject = normalize(filterSubject.value);
+            const selectedGrade = normalize(filterGrade.value);
+
+            rows.forEach(row => {
+                const className = normalize(row.querySelector("td:nth-child(2)")?.textContent);
+                const grade = normalize(row.querySelector("td:nth-child(4)")?.textContent);
+                const subject = normalize(row.querySelector("td:nth-child(5)")?.textContent);
+
+                const matchClass = className.includes(classKeyword);
+                const matchSubject = !selectedSubject || subject === selectedSubject;
+                const matchGrade = !selectedGrade || grade === selectedGrade;
+
+                const showRow = matchClass && matchSubject && matchGrade;
+                row.style.display = showRow ? "" : "none";
+            });
+        }
+
+        searchClass.addEventListener("input", applyFilters);
+        filterSubject.addEventListener("change", applyFilters);
+        filterGrade.addEventListener("change", applyFilters);
+    });
+</script>
+
 
 

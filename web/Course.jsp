@@ -1410,8 +1410,8 @@ Ngày update 23/6/2025-->
 
                                                                 data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
                                                                 data-duration="${durationMap[tc.tutoringClassID]}"
-                                                                data-startdate="${tc.startDate}"
-                                                                data-enddate="${tc.endDate}"
+                                                                data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
+                                                                data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
                                                                 data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
                                                                 onclick="showCourseDetail(this)">
@@ -1491,8 +1491,8 @@ Ngày update 23/6/2025-->
 
                                                                 data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
                                                                 data-duration="${durationMap[tc.tutoringClassID]}"
-                                                                data-startdate="${tc.startDate}"
-                                                                data-enddate="${tc.endDate}"
+                                                                data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
+                                                                data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
                                                                 data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
                                                                 onclick="showCourseDetail(this)">

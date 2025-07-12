@@ -1367,7 +1367,7 @@ Ngày update 23/6/2025-->
                                                         <p style="font-style: italic; color: gray;">Chưa có mô tả trung tâm.</p>
                                                     </c:otherwise>
                                                 </c:choose>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -1589,8 +1589,8 @@ Ngày update 23/6/2025-->
 
                                                                 data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
                                                                 data-duration="${durationMap[tc.tutoringClassID]}"
-                                                                data-startdate="${tc.startDate}"
-                                                                data-enddate="${tc.endDate}"
+                                                                data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
+                                                                data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
                                                                 data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
                                                                 onclick="showCourseDetail(this)">
@@ -1667,11 +1667,10 @@ Ngày update 23/6/2025-->
                                                                 data-ishot="${tc.isHot}"
                                                                 data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
                                                                 data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
-
                                                                 data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
                                                                 data-duration="${durationMap[tc.tutoringClassID]}"
-                                                                data-startdate="${tc.startDate}"
-                                                                data-enddate="${tc.endDate}"
+                                                                data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
+                                                                data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
                                                                 data-classgroups="${fn:escapeXml(groupStringMap[tc.tutoringClassID])}"
                                                                 onclick="showCourseDetail(this)">
@@ -1978,7 +1977,7 @@ Ngày update 23/6/2025-->
 
     </footer>
 
-    
+
 
     <!-- JAVASCRIPT FILES -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -1987,32 +1986,32 @@ Ngày update 23/6/2025-->
     <script src="js/owl.carousel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const backTopBtn = document.querySelector('.back-top-icon');
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    const backTopBtn = document.querySelector('.back-top-icon');
 
-            if (backTopBtn) {
-                // Hiển thị/ẩn nút khi cuộn
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) {
-                        backTopBtn.classList.add('visible');
-                    } else {
-                        backTopBtn.classList.remove('visible');
-                    }
-                });
+                                    if (backTopBtn) {
+                                        // Hiển thị/ẩn nút khi cuộn
+                                        window.addEventListener('scroll', () => {
+                                            if (window.scrollY > 300) {
+                                                backTopBtn.classList.add('visible');
+                                            } else {
+                                                backTopBtn.classList.remove('visible');
+                                            }
+                                        });
 
-                // Cuộn mượt khi bấm
-                backTopBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
-                });
-            } else {
-                console.error('Back to Top button not found');
-            }
-        });
+                                        // Cuộn mượt khi bấm
+                                        backTopBtn.addEventListener('click', (e) => {
+                                            e.preventDefault();
+                                            window.scrollTo({top: 0, behavior: 'smooth'});
+                                        });
+                                    } else {
+                                        console.error('Back to Top button not found');
+                                    }
+                                });
     </script>
-    
+
     <script>
         $(document).ready(function () {
             // Debug tất cả grade-link
@@ -2245,7 +2244,7 @@ Ngày update 23/6/2025-->
             });
         });
     </script>
-    
+
     <script>
         $(document).ready(function () {
             console.log("Khởi tạo Owl Carousel...");
@@ -2308,7 +2307,7 @@ Ngày update 23/6/2025-->
             });
         });
     </script>
-    
+
     <script>
         function clean(value) {
             return (value && value !== "false") ? value : '';
@@ -2473,7 +2472,7 @@ Ngày update 23/6/2025-->
             }
         });
     </script>
-  
+
     <script>
         window.showTeacherDetail = function (fullName, gender, phone, email, certi, descrip, onlineStatus, schoolName) {
             document.getElementById('modalTeacherFullName').textContent = fullName || 'Chưa xác định';
@@ -2491,7 +2490,7 @@ Ngày update 23/6/2025-->
             $('#teacherDetailModal').modal('hide');
         }
     </script>
-    
+
     <script>
         $(document).ready(function () {
             const $navbarVertical = $('#navbar-vertical');
