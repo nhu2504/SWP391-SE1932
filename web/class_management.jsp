@@ -21,18 +21,18 @@
 
 <div class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
-            
-    <!-- Alert messages -->
-<c:if test="${not empty error}">
-    <div class="mb-4 px-4 py-3 rounded bg-red-100 text-red-700 border border-red-400">
-        <i class="fas fa-exclamation-circle mr-2"></i>${error}
-    </div>
-</c:if>
-<c:if test="${not empty success}">
-    <div class="mb-4 px-4 py-3 rounded bg-green-100 text-green-700 border border-green-400">
-        <i class="fas fa-check-circle mr-2"></i>${success}
-    </div>
-</c:if>
+
+        <!-- Alert messages -->
+        <c:if test="${not empty error}">
+            <div class="mb-4 px-4 py-3 rounded bg-red-100 text-red-700 border border-red-400">
+                <i class="fas fa-exclamation-circle mr-2"></i>${error}
+            </div>
+        </c:if>
+        <c:if test="${not empty success}">
+            <div class="mb-4 px-4 py-3 rounded bg-green-100 text-green-700 border border-green-400">
+                <i class="fas fa-check-circle mr-2"></i>${success}
+            </div>
+        </c:if>
 
         <!-- Breadcrumb -->
         <nav class="flex mb-6" aria-label="Breadcrumb">
@@ -80,8 +80,6 @@
                 </c:forEach>
             </select>
 
-
-
             <select id="filterRoom" class="form-control w-full md:w-1/4">
                 <option value="">🏫 Tất cả phòng</option>
                 <c:forEach var="r" items="${rooms}">
@@ -89,19 +87,17 @@
                 </c:forEach>
             </select>
 
-
-
-
         </div>
 
         <!-- Classes List -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="grid grid-cols-12 bg-blue-100 p-4 border-b font-semibold text-gray-700 hidden md:grid">
-                <div class="col-span-4 flex items-center"><i class="fas fa-chalkboard mr-2 text-blue-600"></i> Tên lớp</div>
+                <div class="col-span-2 flex items-center"><i class="fas fa-chalkboard mr-2 text-blue-600"></i> Tên lớp</div>
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-blue-600"></i> Thứ</div>
                 <div class="col-span-2 flex items-center justify-center"><i class="fas fa-clock mr-2 text-blue-600"></i> Ca</div>
                 <div class="col-span-1 flex items-center text-center"><i class="fas fa-door-open mr-2 text-blue-600"></i> Phòng</div>
                 <div class="col-span-2 flex items-center justify-center"><i class="fas fa-user-tie mr-2 text-blue-600"></i> Giáo viên</div>
+                <div class="col-span-2 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối đa</div>                             
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS</div>
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-cogs mr-2 text-blue-600"></i> Thao tác</div>
             </div>
@@ -118,7 +114,7 @@
                          data-room="${fn:toLowerCase(c[2])}">
 
                         <!-- Tên lớp -->
-                        <div class="col-span-4 font-medium mb-2 md:mb-0">${c[0]}</div>
+                        <div class="col-span-2 font-medium mb-2 md:mb-0">${c[0]}</div>
 
                         <!-- Thứ học (từ StudyDate) -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
@@ -129,30 +125,37 @@
                             ${fn:substring(c[4], 0, 5)} - ${fn:substring(c[5], 0, 5)}
                         </div>
 
-
                         <!-- Phòng -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[2]}</div>
 
                         <!-- Giáo viên -->
                         <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[3]}</div>
+
+
+                        <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[1]}</div>
+
                         <!-- Sinh viên mỗi lớp-->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
                             ${c[7]}
                         </div>
 
                         <!-- Thao tác (tạm thời không có ClassGroupID nên disable edit/delete) -->
-                        <div class="col-span-1 flex space-x-2 justify-center">
-                            <button disabled class="text-blue-600 hover:text-blue-800">
+                        <div class="col-span-1 flex items-center justify-center space-x-2">
+                            <button disabled class="text-blue-600 hover:text-blue-800" title="Sửa lớp học">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button disabled class="text-red-600 hover:text-red-800">
+                            <button disabled class="text-red-600 hover:text-red-800" title="Xóa lớp học">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            <a href="admin?tab=studentListInClass&groupId=${c[8]}&id=${selectedCourseId}"
+ 
+                               class="text-green-600 hover:text-green-800" title="Xem danh sách học sinh">
+                                <i class="fas fa-eye"></i>
+                            </a>
                         </div>
+
                     </div>
                 </c:forEach>
-
-
             </div>
         </div>
     </div>
@@ -212,7 +215,7 @@
             <!-- Nút hành động -->
             <div class="flex justify-end gap-2 mt-6">
                 <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Hủy</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Thêm</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Thêm</button>               
             </div>
         </form>
 
@@ -226,14 +229,44 @@
      data-course-id="${selectedCourseId}">
 </div>
 
+<c:if test="${not empty sessionScope.successMessage}">
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            showToast("<c:out value='${sessionScope.successMessage}'/>");
+        });
+    </script>
+    <c:remove var="successMessage" scope="session" />
+</c:if>
+
+<!-- Toast thông báo -->
+<div id="toast" style="display: none;"
+     class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 font-medium transition-all duration-300">
+</div>
+
+<script>
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        if (!toast)
+            return;
+
+        toast.textContent = message;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 3000);
+    }
+
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    // Gắn các sự kiện để lọc khi người dùng thay đổi input/select
-    document.getElementById("searchClass").addEventListener("input", applyFilters);
-    document.getElementById("filterTeacher").addEventListener("change", applyFilters);
-    document.getElementById("filterWeekday").addEventListener("change", applyFilters);
-    document.getElementById("filterRoom").addEventListener("change", applyFilters);
-});
+        // Gắn các sự kiện để lọc khi người dùng thay đổi input/select
+        document.getElementById("searchClass").addEventListener("input", applyFilters);
+        document.getElementById("filterTeacher").addEventListener("change", applyFilters);
+        document.getElementById("filterWeekday").addEventListener("change", applyFilters);
+        document.getElementById("filterRoom").addEventListener("change", applyFilters);
+    });
 
     console.log("JS loaded!");
 
@@ -258,12 +291,12 @@
 
         // Load giáo viên đúng chuyên môn
         fetch(contextPath + "/ScheduleOptionsServlet?action=teachers&courseId=" + courseId)
-            .then(res => res.json())
-            .then(data => {
-                updateSelect("teacherId", data.teachers);
-                console.log("Loaded teachers:", data.teachers);
-            })
-            .catch(err => console.error("Lỗi load teacher:", err));
+                .then(res => res.json())
+                .then(data => {
+                    updateSelect("teacherId", data.teachers);
+                    console.log("Loaded teachers:", data.teachers);
+                })
+                .catch(err => console.error("Lỗi load teacher:", err));
     }
 
     function closeAddClassModal() {
@@ -278,25 +311,25 @@
         if (trigger === "teacherId" && teacherId) {
             // Chọn giáo viên xong → load thứ
             fetch(contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + teacherId)
-                .then(res => res.json())
-                .then(data => updateSelect("dayOfWeek", data.days))
-                .catch(err => console.error("Lỗi load days:", err));
+                    .then(res => res.json())
+                    .then(data => updateSelect("dayOfWeek", data.days))
+                    .catch(err => console.error("Lỗi load days:", err));
         }
 
         if (trigger === "dayOfWeek" && teacherId && dayOfWeek) {
             // Chọn thứ → load ca rảnh theo giáo viên + thứ
             fetch(contextPath + "/ScheduleOptionsServlet?action=shifts&teacherId=" + teacherId + "&day=" + dayOfWeek)
-                .then(res => res.json())
-                .then(data => updateSelect("shiftId", data.shifts))
-                .catch(err => console.error("Lỗi load shifts:", err));
+                    .then(res => res.json())
+                    .then(data => updateSelect("shiftId", data.shifts))
+                    .catch(err => console.error("Lỗi load shifts:", err));
         }
 
         if (trigger === "shiftId" && dayOfWeek && shiftId) {
             // Chọn ca → load phòng trống theo thứ + ca
             fetch(contextPath + "/ScheduleOptionsServlet?action=rooms&day=" + dayOfWeek + "&shift=" + shiftId)
-                .then(res => res.json())
-                .then(data => updateSelect("roomId", data.rooms))
-                .catch(err => console.error("Lỗi load rooms:", err));
+                    .then(res => res.json())
+                    .then(data => updateSelect("roomId", data.rooms))
+                    .catch(err => console.error("Lỗi load rooms:", err));
         }
     }
 
@@ -321,7 +354,7 @@
             select.value = oldValue;
         } else {
             select.value = "";
-        }
+    }
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -338,10 +371,10 @@
 
     function normalize(str) {
         return (str || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .trim();
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
     }
 
     function applyFilters() {

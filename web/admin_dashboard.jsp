@@ -405,6 +405,9 @@ Ngày update 3/7/2025-->
                         <c:when test="${tab eq 'classManagement'}">
                             <jsp:include page="class_management.jsp" />
                         </c:when>
+                        <c:when test="${tab eq 'studentListInClass'}">
+                            <jsp:include page="list_student.jsp" />
+                        </c:when>
                         
                         <c:otherwise>
                             <jsp:include page="overview.jsp" />

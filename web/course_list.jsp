@@ -113,7 +113,13 @@
                                 <td class="p-4">
                                     <fmt:formatDate value="${item.endDate}" pattern="dd/MM/yyyy" />
                                 </td>
-                                <td class="p-4">${item.price}</td>
+                                <td class="p-4 text-right text-gray-700">
+                                    <fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/> 
+                                    <c:choose>
+                                        <c:when test="${item.isHot}"> / 1 khoá</c:when>
+                                        <c:otherwise> / 1 buổi</c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td class="p-4">
                                     <a href="admin?tab=classManagement&id=${item.tutoringClassID}" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition">Xem</a>
                                 </td>

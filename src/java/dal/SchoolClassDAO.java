@@ -111,4 +111,27 @@ public class SchoolClassDAO {
             }
         }
     }
+    
+    // Như
+    public List<SchoolClass> getAllSchoolClasses() {
+    List<SchoolClass> list = new ArrayList<>();
+    String sql = "SELECT schoolClassID, className, schoolID, gradeID FROM SchoolClass";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            SchoolClass sc = new SchoolClass(
+                rs.getInt("SchoolClassID"),
+                rs.getString("ClassName"),
+                rs.getInt("SchoolID"),
+                rs.getInt("GradeID")
+            );
+            list.add(sc);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
 }

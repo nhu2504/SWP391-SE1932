@@ -6,6 +6,8 @@ import dal.GradeDAO;
 import dal.PaymentDAO;
 import dal.RoomDAO;
 import dal.ScheduleDAO;
+import dal.SchoolClassDAO;
+import dal.SchoolDAO;
 import dal.ShiftLearnDAO;
 import dal.StudentDAO;
 import dal.SubjectDAO;
@@ -17,6 +19,7 @@ import entity.ScheduleTemplate;
 import entity.Shift;
 import entity.Subject;
 import entity.TutoringClass;
+import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,6 +52,9 @@ public class AdminServlet extends HttpServlet {
     private final PaymentDAO paymentDAO = new PaymentDAO();
     private final GradeDAO gradeDAO = new GradeDAO();
     private final RoomDAO roomDAO = new RoomDAO();
+    private final SchoolDAO schoolDAO = new SchoolDAO();
+    private final SchoolClassDAO schoolClassDAO = new SchoolClassDAO();
+    
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
@@ -182,6 +188,42 @@ public class AdminServlet extends HttpServlet {
                         }
                     }
                     break;
+                case "studentListInClass":
+                    String groupIdRaw = req.getParameter("groupId");
+                    String courseIdRaw1 = req.getParameter("id"); // ID khóa học để breadcrumb có tên khóa học
+
+                    if (groupIdRaw != null && !groupIdRaw.isEmpty()) {
+                        try {
+                            int classGroupId = Integer.parseInt(groupIdRaw);
+                            int courseId = courseIdRaw1 != null && !courseIdRaw1.isEmpty() ? Integer.parseInt(courseIdRaw1) : -1;
+
+                            // Lấy danh sách học sinh của lớp
+                            List<User> students = studentDAO.getStudentsByClassGroup(classGroupId);
+                            req.setAttribute("students", students);
+
+                            // Lấy tên lớp
+                            ClassGroup group = classGroupDAO.getClassGroupById(classGroupId);
+                            req.setAttribute("selectedClassGroupId", classGroupId);
+                            req.setAttribute("selectedClassGroupName", group != null ? group.getName() : "Không rõ");
+
+                            // Lấy thông tin khóa học nếu có ID
+                            if (courseId != -1) {
+                                TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
+                                if (course != null) {
+                                    req.setAttribute("selectedCourseId", courseId);
+                                    req.setAttribute("selectedCourseName", course.getClassName());
+                                }
+                            }
+
+                            // Truyền danh sách trường và lớp học (dùng trong hiển thị tên trường/lớp)
+                            req.setAttribute("schools", schoolDAO.getAllSchools());
+                            req.setAttribute("schoolClasses", schoolClassDAO.getAllSchoolClasses());
+
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
 
                 case "setting":
                     req.setAttribute("banners", bannerDAO.getAllBanners());
@@ -262,6 +304,8 @@ public class AdminServlet extends HttpServlet {
 
                     // Nếu hợp lệ thì thêm khóa học
                     int newId = tutoringClassDAO.addTutoringClass(tc);
+
+                    setSuccessMessage(req, "✔ Thêm lớp học thành công!");
                     res.sendRedirect("admin?tab=courseManagement&id=" + newId);
                     return;
 
@@ -325,17 +369,17 @@ public class AdminServlet extends HttpServlet {
                             templates.add(temp);
                         }
                     }
-                    
+
                     // 4. Kiểm tra nếu là khoá cấp tốc (isHot=1) và đã bắt đầu thì không cho thêm lớp
-        TutoringClass tc = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
-        Date today = new Date();
-        if (tc.isIsHot() == true && tc.getStartDate().before(today)) {
-            req.setAttribute("error", "Không thể thêm lớp mới vì khóa cấp tốc đã bắt đầu.");
-            req.setAttribute("tab", "classManagement");
-            req.setAttribute("id", String.valueOf(tutoringClassId));
-            res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
-            return;
-        }
+                    TutoringClass tc = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
+                    Date today = new Date();
+                    if (tc.isIsHot() == true && tc.getStartDate().before(today)) {
+                        req.setAttribute("error", "Không thể thêm lớp mới vì khóa cấp tốc đã bắt đầu.");
+                        req.setAttribute("tab", "classManagement");
+                        req.setAttribute("id", String.valueOf(tutoringClassId));
+                        res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
+                        return;
+                    }
 
                     // 4. Thêm class group + template
                     int classGroupId = classGroupDAO.addClassGroupWithTemplates(group, templates);
@@ -344,6 +388,7 @@ public class AdminServlet extends HttpServlet {
                     //TutoringClass tc = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
                     int sessionCount = 10;
                     scheduleDAO.insertSchedulesFromTemplate(classGroupId, templates, tc.getStartDate(), sessionCount);
+                    setSuccessMessage(req, "✔ Thêm lớp học thành công!");
 
                     res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
 
@@ -414,6 +459,11 @@ public class AdminServlet extends HttpServlet {
         int currentJavaDow = fromDate.getDayOfWeek().getValue(); // 1=Monday,...7=Sunday
         int daysToAdd = (javaDow - currentJavaDow + 7) % 7;
         return fromDate.plusDays(daysToAdd == 0 ? 7 : daysToAdd); // tránh chọn hôm nay
+    }
+
+    private void setSuccessMessage(HttpServletRequest req, String message) {
+        HttpSession session = req.getSession();
+        session.setAttribute("successMessage", message);
     }
 
 }

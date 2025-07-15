@@ -1,6 +1,7 @@
 package dal;
 
 import dal.DBContext;
+import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +27,8 @@ public class StudentDAO {
      *
      * @return Danh sách Map đại diện cho học sinh, mỗi Map chứa thông tin như
      * tên, avatar, chứng chỉ, đánh giá...
+     * Danh sách là 1 list chứa nhiều học sinh, 1 học sinh là 1 map và string là 
+     * key, object là value và dùng object vì dùng kiểu dữ liệu j cx đc ví dụ int, string,date, ... đều đc
      */
     public List<Map<String, Object>> getTopStudents() {
         List<Map<String, Object>> students = new ArrayList<>();
@@ -113,6 +116,72 @@ public class StudentDAO {
         }
         return list;
     }
+    
+    public List<User> getStudentsByClassGroup(int classGroupID) {
+    List<User> list = new ArrayList<>();
+    String sql = """
+    SELECT 
+        u.UserID,
+        u.FullName,
+        u.Gender,
+        u.BirthDate,
+        u.Phone,
+        u.Email,
+        u.ParentPhone,
+        u.ParentEmail,
+        u.avatar,            
+        u.SchoolID,
+        sch.SchoolName,
+        u.SchoolClassID,
+        sc.ClassName
+    FROM 
+        ClassGroup_Student cs
+    JOIN 
+        [User] u ON cs.StudentID = u.UserID
+    LEFT JOIN 
+        School sch ON u.SchoolID = sch.SchoolID
+    LEFT JOIN 
+        SchoolClass sc ON u.SchoolClassID = sc.SchoolClassID
+    WHERE 
+        u.roleID = 3 AND cs.ClassGroupID = ?
+    ORDER BY 
+        u.FullName
+""";
+
+
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, classGroupID);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("UserID"));
+                u.setName(rs.getString("FullName"));
+                u.setGender(rs.getString("Gender"));
+                u.setBirth(rs.getDate("BirthDate"));
+                u.setPhone(rs.getString("Phone"));
+                u.setEmail(rs.getString("Email"));
+                u.setParentPhone(rs.getString("ParentPhone"));
+                u.setParentEmail(rs.getString("ParentEmail"));
+                u.setAvatar(rs.getString("avatar"));               
+                u.setSchoolID(rs.getInt("SchoolID"));
+                u.setSchoolClassId(rs.getInt("SchoolClassID"));
+                u.setSchoolName(rs.getString("SchoolName"));            // ✅ tên trường
+                u.setSchoolClassName(rs.getString("ClassName"));
+                
+                // Nếu bạn cần thêm EnrollDate hoặc IsActive, có thể tạo subclass hoặc lưu vào Map
+
+                list.add(u);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
 
     // Ngọc Anh
     public boolean updateSchoolClassDAO(int userId, int classId) {

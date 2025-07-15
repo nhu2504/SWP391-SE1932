@@ -43,7 +43,7 @@
 
         </div>
 
-        <!-- Form thêm/sửa/tìm kiếm khóa học -->
+        
         <div class="mb-8 bg-gray-50 p-6 rounded-xl shadow-sm">
             <h2 class="text-xl font-semibold text-gray-700 mb-6">Chi Tiết Khóa Học</h2>
             <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -55,29 +55,57 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Loại Khóa Học</label>
-                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
-                        <option value="0" ${!c.isHot ? 'selected' : ''}>Quanh Năm</option>
-                        <option value="1" ${c.isHot ? 'selected' : ''}>Nổi bật</option>
-                    </select>
+                    <div class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600 min-h-[44px]">
+                        <c:choose>
+                            <c:when test="${not empty c}">
+                                ${c.isHot ? "Nổi bật" : "Quanh Năm"}
+                            </c:when>
+                            <c:otherwise>
+                                &nbsp; <!-- giữ độ cao khi chưa có dữ liệu -->
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
+
+
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Khối</label>
-                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
-                        <c:forEach items="${grades}" var="g">
-                            <option value="${g.gradeID}" ${g.gradeID == c.gradeID ? 'selected' : ''}>${g.gradeName}</option>
-                        </c:forEach>
-                    </select>
+                    <div class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600 min-h-[44px]">
+                        <c:choose>
+                            <c:when test="${not empty c}">
+                                <c:forEach items="${grades}" var="g">
+                                    <c:if test="${g.gradeID == c.gradeID}">
+                                        ${g.gradeName}
+                                    </c:if>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                &nbsp;
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Môn</label>
-                    <select disabled class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
-                        <c:forEach items="${subjects}" var="s">
-                            <option value="${s.subjectId}" ${s.subjectId == c.subjectID ? 'selected' : ''}>${s.subjectName}</option>
-                        </c:forEach>
-                    </select>
+                    <div class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600 min-h-[44px]">
+                        <c:choose>
+                            <c:when test="${not empty c}">
+                                <c:forEach items="${subjects}" var="s">
+                                    <c:if test="${s.subjectId == c.subjectID}">
+                                        ${s.subjectName}
+                                    </c:if>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                &nbsp;
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
+
+
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Ngày Bắt Đầu</label>
@@ -90,9 +118,19 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Giá (VND)</label>
-                    <input type="number" value="${c.price}" readonly class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600">
+                    <label class="block text-sm font-medium text-gray-600">Giá</label>
+                    <div class="mt-1 block w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-600 min-h-[44px]">
+                        <c:choose>
+                            <c:when test="${not empty c}">
+                                ${c.price} <c:out value="${c.isHot ? '/ 1 khoá' : '/ 1 buổi'}" />
+                            </c:when>
+                            <c:otherwise>
+                                &nbsp;
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
+
 
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh khóa học</label>
@@ -191,7 +229,15 @@
                                     <fmt:formatDate value="${item.endDate}" pattern="dd/MM/yyyy" />
                                 </td>
 
-                                <td class="p-4">${item.price}</td>
+                                <td class="p-4 text-right text-gray-700">
+                                    <fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/> 
+                                    <c:choose>
+                                        <c:when test="${item.isHot}"> / 1 khoá</c:when>
+                                        <c:otherwise> / 1 buổi</c:otherwise>
+                                    </c:choose>
+                                </td>
+
+
                                 <td class="p-4">
 
                                     <div class="col-span-1 flex space-x-2">
@@ -202,10 +248,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
-
-
                                 </td>
-
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -231,36 +274,40 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Loại Khóa Học</label>
-                <select name="isHot" class="mt-1 block w-full border border-gray-300 rounded-lg p-3">
-                    <option value="0" ${cModal.isHot == false ? 'selected="selected"' : ''}>Quanh Năm</option>
-                    <option value="1" ${cModal.isHot == true ? 'selected="selected"' : ''}>Nổi bật</option>
+                <select name="isHot" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <option value="">-- Chọn --</option>
+                    <option value="0" ${cModal.isHot == false ? 'selected' : ''}>Quanh Năm</option>
+                    <option value="1" ${cModal.isHot == true ? 'selected' : ''}>Nổi bật</option>
                 </select>
+
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Khối</label>
                 <select name="grade" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <option value="">-- Chọn --</option>
                     <c:forEach items="${grades}" var="g">
-    <option value="${g.gradeID}"
-        <c:if test="${g.gradeID == cModal.gradeID}">selected="selected"</c:if>>
-        ${g.gradeName}
-    </option>
-</c:forEach>
-
+                        <option value="${g.gradeID}"
+                                <c:if test="${g.gradeID == cModal.gradeID}">selected</c:if>>
+                            ${g.gradeName}
+                        </option>
+                    </c:forEach>
                 </select>
+
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Môn</label>
                 <select name="subject" class="mt-1 block w-full border border-gray-300 rounded-lg p-3" required>
+                    <option value="">-- Chọn --</option>
                     <c:forEach items="${subjects}" var="s">
-    <option value="${s.subjectId}"
-        <c:if test="${s.subjectId == cModal.subjectID}">selected="selected"</c:if>>
-        ${s.subjectName}
-    </option>
-</c:forEach>
-
+                        <option value="${s.subjectId}"
+                                <c:if test="${s.subjectId == cModal.subjectID}">selected</c:if>>
+                            ${s.subjectName}
+                        </option>
+                    </c:forEach>
                 </select>
+
             </div>
 
             <div>
@@ -334,6 +381,35 @@
     </script>
 </c:if>
 
+<c:if test="${not empty sessionScope.successMessage}">
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            showToast("<c:out value='${sessionScope.successMessage}'/>");
+        });
+    </script>
+    <c:remove var="successMessage" scope="session" />
+</c:if>
+
+<!-- Toast thông báo -->
+<div id="toast" style="display: none;"
+     class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 font-medium transition-all duration-300">
+</div>
+
+<script>
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        if (!toast)
+            return;
+
+        toast.textContent = message;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 3000);
+    }
+
+</script>
 
 <script>
     function openAddCourseModal(fromError = false) {

@@ -89,6 +89,7 @@ public class LogoServlet extends HttpServlet {
 
     /**
      * Tạo câu truy vấn phù hợp để lấy tên file ảnh từ DB
+     * phía client gọi type -> servlet lấy type từ request, dựa vào type quyết định chạy case 
      */
     private PreparedStatement createPreparedStatement(Connection conn, String type, HttpServletRequest request) throws SQLException {
         String sql = null;
@@ -132,12 +133,19 @@ public class LogoServlet extends HttpServlet {
                 }
                 break;
             case "teacher":
-            case "student":
                 String userId = request.getParameter("userId");
                 if (userId != null && !userId.trim().isEmpty()) {
-                    sql = "SELECT avatar FROM [User] WHERE UserID = ?";
+                    sql = "SELECT avatar FROM [User] WHERE UserID = ? and roleId = 2";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, userId);
+                }
+                break;
+            case "student":
+                String userId1 = request.getParameter("userId");
+                if (userId1 != null && !userId1.trim().isEmpty()) {
+                    sql = "SELECT avatar FROM [User] WHERE UserID = ? and roleId = 3";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, userId1);
                 }
                 break;
             // Không cần truy vấn DB nếu là manual
