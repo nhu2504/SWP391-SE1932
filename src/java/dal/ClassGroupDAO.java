@@ -59,47 +59,47 @@ public class ClassGroupDAO {
     public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
         List<Object[]> list = new ArrayList<>();
         String sql = """
-        SELECT *
-        FROM (
-            SELECT 
-                cg.ClassGroupID,
-                cg.ClassGroupName,
-                cg.MaxStudent,
-                r.roomName AS RoomName,
-                u.FullName AS TeacherName,
-                s.Start_time,
-                s.End_time,
-                sc.DateLearn AS StudyDate,
-                (
-                    SELECT COUNT(*) 
-                    FROM ClassGroup_Student cgs 
-                    WHERE cgs.ClassGroupID = cg.ClassGroupID AND cgs.IsActive = 1
-                ) AS CurrentStudentCount,
-                ROW_NUMBER() OVER (PARTITION BY cg.ClassGroupID ORDER BY sc.DateLearn, s.Start_time) AS rn
-            FROM ClassGroup cg
-            LEFT JOIN Schedule sc ON sc.ClassGroupID = cg.ClassGroupID
-            LEFT JOIN Room r ON sc.RoomID = r.id
-            LEFT JOIN Shiftlearn s ON sc.ShiftID = s.ShiftID
-            LEFT JOIN [User] u ON cg.TeacherID = u.UserID
-            WHERE cg.TutoringClassID = ?
-        ) t
-        WHERE t.rn = 1
+        SELECT 
+            cg.ClassGroupID,
+            cg.ClassGroupName,
+            cg.MaxStudent,
+            cg.minStudent,
+            cg.isActive,
+            r.roomName AS RoomName,
+            u.FullName AS TeacherName,
+            s.Start_time,
+            s.End_time,
+            st.DayOfWeek,
+            (
+                SELECT COUNT(*) 
+                FROM ClassGroup_Student cgs 
+                WHERE cgs.ClassGroupID = cg.ClassGroupID AND cgs.IsActive = 1
+            ) AS CurrentStudentCount
+        FROM ClassGroup cg
+        LEFT JOIN ScheduleTemplate st ON st.ClassGroupID = cg.ClassGroupID
+        LEFT JOIN Room r ON st.RoomID = r.id
+        LEFT JOIN Shiftlearn s ON st.ShiftID = s.ShiftID
+        LEFT JOIN [User] u ON cg.TeacherID = u.UserID
+        WHERE cg.TutoringClassID = ?
     """;
 
         try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, tutoringClassID);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Object[] row = new Object[9];
+                Object[] row = new Object[11];
                 row[0] = rs.getString("ClassGroupName");
                 row[1] = rs.getInt("MaxStudent");
                 row[2] = rs.getString("RoomName");
                 row[3] = rs.getString("TeacherName");
                 row[4] = rs.getString("Start_time");
                 row[5] = rs.getString("End_time");
-                row[6] = rs.getDate("StudyDate");
+                row[6] = rs.getInt("DayOfWeek"); // vì không còn DateLearn
                 row[7] = rs.getInt("CurrentStudentCount");
                 row[8] = rs.getInt("ClassGroupID");
+                row[9] = rs.getInt("minStudent");
+                row[10] = rs.getInt("isActive");
+
                 list.add(row);
             }
         } catch (SQLException e) {
@@ -110,76 +110,92 @@ public class ClassGroupDAO {
 
     // Văn Thị Như - thêm lớp học kèm lịch học mẫu
     public int addClassGroupWithTemplates(ClassGroup group, List<ScheduleTemplate> templates) throws SQLException {
-    Connection conn = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    int classGroupId = -1;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int classGroupId = -1;
 
-    try {
-        conn = new DBContext().connection;
-        conn.setAutoCommit(false);
+        try {
+            conn = new DBContext().connection;
+            conn.setAutoCommit(false);
 
-        String sql = "INSERT INTO ClassGroup (TutoringClassID, ClassGroupName, MaxStudent, TeacherID) VALUES (?, ?, ?, ?)";
-        ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        ps.setInt(1, group.getToturID());
-        ps.setString(2, group.getName());
-        ps.setInt(3, group.getMaxStudent());
-        ps.setInt(4, group.getTeachId());
-        ps.executeUpdate();
+            String sql = "INSERT INTO ClassGroup (TutoringClassID, ClassGroupName, MaxStudent, TeacherID, minStudent) VALUES (?, ?, ?, ?, ?)";
+            ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, group.getToturID());
+            ps.setString(2, group.getName());
+            ps.setInt(3, group.getMaxStudent());
+            ps.setInt(4, group.getTeachId());
+            ps.setInt(5, group.getMinStudent());
+            ps.executeUpdate();
 
-        rs = ps.getGeneratedKeys();
-        if (rs.next()) {
-            classGroupId = rs.getInt(1);
-        }
-
-        if (templates != null && !templates.isEmpty()) {
-            String sqlTemplate = "INSERT INTO ScheduleTemplate (ClassGroupID, DayOfWeek, ShiftID, RoomID, TeacherID) VALUES (?, ?, ?, ?, ?)";
-            ps = conn.prepareStatement(sqlTemplate);
-            for (ScheduleTemplate t : templates) {
-                ps.setInt(1, classGroupId);
-                ps.setInt(2, t.getDayOfWeek());
-                ps.setInt(3, t.getShiftId());
-                ps.setInt(4, t.getRoomId());
-                ps.setInt(5, t.getUserId());
-                ps.addBatch();
+            rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                classGroupId = rs.getInt(1);
             }
-            ps.executeBatch();
+
+            if (templates != null && !templates.isEmpty()) {
+                String sqlTemplate = "INSERT INTO ScheduleTemplate (ClassGroupID, DayOfWeek, ShiftID, RoomID, TeacherID) VALUES (?, ?, ?, ?, ?)";
+                ps = conn.prepareStatement(sqlTemplate);
+                for (ScheduleTemplate t : templates) {
+                    ps.setInt(1, classGroupId);
+                    ps.setInt(2, t.getDayOfWeek());
+                    ps.setInt(3, t.getShiftId());
+                    ps.setInt(4, t.getRoomId());
+                    ps.setInt(5, t.getUserId());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
         }
 
-        conn.commit();
-    } catch (SQLException e) {
-        if (conn != null) conn.rollback();
-        throw e;
-    } finally {
-        if (rs != null) rs.close();
-        if (ps != null) ps.close();
-        if (conn != null) {
-            conn.setAutoCommit(true);
-            conn.close();
-        }
+        return classGroupId;
     }
 
-    return classGroupId;
-}
     public ClassGroup getClassGroupById(int classGroupId) {
-    String sql = "SELECT ClassGroupID, ClassGroupName, TutoringClassID FROM ClassGroup WHERE ClassGroupID = ?";
-    try (Connection conn = new DBContext().connection; 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, classGroupId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            ClassGroup cg = new ClassGroup();
-            cg.setClassGroupId(rs.getInt("ClassGroupID"));
-            cg.setName(rs.getString("ClassGroupName"));
-            cg.setToturID(rs.getInt("TutoringClassID"));
-            return cg;
+        String sql = "SELECT ClassGroupID, ClassGroupName, TutoringClassID FROM ClassGroup WHERE ClassGroupID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classGroupId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ClassGroup cg = new ClassGroup();
+                cg.setClassGroupId(rs.getInt("ClassGroupID"));
+                cg.setName(rs.getString("ClassGroupName"));
+                cg.setToturID(rs.getInt("TutoringClassID"));
+                return cg;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return null;
     }
-    return null;
-}
 
+    public void activateClassGroup(int classGroupId) {
+        String sql = "UPDATE ClassGroup SET isActive = 1 WHERE ClassGroupID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classGroupId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Ngọc Anh
     public List<ClassGroup> getAllClassGroupByUserId(int userId) {

@@ -21,62 +21,7 @@ import java.util.Map;
 @WebServlet("/ScheduleOptionsServlet")
 public class ScheduleOptionsServlet extends HttpServlet {
 
-    @Override
-//    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-//        String courseIdRaw = req.getParameter("courseId");
-//        if (courseIdRaw == null || courseIdRaw.trim().isEmpty()) {
-//            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thiếu courseId");
-//            return;
-//        }
-//
-//        int tutoringClassId;
-//        try {
-//            tutoringClassId = Integer.parseInt(courseIdRaw);
-//        } catch (NumberFormatException e) {
-//            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "courseId không hợp lệ");
-//            return;
-//        }
-//
-//        // Lấy các param khác
-//        String teacherId = req.getParameter("teacherId");
-//        String day = req.getParameter("dayOfWeek");
-//        String shift = req.getParameter("shiftId");
-//        String room = req.getParameter("roomId");
-//
-//        ScheduleDAO dao = new ScheduleDAO();
-//
-//        List<Option> teachers = dao.getAvailableTeachers(tutoringClassId, day, shift, room);
-//        List<Option> days = dao.getAvailableDays(teacherId, shift, room);
-//        List<Option> shifts = dao.getAvailableShifts(teacherId, day, room);
-//        List<Option> rooms = dao.getAvailableRooms(day, shift);
-//
-//        
-//        Map<String, List<Option>> data = new HashMap<>();
-//        data.put("teachers", teachers);
-//        data.put("days", days);
-//        data.put("shifts", shifts);
-//        data.put("rooms", rooms);
-//
-//        res.setContentType("application/json");
-//        res.getWriter().write(new Gson().toJson(data));
-//        System.out.println("courseId: " + tutoringClassId);
-//        System.out.println("teacherId: " + teacherId);
-//        System.out.println("day: " + day);
-//        System.out.println("shift: " + shift);
-//        System.out.println("room: " + room);
-//        System.out.println("Available Days:");
-//        for (Option opt : days) {
-//            System.out.println(opt.getValue() + " - " + opt.getLabel());
-//        }
-//
-//        System.out.println("==> Lấy teacher với tutoringClassId=" + tutoringClassId + ", day=" + day + ", shift=" + shift + ", room=" + room);
-//
-//    }
-
-//}
- 
-
-    
+    @Override     
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 

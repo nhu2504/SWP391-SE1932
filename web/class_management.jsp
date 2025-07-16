@@ -17,6 +17,13 @@
     .modal {
         transition: all 0.3s ease;
     }
+
+    .modal-content-scrollable {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+
 </style>
 
 <div class="bg-gray-100">
@@ -94,11 +101,14 @@
             <div class="grid grid-cols-12 bg-blue-100 p-4 border-b font-semibold text-gray-700 hidden md:grid">
                 <div class="col-span-2 flex items-center"><i class="fas fa-chalkboard mr-2 text-blue-600"></i> Tên lớp</div>
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-blue-600"></i> Thứ</div>
-                <div class="col-span-2 flex items-center justify-center"><i class="fas fa-clock mr-2 text-blue-600"></i> Ca</div>
-                <div class="col-span-1 flex items-center text-center"><i class="fas fa-door-open mr-2 text-blue-600"></i> Phòng</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-clock mr-2 text-blue-600"></i> Ca</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-door-open mr-2 text-blue-600"></i> Phòng</div>
                 <div class="col-span-2 flex items-center justify-center"><i class="fas fa-user-tie mr-2 text-blue-600"></i> Giáo viên</div>
-                <div class="col-span-2 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối đa</div>                             
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối thiểu</div>
+
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối đa</div>                             
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Trạng thái</div>
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-cogs mr-2 text-blue-600"></i> Thao tác</div>
             </div>
 
@@ -110,18 +120,19 @@
                     <div class="card grid grid-cols-1 md:grid-cols-12 border-b p-4 hover:bg-gray-50"
                          data-class="${fn:toLowerCase(c[0])}"
                          data-teacher="${fn:toLowerCase(c[3])}"
-                         data-weekday="<fmt:formatDate value='${c[6]}' pattern='EEEE' />"
+                         data-weekday="${weekdays[c[6]]}"
                          data-room="${fn:toLowerCase(c[2])}">
 
                         <!-- Tên lớp -->
                         <div class="col-span-2 font-medium mb-2 md:mb-0">${c[0]}</div>
 
-                        <!-- Thứ học (từ StudyDate) -->
+                        <!-- Thứ học -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
-                            <fmt:formatDate value="${c[6]}" pattern="EEEE" />
+                            ${weekdays[c[6]]}
                         </div>
 
-                        <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
+                        <!-- Ca học -->
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
                             ${fn:substring(c[4], 0, 5)} - ${fn:substring(c[5], 0, 5)}
                         </div>
 
@@ -131,15 +142,27 @@
                         <!-- Giáo viên -->
                         <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[3]}</div>
 
+                        <!-- Số HS tối thiểu -->
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[9]}</div>
 
-                        <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[1]}</div>
+                        <!-- Số HS tối đa -->
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[1]}</div>
 
-                        <!-- Sinh viên mỗi lớp-->
+                        <!-- Số HS hiện tại -->
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[7]}</div>
+
+                        <!-- Trạng thái -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
-                            ${c[7]}
+                            <c:choose>
+                                <c:when test="${c[10] == 0}">Đang chờ</c:when>
+                                <c:when test="${c[10] == 1}">Đang học</c:when>
+                                <c:when test="${c[10] == 2}">Đã đóng</c:when>
+                                <c:otherwise>Không rõ</c:otherwise>
+                            </c:choose>
                         </div>
 
-                        <!-- Thao tác (tạm thời không có ClassGroupID nên disable edit/delete) -->
+
+                        <!-- Thao tác -->
                         <div class="col-span-1 flex items-center justify-center space-x-2">
                             <button disabled class="text-blue-600 hover:text-blue-800" title="Sửa lớp học">
                                 <i class="fas fa-edit"></i>
@@ -148,21 +171,33 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                             <a href="admin?tab=studentListInClass&groupId=${c[8]}&id=${selectedCourseId}"
- 
+
                                class="text-green-600 hover:text-green-800" title="Xem danh sách học sinh">
                                 <i class="fas fa-eye"></i>
                             </a>
-                        </div>
+                            <c:if test="${c[10] == 0 && c[7] >= c[9]}">
+                                <a href="admin?tab=classManagement&action=activateGroup&groupId=${c[8]}&id=${selectedCourseId}"
+                                   class="text-orange-600 hover:text-orange-800" title="Kích hoạt lớp học">
+                                    <i class="fas fa-toggle-on"></i>
+                                </a>
+                            </c:if>
 
+
+
+                        </div>
                     </div>
                 </c:forEach>
+
             </div>
+            
+
         </div>
     </div>
 </div>
 
 <div id="addClassModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative text-black">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative text-black modal-content-scrollable">
+
         <h2 class="text-xl font-bold mb-4">Thêm lớp học mới</h2>
         <form action="admin?tab=classManagement&id=${selectedCourseId}" method="post">
             <input type="hidden" name="action" value="ADD_CLASSGROUP">
@@ -171,21 +206,38 @@
             <!-- Tên lớp -->
             <div class="mb-4">
                 <label for="classGroupName" class="block font-medium mb-1">Tên lớp</label>
-                <input type="text" id="classGroupName" name="classGroupName" class="w-full border rounded px-3 py-2" required>
+                <input type="text" id="classGroupName" name="classGroupName" class="w-full border rounded px-3 py-2" required
+       value="${groupModal.name != null ? groupModal.name : ''}">
+
+            </div>
+
+            <!-- Sĩ số tối thiểu -->
+            <div class="mb-4">
+                <label for="minStudent" class="block font-medium mb-1">Sĩ số tối thiểu</label>
+                <input type="number" id="minStudent" name="minStudent" class="w-full border rounded px-3 py-2" required
+       value="${groupModal.minStudent != null ? groupModal.minStudent : ''}">
+
+
             </div>
 
             <!-- Sĩ số tối đa -->
             <div class="mb-4">
                 <label for="maxStudent" class="block font-medium mb-1">Sĩ số tối đa</label>
-                <input type="number" id="maxStudent" name="maxStudent" class="w-full border rounded px-3 py-2" required>
+                <input type="number" id="maxStudent" name="maxStudent" class="w-full border rounded px-3 py-2" required
+       value="${groupModal.maxStudent != null ? groupModal.maxStudent : ''}">
+
             </div>
 
             <!-- Giáo viên -->
             <div class="mb-4">
                 <label for="teacherId" class="block font-medium mb-1">Giáo viên</label>
                 <select id="teacherId" name="teacherId" class="w-full border rounded px-3 py-2" required onchange="updateOptions()">
+    <option value="">-- Chọn --</option>
+    <c:forEach var="t" items="${teacher}">
+        <option value="${t.id}" ${groupModal.teachId == t.id ? 'selected' : ''}>${t.name}</option>
+    </c:forEach>
+</select>
 
-                </select>
             </div>
 
             <!-- Thứ học -->
@@ -211,14 +263,22 @@
 
                 </select>
             </div>
+            <c:if test="${not empty errorAddClass}">
+                <div class="mb-4 px-4 py-2 rounded bg-red-100 text-red-700 border border-red-400">
+                    <i class="fas fa-exclamation-circle mr-2"></i>${errorAddClass}
+                </div>
+            </c:if>
 
             <!-- Nút hành động -->
             <div class="flex justify-end gap-2 mt-6">
                 <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Hủy</button>
                 <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Thêm</button>               
             </div>
-        </form>
+            
 
+            
+        </form>
+            
         <!-- Nút đóng -->
         <button onclick="closeAddClassModal()" class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl">×</button>
     </div>
@@ -226,8 +286,21 @@
 
 <div id="js-data"
      data-context-path="${pageContext.request.contextPath}"
-     data-course-id="${selectedCourseId}">
+     data-course-id="${selectedCourseId}"
+     data-selected-teacher="${selectedTeacher}"
+     data-selected-day="${selectedDay}"
+     data-selected-shift="${selectedShift}"
+     data-selected-room="${selectedRoom}">
 </div>
+
+<c:if test="${openAddModal == true}">
+    <script>
+        window.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("addClassModal").classList.remove("hidden");
+        });
+    </script>
+</c:if>
+
 
 <c:if test="${not empty sessionScope.successMessage}">
     <script>
@@ -398,4 +471,53 @@
             card.style.display = matchClass && matchTeacher && matchWeekday && matchRoom ? "grid" : "none";
         });
     }
+    // gửi lại dữ liệu phòng, ca, thứ vào form nếu form sai
+    document.addEventListener("DOMContentLoaded", function () {
+    const dataDiv = document.getElementById("js-data");
+const teacherId = dataDiv.dataset.selectedTeacher;
+const dayOfWeek = dataDiv.dataset.selectedDay;
+const shiftId = dataDiv.dataset.selectedShift;
+const roomId = dataDiv.dataset.selectedRoom;
+
+
+    if ("${openAddModal}" === "true") {
+        document.getElementById("addClassModal").classList.remove("hidden");
+
+        // Gọi openAddClassModal nhưng giữ lại các giá trị
+        fetch(contextPath + "/ScheduleOptionsServlet?action=teachers&courseId=" + courseId)
+            .then(res => res.json())
+            .then(data => {
+                updateSelect("teacherId", data.teachers);
+                if (teacherId) document.getElementById("teacherId").value = teacherId;
+
+                if (teacherId) {
+                    fetch(contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + teacherId)
+                        .then(res => res.json())
+                        .then(data => {
+                            updateSelect("dayOfWeek", data.days);
+                            if (dayOfWeek) document.getElementById("dayOfWeek").value = dayOfWeek;
+
+                            if (dayOfWeek) {
+                                fetch(contextPath + "/ScheduleOptionsServlet?action=shifts&teacherId=" + teacherId + "&day=" + dayOfWeek)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        updateSelect("shiftId", data.shifts);
+                                        if (shiftId) document.getElementById("shiftId").value = shiftId;
+
+                                        if (shiftId) {
+                                            fetch(contextPath + "/ScheduleOptionsServlet?action=rooms&day=" + dayOfWeek + "&shift=" + shiftId)
+                                                .then(res => res.json())
+                                                .then(data => {
+                                                    updateSelect("roomId", data.rooms);
+                                                    if (roomId) document.getElementById("roomId").value = roomId;
+                                                });
+                                        }
+                                    });
+                            }
+                        });
+                }
+            });
+    }
+});
+
 </script>

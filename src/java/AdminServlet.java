@@ -54,7 +54,6 @@ public class AdminServlet extends HttpServlet {
     private final RoomDAO roomDAO = new RoomDAO();
     private final SchoolDAO schoolDAO = new SchoolDAO();
     private final SchoolClassDAO schoolClassDAO = new SchoolClassDAO();
-    
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
@@ -169,24 +168,35 @@ public class AdminServlet extends HttpServlet {
                     req.setAttribute("grades", gradeDAO.getAllGrades());
                     break;
                 case "classManagement":
+                    String action = req.getParameter("action");
+                    if ("activateGroup".equals(action)) {
+                        try {
+                            int groupId = Integer.parseInt(req.getParameter("groupId"));
+                            int courseId = Integer.parseInt(req.getParameter("id"));
+                            classGroupDAO.activateClassGroup(groupId);
+                            // ⬇ Tạo lịch học tại đây
+                            TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
+                            List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
+                            int sessionCount = 10;
+                            Date today = new Date(); // ngày kích hoạt
+                            scheduleDAO.insertSchedulesFromTemplate(groupId, templates, today, sessionCount);
+                            setSuccessMessage(req, "✔ Kích hoạt lớp học thành công!");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            setSuccessMessage(req, "❌ Kích hoạt thất bại!");
+                        }
+                    }
                     String courseIdRaw = req.getParameter("id");
                     if (courseIdRaw != null && !courseIdRaw.isEmpty()) {
                         try {
                             int courseId = Integer.parseInt(courseIdRaw);
-                            List<Object[]> classGroups = classGroupDAO.getClassGroupDetailsWithStudentCount(courseId);
-                            TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
-                            req.setAttribute("teacher", teacherDAO.getAllTeachers());
-                            req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
-                            req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
-                            req.setAttribute("rooms", roomDAO.getAllRooms());
-
-                            req.setAttribute("selectedCourseId", courseId);
-                            req.setAttribute("selectedCourseName", course.getClassName());
-                            req.setAttribute("classGroups", classGroups);
-                        } catch (NumberFormatException e) {
+                            prepareClassManagementData(req, courseId); // ✅ dùng lại hàm
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+
                     break;
                 case "studentListInClass":
                     String groupIdRaw = req.getParameter("groupId");
@@ -338,21 +348,40 @@ public class AdminServlet extends HttpServlet {
                 return;
             } else if ("ADD_CLASSGROUP".equals(action)) {
                 int tutoringClassId = 0;
+                int teacherId = 0; // 💡 cần khai báo ngoài try
+                ClassGroup group = new ClassGroup(); // 💡 cần khai báo ngoài try
+
                 try {
-                    // 1. Lấy thông tin lớp học
                     String className = req.getParameter("classGroupName");
                     int maxStudent = Integer.parseInt(req.getParameter("maxStudent"));
-                    int teacherId = Integer.parseInt(req.getParameter("teacherId"));
+                    int minStudent = Integer.parseInt(req.getParameter("minStudent"));
+                    teacherId = Integer.parseInt(req.getParameter("teacherId"));
                     tutoringClassId = Integer.parseInt(req.getParameter("tutoringClassId"));
 
-                    // 2. Tạo đối tượng ClassGroup
-                    ClassGroup group = new ClassGroup();
+                    // Gán vào group
                     group.setName(className);
                     group.setMaxStudent(maxStudent);
+                    group.setMinStudent(minStudent);
                     group.setTeachId(teacherId);
                     group.setToturID(tutoringClassId);
 
-                    // 3. Lấy danh sách lịch học mẫu từ form
+                    // Validate sĩ số
+                    if (maxStudent <= 0 || minStudent <= 0 || minStudent > maxStudent) {
+                        prepareClassManagementData(req, tutoringClassId);
+                        req.setAttribute("errorAddClass", "Sĩ số không hợp lệ. Vui lòng kiểm tra lại.");
+                        req.setAttribute("openAddModal", true);
+                        req.setAttribute("tab", "classManagement");
+                        req.setAttribute("id", String.valueOf(tutoringClassId));
+                        req.setAttribute("groupModal", group);
+                        req.setAttribute("selectedTeacher", teacherId);
+                        req.setAttribute("selectedDay", req.getParameter("dayOfWeek"));
+                        req.setAttribute("selectedShift", req.getParameter("shiftId"));
+                        req.setAttribute("selectedRoom", req.getParameter("roomId"));
+                        req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+                        return;
+                    }
+
+                    // Lấy lịch học từ form
                     List<ScheduleTemplate> templates = new ArrayList<>();
                     String[] days = req.getParameterValues("dayOfWeek");
                     String[] shifts = req.getParameterValues("shiftId");
@@ -370,39 +399,83 @@ public class AdminServlet extends HttpServlet {
                         }
                     }
 
-                    // 4. Kiểm tra nếu là khoá cấp tốc (isHot=1) và đã bắt đầu thì không cho thêm lớp
+                    // Kiểm tra khóa cấp tốc đã bắt đầu
                     TutoringClass tc = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
                     Date today = new Date();
-                    if (tc.isIsHot() == true && tc.getStartDate().before(today)) {
-                        req.setAttribute("error", "Không thể thêm lớp mới vì khóa cấp tốc đã bắt đầu.");
+                    if (tc.isIsHot() && tc.getStartDate().before(today)) {
+                        req.setAttribute("errorAddClass", "Không thể thêm lớp mới vì khóa cấp tốc đã bắt đầu.");
+                        req.setAttribute("openAddModal", true);
                         req.setAttribute("tab", "classManagement");
                         req.setAttribute("id", String.valueOf(tutoringClassId));
-                        res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
+                        req.setAttribute("groupModal", group);
+                        req.setAttribute("selectedTeacher", teacherId);
+                        req.setAttribute("selectedDay", req.getParameter("dayOfWeek"));
+                        req.setAttribute("selectedShift", req.getParameter("shiftId"));
+                        req.setAttribute("selectedRoom", req.getParameter("roomId"));
+                        req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
                         return;
                     }
 
-                    // 4. Thêm class group + template
+                    // Thêm lớp học
                     int classGroupId = classGroupDAO.addClassGroupWithTemplates(group, templates);
-
-                    // 5. Tạo lịch học tự động
-                    //TutoringClass tc = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
-                    int sessionCount = 10;
-                    scheduleDAO.insertSchedulesFromTemplate(classGroupId, templates, tc.getStartDate(), sessionCount);
                     setSuccessMessage(req, "✔ Thêm lớp học thành công!");
-
                     res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
-
                     return;
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    req.setAttribute("error", "Có lỗi xảy ra khi thêm lớp học!");
+                    req.setAttribute("errorAddClass", "Đã xảy ra lỗi khi thêm lớp.");
+                    prepareClassManagementData(req, tutoringClassId);
+
+                    req.setAttribute("openAddModal", true);
                     req.setAttribute("tab", "classManagement");
                     req.setAttribute("id", String.valueOf(tutoringClassId));
-                    req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
-                    return;
-                }
 
+                    try {
+                        // Lấy lại dữ liệu classGroups và course
+                        TutoringClass course = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
+                        List<Object[]> classGroups = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+
+                        // Sắp xếp lại classGroups
+                        classGroups.sort((a, b) -> {
+                            boolean canActivateA = (Integer) a[10] == 0 && (Integer) a[7] >= (Integer) a[9];
+                            boolean canActivateB = (Integer) b[10] == 0 && (Integer) b[7] >= (Integer) b[9];
+                            return Boolean.compare(canActivateB, canActivateA);
+                        });
+
+                        // Truyền lại dữ liệu cần thiết cho JSP
+                        req.setAttribute("selectedCourseId", tutoringClassId);
+                        req.setAttribute("selectedCourseName", course.getClassName());
+                        req.setAttribute("classGroups", classGroups);
+                        req.setAttribute("teacher", teacherDAO.getAllTeachers());
+                        req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                        req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
+                        req.setAttribute("rooms", roomDAO.getAllRooms());
+
+                        // Tạo lại templateMap
+                        Map<Integer, ScheduleTemplate> templateMap = new HashMap<>();
+                        for (Object[] groupObj : classGroups) {
+                            int groupId = (Integer) groupObj[8];
+                            List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
+                            if (!templates.isEmpty()) {
+                                templateMap.put(groupId, templates.get(0));
+                            }
+                        }
+                        req.setAttribute("templateMap", templateMap);
+
+                        // Dữ liệu đã nhập trước đó
+                        req.setAttribute("groupModal", group);
+                        req.setAttribute("selectedTeacher", teacherId);
+                        req.setAttribute("selectedDay", req.getParameter("dayOfWeek"));
+                        req.setAttribute("selectedShift", req.getParameter("shiftId"));
+                        req.setAttribute("selectedRoom", req.getParameter("roomId"));
+
+                    } catch (Exception innerEx) {
+                        innerEx.printStackTrace();
+                    }
+
+                    req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+                }
             }
 
         } catch (Exception e) {
@@ -411,7 +484,7 @@ public class AdminServlet extends HttpServlet {
 
         res.sendRedirect("admin?tab=courseManagement");
     }
-
+// hàm trả về dữ liệu course khi gửi form sai
     private TutoringClass extractFromRequest(HttpServletRequest req) throws Exception {
         TutoringClass tc = new TutoringClass();
         tc.setClassName(req.getParameter("name"));
@@ -464,6 +537,36 @@ public class AdminServlet extends HttpServlet {
     private void setSuccessMessage(HttpServletRequest req, String message) {
         HttpSession session = req.getSession();
         session.setAttribute("successMessage", message);
+    }
+    
+// hàm dùng chung gửi dữ liệu về classManagement
+    private void prepareClassManagementData(HttpServletRequest req, int tutoringClassId) throws Exception {
+        TutoringClass course = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
+        List<Object[]> classGroups = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+
+        classGroups.sort((a, b) -> {
+            boolean canActivateA = (Integer) a[10] == 0 && (Integer) a[7] >= (Integer) a[9];
+            boolean canActivateB = (Integer) b[10] == 0 && (Integer) b[7] >= (Integer) b[9];
+            return Boolean.compare(canActivateB, canActivateA);
+        });
+
+        req.setAttribute("selectedCourseId", tutoringClassId);
+        req.setAttribute("selectedCourseName", course.getClassName());
+        req.setAttribute("classGroups", classGroups);
+        req.setAttribute("teacher", teacherDAO.getAllTeachers());
+        req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+        req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
+        req.setAttribute("rooms", roomDAO.getAllRooms());
+
+        Map<Integer, ScheduleTemplate> templateMap = new HashMap<>();
+        for (Object[] group : classGroups) {
+            int groupId = (Integer) group[8];
+            List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
+            if (!templates.isEmpty()) {
+                templateMap.put(groupId, templates.get(0));
+            }
+        }
+        req.setAttribute("templateMap", templateMap);
     }
 
 }

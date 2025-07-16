@@ -367,7 +367,9 @@
             </c:if>
 
             <div class="md:col-span-2 flex justify-end">
+                <button type="button" onclick="closeAddCourseModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Hủy</button>
                 <button type="submit" name="action" value="ADD" class="bg-blue-600 text-white px-6 py-3 rounded-lg">Thêm</button>
+                
             </div>
         </form>
     </div>

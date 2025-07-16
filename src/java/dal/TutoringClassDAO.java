@@ -167,15 +167,16 @@ public class TutoringClassDAO {
     }
 
     public void deleteTutoringClass(int id) {
-        String sql = "DELETE FROM TutoringClass WHERE TutoringClassID = ?";
+    String sql = "UPDATE TutoringClass SET isActive = 0 WHERE TutoringClassID = ?";
 
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Lỗi xóa lớp học: " + e.getMessage());
-        }
+    try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi ẩn (xóa mềm) lớp học: " + e.getMessage());
     }
+}
+
 
     public List<TutoringClass> searchTutoringClassByName(String keyword) {
         List<TutoringClass> classes = new ArrayList<>();

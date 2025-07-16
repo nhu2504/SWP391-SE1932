@@ -37,6 +37,7 @@ public class HomeServlet extends HttpServlet {
     private final RoomDAO roomDAO = new RoomDAO();
     private final ShiftLearnDAO shiftDAO = new ShiftLearnDAO();
     private final ClassGroupDAO classGroupDAO = new ClassGroupDAO();
+    private final ScheduleDAO scheduleDAO = new ScheduleDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -127,6 +128,8 @@ public class HomeServlet extends HttpServlet {
 
             Map<Integer, String> groupStringMap = new HashMap<>();
             Map<Integer, String> durationMap = new HashMap<>();
+            Map<Integer, String> weekdayMap = scheduleDAO.getWeekdayMap(); // gọi hàm bạn đã viết
+            request.setAttribute("weekdayMap", weekdayMap); // truyền cho JSP
             Set<Integer> addedClassIds = new HashSet<>();
 
             for (TutoringClass tc : allTutoringClasses) {
@@ -148,9 +151,8 @@ public class HomeServlet extends HttpServlet {
                         // Tính thứ từ ngày học
                         String thu;
                         if (g[6] != null) {
-                            LocalDate date = ((java.sql.Date) g[6]).toLocalDate();
-                            DayOfWeek dow = date.getDayOfWeek();
-                            thu = dow.getDisplayName(TextStyle.FULL, new Locale("vi", "VN"));
+                            int dayOfWeek = (int) g[6]; // giá trị từ DB
+                            thu = weekdayMap.getOrDefault(dayOfWeek, "Không xác định");
                         } else {
                             thu = "null";
                         }
@@ -265,7 +267,7 @@ public class HomeServlet extends HttpServlet {
             // 12. Học sinh nổi bật và trường liên kết
             request.setAttribute("students", studentDAO.getTopStudents());
             request.setAttribute("schools", schoolDAO.getAllSchools());
-           
+
             // Điều hướng đến JSP
             forwardToJsp(request, response);
 

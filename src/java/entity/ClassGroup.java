@@ -20,6 +20,9 @@ public class ClassGroup {
     private String roomName;
     private int roomId;
     private int shiftId;
+    private int isActive;
+    private int minStudent;
+    
     
     
     
@@ -54,6 +57,41 @@ public class ClassGroup {
         this.teachId = teachId;
         this.currentStudentCount = currentStudentCount;
     }
+
+    public ClassGroup(int classGroupId, int toturID, String name, int maxStudent, int teachId, int currentStudentCount, String roomName, int roomId, int shiftId, int isActive, int minStudent) {
+        this.classGroupId = classGroupId;
+        this.toturID = toturID;
+        this.name = name;
+        this.maxStudent = maxStudent;
+        this.teachId = teachId;
+        this.currentStudentCount = currentStudentCount;
+        this.roomName = roomName;
+        this.roomId = roomId;
+        this.shiftId = shiftId;
+        this.isActive = isActive;
+        this.minStudent = minStudent;
+    }
+
+    public int getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
+    }
+
+    
+
+    
+
+    public int getMinStudent() {
+        return minStudent;
+    }
+
+    public void setMinStudent(int minStudent) {
+        this.minStudent = minStudent;
+    }
+    
 
     public String getRoomName() {
         return roomName;

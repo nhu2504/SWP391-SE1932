@@ -260,6 +260,26 @@ public class ScheduleDAO {
         return list;
     }
 
+    public List<ScheduleTemplate> getTemplatesByGroupId(int groupId) throws SQLException {
+    List<ScheduleTemplate> list = new ArrayList<>();
+    String sql = "SELECT DayOfWeek, ShiftID, RoomID, TeacherID FROM ScheduleTemplate WHERE ClassGroupID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, groupId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            ScheduleTemplate t = new ScheduleTemplate();
+            t.setDayOfWeek(rs.getInt("DayOfWeek"));
+            t.setShiftId(rs.getInt("ShiftID"));
+            t.setRoomId(rs.getInt("RoomID"));
+            t.setUserId(rs.getInt("TeacherID"));
+            list.add(t);
+        }
+    }
+    return list;
+}
+
     public void insertSchedulesFromTemplate(int classGroupId, List<ScheduleTemplate> templates, Date startDate, int numberOfSessions) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -335,54 +355,7 @@ public class ScheduleDAO {
             }
         }
     }
-// trả về ca còn trống của teacher sau khi có teacher và thứ
-
-    public List<Option> getAvailableShiftsForTeacher(String teacherId, String day) {
-        List<Option> list = new ArrayList<>();
-        String sql = "SELECT s.ShiftID, s.Start_time, s.End_time "
-                + "FROM Shiftlearn s "
-                + "WHERE s.ShiftID NOT IN ("
-                + "  SELECT ShiftID FROM Schedule "
-                + "  WHERE UserID = ? AND DATEPART(WEEKDAY, DateLearn) = ?"
-                + ")";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, teacherId);
-            ps.setInt(2, Integer.parseInt(day));
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String id = rs.getString("ShiftID");
-                LocalTime start = rs.getTime("Start_time").toLocalTime();
-                LocalTime end = rs.getTime("End_time").toLocalTime();
-                String label = start.format(DateTimeFormatter.ofPattern("HH:mm")) + " - "
-                        + end.format(DateTimeFormatter.ofPattern("HH:mm"));
-                list.add(new Option(id, label));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-// trả về phòng hợp lệ sau khi lọc thứ và ca
-
-    public List<Option> getAvailableRooms(String day, String shift) {
-        List<Option> list = new ArrayList<>();
-        String sql = "SELECT r.id, r.roomName FROM Room r "
-                + "WHERE r.id NOT IN ("
-                + "  SELECT RoomID FROM Schedule "
-                + "  WHERE DATEPART(WEEKDAY, DateLearn) = ? AND ShiftID = ?"
-                + ")";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, Integer.parseInt(day)); // đổi sang int
-            ps.setString(2, shift);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new Option(rs.getString("id"), rs.getString("roomName")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
+  
 // Hàm trả về giáo môn theo chuyên môn 
 
     public List<Option> getTeachersByCourse(int courseId) {
@@ -403,39 +376,95 @@ public class ScheduleDAO {
         return list;
     }
 
+    // Trả về các ngày còn ít nhất 1 ca trống (dựa vào ScheduleTemplate)
     public List<Option> getAvailableDays(String teacherId) {
         List<Option> list = new ArrayList<>();
         Map<Integer, String> weekdayMap = getWeekdayMap();
 
-        // Duyệt qua từng ngày từ 1 đến 7
         for (int day = 1; day <= 7; day++) {
             if (hasAvailableShift(teacherId, day)) {
                 list.add(new Option(String.valueOf(day), weekdayMap.get(day)));
             }
         }
-
         return list;
     }
 
-// Hàm kiểm tra xem giáo viên có còn ca trống trong ngày không
+    // Kiểm tra ngày đó giáo viên còn ca nào trống không (dựa vào ScheduleTemplate)
     private boolean hasAvailableShift(String teacherId, int day) {
         String sql = "SELECT COUNT(*) FROM Shiftlearn s "
-                + "WHERE s.ShiftID NOT IN ("
-                + "  SELECT ShiftID FROM Schedule "
-                + "  WHERE UserID = ? AND DATEPART(WEEKDAY, DateLearn) = ?"
-                + ")";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+                   + "WHERE s.ShiftID NOT IN ("
+                   + "  SELECT st.ShiftID "
+                   + "  FROM ScheduleTemplate st "
+                   + "  JOIN ClassGroup cg ON st.ClassGroupID = cg.ClassGroupID "
+                   + "  WHERE st.TeacherID = ? AND st.DayOfWeek = ? AND cg.isActive IN (0, 1)"
+                   + ")";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, teacherId);
             ps.setInt(2, day);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // còn ít nhất 1 ca chưa bị chiếm
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+    // Trả về các ca còn trống của giáo viên theo ngày (dựa vào ScheduleTemplate)
+    public List<Option> getAvailableShiftsForTeacher(String teacherId, String day) {
+        List<Option> list = new ArrayList<>();
+        String sql = "SELECT s.ShiftID, s.Start_time, s.End_time "
+                   + "FROM Shiftlearn s "
+                   + "WHERE s.ShiftID NOT IN ("
+                   + "    SELECT st.ShiftID "
+                   + "    FROM ScheduleTemplate st "
+                   + "    JOIN ClassGroup cg ON st.ClassGroupID = cg.ClassGroupID "
+                   + "    WHERE st.TeacherID = ? AND st.DayOfWeek = ? AND cg.isActive IN (0, 1)"
+                   + ")";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, teacherId);
+            ps.setInt(2, Integer.parseInt(day));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("ShiftID");
+                LocalTime start = rs.getTime("Start_time").toLocalTime();
+                LocalTime end = rs.getTime("End_time").toLocalTime();
+                String label = start.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " +
+                               end.format(DateTimeFormatter.ofPattern("HH:mm"));
+                list.add(new Option(id, label));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Trả về danh sách phòng còn trống theo ca và thứ (chỉ cần Schedule thật vì phòng là tài nguyên vật lý)
+    public List<Option> getAvailableRooms(String day, String shift) {
+        List<Option> list = new ArrayList<>();
+        String sql = "SELECT r.id, r.roomName FROM Room r "
+                   + "WHERE r.id NOT IN ("
+                   + "  SELECT RoomID FROM Schedule "
+                   + "  WHERE DATEPART(WEEKDAY, DateLearn) = ? AND ShiftID = ?"
+                   + ")";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, Integer.parseInt(day));
+            ps.setString(2, shift);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Option(rs.getString("id"), rs.getString("roomName")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
 
 //ngocah
     public List<ScheduleJoin> getSchedulesByWeek(int userId, Date startOfWeek, Date endOfWeek) throws SQLException {
