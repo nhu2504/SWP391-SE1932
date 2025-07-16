@@ -1,5 +1,5 @@
 <%-- 
-    Document   : teacherdashboard
+    Document   : teacherschedule
     Created on : May 24, 2025, 11:31:10 PM
     Author     : DO NGOC ANH HE180661
 --%>
@@ -506,7 +506,7 @@
                     <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
-                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 

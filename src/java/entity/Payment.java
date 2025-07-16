@@ -17,6 +17,7 @@ public class Payment {
     private int tutorId;
     private double amount;
     private Date payDate;
+    private boolean status;
 
     public Payment(int paymentId, int userId, int tutorId, double amount, Date payDate) {
         this.paymentId = paymentId;
@@ -25,6 +26,24 @@ public class Payment {
         this.amount = amount;
         this.payDate = payDate;
     }
+
+    public Payment(int paymentId, int userId, int tutorId, double amount, Date payDate, boolean status) {
+        this.paymentId = paymentId;
+        this.userId = userId;
+        this.tutorId = tutorId;
+        this.amount = amount;
+        this.payDate = payDate;
+        this.status = status;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
 
     public int getPaymentId() {
         return paymentId;

@@ -249,7 +249,7 @@ public class UserDAO {
             ps.setString(2, phone);
             ps.setString(3, avatarFileName);
             ps.setString(4, description);
-            
+           
             ps.setInt(5, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -257,38 +257,33 @@ public class UserDAO {
         }
         return false;
     }
-    
-    //Ngọc Anh update day: 9/7/2025
     public List<Integer> getAllUserIds() {
-        List<Integer> list = new ArrayList<>();
-        String sql = "SELECT UserID FROM [User]";
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getInt("UserID"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
+    List<Integer> list = new ArrayList<>();
+    String sql = "SELECT UserID FROM [User]";
+    try (Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) list.add(rs.getInt("UserID"));
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
 
-    public List<Integer> getUserIdsByRole(int roleId) {
-        List<Integer> list = new ArrayList<>();
-        String sql = "SELECT UserID FROM [User] WHERE roleID = ?";
-        try (Connection conn = new DBContext().connection; 
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, roleId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getInt("UserID"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
+public List<Integer> getUserIdsByRole(int roleId) {
+    List<Integer> list = new ArrayList<>();
+    String sql = "SELECT UserID FROM [User] WHERE RoleID = ?";
+    try (Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, roleId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) list.add(rs.getInt("UserID"));
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {

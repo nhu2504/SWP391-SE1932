@@ -124,7 +124,7 @@ public class ScheduleJoin {
 
     public void setEndTime(Time endTime) {
         this.endTime = endTime;
-    }
+}
 
     public String getRoomName() {
         return roomName;

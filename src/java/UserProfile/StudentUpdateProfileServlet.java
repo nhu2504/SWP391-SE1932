@@ -12,7 +12,6 @@ import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +27,6 @@ import java.util.List;
  * @author NGOC ANH
  */
 @WebServlet("/studentupdateprofile")
-@MultipartConfig
 public class StudentUpdateProfileServlet extends HttpServlet {
 
     /**
@@ -83,34 +81,45 @@ public class StudentUpdateProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("schoolId param = " + request.getParameter("schoolId"));
+System.out.println("classId param = " + request.getParameter("classId"));
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
+            response.sendRedirect("login_register.jsp");
             return;
         }
-
         User user = (User) session.getAttribute("user");
         int userId = user.getId();
 
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
-        int schoolId = Integer.parseInt(request.getParameter("school"));
-        
-        String description = request.getParameter("description");
 
-        // Lấy danh sách classIds và subjectIds từ form (checkbox/multiselect)
-        String[] classIdsStr = request.getParameterValues("classIds");
-       
-        List<Integer> classIds = new ArrayList<>();
-       
-        if (classIdsStr != null) {
-            for (String c : classIdsStr) {
-                classIds.add(Integer.parseInt(c));
-            }
+        String description = request.getParameter("description");
+        String schoolStr = request.getParameter("schoolId");
+        String classIdStr = request.getParameter("classId");
+
+        int schoolId = -1;
+        int schoolClassId = -1;
+
+        if (schoolStr != null && !schoolStr.isEmpty()) {
+             schoolId = Integer.parseInt(schoolStr);
+        } else {
+            // handle missing/invalid value. For example:
+            session.setAttribute("FailMessage", "Thiếu thông tin trường học.");
+            response.sendRedirect("studentprofile");
+            return;
         }
-        
-         UserDAO userDao = new UserDAO();
+
+        if (classIdStr != null && !classIdStr.isEmpty()) {
+            schoolClassId = Integer.parseInt(classIdStr);
+        } else {
+            session.setAttribute("FailMessage", "Thiếu thông tin lớp học.");
+            response.sendRedirect("studentprofile");
+            return;
+        }
+
+        UserDAO userDao = new UserDAO();
 
         // Xử lý upload ảnh đại diện
         Part part = request.getPart("avatarFile");
@@ -127,7 +136,7 @@ public class StudentUpdateProfileServlet extends HttpServlet {
 
         if (part != null && part.getSize() > 0) {
             // Xóa ảnh cũ nếu có
-            String oldAvatarPath = userDao.getUserByID(userId).getAvatar(); 
+            String oldAvatarPath = userDao.getUserByID(userId).getAvatar();
             if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
                 String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
                 File oldFile = new File(uploadDir, oldFileName);
@@ -154,21 +163,17 @@ public class StudentUpdateProfileServlet extends HttpServlet {
         boolean ok1 = userDao.updateStudent(userId, email, phone, avatarPath, description, schoolId);
 
         // Cập nhật bảng trung gian
-        TeacherClassDAO teacherClassDao = new TeacherClassDAO();
-        SubjectDAO subjectDao = new SubjectDAO();
-        boolean ok2 = teacherClassDao.updateSchoolClassDAO(userId, classIds);
-       
+        StudentDAO std = new StudentDAO();
+        boolean ok2 = std.updateSchoolClassDAO(userId, schoolClassId);
 
         if (ok1 && ok2) {
             User updatedUser = userDao.getUserByID(userId);
-           
+
             request.getSession().setAttribute("user", updatedUser);
             session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
         } else {
             session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");
         }
-
-
 
         response.sendRedirect("studentprofile");
     }

@@ -1,7 +1,7 @@
 <%-- 
     Document   : teacherprofile
     Created on : Jun 23, 2025, 10:20:36 AM
-    Author     : NGOC ANH
+    Author     : DO NGOC ANH HE180661
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -686,7 +686,7 @@
                     <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
-                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 

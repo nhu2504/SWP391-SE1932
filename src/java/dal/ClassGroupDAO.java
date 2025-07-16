@@ -1,60 +1,62 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
 
 import entity.ClassGroup;
 import entity.TutoringClassStu;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
- * @author NGOC ANH
+ * Ngày update: 30/06/2025  
+ * Người viết: Văn Thị Như
+ * Mục đích: Quản lý truy vấn liên quan đến bảng ClassGroup (lớp học cụ thể)
  */
 public class ClassGroupDAO {
 
     /**
-     * Lấy thông tin 1 lịch học đầu tiên (phòng, giáo viên, ca học) cho mỗi nhóm
-     * lớp thuộc lớp học thêm có ID tương ứng.
+     *  Lấy lịch học (buổi đầu tiên) đại diện cho mỗi ClassGroup thuộc một khóa học (TutoringClass)
+     * Mục đích: Hiển thị thông tin tóm tắt lớp gồm tên lớp, giáo viên, phòng học, thời gian học, v.v.
      *
-     * Mỗi nhóm lớp chỉ lấy duy nhất 1 bản ghi đầu tiên (sắp xếp theo ngày học
-     * và giờ bắt đầu). Trả về danh sách Object[] với: [0] ClassGroupName [1]
-     * MaxStudent [2] RoomName [3] TeacherName [4] Start_time [5] End_time [6]
-     * StudyDate
+     * @param tutoringClassID ID của khóa học
+     * @return Danh sách Object[] chứa thông tin từng lớp học
+     *         - [0] Tên lớp
+     *         - [1] Số học sinh tối đa
+     *         - [2] Tên phòng học
+     *         - [3] Tên giáo viên
+     *         - [4] Thời gian bắt đầu
+     *         - [5] Thời gian kết thúc
+     *         - [6] Ngày học (đầu tiên)
      */
     public List<Object[]> getClassGroupsWithRoomAndShift(int tutoringClassID) {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT *\n"
-                + "FROM (\n"
-                + "    SELECT \n"
-                + "        cg.ClassGroupName,\n"
-                + "        cg.MaxStudent,\n"
-                + "        r.roomName AS RoomName,\n"
-                + "        u.FullName AS TeacherName,\n"
-                + "        s.Start_time,\n"
-                + "        s.End_time,\n"
-                + "        sc.DateLearn AS StudyDate,\n"
-                + "        ROW_NUMBER() OVER (PARTITION BY cg.ClassGroupID ORDER BY sc.DateLearn, s.Start_time) AS rn\n"
-                + "    FROM ClassGroup cg\n"
-                + "    LEFT JOIN Schedule sc ON sc.ClassGroupID = cg.ClassGroupID\n"
-                + "    LEFT JOIN Room r ON sc.RoomID = r.id\n"
-                + "    LEFT JOIN Shiftlearn s ON sc.ShiftID = s.ShiftID\n"
-                + "    LEFT JOIN [User] u ON cg.TeacherID = u.UserID\n"
-                + "    WHERE cg.TutoringClassID = ?\n"
-                + ") t\n"
-                + "WHERE t.rn = 1";
-
-        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        String sql = """
+            SELECT *
+            FROM (
+                SELECT 
+                    cg.ClassGroupName,
+                    cg.MaxStudent,
+                    r.roomName AS RoomName,
+                    u.FullName AS TeacherName,
+                    s.Start_time,
+                    s.End_time,
+                    sc.DateLearn AS StudyDate,
+                    ROW_NUMBER() OVER (PARTITION BY cg.ClassGroupID ORDER BY sc.DateLearn, s.Start_time) AS rn
+                FROM ClassGroup cg
+                LEFT JOIN Schedule sc ON sc.ClassGroupID = cg.ClassGroupID
+                LEFT JOIN Room r ON sc.RoomID = r.id
+                LEFT JOIN Shiftlearn s ON sc.ShiftID = s.ShiftID
+                LEFT JOIN [User] u ON cg.TeacherID = u.UserID
+                WHERE cg.TutoringClassID = ?
+            ) t
+            WHERE t.rn = 1
+        """;
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, tutoringClassID);
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 Object[] row = new Object[7];
                 row[0] = rs.getString("ClassGroupName");
@@ -64,17 +66,94 @@ public class ClassGroupDAO {
                 row[4] = rs.getString("Start_time");
                 row[5] = rs.getString("End_time");
                 row[6] = rs.getDate("StudyDate");
-
                 list.add(row);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return list;
     }
 
+    /**
+     *  Lấy danh sách ClassGroup thuộc về một TutoringClass cụ thể
+     *
+     * @param tutoringClassID ID của khóa học
+     * @return Danh sách đối tượng ClassGroup
+     */
+    public List<ClassGroup> getClassGroupsByTutoringClassId(int tutoringClassID) {
+        List<ClassGroup> classGroups = new ArrayList<>();
+        String sql = """
+            SELECT ClassGroupID, TutoringClassID, ClassGroupName, MaxStudent, RoomID, ShiftID, TeacherID
+            FROM ClassGroup
+            WHERE TutoringClassID = ?
+        """;
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, tutoringClassID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ClassGroup cg = new ClassGroup();
+                cg.setClassGroupId(rs.getInt("ClassGroupID"));
+                cg.setToturID(rs.getInt("TutoringClassID"));
+                cg.setName(rs.getString("ClassGroupName"));
+                cg.setMaxStudent(rs.getInt("MaxStudent"));
+                cg.setTeachId(rs.getInt("TeacherID"));
+                classGroups.add(cg);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classGroups;
+    }
+
+    /**
+     *  Lấy danh sách các lớp học đang mở (đã bắt đầu và chưa kết thúc)
+     * Dựa trên ngày bắt đầu và kết thúc của khóa học (TutoringClass)
+     * 
+     * @return List<Object[]> gồm:
+     *         - [0] ID lớp học
+     *         - [1] Tên lớp học
+     *         - [2] Tên giáo viên
+     *         - [3] Tên khóa học
+     *         - [4] Ngày bắt đầu
+     *         - [5] Ngày kết thúc
+     */
+    public List<Object[]> getOpeningClassGroupsByCourseDate() {
+        List<Object[]> list = new ArrayList<>();
+        String sql = """
+            SELECT 
+                cg.ClassGroupID,
+                cg.ClassGroupName,
+                u.FullName AS TeacherName,
+                tc.ClassName AS CourseName,
+                tc.StartDate,
+                tc.EndDate
+            FROM ClassGroup cg
+            JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+            LEFT JOIN [User] u ON cg.TeacherID = u.UserID
+            WHERE tc.StartDate <= CAST(GETDATE() AS DATE)
+              AND tc.EndDate >= CAST(GETDATE() AS DATE)
+        """;
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getInt("ClassGroupID");
+                row[1] = rs.getString("ClassGroupName");
+                row[2] = rs.getString("TeacherName");
+                row[3] = rs.getString("CourseName");
+                row[4] = rs.getDate("StartDate");
+                row[5] = rs.getDate("EndDate");
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    // Ngọc Anh
     public List<ClassGroup> getAllClassGroupByUserId(int userId) {
         List<ClassGroup> list = new ArrayList<>();
         String sql = "SELECT cg.ClassGroupID, \n"
@@ -113,39 +192,8 @@ public class ClassGroupDAO {
 
         return list;
     }
-
-    /**
-     * Lấy danh sách các nhóm lớp theo tutoringClassID (ID lớp học thêm) Trả về
-     * danh sách ClassGroup có thông tin cơ bản: ID, tên nhóm, max student, giáo
-     * viên
-     */
-    public List<ClassGroup> getClassGroupsByTutoringClassId(int tutoringClassID) {
-        List<ClassGroup> classGroups = new ArrayList<>();
-        String sql = "SELECT ClassGroupID, TutoringClassID, ClassGroupName, MaxStudent, RoomID, ShiftID, TeacherID "
-                + "FROM ClassGroup WHERE TutoringClassID = ?";
-
-        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, tutoringClassID);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                ClassGroup cg = new ClassGroup();
-                cg.setClassGroupId(rs.getInt("ClassGroupID"));
-                cg.setToturID(rs.getInt("TutoringClassID"));
-                cg.setName(rs.getString("ClassGroupName"));
-                cg.setMaxStudent(rs.getInt("MaxStudent"));
-                cg.setTeachId(rs.getInt("TeacherID"));
-                classGroups.add(cg);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return classGroups;
-    }
-
+    
+    
     public List<ClassGroup> getTodayClasses(int teacherId) throws SQLException {
         List<ClassGroup> list = new ArrayList<>();
         String query = "SELECT cg.ClassGroupName\n"
@@ -168,6 +216,7 @@ public class ClassGroupDAO {
         return list;
     }
 
+    // Nam
     public ArrayList<TutoringClassStu> getClassesByUserID(int userID) {
         ArrayList<TutoringClassStu> classes = new ArrayList<>();
         String query = "SELECT DISTINCT tc.TutoringClassID, tc.ClassName, tc.StartDate, tc.Tuitionfee, "
@@ -202,50 +251,13 @@ public class ClassGroupDAO {
                 + "ELSE "
                 + "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) "
                 + "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
+try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
             ps.setInt(3, userID);
             ps.setInt(4, tutoringClassID);
             ps.setInt(5, tutoringClassID);
             ps.executeUpdate();
-        }
-    }
-
-    public static void main(String[] args) {
-        ClassGroupDAO dao = new ClassGroupDAO(); // Đổi tên nếu class của bạn khác
-        int teacherId = 3; // Nhập ID giáo viên bạn muốn test
-
-//        try {
-//            List<ClassGroup> todayClasses = dao.getTodayClasses(teacherId);
-//            if (todayClasses.isEmpty()) {
-//                System.out.println("Không có lớp học nào hôm nay.");
-//            } else {
-//                System.out.println("Danh sách lớp học hôm nay:");
-//                for (ClassGroup cg : todayClasses) {
-//                    System.out.println("ID: " + cg.getClassGroupId() + " | Tên lớp: " + cg.getName());
-//                }
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Đã xảy ra lỗi khi truy vấn lớp học hôm nay:");
-//            e.printStackTrace();
-//        }
-        List<ClassGroup> classGroups = dao.getAllClassGroupByUserId(teacherId);
-
-        if (classGroups.isEmpty()) {
-            System.out.println("Không tìm thấy lớp nào cho giáo viên có ID: " + teacherId);
-        } else {
-            for (ClassGroup cg : classGroups) {
-                System.out.println("=== Lớp học ===");
-                System.out.println("ID: " + cg.getClassGroupId());
-                System.out.println("Tên lớp: " + cg.getName());
-                System.out.println("Khóa học ID: " + cg.getToturID());
-                System.out.println("Giáo viên ID: " + cg.getTeachId());
-                System.out.println("Số học sinh hiện tại: " + cg.getCurrentStudentCount());
-                System.out.println("Số học sinh tối đa: " + cg.getMaxStudent());
-                System.out.println("Phòng học: " + cg.getRoomName());
-                System.out.println();
-            }
         }
     }
 }

@@ -113,7 +113,7 @@ public class DashboardAttendServlet extends HttpServlet {
             listclassify = (ArrayList<Classify>) cdao.getAllClassify();
         } catch (Exception e) {
         }
-       
+        
         // Set the nextSchedule in session scope for EL access
         session.setAttribute("nextSchedule", nextSchedule);
         session.setAttribute("todayClasses", todayClasses);

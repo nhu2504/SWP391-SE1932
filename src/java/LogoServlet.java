@@ -5,82 +5,115 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-// Văn Thị Như - HE181329
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.*;
+
+/**
+ *
+ *
+ * Ngày tạo: 23/06/2025 Người viết: Van Nhu
+ */
 @WebServlet("/LogoServlet")
 public class LogoServlet extends HttpServlet {
+
+    // Đường dẫn thư mục ảnh ngoài project (thay đổi nếu deploy nơi khác)
+    private static final String EXTERNAL_IMAGE_DIR = "D:/data/images";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("LogoServlet được gọi tại: " + request.getRequestURI() + "?" + request.getQueryString());
+
         String type = request.getParameter("type");
         if (type == null || type.trim().isEmpty()) {
-            type = "logo";
+            type = "logo"; // Mặc định là logo
+        }
+        if ("manual".equalsIgnoreCase(type)) {
+            String filename = request.getParameter("filename");
+            if (filename != null && !filename.trim().isEmpty()) {
+                File imageFile = resolveImageFile(filename, request);
+                if (imageFile != null && imageFile.exists()) {
+                    String mime = getServletContext().getMimeType(imageFile.getName());
+                    if (mime == null) {
+                        mime = "image/jpeg";
+                    }
+                    response.setContentType(mime);
+                    response.setContentLengthLong(imageFile.length());
+                    Files.copy(imageFile.toPath(), response.getOutputStream());
+                    response.getOutputStream().flush();
+                    return;
+                }
+            }
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
+        }
+        // Đảm bảo thư mục chứa ảnh ngoài project tồn tại
+        File externalDir = new File(EXTERNAL_IMAGE_DIR);
+        if (!externalDir.exists() && !externalDir.mkdirs()) {
+            System.err.println("Không thể tạo thư mục ảnh ngoài project: " + EXTERNAL_IMAGE_DIR);
         }
 
-        try (Connection conn = new DBContext().connection) {
-            if (conn == null) {
-                System.out.println("Lỗi: Kết nối cơ sở dữ liệu là null");
-                response.sendRedirect(request.getContextPath() + "/images/fallback.png");
-                return;
-            }
+        try (
+                Connection conn = new DBContext().connection; PreparedStatement ps = createPreparedStatement(conn, type, request); ResultSet rs = (ps != null) ? ps.executeQuery() : null) {
+            if (rs != null && rs.next()) {
+                String imageFileName = rs.getString(1);
 
-            String imageUrl = null;
-            try (PreparedStatement ps = createPreparedStatement(conn, type, request); ResultSet rs = ps != null ? ps.executeQuery() : null) {
-                if (rs != null && rs.next()) {
-                    imageUrl = rs.getString(1);
-                    if (imageUrl == null || imageUrl.trim().isEmpty()) {
-                        System.out.println("ImageTutoring null hoặc rỗng cho type=" + type);
+                if (imageFileName != null && !imageFileName.trim().isEmpty()) {
+                    File imageFile = resolveImageFile(imageFileName, request);
+
+                    if (imageFile != null && imageFile.exists()) {
+                        // Thiết lập MIME type và gửi ảnh
+                        String mime = getServletContext().getMimeType(imageFile.getName());
+                        if (mime == null) {
+                            mime = "image/jpeg";
+                        }
+                        response.setContentType(mime);
+                        response.setContentLengthLong(imageFile.length());
+                        Files.copy(imageFile.toPath(), response.getOutputStream());
+                        response.getOutputStream().flush();
+                        return;
                     }
-                } else {
-                    System.out.println("Không tìm thấy hình ảnh cho type=" + type);
                 }
             }
 
-            if (imageUrl != null && !imageUrl.trim().isEmpty()) {
-                if (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://")) {
-                    if (!imageUrl.startsWith("/images/")) {
-                        imageUrl = "/images/" + imageUrl.replaceFirst("^/+", "");
-                    }
-                    imageUrl = request.getContextPath() + imageUrl;
-                }
-                System.out.println("Chuyển hướng đến hình ảnh URL (" + type + "): " + imageUrl);
-                response.sendRedirect(imageUrl);
-            } else {
-                System.out.println("URL hình ảnh (" + type + ") là null hoặc rỗng");
-                response.sendRedirect(request.getContextPath() + "/images/fallback.png");
-            }
+            // Không có ảnh hoặc ảnh đã bị xóa: trả về mã 204 No Content
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Lỗi SQL trong LogoServlet: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/images/fallback.png");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi cơ sở dữ liệu");
         }
     }
 
+    /**
+     * Tạo câu truy vấn phù hợp để lấy tên file ảnh từ DB
+     * phía client gọi type -> servlet lấy type từ request, dựa vào type quyết định chạy case 
+     */
     private PreparedStatement createPreparedStatement(Connection conn, String type, HttpServletRequest request) throws SQLException {
         String sql = null;
         PreparedStatement ps = null;
+
         switch (type.toLowerCase()) {
             case "logo":
                 sql = "SELECT Logo FROM CenterInfo WHERE CenterID = 1";
                 ps = conn.prepareStatement(sql);
                 break;
-            case "banner":
-                sql = "SELECT Banner FROM CenterInfo WHERE CenterID = 1";
-                ps = conn.prepareStatement(sql);
-                break;
-            case "bannerteacher":
-                sql = "SELECT BannerTeacher FROM CenterInfo WHERE CenterID = 1";
-                ps = conn.prepareStatement(sql);
-                break;
             case "imagecenter":
                 sql = "SELECT imageCenter FROM CenterInfo WHERE CenterID = 1";
+                ps = conn.prepareStatement(sql);
+                break;
+            case "banner":
+                String bannerId = request.getParameter("bannerID");
+                if (bannerId != null && !bannerId.trim().isEmpty()) {
+                    sql = "SELECT bannerImg FROM Banner WHERE bannerID = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, bannerId);
+                }
+                break;
+            case "bannerteacher":
+                sql = "SELECT bannerImg FROM Banner WHERE bannerID = 1";
                 ps = conn.prepareStatement(sql);
                 break;
             case "subject":
@@ -89,8 +122,6 @@ public class LogoServlet extends HttpServlet {
                     sql = "SELECT ImageSubject FROM Subjects WHERE SubjectId = ?";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, subjectId);
-                } else {
-                    System.out.println("subjectId không hợp lệ: " + subjectId);
                 }
                 break;
             case "tutoring":
@@ -99,37 +130,45 @@ public class LogoServlet extends HttpServlet {
                     sql = "SELECT ImageTutoring FROM TutoringClass WHERE TutoringClassID = ?";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, tutoringClassId);
-                    System.out.println("Truy vấn ImageTutoring cho TutoringClassID: " + tutoringClassId);
-                } else {
-                    System.out.println("tutoringClassId không hợp lệ: " + tutoringClassId);
                 }
                 break;
             case "teacher":
                 String userId = request.getParameter("userId");
                 if (userId != null && !userId.trim().isEmpty()) {
-                    sql = "SELECT avatar FROM [User] WHERE UserID = ?";
+                    sql = "SELECT avatar FROM [User] WHERE UserID = ? and roleId = 2";
                     ps = conn.prepareStatement(sql);
                     ps.setString(1, userId);
-                    System.out.println("Truy vấn avatar cho UserID: " + userId);
-                } else {
-                    System.out.println("userId không hợp lệ: " + userId);
                 }
                 break;
             case "student":
-                String studentId = request.getParameter("userId");
-                if (studentId != null && !studentId.trim().isEmpty()) {
-                    sql = "SELECT avatar FROM [User] WHERE UserID = ?";
+                String userId1 = request.getParameter("userId");
+                if (userId1 != null && !userId1.trim().isEmpty()) {
+                    sql = "SELECT avatar FROM [User] WHERE UserID = ? and roleId = 3";
                     ps = conn.prepareStatement(sql);
-                    ps.setString(1, studentId);
-                    System.out.println("Truy vấn avatar cho Student UserID: " + studentId);
-                } else {
-                    System.out.println("studentId không hợp lệ: " + studentId);
+                    ps.setString(1, userId1);
                 }
                 break;
+            // Không cần truy vấn DB nếu là manual
+            case "manual":
+                return null;
+
             default:
-                System.out.println("Loại hình ảnh không hợp lệ: " + type);
                 break;
         }
+
         return ps;
+    }
+
+    /**
+     * Tìm file ảnh theo tên file, ưu tiên từ thư mục ngoài project, sau đó thử
+     * trong /images nội bộ
+     */
+    private File resolveImageFile(String imageFileName, HttpServletRequest request) {
+        File imageFile = new File(EXTERNAL_IMAGE_DIR, imageFileName);
+        if (!imageFile.exists()) {
+            imageFile = new File(getServletContext().getRealPath("/images"), imageFileName);
+        }
+
+        return imageFile.exists() ? imageFile : null;
     }
 }

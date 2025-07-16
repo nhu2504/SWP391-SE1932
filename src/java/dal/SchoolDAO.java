@@ -1,23 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
 
 import entity.School;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author DO NGOC ANH HE180661
+ * Ngày update: 30/06/2025  
+ * Người viết: Văn Thị Như
+ * 
+ * Mô tả: Lớp DAO xử lý thao tác với bảng `School` (Trường liên kết).
  */
-//class chứa các hàm tương tác với bảng school
 public class SchoolDAO {
+
+    /**
+     *  Lấy toàn bộ danh sách các trường liên kết
+     * 
+     * @return List<School> danh sách tất cả các trường
+     */
     public List<School> getAllSchools() {
         List<School> schools = new ArrayList<>();
         String sql = "SELECT SchoolID, SchoolName, AddressSchool FROM School";
@@ -37,40 +37,13 @@ public class SchoolDAO {
         }
         return schools;
     }
-    
-//    public School getSchoolByID(int id) {
-//        String query = "select * from School\n"
-//                + "  where SchoolID = ?";
-//        try {
-//            Connection conn = new DBContext().connection; 
-//                PreparedStatement ps = conn.prepareStatement(query); 
-//                ps.setInt(1, id);
-//                ResultSet rs = ps.executeQuery();
-//                if(rs.next()){
-//                    return new School(rs.getInt(1), 
-//                            rs.getString(2));
-//                }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    } 
-    public String getSchoolNameById(int schoolID) {
-        String schoolName = "";
-        try (Connection conn = new DBContext().connection;
-             PreparedStatement ps = conn.prepareStatement(
-                 "SELECT SchoolName FROM School WHERE SchoolID = ?")) {
-            ps.setInt(1, schoolID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                schoolName = rs.getString("SchoolName");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return schoolName;
-    }
-    //lấy ra trường học theo id
+
+    /**
+     *  Lấy thông tin chi tiết một trường theo ID
+     * 
+     * @param id ID của trường
+     * @return đối tượng School nếu tìm thấy, ngược lại trả về null
+     */
     public School getSchoolByID(int id) {
         String query = """
                        select * from School
@@ -91,18 +64,48 @@ public class SchoolDAO {
             System.out.println("Lỗi "+e.getMessage());
         }
         return null;
-    } 
-
-    //test xem đã lấy được dữ liệu từ db chưa
-    public static void main(String[] args) {
-        SchoolDAO sd = new SchoolDAO();
-                int sID = 2; 
-                School s = sd.getSchoolByID(sID);
-    
-    if (s != null) {
-        System.out.println("Sản phẩm tìm thấy: " + s.toString());
-    } else {
-        System.out.println("Không tìm thấy sản phẩm với ID: " + sID);
     }
+
+    /**
+     * Lấy tên trường theo SchoolID
+     * 
+     * @param schoolID ID của trường
+     * @return tên trường nếu có, ngược lại là chuỗi rỗng
+     */
+    public String getSchoolNameById(int schoolID) {
+        String schoolName = "";
+        String sql = "SELECT SchoolName FROM School WHERE SchoolID = ?";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, schoolID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                schoolName = rs.getString("SchoolName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return schoolName;
+    }
+
+    /**
+     *  Đếm số lượng trường liên kết hiện có trong hệ thống
+     * 
+     * @return tổng số trường (int)
+     */
+    public int getPartnerSchoolsCount() {
+        String sql = "SELECT COUNT(*) AS total FROM School";
+        try (Connection conn = new DBContext().connection;
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

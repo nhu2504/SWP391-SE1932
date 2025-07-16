@@ -7,19 +7,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Ngày tạo: 23/06/2025 Người viết: Van Nhu
+ * Ngày update: 30/06/2025  
+ * Người viết: Văn Thị Như
+ * 
+ * Mô tả: DAO xử lý truy vấn dữ liệu liên quan đến môn học (Subjects)
  */
 public class SubjectDAO {
 
-    // Lấy danh sách tất cả môn học
+    /**
+     *  Lấy toàn bộ danh sách môn học từ bảng Subjects
+     *
+     * @return List<Subject> danh sách các môn học
+     */
     public List<Subject> getAllSubjects() {
         List<Subject> subjects = new ArrayList<>();
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(
-                "SELECT SubjectId, SubjectName FROM Subjects"); ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT SubjectId, SubjectName FROM Subjects";
+        try (
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
             while (rs.next()) {
                 Subject subject = new Subject();
                 subject.setSubjectId(rs.getInt("SubjectId"));
@@ -31,15 +41,31 @@ public class SubjectDAO {
         }
         return subjects;
     }
-// Lấy danh sách môn học và số lớp tương ứng
 
+    /**
+     *  Lấy danh sách môn học kèm theo số lượng lớp đang mở ứng với từng môn
+     *
+     * Truy vấn liên kết:
+     * - Bảng Subjects (môn học)
+     * - Bảng TutoringClass (lớp học) → đếm số lớp theo từng môn
+     *
+     * Dùng LEFT JOIN để vẫn hiển thị môn học nếu chưa có lớp nào
+     *
+     * @return List<Subject> trong đó mỗi Subject có thêm thuộc tính classCount
+     */
     public List<Subject> getSubjectsWithClassCount() {
         List<Subject> list = new ArrayList<>();
-        String sql = "SELECT s.SubjectId, s.SubjectName, s.ImageSubject, COUNT(c.TutoringClassID) AS classCount "
-                + "FROM Subjects s "
-                + "LEFT JOIN TutoringClass c ON s.SubjectId = c.SubjectID "
-                + "GROUP BY s.SubjectId, s.SubjectName, s.ImageSubject";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        String sql = """
+            SELECT s.SubjectId, s.SubjectName, s.ImageSubject, COUNT(c.TutoringClassID) AS classCount
+            FROM Subjects s
+            LEFT JOIN TutoringClass c ON s.SubjectId = c.SubjectID
+            GROUP BY s.SubjectId, s.SubjectName, s.ImageSubject
+        """;
+        try (
+            Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
             while (rs.next()) {
                 Subject subject = new Subject();
                 subject.setSubjectId(rs.getInt("SubjectId"));
@@ -53,7 +79,8 @@ public class SubjectDAO {
         }
         return list;
     }
-
+    
+    // Ngọc Anh
     public List<Subject> getSubjectsByTeacherId(int teacherId) {
         List<Subject> subjects = new ArrayList<>();
         String sql = "SELECT s.* \n"
@@ -75,7 +102,7 @@ public class SubjectDAO {
         }
         return subjects;
     }
-
+    
     public boolean updateSubjectOfTeacherDAO(int teacherId, List<Integer> subjectIds) {
         String deleteSql = "DELETE FROM TeacherSubjects WHERE UserID = ?";
         String insertSql = "INSERT INTO TeacherSubjects (UserID, SubjectID) VALUES (?, ?)";
@@ -109,47 +136,5 @@ public class SubjectDAO {
         }
         return false;
     }
-
-    public static void main(String[] args) {
-        SubjectDAO dao = new SubjectDAO();
-//
-//        int teacherId = 2; // Thay bằng ID giáo viên đang có trong DB của bạn
-//
-//        List<Subject> subjectList = dao.getSubjectsByTeacherId(teacherId);
-//
-//        if (subjectList.isEmpty()) {
-//            System.out.println("Không có môn học nào cho giáo viên có ID = " + teacherId);
-//        } else {
-//            System.out.println("Danh sách môn học của giáo viên ID = " + teacherId + ":");
-//            for (Subject sub : subjectList) {
-//                System.out.println(" - Mã môn: " + sub.getSubjectId()
-//                        + ", Tên môn: " + sub.getSubjectName()
-//                        + ", Ảnh đại diện: " + sub.getImageSubject());
-//            }
-//        }
-
-        
-
-//        int teacherId = 2; // Thay bằng ID của giáo viên đã có trong DB
-//        List<Integer> subjectIds = Arrays.asList(1, 8); // Danh sách SubjectID cần gán mới
-//
-//        boolean result = dao.updateSubjectOfTeacherDAO(teacherId, subjectIds);
-//
-//        if (result) {
-//            System.out.println("Cập nhật chuyên môn cho giáo viên ID = " + teacherId + " thành công.");
-//        } else {
-//            System.out.println("Cập nhật chuyên môn thất bại.");
-//        }
-
-        List<Subject> subjects = dao.getAllSubjects();
-
-        if (subjects.isEmpty()) {
-            System.out.println("Không có môn học nào trong hệ thống.");
-        } else {
-            System.out.println("Danh sách môn học:");
-            for (Subject subject : subjects) {
-                System.out.println("ID: " + subject.getSubjectId() + " | Tên: " + subject.getSubjectName());
-            }
-        }
-    }
+    
 }

@@ -85,27 +85,28 @@ public class GoogleLogin extends HttpServlet {
 
         if (acc != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", acc);
-            session.setAttribute("userId", acc.getId());
+        session.setAttribute("user", acc);
+        session.setAttribute("userId", acc.getId());
+        session.setAttribute("userRoleID", acc.getRoleID());
+        // Điều hướng theo vai trò
+        int roleId = acc.getRoleID();
+        switch (roleId) {
+            case 1:
+                response.sendRedirect("admin");
+                break;
+            case 2:
+                response.sendRedirect("dashboardattendservlet");
+                break;
+            case 3:
+                response.sendRedirect("studentdashboard");
+                break;
 
-
-            // Điều hướng theo vai trò
-            switch (acc.getRoleID()) {
-                case 1:
-                    response.sendRedirect("SuccessRegister.jsp");
-                    break;
-                case 2:
-                    response.sendRedirect("dashboardattendservlet");
-                    break;
-                case 3:
-                    response.sendRedirect("dashboard.jsp");
-                    break;
-                case 4:
-                    response.sendRedirect("SuccessRegister.jsp");
-                    break;
-                default:
-                    response.sendRedirect("Home.jsp");
-            }
+            case 4:
+                response.sendRedirect("manager_dashboard.jsp");
+                break;
+            default:
+                response.sendRedirect("Home.jsp");
+        }
         } else {
             request.setAttribute("error", "Email chưa tồn tại trong hệ thống.");
             request.getRequestDispatcher("login_register.jsp").forward(request, response);

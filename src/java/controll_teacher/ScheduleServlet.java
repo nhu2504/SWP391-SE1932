@@ -3,26 +3,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll;
+package controll_teacher;
 
+import dal.ScheduleDAO;
+import dal.ShiftLearnDAO;
+import entity.ScheduleJoin;
+import entity.Shift;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-
+import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @author NGOC ANH
  */
-@WebServlet("/file-loader/*")
-public class FileLoaderServlet extends HttpServlet {
-   private final String fileBasePath = "D:/MyUploads/Files";
+public class ScheduleServlet extends HttpServlet {
+   
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -38,10 +44,10 @@ public class FileLoaderServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet FileLoaderServlet</title>");  
+            out.println("<title>Servlet ScheduleServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet FileLoaderServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ScheduleServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,26 +64,34 @@ public class FileLoaderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String filename = request.getPathInfo(); // /abc.pdf
-        if (filename == null || filename.equals("/")) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File name missing!");
+        HttpSession session = request.getSession(false); // Get session without creating a new one
+        if (session == null || session.getAttribute("userId") == null) {
+            // No session or userId, redirect to login page
+            response.sendRedirect("login_register.jsp");
             return;
         }
 
-        File file = new File(fileBasePath, filename);
-        if (!file.exists()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        int userId = Integer.parseInt(session.getAttribute("userId").toString());
+        
+        ScheduleDAO dao = new ScheduleDAO();
+        ScheduleJoin nextSchedule = null;
+        try {
+            nextSchedule = dao.getNextScheduleByTeacher(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optionally, set an error attribute or redirect to an error page
         }
 
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
+        // Set the nextSchedule in session scope for EL access
+        session.setAttribute("nextSchedule", nextSchedule);
+        request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
 
-        try (FileInputStream in = new FileInputStream(file);
-             OutputStream out = response.getOutputStream()) {
-            in.transferTo(out);
-        }
-    } 
+      
+      
+
+    }
+    
+    
 
     /** 
      * Handles the HTTP <code>POST</code> method.

@@ -8,27 +8,30 @@ package UserProfile;
 import dal.RoleDAO;
 import dal.SchoolClassDAO;
 import dal.SchoolDAO;
+import dal.SubjectDAO;
+import dal.TeacherClassDAO;
 import dal.UserDAO;
 import entity.School;
 import entity.SchoolClass;
+import entity.TeacherClass;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
  *
  * @author NGOC ANH
  */
+@WebServlet(name="StudentProfileServlet", urlPatterns={"/studentprofile"})
 public class StudentProfileServlet extends HttpServlet {
    
     /** 
@@ -65,7 +68,8 @@ public class StudentProfileServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
+        
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -75,6 +79,7 @@ public class StudentProfileServlet extends HttpServlet {
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
         User user = userDAO.getUserByID(userId);
+        
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -82,28 +87,23 @@ public class StudentProfileServlet extends HttpServlet {
         }
         SchoolDAO schoolDAO = new SchoolDAO();
         SchoolClassDAO scdao = new SchoolClassDAO();
-       
-
-        // Lấy tất cả trường học để hiển thị select
-        List<School> allSchools = schoolDAO.getAllSchools();
-
-        // Lấy tất cả lớp của trường hiện tại hoặc toàn hệ thống tuỳ logic (ở đây lấy theo trường user đang thuộc)
-        List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(user.getSchoolID());
-        // Nếu muốn lấy toàn bộ lớp hệ thống: List<SchoolClass> allClasses = classDAO.getAllClasses();
-
-        // Lấy danh sách lớp và chuyên môn của user (để tick checkbox)
-        List<SchoolClass> userSchoolClasses = user.getSchoolClasses() != null ? user.getSchoolClasses() : new ArrayList<>();
         
-        List<String> classIdsOfUser = userSchoolClasses.stream()
-        .map(sc -> String.valueOf(sc.getSchoolClassID()))
-        .collect(Collectors.toList());
+        // Lấy danh sách tất cả trường
+        List<School> allSchools = schoolDAO.getAllSchools();
+        
 
+        // Trường đã chọn
+        Integer schoolIdSelected = user.getSchoolID();
+        
 
-        // Xâu tên lớp và chuyên môn cho hiển thị thông tin nhanh
-        String classSchoolNames = (userSchoolClasses != null && !userSchoolClasses.isEmpty())
-                ? userSchoolClasses.stream().map(SchoolClass::getClassName).reduce((a, b) -> a + ", " + b).orElse("")
-                : "Tự do";
+        // Lấy danh sách lớp tương ứng với trường đang học
+        List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(schoolIdSelected);
+        request.setAttribute("allClasses", allClasses);
 
+        // Lấy lớp hiện tại của người dùng
+        request.setAttribute("classIdOfUser", user.getSchoolClassId());
+
+        
         
         // Lấy tên trường của user
         String schoolName = schoolDAO.getSchoolNameById(user.getSchoolID());
@@ -127,17 +127,15 @@ public class StudentProfileServlet extends HttpServlet {
         // Set các attribute cho JSP
         request.setAttribute("user", user);
         request.setAttribute("schoolName", schoolName);
-        request.setAttribute("classSchoolNames", classSchoolNames);
         request.setAttribute("roleNameVi", roleNameVi);
-
         request.setAttribute("allSchools", allSchools);
-        request.setAttribute("allClasses", allClasses);
         
-        request.setAttribute("classIdsOfUser", classIdsOfUser);
+        
         request.setAttribute("schoolIdSelected", user.getSchoolID());
 
         request.getRequestDispatcher("studentprofile.jsp").forward(request, response);
-    }
+    
+    } 
 
     /** 
      * Handles the HTTP <code>POST</code> method.

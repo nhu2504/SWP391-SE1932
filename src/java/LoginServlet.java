@@ -91,18 +91,18 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("user", acc);
         session.setAttribute("userId", acc.getId());
+        session.setAttribute("userRoleID", acc.getRoleID());
         // Điều hướng theo vai trò
         int roleId = acc.getRoleID();
         switch (roleId) {
             case 1:
-                response.sendRedirect(request.getContextPath() + "/home");
+                response.sendRedirect("admin");
                 break;
-
             case 2:
                 response.sendRedirect("dashboardattendservlet");
                 break;
             case 3:
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("DashboardServlet");
                 break;
 
             case 4:

@@ -1,7 +1,7 @@
 <%-- 
-    Document   : studentprofile
+    Document   : getstudentlist
     Created on : Jun 23, 2025, 10:17:38 AM
-    Author     : NGOC ANH
+    Author     : DO NGOC ANH HE180661
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -572,7 +572,7 @@
                     <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
 
-                    <a href="#"><i class="fas fa-question-circle"></i> Trợ giúp</a>
+                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
@@ -581,7 +581,7 @@
                     <c:choose>
                         <c:when test="${not empty students}">
                             <table class="table table-striped table-hover table-bordered">
-                                <thead class="table-dark">
+                                <thead style="background-color: pink; color: black;">
                                     <tr>
                                         <th scope="col">STT</th>
                                         <th scope="col">Tên học sinh</th>

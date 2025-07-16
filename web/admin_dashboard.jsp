@@ -308,15 +308,15 @@ Ngày update 3/7/2025-->
                             <i class="fas fa-money-bill-wave w-5"></i>
                             <span>Quản lý học phí</span>
                         </a>
-                           <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
-                            <i class="fas fa-money-bill-wave w-5"></i>
-                            <span>Quản lý học phí</span>
-                        </a> 
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>Báo cáo thống kê</span>
+                        </a>
                         <a href="createnotification.jsp" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-bell w-5"></i>
                             <span>Gửi thông báo</span>
                         </a>
-                          
+
                         <a href="listregister" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-user-check w-5"></i>
                             <span>Phê duyệt tài khoản</span>

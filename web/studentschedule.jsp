@@ -1,13 +1,17 @@
 <%-- 
-    Document   : submitapplication
-    Created on : Jul 9, 2025, 11:44:20 PM
-    Author     : NGOC ANH
+    Document   : teacherschedule
+    Created on : May 24, 2025, 11:31:10 PM
+    Author     : DO NGOC ANH HE180661
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="entity.Shift" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="entity.Schedule" %>
 <%@ page import="entity.User" %>
 
 <!DOCTYPE html>
@@ -17,7 +21,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>Tạo đơn</title>
+        <title>EDURA System</title>
 
         <!-- CSS FILES -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -172,23 +176,6 @@
                 transform: scale(1.1);
                 box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
             }
-            .logo-container {
-                position: relative;
-                width: 100px; /* Giữ kích thước cố định của div */
-                height: 100px; /* Giữ tỷ lệ vuông */
-                overflow: hidden; /* Ẩn phần vượt ra ngoài */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            /* Logo image */
-            .logo-image {
-                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
-                height: auto;
-                transform: scale(2); /* Phóng to mặc định */
-                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
-            }
 
             @media (max-width: 576px) {
                 .back-top-icon {
@@ -253,6 +240,23 @@
                 font-size:20px;
                 margin-bottom: 4px;
             }
+            .logo-container {
+                position: relative;
+                width: 100px; /* Giữ kích thước cố định của div */
+                height: 100px; /* Giữ tỷ lệ vuông */
+                overflow: hidden; /* Ẩn phần vượt ra ngoài */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Logo image */
+            .logo-image {
+                max-width: 100%; /* Đảm bảo logo không vượt ra ngoài container */
+                height: auto;
+                transform: scale(2); /* Phóng to mặc định */
+                transition: transform 0.3s ease; /* Hiệu ứng mượt khi phóng to */
+            }
             /* Style cho navbar nền xám nhạt */
             .navbar {
                 background-color: #f8f9fa !important; /* Xám nhạt */
@@ -272,19 +276,45 @@
                 color: #EC6F69 !important;
                 font-weight: 700;
             }
+            .table-time {
+                width: 100%;
+                margin: 20px auto; /* Add margin */
+                border-collapse: collapse; /* Collapse borders */
+            }
+            .table-time th, .table-time td {
+                padding: 10px; /* Add padding for better look */
+                text-align: center;
+            }
+            .schedule-title-container {
+                position: relative;
+                height: 70px; /* Chiều cao container để dễ căn giữa */
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
 
-            /* Hover link */
-            .navbar .nav-link:hover {
-                color: #EC6F69 !important;
-            }
-            .navbar{
-                margin-bottom: 30px;
-            }
-            body {
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f5f5f5;
+            .schedule-title {
+                font-size: 40px;
+                font-weight: 600;
             }
 
+            /* Nhóm chứa các slogan */
+            .slogan-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px; /* Khoảng cách giữa các câu */
+                align-items: flex-start; /* Căn trái để thẳng hàng với logo */
+            }
+
+            /* Định dạng từng slogan */
+            .slogan {
+                font-size: 1.2rem; /* Tăng kích thước chữ (trước đây là 0.9rem) */
+                font-weight: 700; /* In đậm (trước đây là 500) */
+                color: #333;
+                margin: 0; /* Xóa margin mặc định */
+                line-height: 1.4;
+                transition: color 0.3s ease;
+            }
             .sidebar {
                 background-color: #fdeaf3;
                 height: 100%;
@@ -314,44 +344,6 @@
                 text-align: center;
                 margin: 30px 0;
             }
-
-            .grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-                padding: 0 20px 40px;
-            }
-
-            .card {
-                background-color: #fef1f6;
-                border-radius: 12px;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                font-size: 18px;
-                font-weight: 600;
-                transition: 0.3s ease;
-                cursor: pointer;
-                border: 2px solid transparent;
-            }
-
-            .card:hover {
-                background-color: #fcd9e6;
-            }
-
-            .card i {
-                font-size: 28px;
-            }
-
-            .highlight {
-                border-color: #a58cf5;
-            }
-            body {
-                background-color: #f5f5f5;
-                font-family: Arial, sans-serif;
-            }
-
             .sidebar {
                 background-color: #FFF1F1;
                 padding: 30px 20px;
@@ -440,172 +432,11 @@
                 object-fit: cover;   /* đảm bảo ảnh không bị méo */
                 border: 2px solid #ccc;
             }
-            .card.h-100.text-center.shadow-sm {
-                border: 3px solid #FF6B6B !important; /* Viền đỏ hồng */
-                transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng mượt */
-                position: relative; /* Đảm bảo phóng to không ảnh hưởng bố cục */
-            }
-
-            .card.h-100.text-center.shadow-sm:hover {
-                transform: scale(1.05); /* Phóng to 5% */
-                box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4); /* Bóng đậm hơn */
-            }
-            .schedule-title {
-                font-size: 40px;
-                font-weight: 500;
-            }
-            .schedule-title-container {
-                position: relative;
-                height: 70px; /* Chiều cao container để dễ căn giữa */
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-            .navbar {
-                background-color: #f8f9fa !important; /* Xám nhạt */
-                padding: 12px 24px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Nhẹ nhàng */
-            }
-
-            /* Style cho các mục menu */
-            .navbar .nav-link {
-                color: #555;
-                font-weight: 500;
-                transition: color 0.3s ease;
-            }
-
-            /* Mục đang active */
-            .navbar .nav-link.active {
-                color: #EC6F69 !important;
-                font-weight: 700;
-            }
-            body{
-                background-color: white;
-            }
-            /* Nhóm chứa các slogan */
-            .slogan-group {
-                display: flex;
-                flex-direction: column;
-                gap: 5px; /* Khoảng cách giữa các câu */
-                align-items: flex-start; /* Căn trái để thẳng hàng với logo */
-            }
-
-            /* Định dạng từng slogan */
-            .slogan {
-                font-size: 1.2rem; /* Tăng kích thước chữ (trước đây là 0.9rem) */
-                font-weight: 700; /* In đậm (trước đây là 500) */
-                color: #333;
-                margin: 0; /* Xóa margin mặc định */
-                line-height: 1.4;
-                transition: color 0.3s ease;
-            }
-
-            .container {
-                display: flex;
-                justify-content: space-between;
-                gap: 50px;
-            }
-            .section {
-                flex: 1;
-            }
-            h2 {
-                margin-bottom: 20px;
-            }
-            label {
-                display: block;
-                margin-top: 15px;
-                font-weight: bold;
-            }
-            input[type="text"],
-            input[type="password"] {
-                width: 90%;
-                padding: 10px;
-                border: 2px solid black;
-                border-radius: 999px;
-                font-size: 14px;
-            }
-            .avatar {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .avatar img {
-                width: 100px;
-                height: 100px;
-                border-radius: 50%;
-                border: 2px solid black;
-            }
-            .btn {
-                margin-top: 20px;
-                padding: 10px 20px;
-                background-color: #f8b6b6;
-                border: none;
-                border-radius: 999px;
-                cursor: pointer;
-                font-weight: bold;
-            }
-            .btn:hover {
-                background-color: #f29494;
-            }
-            .sidebar a.active {
-                background-color: #ffcad4;
-                border-radius: 10px;
-                font-weight: bold;
-            }
-            /*css cho phần tải avata*/
-            .avatar {
-                display: flex;
-                align-items: center;
-                gap: 32px;
-                margin-bottom: 24px;
-            }
-
-            .avatar-img {
-                width: 160px;
-                height: 160px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 3px solid #ccc;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-                flex-shrink: 0;
-            }
-
-            .avatar form {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-
-            .avatar form input[type="file"] {
-                font-size: 1rem;
-                padding: 6px 8px;
-                width: 220px;
-                max-width: 60vw;
-                border-radius: 8px;
-                border: 1px solid #ddd;
-                background: #fafafa;
-            }
-
-            .avatar form .btn {
-                background: #f8b6b6;
-                border: none;
-                border-radius: 999px;
-                padding: 8px 22px;
-                font-weight: bold;
-                color: #222;
-                transition: background 0.2s;
-                margin-left: 8px;
-            }
-
-            .avatar form .btn:hover {
-                background: #f29494;
-                color: #fff;
-            }
 
         </style>
     </head>
 
     <body id="top">
-        
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -650,14 +481,15 @@
                 </div>
             </div>
         </div>
+
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="studentdashboard" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Tạo đơn</h3>
+            <h3 class="schedule-title text-center w-100 m-0">Lịch Giảng Dạy</h3>
         </div>
 
-        <div >
+        <div>
             <div class="row">
                 <div class="col-md-3 sidebar">
                     <%
@@ -680,91 +512,132 @@
 
                 <!-- Main -->
                 <div class="col-md-9 main">
-                   
+                    <div style="text-align:center; margin-bottom: 20px;margin-top:10px">
+                        <form method="get" action="showschedule" style="display:inline;">
+                            <input type="hidden" name="weekOffset" value="${weekOffset - 1}"/>
+                            <button type="submit" class="btn btn-primary">&lt; Tuần trước</button>
+                        </form>
+                        <span style="margin: 0 20px; font-weight: bold;"> ${weekLabel}</span>
+                        <form method="get" action="showschedule" style="display:inline;">
+                            <input type="hidden" name="weekOffset" value="${weekOffset + 1}"/>
+                            <button type="submit" class="btn btn-primary">Tuần tiếp &gt;</button>
+                        </form>
+                    </div>
+                    <table border="1" class="table-time">
+                        <tr>
+                            <th>Ca / Thứ</th>
+                            <th>Thứ 2</th>
+                            <th>Thứ 3</th>
+                            <th>Thứ 4</th>
+                            <th>Thứ 5</th>
+                            <th>Thứ 6</th>
+                            <th>Thứ 7</th>
+                            <th>Chủ nhật</th>
+                        </tr>
 
+                        <c:forEach var="shift" items="${listShift}">
+                            <tr>
+                                <td>
+                                    Ca ${shift.id} <br/>
+                                    <fmt:formatDate value="${shift.startTime}" pattern="HH:mm"/> - 
+                                    <fmt:formatDate value="${shift.endTime}" pattern="HH:mm"/>
+                                </td>
+                                <c:forEach var="day" begin="2" end="8">
+                                    <td>
+                                        <c:set var="shiftKey" value="${shift.startTime}-${shift.endTime}" />
+                                        <c:set var="realDay" value="${day == 8 ? 1 : day}" />
+                                        <c:forEach var="st" items="${scheduleMap[shiftKey][realDay]}">
+                                            Lớp: ${st.classGroupName}<br/>
+                                            GV: ${st.teacherName}<br/>
+                                            Phòng: ${st.roomName}<br/>
+                                            Ngày: <fmt:formatDate value="${st.dateLearn}" pattern="dd/MM/yyyy"/><br/>
+                                        </c:forEach>
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </c:forEach>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
 
-    <footer class="site-footer">
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-            <div class="row pt-5">
-                <div class="col-lg-5 col-md-12 mb-5">
-                    <a href="" class="text-decoration-none">
 
-                        <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
+        <footer class="site-footer">
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+                <div class="row pt-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <a href="" class="text-decoration-none">
 
-                        </div>
-                        <div class="slogan-group text-left mt-2">
+                            <div class="logo-container">
+                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
 
-                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                        </div>
-
-                    </a>
-                </div>
-                <div class="col-lg-7 col-md-12">
-                    <div class="row">
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                </a>
+                            <div class="slogan-group text-left mt-2">
+
+                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                            </div>
+
+                        </a>
+                    </div>
+                    <div class="col-lg-7 col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                                <div class="d-flex justify-content-start mt-4">
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                    </a>
 
 
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
                 </div>
 
-
             </div>
+            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </div>
-        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
-
-    </footer>
+        </footer>
 
 
-    <!-- JAVASCRIPT FILES -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- <script src="js/owl.carousel.min.js"></script>
-    <!-- <script src="js/counter.js"></script> -->
-    <!-- <script src="js/custom.js"></script> -->
+        <!-- JAVASCRIPT FILES -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- <script src="js/owl.carousel.min.js"></script>
+        <!-- <script src="js/counter.js"></script> -->
+        <!-- <script src="js/custom.js"></script> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
-
-</body>
+    </body>
 </html>

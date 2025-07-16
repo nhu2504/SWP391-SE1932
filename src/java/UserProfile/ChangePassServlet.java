@@ -14,10 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import entity.User;
 import dal.UserDAO;
+
 /**
  *
  * @author NGOC ANH
  */
+
 public class ChangePassServlet extends HttpServlet {
    
     /** 

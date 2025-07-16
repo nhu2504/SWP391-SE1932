@@ -62,10 +62,13 @@ public class TakeAttendStudentServlet extends HttpServlet {
             response.sendRedirect("login_register.jsp");
             return;
         }
+
+        
+        
         int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
        
             ClassGroup_StudentDAO dao = new ClassGroup_StudentDAO();
-            List<User> students = dao.getStudentsByClassGroupId(classGroupId);
+            List<User> students = dao.getStudentsByClassGroupId(classGroupId);// bạn đã có hàm này
 
         request.setAttribute("students", students);
         request.setAttribute("classGroupId", classGroupId);

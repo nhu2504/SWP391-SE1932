@@ -9,44 +9,47 @@ import java.util.Date;
 /**
  *
  * @author DO NGOC ANH HE180661
- * 
+ *
  */
 public class Notification {
-    private int notifiID;
-    private String tittle;
+
+    private int notificationID;
+    private String title;
     private String content;
-    private Date createAt;
+    private Date createdAt;
     private int targetRole;
-    private int createBy;
+    private int createdBy;
+    private boolean read;
+    private boolean important;
 
     public Notification() {
     }
 
-    public Notification(int notifiID, String tittle, String content, Date createAt, int targetRole, int createBy) {
-        this.notifiID = notifiID;
-        this.tittle = tittle;
+    public Notification(int notificationID, String title, String content, Date createdAt, int targetRole, int createdBy, boolean read, boolean important) {
+        this.notificationID = notificationID;
+        this.title = title;
         this.content = content;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
         this.targetRole = targetRole;
-        this.createBy = createBy;
+        this.createdBy = createdBy;
+        this.read = read;
+        this.important = important;
     }
 
-    
-
-    public int getNotifiID() {
-        return notifiID;
+    public int getNotificationID() {
+        return notificationID;
     }
 
-    public void setNotifiID(int notifiID) {
-        this.notifiID = notifiID;
+    public void setNotificationID(int notificationID) {
+        this.notificationID = notificationID;
     }
 
-    public String getTittle() {
-        return tittle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -57,12 +60,12 @@ public class Notification {
         this.content = content;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getTargetRole() {
@@ -73,18 +76,27 @@ public class Notification {
         this.targetRole = targetRole;
     }
 
-    public int getCreateBy() {
-        return createBy;
+    public int getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreateBy(int createBy) {
-        this.createBy = createBy;
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
     }
 
-    @Override
-    public String toString() {
-        return "Notification{" + "notifiID=" + notifiID + ", tittle=" + tittle + ", content=" + content + ", createAt=" + createAt + ", targetRole=" + targetRole + ", createBy=" + createBy + '}';
+    public boolean isRead() {
+        return read;
     }
 
+    public void setRead(boolean read) {
+        this.read = read;
+    }
 
+    public boolean isImportant() {
+        return important;
+    }
+
+    public void setImportant(boolean important) {
+        this.important = important;
+    }
 }

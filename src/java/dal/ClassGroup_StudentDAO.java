@@ -19,16 +19,17 @@ public class ClassGroup_StudentDAO {
 
     public List<User> getStudentsByClassGroupId(int classGroupId) {
         List<User> students = new ArrayList<>();
-        String sql = "SELECT u.UserID, u.FullName, u.email, u.phone, u.avatar,\n"
-                + "       s.SchoolName,\n"
-                + "       sc.className AS SchoolClassName,\n"
-                + "       u.ParentEmail, u.ParentPhone\n"
-                + "FROM ClassGroup_Student cgs\n"
-                + "JOIN [User] u ON cgs.StudentID = u.UserID\n"
-                + "LEFT JOIN School s ON u.SchoolID = s.SchoolID\n"
-                + "LEFT JOIN TeacherClass tc ON u.UserID = tc.UserID\n"
-                + "LEFT JOIN SchoolClass sc ON tc.SchoolClassID = sc.SchoolClassID\n"
-                + "WHERE cgs.ClassGroupID = ? AND cgs.IsActive = 1";
+        String sql = """
+                     SELECT u.UserID, u.FullName, u.email, u.phone, u.avatar,
+                            s.SchoolName,
+                            sc.className AS SchoolClassName,
+                            u.ParentEmail, u.ParentPhone
+                     FROM ClassGroup_Student cgs
+                     JOIN [User] u ON cgs.StudentID = u.UserID
+                     LEFT JOIN School s ON u.SchoolID = s.SchoolID
+                     LEFT JOIN TeacherClass tc ON u.UserID = tc.UserID
+                     LEFT JOIN SchoolClass sc ON tc.SchoolClassID = sc.SchoolClassID
+                     WHERE cgs.ClassGroupID = ? AND cgs.IsActive = 1""";
         try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, classGroupId);
             ResultSet rs = ps.executeQuery();

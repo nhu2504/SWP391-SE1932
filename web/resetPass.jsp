@@ -1,7 +1,7 @@
 <%-- 
     Document   : resetPass
     Created on : Jun 23, 2025, 11:33:08 PM
-    Author     : NGOC ANH
+    Author     : DO NGOC ANH HE180661
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
