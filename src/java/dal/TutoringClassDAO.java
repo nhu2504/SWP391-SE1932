@@ -21,7 +21,7 @@ public class TutoringClassDAO {
         List<TutoringClass> classes = new ArrayList<>();
         String sql = """
             SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID,
-                   StartDate, EndDate, Tuitionfee, GradeID
+                   StartDate, EndDate, Tuitionfee, GradeID, isActive
             FROM TutoringClass
         """;
 
@@ -48,6 +48,7 @@ public class TutoringClassDAO {
                 cls.setEndDate(rs.getDate("EndDate"));
                 cls.setPrice(rs.getDouble("Tuitionfee"));
                 cls.setGradeID(rs.getInt("GradeID"));
+                cls.setIsActive(rs.getInt("isActive"));
                 classes.add(cls);
             }
 
@@ -81,7 +82,7 @@ public class TutoringClassDAO {
     public TutoringClass getTutoringClassDetail(int tutoringClassID) {
         String sql = """
             SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID,
-                   StartDate, EndDate, Tuitionfee, GradeID
+                   StartDate, EndDate, Tuitionfee, GradeID, isActive
             FROM TutoringClass
             WHERE TutoringClassID = ?
         """;
@@ -103,6 +104,7 @@ public class TutoringClassDAO {
                 cls.setEndDate(rs.getDate("EndDate"));
                 cls.setPrice(rs.getDouble("Tuitionfee"));
                 cls.setGradeID(rs.getInt("GradeID"));
+                cls.setIsActive(rs.getInt("isActive"));
                 return cls;
             }
 
@@ -112,6 +114,26 @@ public class TutoringClassDAO {
 
         return null;
     }
+    
+    // hàm tự động cập nhật khoá học từ sắp mở thành đang mở nếu đã đến ngày bắt đầu
+    public void updateAutoActiveStatus() {
+    String sql = """
+        UPDATE TutoringClass
+        SET isActive = CASE
+            WHEN isActive = 0 AND StartDate <= CAST(GETDATE() AS DATE) THEN 1
+            WHEN isActive = 1 AND EndDate < CAST(GETDATE() AS DATE) THEN 2
+            ELSE isActive
+        END
+        WHERE (isActive = 0 AND StartDate <= CAST(GETDATE() AS DATE))
+           OR (isActive = 1 AND EndDate < CAST(GETDATE() AS DATE))
+    """;
+    try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
 
     public int addTutoringClass(TutoringClass cls) {
         String sql = """

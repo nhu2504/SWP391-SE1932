@@ -65,6 +65,19 @@ public class AdminServlet extends HttpServlet {
             res.sendRedirect(req.getContextPath() + "/login_register.jsp");
             return;
         }
+        // Gọi cập nhật trạng thái tự động
+        tutoringClassDAO.updateAutoActiveStatus();
+
+        // --- Lấy lại dữ liệu lỗi nếu có ---
+        HttpSession ses = req.getSession();
+        if (ses.getAttribute("modalError") != null) {
+            req.setAttribute("modalError", ses.getAttribute("modalError"));
+            req.setAttribute("cModal", ses.getAttribute("cModal"));
+            req.setAttribute("errorList", ses.getAttribute("errorList"));
+            ses.removeAttribute("modalError");
+            ses.removeAttribute("cModal");
+            ses.removeAttribute("errorList");
+        }
 
         try {
             String tab = Optional.ofNullable(req.getParameter("tab")).orElse("overview");
@@ -99,6 +112,7 @@ public class AdminServlet extends HttpServlet {
                     break;
                 case "courseManagement":
                     String idRaw = req.getParameter("id");
+
                     if (idRaw != null && !idRaw.isEmpty()) {
                         try {
                             int id = Integer.parseInt(idRaw);
@@ -108,9 +122,11 @@ public class AdminServlet extends HttpServlet {
                             e.printStackTrace();
                         }
                     }
+
                     req.setAttribute("data", tutoringClassDAO.getClasses(null));
                     req.setAttribute("subjects", subjectDAO.getAllSubjects());
                     req.setAttribute("grades", gradeDAO.getAllGrades());
+
                     break;
                 case "paymentReport":
                     req.setAttribute("paymentDetails", paymentDAO.getDetailedPaymentPerClass());
@@ -174,7 +190,7 @@ public class AdminServlet extends HttpServlet {
                             int groupId = Integer.parseInt(req.getParameter("groupId"));
                             int courseId = Integer.parseInt(req.getParameter("id"));
                             classGroupDAO.activateClassGroup(groupId);
-                            // ⬇ Tạo lịch học tại đây
+                            // Tạo lịch học
                             TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
                             List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
                             int sessionCount = 10;
@@ -261,54 +277,82 @@ public class AdminServlet extends HttpServlet {
         System.out.println("POST received: action=" + action + ", id=" + idStr);
 
         try {
+            // Trong đoạn xử lý lỗi của doPost:
+            CenterInfo center = centerInfoDAO.getCenterInfo(1);
+            if (center != null) {
+                req.setAttribute("centerName", center.getNameCenter());
+                req.setAttribute("descripCenter", center.getDescrip());
+                req.setAttribute("address", center.getAddress());
+                req.setAttribute("phone", center.getPhone());
+                req.setAttribute("email", center.getEmail());
+                req.setAttribute("website", center.getWebsite());
+            }
             if ("ADD".equals(action)) {
                 try {
                     TutoringClass tc = extractFromRequest(req);
+                    List<String> errors = new ArrayList<>();
 
-                    // Làm tròn ngày bắt đầu và ngày hôm nay về 00:00:00 để so sánh
-                    Date now = new Date(); // ngày hiện tại
+                    // Validate học phí
+                    if (tc.getPrice() == -1) {
+                        errors.add("Vui lòng nhập học phí hợp lệ.");
+                    } else if (tc.getPrice() <= 0) {
+                        errors.add("Học phí phải lớn hơn 0.");
+                    }
+
+                    // Validate bắt buộc chọn ảnh
+                    if (tc.getImage() == null || tc.getImage().trim().isEmpty()) {
+                        errors.add("Vui lòng chọn ảnh khóa học.");
+                    }
+
+                    // Làm tròn ngày hiện tại về 00:00:00
                     Calendar cal = Calendar.getInstance();
-
-                    // Làm tròn today về 00:00:00
-                    cal.setTime(now);
                     cal.set(Calendar.HOUR_OF_DAY, 0);
                     cal.set(Calendar.MINUTE, 0);
                     cal.set(Calendar.SECOND, 0);
                     cal.set(Calendar.MILLISECOND, 0);
                     Date today = cal.getTime();
 
-                    // Làm tròn startDate về 00:00:00
+                    // Làm tròn ngày bắt đầu
                     Date startDate = tc.getStartDate();
-                    cal.setTime(startDate);
-                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    cal.set(Calendar.MILLISECOND, 0);
-                    Date normalizedStart = cal.getTime();
+                    if (startDate != null) {
+                        cal.setTime(startDate);
+                        cal.set(Calendar.HOUR_OF_DAY, 0);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.MILLISECOND, 0);
+                        startDate = cal.getTime();
+                    }
 
-                    if (normalizedStart.before(today)) {
-                        // Ngày bắt đầu trong quá khứ
-                        req.setAttribute("error", "Ngày bắt đầu phải từ hôm nay trở đi!");
-                        req.setAttribute("tab", "courseManagement");
-                        req.setAttribute("cModal", tc);
-                        req.setAttribute("modalError", true);
+                    // Làm tròn ngày kết thúc
+                    Date endDate = tc.getEndDate();
+                    if (endDate != null) {
+                        cal.setTime(endDate);
+                        cal.set(Calendar.HOUR_OF_DAY, 0);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.MILLISECOND, 0);
+                        endDate = cal.getTime();
+                    }
 
-                        String selectedId = req.getParameter("selectedClassId");
-                        if (selectedId != null && !selectedId.isEmpty()) {
-                            try {
-                                int sid = Integer.parseInt(selectedId);
-                                TutoringClass selectedClass = tutoringClassDAO.getTutoringClassDetail(sid);
-                                req.setAttribute("c", selectedClass);
-                            } catch (NumberFormatException e) {
-                                // Bỏ qua nếu ID lỗi
-                            }
-                        }
+                    // Validate ngày bắt đầu
+                    if (startDate == null || startDate.before(today)) {
+                        errors.add("Ngày bắt đầu phải từ hôm nay trở đi.");
+                    }
 
-                        req.setAttribute("data", tutoringClassDAO.getClasses(null));
-                        req.setAttribute("subjects", subjectDAO.getAllSubjects());
-                        req.setAttribute("grades", gradeDAO.getAllGrades());
+                    // Validate ngày kết thúc sau ngày bắt đầu
+                    if (endDate != null && startDate != null && !endDate.after(startDate)) {
+                        errors.add("Ngày kết thúc phải sau ngày bắt đầu.");
+                    }
 
-                        req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+                    if (!errors.isEmpty()) {
+                        // Lưu vào session thay vì request ---
+                        HttpSession ses = req.getSession();
+                        ses.setAttribute("modalError", true);
+                        ses.setAttribute("cModal", tc);
+                        ses.setAttribute("errorList", errors);
+
+                        // Có thể lưu lại các list nếu cần, nhưng thường chỉ cần truyền lại ở doGet
+                        res.sendRedirect("admin?tab=courseManagement");
                         return;
                     }
 
@@ -321,15 +365,14 @@ public class AdminServlet extends HttpServlet {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    req.setAttribute("error", "Có lỗi xảy ra khi thêm khóa học!");
-                    req.setAttribute("tab", "courseManagement");
-
-                    if (isFromModal) {
-                        req.setAttribute("modalError", true);
-                        req.setAttribute("cModal", null); // hoặc giữ lại tc nếu muốn hiển thị lại
-                    }
-
-                    req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
+                    // Nếu lỗi hệ thống, cũng nên redirect như trên để tránh bị stuck ở POST
+                    HttpSession ses = req.getSession();
+                    ses.setAttribute("modalError", true);
+                    ses.setAttribute("cModal", null); // hoặc tc nếu muốn giữ lại data
+                    List<String> errors = new ArrayList<>();
+                    errors.add("Có lỗi xảy ra khi thêm khóa học!");
+                    ses.setAttribute("errorList", errors);
+                    res.sendRedirect("admin?tab=courseManagement");
                     return;
                 }
             } else if ("UPDATE".equals(action) && idStr != null) {
@@ -348,8 +391,8 @@ public class AdminServlet extends HttpServlet {
                 return;
             } else if ("ADD_CLASSGROUP".equals(action)) {
                 int tutoringClassId = 0;
-                int teacherId = 0; // 💡 cần khai báo ngoài try
-                ClassGroup group = new ClassGroup(); // 💡 cần khai báo ngoài try
+                int teacherId = 0;
+                ClassGroup group = new ClassGroup();
 
                 try {
                     String className = req.getParameter("classGroupName");
@@ -485,6 +528,7 @@ public class AdminServlet extends HttpServlet {
         res.sendRedirect("admin?tab=courseManagement");
     }
 // hàm trả về dữ liệu course khi gửi form sai
+
     private TutoringClass extractFromRequest(HttpServletRequest req) throws Exception {
         TutoringClass tc = new TutoringClass();
         tc.setClassName(req.getParameter("name"));
@@ -493,7 +537,21 @@ public class AdminServlet extends HttpServlet {
         tc.setSubjectID(Integer.parseInt(req.getParameter("subject")));
         tc.setStartDate(sdf.parse(req.getParameter("startDate")));
         tc.setEndDate(sdf.parse(req.getParameter("endDate")));
-        tc.setPrice(Double.parseDouble(req.getParameter("price")));
+//        tc.setPrice(Double.parseDouble(req.getParameter("price")));
+        String priceRaw = req.getParameter("price");
+        double price = -1;
+
+        if (priceRaw != null && !priceRaw.trim().isEmpty()) {
+            try {
+                price = Double.parseDouble(priceRaw);
+            } catch (NumberFormatException e) {
+                price = -2; // Người dùng nhập chữ, không phải số
+            }
+        } else {
+            price = -1; // Người dùng bỏ trống
+        }
+
+        tc.setPrice(price);
 
         Part imagePart = req.getPart("courseImageFile");
         String imageFileName = null;
@@ -538,7 +596,7 @@ public class AdminServlet extends HttpServlet {
         HttpSession session = req.getSession();
         session.setAttribute("successMessage", message);
     }
-    
+
 // hàm dùng chung gửi dữ liệu về classManagement
     private void prepareClassManagementData(HttpServletRequest req, int tutoringClassId) throws Exception {
         TutoringClass course = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);

@@ -17,7 +17,7 @@ public class TutoringClass {
     private Date endDate;
     private double price;
     private int gradeID;
-    private boolean isActive;  
+    private int isActive;  
     public TutoringClass() {
     }
 
@@ -56,7 +56,7 @@ public class TutoringClass {
         this.gradeID = gradeID;
     }
 
-    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int gradeID, boolean isActive) {
+    public TutoringClass(int tutoringClassID, String className, String image, String descrip, boolean isHot, int subjectID, Date startDate, Date endDate, double price, int gradeID, int isActive) {
         this.tutoringClassID = tutoringClassID;
         this.className = className;
         this.image = image;
@@ -70,15 +70,14 @@ public class TutoringClass {
         this.isActive = isActive;
     }
 
-    public boolean isIsActive() {
+    public int getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(boolean isActive) {
+    public void setIsActive(int isActive) {
         this.isActive = isActive;
     }
-    
-    
+        
     public int getTutoringClassID() {
         return tutoringClassID;
     }
