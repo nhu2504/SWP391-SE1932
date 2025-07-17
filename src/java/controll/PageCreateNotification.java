@@ -5,21 +5,27 @@
 
 package controll;
 
+
 import dal.RoleDAO;
 import dal.UserDAO;
+import entity.Roles;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
+@WebServlet(name="PageCreateNotification", urlPatterns={"/pagecreatenotification"})
 public class PageCreateNotification extends HttpServlet {
    
     /** 
@@ -57,7 +63,7 @@ public class PageCreateNotification extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
+         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login_register.jsp");
             return;
@@ -65,14 +71,23 @@ public class PageCreateNotification extends HttpServlet {
         User admin = (User) session.getAttribute("user");
         int createdBy = admin.getId();
 
-        RoleDAO roleDao = new RoleDAO();
-        UserDAO userDao = new UserDAO();
 
-        request.setAttribute("allRoles", roleDao.getAllRoles());
-        request.setAttribute("allUsers", userDao.getAllUserIds());
-        request.setAttribute("tab", "createNotification");
+RoleDAO roleDAO = new RoleDAO();
+    UserDAO userDAO = new UserDAO();
 
-        request.getRequestDispatcher("admin_dashboard.jsp").forward(request, response);
+    List<Roles> allRoles = roleDAO.getAllRoles();
+    if (allRoles == null) {
+        allRoles = new ArrayList<>();
+    }
+
+    List<Integer> allUsers = userDAO.getAllUserIDs();
+    if (allUsers == null) {
+        allUsers = new ArrayList<>();
+    }
+
+    request.setAttribute("allRoles", allRoles);
+    request.setAttribute("allUsers", allUsers); // không cần nếu chỉ dùng JS load động
+    request.getRequestDispatcher("createnotification.jsp").forward(request, response);
     }
     
 

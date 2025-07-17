@@ -5,25 +5,24 @@
 
 package controll;
 
-import dal.NotificationDAO;
+import com.google.gson.Gson;
 import dal.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import entity.User;
-import jakarta.servlet.annotation.WebServlet;
-import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author NGOC ANH
  */
-@WebServlet(name="CreateNotificationServlet", urlPatterns={"/createnotification"})
-public class CreateNotificationServlet extends HttpServlet {
+@WebServlet(name="GetUserByRole", urlPatterns={"/getuserbyrole"})
+public class GetUserByRole extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,10 +39,10 @@ public class CreateNotificationServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateNotificationServlet</title>");  
+            out.println("<title>Servlet GetUserByRole</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateNotificationServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet GetUserByRole at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,7 +59,17 @@ public class CreateNotificationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String role = request.getParameter("role");
+        if (role != null) {
+            int roleID = Integer.parseInt(role);
+            UserDAO dao = new UserDAO();
+            List<User> users = dao.getUsersByRole(roleID);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(users);
+            response.setContentType("application/json");
+            response.getWriter().write(json);
+        }
     } 
 
     /** 
@@ -70,59 +79,11 @@ public class CreateNotificationServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        
-        
-         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login_register.jsp");
-            return;
-        }
-
-        User admin = (User) session.getAttribute("user");
-        int createdBy = admin.getId();
-        
-        String title = request.getParameter("title");
-        String content = request.getParameter("content");
-        boolean isImportant = request.getParameter("isImportant") != null;
-        String targetType = request.getParameter("targetType");
-
-        NotificationDAO dao = new NotificationDAO();
-        UserDAO userDao = new UserDAO();
-
-        List<Integer> userIds = new ArrayList<>();
-
-        if ("all".equals(targetType)) {
-            userIds = userDao.getAllUserIDs();
-        } else if ("role".equals(targetType)) {
-            String[] roles = request.getParameterValues("roles");
-            if (roles != null) {
-                for (String r : roles) {
-                    userIds.addAll(userDao.getUserIdsByRole(Integer.parseInt(r)));
-                }
-            }
-        } else if ("user".equals(targetType)) {
-            String[] recipients = request.getParameterValues("recipients");
-            if (recipients != null) {
-                for (String uid : recipients) {
-                    userIds.add(Integer.parseInt(uid));
-                }
-            }
-        }
-
-        int notiId = dao.createNotification(title, content, createdBy, isImportant);
-        for (int uid : userIds) {
-            dao.addRecipient(notiId, uid);
-        }
-
-     
-
-        request.getRequestDispatcher("createnotification.jsp").forward(request, response);
+        processRequest(request, response);
     }
-    
 
     /** 
      * Returns a short description of the servlet.
