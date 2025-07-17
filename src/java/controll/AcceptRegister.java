@@ -6,6 +6,7 @@ package controll;
 
 import dal.RegisterDAO;
 import dal.UserDAO;
+import dal.reset;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -93,8 +94,23 @@ public class AcceptRegister extends HttpServlet {
    
 
         RegisterDAO dao = new RegisterDAO();
-        dao.updateStatus(regisID, "Accepted");
-        dao.approveUserByProcedure(regisID);
+        boolean update = dao.updateStatus(regisID, "Accepted");
+        boolean approve = dao.approveUserByProcedure(regisID);
+        User newUser = userDAO.getLatestUserInfo();
+        
+        if(update&&approve){
+            reset rs = new reset();
+            boolean mail =rs.sendApprovalEmail(
+                    
+                    newUser.getEmail(),
+                    newUser.getPassword(), 
+                    newUser.getName());
+            if(!mail){
+                System.out.println("Gửi mail thất bại cho: "+newUser.getEmail());
+            }
+        }else{
+            System.out.println("Duyệt thất bại");
+        }
 
         response.sendRedirect("listregister"); // quay lại trang danh sách
     }

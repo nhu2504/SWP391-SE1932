@@ -283,6 +283,26 @@ public List<Integer> getUserIdsByRole(int roleId) {
     }
     return list;
 }
+public User getLatestUserInfo() {
+    String sql = "SELECT TOP 1 FullName, email, pass FROM [User] ORDER BY UserID DESC";
+    try (Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        if (rs.next()) {
+            User user = new User();
+            user.setName(rs.getString("FullName"));
+            user.setEmail(rs.getString("email"));
+            user.setPassword(rs.getString("pass"));
+            return user;
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
 
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa

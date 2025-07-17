@@ -103,26 +103,31 @@ public class RegisterDAO {
         return list; // Trả về danh sách phòng học
     }
 
-    public void approveUserByProcedure(int regisID) {
+    public boolean approveUserByProcedure(int regisID) {
         String sql = "{call sp_ApprovePendingUser(?)}";
         try (Connection conn = new DBContext().connection; CallableStatement cs = conn.prepareCall(sql)) {
             cs.setInt(1, regisID);
             cs.execute();
+            return true; // thành công
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // thất bại
         }
     }
 
-    public void updateStatus(int id, String status) {
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(
-                "UPDATE TutoringRegistrationPending SET ApprovalStatus = ? WHERE RegistrationPendingID = ?"
-        )) {
-            ps.setString(1, status);
-            ps.setInt(2, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public boolean updateStatus(int id, String status) {
+    String sql = "UPDATE TutoringRegistrationPending SET ApprovalStatus = ? WHERE RegistrationPendingID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, status);
+        ps.setInt(2, id);
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0; // nếu có dòng nào được cập nhật thì thành công
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
 }
