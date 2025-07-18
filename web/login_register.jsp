@@ -841,7 +841,7 @@
                 </div>
                 <!-- Đăng ký học -->
                 <div class="form-container">
-                    <h2>Đăng ký học</h2>
+                    <h2>Đăng ký tư vấn</h2>
                     <form action="register" method="post"  enctype="multipart/form-data">
                         <div class="form-group">
                             <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
@@ -875,6 +875,9 @@
                             <label>Lớp</label>
                             <input type="text" name="classAtSchool" placeholder="Ví dụ: 10A" required/>
                         </div>
+                        <div class="form-group schoolclass sc">
+                            <input type="text" name="interestCourses" placeholder="Khóa học mong muốn" required/>
+                        </div>
                         <div class="form-group">
                             <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />
                         </div>
@@ -895,7 +898,7 @@
                         <span class="error-message"><%= request.getAttribute("error1") %></span>
                         <% } %>
                         <br />
-                        <button type="submit">Gửi yêu cầu đăng kí học</button>
+                        <button type="submit">Gửi yêu cầu tư vấn</button>
                     </form>
                 </div>
             </div>

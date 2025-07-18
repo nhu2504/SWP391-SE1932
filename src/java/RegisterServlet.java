@@ -73,7 +73,7 @@ public class RegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+   @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String mess = "";
@@ -91,7 +91,7 @@ public class RegisterServlet extends HttpServlet {
             
             String rawClass = request.getParameter("classAtSchool"); // "12A1"
             String fullClassName = "Lớp " + rawClass;
-
+            String interestCourses = request.getParameter("interestCourses");
             String parentPhone = request.getParameter("phonepar");
             String parentEmail = request.getParameter("emailpar");
             String userIntroStr = request.getParameter("userIntro");
@@ -136,7 +136,7 @@ public class RegisterServlet extends HttpServlet {
             RegisterDAO rd = new RegisterDAO();
             boolean success = rd.register(fName, phone, email, gender,
                     birthDate, fullSchoolName, address, fullClassName, parentPhone,
-                    parentEmail, userIntro, confirm);
+                    parentEmail, userIntro, confirm,interestCourses);
 
             if (success) {
                 request.getRequestDispatcher("SuccessRegister.jsp").forward(request, response);

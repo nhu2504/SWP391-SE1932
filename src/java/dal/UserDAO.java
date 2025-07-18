@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -257,18 +258,22 @@ public class UserDAO {
         }
         return false;
     }
-    public List<Integer> getAllUserIds() {
+     public List<Integer> getAllUserIDs() {
     List<Integer> list = new ArrayList<>();
-    String sql = "SELECT UserID FROM [User]";
+    String sql = "SELECT userID FROM [User]";
     try (Connection conn = new DBContext().connection;
-            PreparedStatement ps = conn.prepareStatement(sql)) {
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) list.add(rs.getInt("UserID"));
-    } catch (Exception e) {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            list.add(rs.getInt("userID"));
+        }
+    } catch (SQLException e) {
         e.printStackTrace();
     }
     return list;
 }
+
+
 
 public List<Integer> getUserIdsByRole(int roleId) {
     List<Integer> list = new ArrayList<>();
@@ -283,6 +288,27 @@ public List<Integer> getUserIdsByRole(int roleId) {
     }
     return list;
 }
+
+public List<User> getUsersByRole(int roleID) {
+    List<User> list = new ArrayList<>();
+    String sql = "SELECT userID, fullName FROM [User] WHERE roleID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, roleID);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            User user = new User();
+            user.setId(rs.getInt("userID"));
+            user.setName(rs.getString("fullName"));
+            list.add(user);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
+
 public User getLatestUserInfo() {
     String sql = "SELECT TOP 1 FullName, email, pass FROM [User] ORDER BY UserID DESC";
     try (Connection conn = new DBContext().connection;
@@ -307,57 +333,23 @@ public User getLatestUserInfo() {
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {
-//        UserDAO r = new UserDAO();
-//
-//        String email = "chuchegirl9@gmail.com";
-//        User role = r.getUserByEmail(email);
-//        if (role != null) {
-//            System.out.println("Information user: " + role.toString());
-//        } else {
-//            System.out.println("Not found user with email: " + email);
-//        }
-//UserDAO dao = new UserDAO();
-//        int testUserId = 3; // Thay bằng ID có thật trong DB của bạn
-//        String newPassword = "12345678"; // Mật khẩu mới bạn muốn đặt
-//
-//        boolean success = dao.updatePassword(testUserId, newPassword);
-//
-//        if (success) {
-//            System.out.println("✔️ Đặt lại mật khẩu thành công!");
-//        } else {
-//            System.out.println("❌ Đặt lại mật khẩu thất bại.");
-//        }
-//    }
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Nhập roleID để lấy danh sách user: ");
+        int roleId = scanner.nextInt();
 
-//    UserDAO dao = new UserDAO();
-//
-//     //Thông tin test
-//    int userId = 2;
-//    String email = "tuanh@gmail.com";
-//    String phone = "0987654321";
-//    String avatarFileName = "team-1.jpg";
-//    String certi = "Cử nhân Giáo dục";
-//    String description = "Đang công tác tại trường ABC";
-//    int schoolId = 1; // ID phải đúng với bảng school nếu có ràng buộc khóa ngoại
-//    int classId = 2;  // ID phải đúng với bảng class nếu có ràng buộc
-//
-//    boolean success = dao.updateUser(userId, email, phone, avatarFileName, certi, description, schoolId, classId);
-//
-//    if (success) {
-//        System.out.println("✅ Cập nhật người dùng thành công.");
-//    } else {
-//        System.out.println("❌ Cập nhật người dùng thất bại.");
-//    }
-// UserDAO dao = new UserDAO();
-//
-//    int userId = 2;
-//    String avatar = dao.getCurrentAvatar(userId);
-//
-//    if (avatar != null) {
-//        System.out.println("Ảnh đại diện hiện tại: " + avatar);
-//    } else {
-//        System.out.println("Không tìm thấy ảnh đại diện cho người dùng có ID: " + userId);
-//    }
+        UserDAO dao = new UserDAO();
+        List<User> users = dao.getUsersByRole(roleId);
+
+        if (users.isEmpty()) {
+            System.out.println("Không có người dùng nào với roleID = " + roleId);
+        } else {
+            System.out.println("Danh sách người dùng:");
+            for (User u : users) {
+                System.out.println("UserID: " + u.getId() + " - Họ tên: " + u.getName());
+            }
+        }
+
+        scanner.close();
     }
 
 }

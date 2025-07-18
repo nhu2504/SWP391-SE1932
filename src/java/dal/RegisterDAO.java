@@ -24,13 +24,13 @@ public class RegisterDAO {
     public boolean register(String fullName, String phone, String email, String gender, Date birth,
             String school, String address, String classAtSchool, String parentPhone, String parentEmail,
             Integer idUserIntro,
-            boolean confirm) {
+            boolean confirm, String interestCourses) {
         boolean check = false;
         //lệnh insert vào 12 cột tương ứng từ 1 tới 12
         String query = """
-                       insert into TutoringRegistrationPending(FullName,Phone,Email,Gender,BirthDate,School,AddressSchool,Class,ParentPhone,ParentEmail,UserIntro,Confirmed)
+                       insert into TutoringRegistrationPending(FullName,Phone,Email,Gender,BirthDate,School,AddressSchool,Class,ParentPhone,ParentEmail,UserIntro,Confirmed,InterestCourses)
                        values
-                       (?,?,?,?,?,?,?,?,?,?,?,?)""";
+                       (?,?,?,?,?,?,?,?,?,?,?,?,?)""";
         //tạo kết nối, chuẩn bị câu lệnh sql
         try {
             Connection conn = new DBContext().connection;
@@ -51,6 +51,7 @@ public class RegisterDAO {
                 ps.setNull(11, java.sql.Types.INTEGER);
             }
             ps.setBoolean(12, confirm);
+            ps.setString(13, interestCourses);
             //trả về số dòng bị ảnh hưởng, nếu thành công thì số dòng > 0, check=true
             check = ps.executeUpdate() > 0;
 
@@ -94,6 +95,7 @@ public class RegisterDAO {
                 r.setParentEmail(rs.getString("ParentEmail"));
                 r.setConfirm(rs.getBoolean("Confirmed"));
                 r.setIdUserIntro(rs.getInt("UserIntro"));
+                r.setInterestCourses(rs.getString("InterestCourses"));
                 list.add(r);
             }
         } catch (SQLException e) {
@@ -128,6 +130,34 @@ public class RegisterDAO {
         return false;
     }
 }
+public static void main(String[] args) {
+        RegisterDAO dao = new RegisterDAO();
+        List<Register> list = dao.getListRegister();
 
+        if (list == null || list.isEmpty()) {
+            System.out.println("Không có bản đăng ký nào được tìm thấy.");
+        } else {
+            System.out.println("Danh sách các bản đăng ký:");
+            for (Register r : list) {
+                System.out.println("ID: " + r.getRegisID());
+                System.out.println("Họ tên: " + r.getFullName());
+                System.out.println("Email: " + r.getEmail());
+                System.out.println("SĐT: " + r.getPhone());
+                System.out.println("Ngày đăng ký: " + r.getRegisDate());
+                System.out.println("Trạng thái: " + r.getApprovalStatus());
+                System.out.println("Giới tính: " + r.getGender());
+                System.out.println("Ngày sinh: " + r.getBirth());
+                System.out.println("Trường: " + r.getSchool());
+                System.out.println("Địa chỉ trường: " + r.getAddress());
+                System.out.println("Lớp: " + r.getClassAtSchool());
+                System.out.println("SĐT phụ huynh: " + r.getParentPhone());
+                System.out.println("Email phụ huynh: " + r.getParentEmail());
+                System.out.println("Người giới thiệu (ID): " + r.getIdUserIntro());
+                System.out.println("Khoá học quan tâm: " + r.getInterestCourses());
+                System.out.println("Đã xác nhận: " + (r.isConfirm() ? "Có" : "Chưa"));
+                System.out.println("----------------------------------------------------");
+            }
+        }
+    }
 
 }

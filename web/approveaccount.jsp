@@ -317,7 +317,7 @@
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Báo cáo thống kê</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=createNotification" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="createnotification.jsp" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-bell w-5"></i>
                             <span>Gửi thông báo</span>
                         </a>
@@ -413,6 +413,7 @@
                                         <th class="py-2 px-4 border">Giới tính</th>
                                         <th class="py-2 px-4 border">Trường</th>
                                         <th class="py-2 px-4 border">Lớp</th>
+                                        <th class="py-2 px-4 border">Khóa học quan tâm</th>
                                         <th class="py-2 px-4 border">Ngày đăng ký</th>
                                         <th class="py-2 px-4 border">Người giới thiệu</th>
                                         <th class="py-2 px-4 border">Trạng thái</th>
@@ -430,6 +431,7 @@
                                             <td class="py-2 px-4 border">${ap.gender}</td>
                                             <td class="py-2 px-4 border">${ap.school}</td>
                                             <td class="py-2 px-4 border">${ap.classAtSchool}</td>
+                                            <td class="py-2 px-4 border">${ap.interestCourses}</td>
                                             <td class="py-2 px-4 border">${ap.regisDate}</td>
                                             <td class="py-2 px-4 border">${ap.idUserIntro}</td>
                                             <td class="py-2 px-4 border">
@@ -441,7 +443,7 @@
                                                             
                                                             <button type="submit"
                                                                     class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
-                                                                Duyệt
+                                                                Tạo tài khoản
                                                             </button>
                                                         </form>
                                                     </c:when>

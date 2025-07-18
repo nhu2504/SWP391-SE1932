@@ -272,7 +272,8 @@ ALTER COLUMN UserIntro INT NULL;
 -- Bước 2: Thêm FOREIGN KEY nếu chưa có
 ALTER TABLE TutoringRegistrationPending
 ADD CONSTRAINT FK_UserIntro FOREIGN KEY (UserIntro) REFERENCES [User](UserID);
-
+alter table TutoringRegistrationPending
+add InterestCourses nvarchar(255)
 
 --19.Bảng lịch học và lịch dạy
 CREATE TABLE Schedule (
@@ -338,3 +339,11 @@ update school set schoolname = N'Minh Khai' where schoolid = 3
 update school set schoolname = N'Thượng Cát' where schoolid = 4
 update school set schoolname = N'Tây Đô' where schoolid = 5
 
+SELECT * 
+FROM TutoringRegistrationPending
+ORDER BY 
+    CASE 
+        WHEN ApprovalStatus = 'Pending' THEN 0 
+        ELSE 1 
+    END,
+    RegisterDate ASC;
