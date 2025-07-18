@@ -19,8 +19,10 @@ import java.util.Scanner;
  *
  */
 public class UserDAO {
+
     private TeacherClassDAO tcDao = new TeacherClassDAO();
     private SubjectDAO subjectDao = new SubjectDAO();
+
     //lấy ra người dùng theo email và mật khẩu
     public User login(String emailOrPhone, String password) {
         //tìm người dùng có mail và mật khẩu trùng khớp
@@ -37,33 +39,33 @@ public class UserDAO {
             ps.setString(3, password);
             //truy vấn có kết quả thì tạo và trả về đối tượng user
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 int userId = rs.getInt("UserID");
-                User user = new User(userId, 
+                User user = new User(userId,
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"), 
+                        rs.getString("pass"),
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        null, 
+                        null,
                         null,
                         rs.getInt("roleID"),
-                        rs.getBoolean("isHot"), 
+                        rs.getBoolean("isHot"),
                         rs.getString("ParentEmail"),
                         rs.getString("ParentPhone")
                 );
-               
-                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
-                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
-            return user;
+
+                user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+                return user;
             }
             //xảy ra lỗi hoặc không có kết quả thì hiển thị ra lỗi và trả về null
         } catch (SQLException e) {
@@ -87,30 +89,30 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int userId = rs.getInt("UserID");
-                User user = new User(userId, 
+                User user = new User(userId,
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"), 
+                        rs.getString("pass"),
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        null, 
+                        null,
                         null,
                         rs.getInt("roleID"),
-                        rs.getBoolean("isHot"), 
+                        rs.getBoolean("isHot"),
                         rs.getString("ParentEmail"),
                         rs.getString("ParentPhone")
                 );
-               
-                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
-                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
-            return user;
+
+                user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+                return user;
             }
             //xảy ra lỗi sẽ trả về null và hiển thị thông báo lỗi
         } catch (SQLException e) {
@@ -148,30 +150,30 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int userId = rs.getInt("UserID");
-                User user = new User(userId, 
+                User user = new User(userId,
                         rs.getString("FullName"),
                         rs.getString("Gender"),
                         rs.getDate("BirthDate"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("pass"), 
+                        rs.getString("pass"),
                         rs.getString("avatar"),
                         rs.getInt("onlineStatus"),
                         rs.getDate("created_at"),
                         rs.getString("Certi"),
                         rs.getString("Descrip"),
                         rs.getInt("SchoolID"),
-                        null, 
+                        null,
                         null,
                         rs.getInt("roleID"),
-                        rs.getBoolean("isHot"), 
+                        rs.getBoolean("isHot"),
                         rs.getString("ParentEmail"),
                         rs.getString("ParentPhone")
                 );
-               
-                 user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
-                 user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
-            return user;
+
+                user.setSchoolClasses(tcDao.getSchoolClassesByTeacherId(userId));
+                user.setSubjects(subjectDao.getSubjectsByTeacherId(userId));
+                return user;
             }
         } catch (SQLException e) {
             System.out.println("Lỗi " + e.getMessage());
@@ -215,7 +217,7 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     public boolean updateStudent(int userId, String email, String phone, String avatarFileName, String description, int schoolId) {
         String sql = "update [user] \n"
                 + "set email = ?, phone = ?, avatar = ?,\n"
@@ -237,11 +239,11 @@ public class UserDAO {
         }
         return false;
     }
+
     public boolean updateAdmin(int userId, String email, String phone, String avatarFileName, String description) {
         String sql = "update [user] \n"
                 + "set email = ?, phone = ?, avatar = ?,\n"
                 + "descrip = ?\n"
-                
                 + "where userid = ?";
         try {
             Connection conn = new DBContext().connection;
@@ -250,7 +252,7 @@ public class UserDAO {
             ps.setString(2, phone);
             ps.setString(3, avatarFileName);
             ps.setString(4, description);
-           
+
             ps.setInt(5, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -258,98 +260,119 @@ public class UserDAO {
         }
         return false;
     }
-     public List<Integer> getAllUserIDs() {
-    List<Integer> list = new ArrayList<>();
-    String sql = "SELECT userID FROM [User]";
-    try (Connection conn = new DBContext().connection;
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-            list.add(rs.getInt("userID"));
+
+    public List<Integer> getAllUserIDs() {
+        List<Integer> list = new ArrayList<>();
+        String sql = "SELECT userID FROM [User]";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(rs.getInt("userID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
 
-
-
-public List<Integer> getUserIdsByRole(int roleId) {
-    List<Integer> list = new ArrayList<>();
-    String sql = "SELECT UserID FROM [User] WHERE RoleID = ?";
-    try (Connection conn = new DBContext().connection;
-            PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, roleId);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) list.add(rs.getInt("UserID"));
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return list;
-}
-
-public List<User> getUsersByRole(int roleID) {
-    List<User> list = new ArrayList<>();
-    String sql = "SELECT userID, fullName FROM [User] WHERE roleID = ?";
-    try (Connection conn = new DBContext().connection;
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, roleID);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            User user = new User();
-            user.setId(rs.getInt("userID"));
-            user.setName(rs.getString("fullName"));
-            list.add(user);
+    public List<Integer> getUserIdsByRole(int roleId) {
+        List<Integer> list = new ArrayList<>();
+        String sql = "SELECT UserID FROM [User] WHERE RoleID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("UserID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
 
-
-public User getLatestUserInfo() {
-    String sql = "SELECT TOP 1 FullName, email, pass FROM [User] ORDER BY UserID DESC";
-    try (Connection conn = new DBContext().connection;
-            PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        if (rs.next()) {
-            User user = new User();
-            user.setName(rs.getString("FullName"));
-            user.setEmail(rs.getString("email"));
-            user.setPassword(rs.getString("pass"));
-            return user;
+    public List<User> getUsersByRole(int roleID) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT userID, fullName FROM [User] WHERE roleID = ?";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roleID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("userID"));
+                user.setName(rs.getString("fullName"));
+                list.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-    return null;
-}
 
+    public User getLatestUserInfo() {
+        String sql = "SELECT TOP 1 FullName, email, pass FROM [User] ORDER BY UserID DESC";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
+            if (rs.next()) {
+                User user = new User();
+                user.setName(rs.getString("FullName"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("pass"));
+                return user;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> getStudent() {
+        List<User> list = new ArrayList<>();
+        String sql = "select u.UserID, FullName,avatar,Gender,BirthDate,phone,email,s.SchoolName,sc.ClassName, onlineStatus\n"
+                + "from [User] u join School s on u.SchoolID = s.SchoolID\n"
+                + "join TeacherClass tc on u.UserID = tc.UserID\n"
+                + "join SchoolClass sc on tc.SchoolClassID = sc.SchoolClassID\n"
+                + "where roleID = 3";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("userID"));
+                u.setName(rs.getString("FullName"));
+                u.setAvatar(rs.getString("avatar"));
+                u.setGender(rs.getString("Gender"));
+                u.setBirth(rs.getDate("BirthDate"));
+                u.setPhone(rs.getString("phone"));
+                u.setEmail(rs.getString("email"));
+                u.setSchoolName(rs.getString("SchoolName"));
+                u.setSchoolClassName(rs.getString("ClassName"));
+                u.setStatus(rs.getInt("onlineStatus"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Nhập roleID để lấy danh sách user: ");
-        int roleId = scanner.nextInt();
-
         UserDAO dao = new UserDAO();
-        List<User> users = dao.getUsersByRole(roleId);
+    List<User> students = dao.getStudent(); // roleID = 3
 
-        if (users.isEmpty()) {
-            System.out.println("Không có người dùng nào với roleID = " + roleId);
-        } else {
-            System.out.println("Danh sách người dùng:");
-            for (User u : users) {
-                System.out.println("UserID: " + u.getId() + " - Họ tên: " + u.getName());
-            }
-        }
-
-        scanner.close();
+    for (User u : students) {
+        System.out.println("ID: " + u.getId());
+        System.out.println("Name: " + u.getName());
+        System.out.println("Avatar: " + u.getAvatar());
+        System.out.println("Gender: " + u.getGender());
+        System.out.println("Birth: " + u.getBirth());
+        System.out.println("Phone: " + u.getPhone());
+        System.out.println("Email: " + u.getEmail());
+        System.out.println("School: " + u.getSchoolName());
+        System.out.println("Class: " + u.getSchoolClassName());
+        System.out.println("Status: " + u.getStatus());
+        System.out.println("---------------------------");
+    }
     }
 
 }
