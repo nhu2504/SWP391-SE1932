@@ -1,5 +1,5 @@
 <%-- 
-    Document   : approveaccount
+    Document   : createnotification
     Created on : Jul 9, 2025, 11:23:52 PM
     Author     : NGOC ANH
 --%>
@@ -225,6 +225,12 @@
             .back-top-icon.visible {
                 display: flex;
             }
+            .notification-form-wrapper {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 3cm;
+            }
+
         </style>
     </head>
     <body class="bg-gray-50">
@@ -317,7 +323,7 @@
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Báo cáo thống kê</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=createNotification" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="createnotification.jsp" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-bell w-5"></i>
                             <span>Gửi thông báo</span>
                         </a>
@@ -400,73 +406,84 @@
                 <div id="main-content">
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Tạo thông báo</h1>
-                      <form action="createnotification" method="post" class="space-y-6">
-                <div>
-                    <label class="block font-semibold mb-1">Tiêu đề:</label>
-                    <textarea name="title" rows="2" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <div class="notification-form-wrapper">
+                        <form action="createnotification" method="post" class="space-y-6">
+                            <div>
+                                <label class="block font-semibold mb-1">Tiêu đề:</label>
+                                <textarea name="title" rows="2" required
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
 
-                    
-                          
-                </div>
 
-                <div>
-                    <label class="block font-semibold mb-1">Nội dung:</label>
-                    <textarea name="content" rows="4" required
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
 
-                <div class="flex items-center space-x-2">
-                    <input type="checkbox" name="isImportant" value="1" class="accent-red-500">
-                    <label class="font-medium">Quan trọng</label>
-                </div>
+                            </div>
 
-                <div>
-                    <label class="block font-semibold mb-2">Gửi đến:</label>
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="targetType" value="all" checked onclick="showTarget('none')" class="accent-blue-500">
-                            <span>Tất cả</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="targetType" value="role" onclick="showTarget('role')" class="accent-blue-500">
-                            <span>Theo vai trò</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="targetType" value="user" onclick="showTarget('user')" class="accent-blue-500">
-                            <span>Người dùng cụ thể</span>
-                        </label>
+                            <div>
+                                <label class="block font-semibold mb-1">Nội dung:</label>
+                                <textarea name="content" rows="4" required
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" name="isImportant" value="1" class="accent-red-500">
+                                <label class="font-medium">Quan trọng</label>
+                            </div>
+
+                            <div>
+                                <label class="block font-semibold mb-2">Gửi đến:</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="targetType" value="all" checked onclick="showTarget('none')" class="accent-blue-500">
+                                        <span>Tất cả</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="targetType" value="role" onclick="showTarget('role')" class="accent-blue-500">
+                                        <span>Theo vai trò</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="targetType" value="user" onclick="showTarget('user')" class="accent-blue-500">
+                                        <span>Người dùng cụ thể</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Theo vai trò -->
+                            <div id="roleSelect" style="display:none;" class="pl-4 border-l-4 border-blue-200">
+                                <label class="block font-semibold mb-1 mt-4">Chọn vai trò:</label>
+                                <c:forEach var="role" items="${allRoles}">
+                                    <label class="block">
+                                        <input type="checkbox" name="roles" value="${role.roleID}" class="mr-2 accent-blue-500">
+                                        ${role.roleName}
+                                    </label>
+                                </c:forEach>
+                            </div>
+
+                            <!-- Người dùng cụ thể -->
+                            <div id="userRoleSelect" style="display:none;" class="pl-4 border-l-4 border-blue-200">
+                                <label class="block font-semibold mb-1 mt-4">Chọn vai trò:</label>
+                                <select name="userRole" id="userRoleDropdown" class="form-select" onchange="loadUsersByRole()">
+                                    <option value="">-- Chọn vai trò --</option>
+                                    <c:forEach var="role" items="${allRoles}">
+                                        <option value="${role.roleID}">${role.roleName}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+
+                            <div id="userSelect" style="display:none;" class="pl-4 border-l-4 border-blue-200 mt-2">
+                                <label class="block font-semibold mb-1">Chọn người dùng:</label>
+                                <div id="userCheckboxes">
+                                    <!-- sẽ được load bằng JS -->
+                                </div>
+                            </div>
+
+
+                            <div class="text-center">
+                                <button type="submit"
+                                        class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    Gửi thông báo
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </div>
-
-                <div id="roleSelect" style="display:none;" class="pl-4 border-l-4 border-blue-200">
-                    <label class="block font-semibold mb-1 mt-4">Chọn vai trò:</label>
-                    <c:forEach var="role" items="${allRoles}">
-                        <label class="block">
-                            <input type="checkbox" name="roles" value="${role.roleID}" class="mr-2 accent-blue-500">
-                            ${role.roleName}
-                        </label>
-                    </c:forEach>
-                </div>
-
-                <div id="userSelect" style="display:none;" class="pl-4 border-l-4 border-blue-200">
-                    <label class="block font-semibold mb-1 mt-4">Chọn người dùng:</label>
-                    <c:forEach var="user" items="${allUsers}">
-                        <label class="block">
-                            <input type="checkbox" name="recipients" value="${user.id}" class="mr-2 accent-blue-500">
-                            ${user.fullName} (${user.roleName})
-                        </label>
-                    </c:forEach>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit"
-                            class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                        Gửi thông báo
-                    </button>
-                </div>
-            </form>
-
 
 
 
@@ -554,12 +571,76 @@
 
         </script>
 
-         <script>
-            function showTarget(target) {
-                document.getElementById('roleSelect').style.display = (target === 'role') ? 'block' : 'none';
-                document.getElementById('userSelect').style.display = (target === 'user') ? 'block' : 'none';
+        <script>
+            function handleOptionChange() {
+                const option = document.getElementById("targetOption").value;
+                document.getElementById("roleSelect").style.display = (option === "role") ? "block" : "none";
+                document.getElementById("userSelect").style.display = "none";
+            }
+
+            function loadUsers() {
+                const role = document.getElementById("targetRole").value;
+                if (!role)
+                    return;
+
+                fetch('getUsersByRole?role=' + role)
+                        .then(res => res.json())
+                        .then(data => {
+                            const select = document.getElementById("selectedUsers");
+                            select.innerHTML = "";
+                            data.forEach(user => {
+                                const option = document.createElement("option");
+                                option.value = user.userID;
+                                option.text = user.fullName;
+                                select.appendChild(option);
+                            });
+                            document.getElementById("userSelect").style.display = "block";
+                        });
+            }
+
+            document.getElementById("checkAll").addEventListener("change", function () {
+                const options = document.getElementById("selectedUsers").options;
+                for (let opt of options) {
+                    opt.selected = this.checked;
+                }
+            });
+        </script>
+        <script>
+            function showTarget(type) {
+                document.getElementById("roleSelect").style.display = "none";
+                document.getElementById("userRoleSelect").style.display = "none";
+                document.getElementById("userSelect").style.display = "none";
+
+                if (type === 'role') {
+                    document.getElementById("roleSelect").style.display = "block";
+                } else if (type === 'user') {
+                    document.getElementById("userRoleSelect").style.display = "block";
+                }
+            }
+
+            function loadUsersByRole() {
+                var roleID = document.getElementById("userRoleDropdown").value;
+                if (!roleID)
+                    return;
+
+                fetch("getuserbyrole?role=" + roleID)
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (users) {
+                            var html = '';
+                            users.forEach(function (user) {
+                                html += '<label class="block">' +
+                                        '<input type="checkbox" name="recipients" value="' + user.userID + '" class="mr-2 accent-blue-500">' +
+                                        user.fullName +
+                                        '</label>';
+                            });
+                            document.getElementById("userCheckboxes").innerHTML = html;
+                            document.getElementById("userSelect").style.display = "block";
+                        });
             }
         </script>
+
 
 
     </body>

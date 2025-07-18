@@ -354,6 +354,19 @@ public class UserDAO {
         }
         return list;
     }
+    public void updateStatusStudent(int userId, int newStatus) {
+    String sql = "UPDATE [User] SET onlineStatus = ? WHERE UserID = ?";
+    try {
+        Connection conn = new DBContext().connection;
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, newStatus);
+        ps.setInt(2, userId);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Lỗi cập nhật trạng thái: " + e.getMessage());
+    }
+}
+
 
     //test thử xem phương thức đã lấy được dữ liệu từ db chưa
     public static void main(String[] args) {

@@ -293,7 +293,7 @@
                             <i class="fas fa-tachometer-alt w-5"></i>
                             <span>Tổng quan</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="managerstudent" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-users w-5"></i>
                             <span>Quản lý học sinh</span>
                         </a>

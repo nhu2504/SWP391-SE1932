@@ -415,7 +415,7 @@
                                         <th class="py-2 px-4 border">Giới tính</th>
                                         <th class="py-2 px-4 border">Trường</th>
                                         <th class="py-2 px-4 border">Lớp</th>
-                                        
+
                                         <th class="py-2 px-4 border">Trạng thái</th>
 
                                     </tr>
@@ -433,9 +433,21 @@
                                             <td class="py-2 px-4 border">${ap.gender}</td>
                                             <td class="py-2 px-4 border">Trường THPT ${ap.schoolName}</td>
                                             <td class="py-2 px-4 border">${ap.schoolClassName}</td>
-                                            <td class="py-2 px-4 border">${ap.status}</td>
                                             
-                                              
+                                            <td class="py-2 px-4 border">
+                                                <form action="updatestudentstatus" method="post" style="margin: 0;">
+                                                    <input type="hidden" name="studentId" value="${ap.id}" />
+                                                    <input type="hidden" name="currentStatus" value="${ap.status}" />
+                                                    <button type="submit"
+                                                            class="px-2 py-1 rounded text-white font-semibold
+                                                            ${ap.status == 1 ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}">
+                                                        ${ap.status == 1 ? 'Đang hoạt động' : 'Không hoạt động'}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            
+
+
                                             </td>
 
 
@@ -451,7 +463,7 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
-                    
+
 
 
 
