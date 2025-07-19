@@ -56,58 +56,117 @@ public class ClassGroupDAO {
         return list;
     }
 
+//    public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
+//        List<Object[]> list = new ArrayList<>();
+//        String sql = """
+//        SELECT 
+//            cg.ClassGroupID,
+//            cg.ClassGroupName,
+//            cg.MaxStudent,
+//            cg.minStudent,
+//            cg.isActive,
+//            r.roomName AS RoomName,
+//            u.FullName AS TeacherName,
+//            s.Start_time,
+//            s.End_time,
+//            st.DayOfWeek,
+//            (
+//                SELECT COUNT(*) 
+//                FROM ClassGroup_Student cgs 
+//                WHERE cgs.ClassGroupID = cg.ClassGroupID AND cgs.IsActive = 1
+//            ) AS CurrentStudentCount
+//        FROM ClassGroup cg
+//        LEFT JOIN ScheduleTemplate st ON st.ClassGroupID = cg.ClassGroupID
+//        LEFT JOIN Room r ON st.RoomID = r.id
+//        LEFT JOIN Shiftlearn s ON st.ShiftID = s.ShiftID
+//        LEFT JOIN [User] u ON cg.TeacherID = u.UserID
+//        WHERE cg.TutoringClassID = ?
+//    """;
+//
+//        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, tutoringClassID);
+//            ResultSet rs = stmt.executeQuery();
+//            while (rs.next()) {
+//                Object[] row = new Object[11];
+//                row[0] = rs.getString("ClassGroupName");
+//                row[1] = rs.getInt("MaxStudent");
+//                row[2] = rs.getString("RoomName");
+//                row[3] = rs.getString("TeacherName");
+//                row[4] = rs.getString("Start_time");
+//                row[5] = rs.getString("End_time");
+//                row[6] = rs.getInt("DayOfWeek"); // vì không còn DateLearn
+//                row[7] = rs.getInt("CurrentStudentCount");
+//                row[8] = rs.getInt("ClassGroupID");
+//                row[9] = rs.getInt("minStudent");
+//                row[10] = rs.getInt("isActive");
+//
+//                list.add(row);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return list;
+//    }
+    
     public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
-        List<Object[]> list = new ArrayList<>();
-        String sql = """
+    List<Object[]> list = new ArrayList<>();
+    String sql = """
         SELECT 
             cg.ClassGroupID,
             cg.ClassGroupName,
             cg.MaxStudent,
             cg.minStudent,
             cg.isActive,
-            r.roomName AS RoomName,
+            ISNULL(sched.Summary, N'Chưa có lịch') AS ScheduleSummary,
             u.FullName AS TeacherName,
-            s.Start_time,
-            s.End_time,
-            st.DayOfWeek,
             (
                 SELECT COUNT(*) 
                 FROM ClassGroup_Student cgs 
-                WHERE cgs.ClassGroupID = cg.ClassGroupID AND cgs.IsActive = 1
+                WHERE cgs.ClassGroupID = cg.ClassGroupID
             ) AS CurrentStudentCount
         FROM ClassGroup cg
-        LEFT JOIN ScheduleTemplate st ON st.ClassGroupID = cg.ClassGroupID
-        LEFT JOIN Room r ON st.RoomID = r.id
-        LEFT JOIN Shiftlearn s ON st.ShiftID = s.ShiftID
         LEFT JOIN [User] u ON cg.TeacherID = u.UserID
-        WHERE cg.TutoringClassID = ?
+        OUTER APPLY (
+            SELECT STRING_AGG(
+                N'Thứ ' + CAST(ISNULL(st.DayOfWeek, 0) AS VARCHAR) + ' - ' +
+                ISNULL(r.roomName, N'Không rõ phòng') + ' - ' +
+                ISNULL(CONVERT(VARCHAR(5), s.Start_time, 108), '??') + ' - ' +
+                ISNULL(CONVERT(VARCHAR(5), s.End_time, 108), '??'),
+                '; '
+            ) AS Summary
+            FROM ScheduleTemplate st
+            LEFT JOIN Room r ON st.RoomID = r.id
+            LEFT JOIN Shiftlearn s ON st.ShiftID = s.ShiftID
+            WHERE st.ClassGroupID = cg.ClassGroupID
+        ) sched
+        WHERE cg.TutoringClassID = ?;
     """;
 
-        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, tutoringClassID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Object[] row = new Object[11];
-                row[0] = rs.getString("ClassGroupName");
-                row[1] = rs.getInt("MaxStudent");
-                row[2] = rs.getString("RoomName");
-                row[3] = rs.getString("TeacherName");
-                row[4] = rs.getString("Start_time");
-                row[5] = rs.getString("End_time");
-                row[6] = rs.getInt("DayOfWeek"); // vì không còn DateLearn
-                row[7] = rs.getInt("CurrentStudentCount");
-                row[8] = rs.getInt("ClassGroupID");
-                row[9] = rs.getInt("minStudent");
-                row[10] = rs.getInt("isActive");
+    try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, tutoringClassID);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Object[] row = new Object[11];
+            row[0] = rs.getString("ClassGroupName");      // 0
+            row[1] = rs.getInt("MaxStudent");             // 1
+            row[2] = rs.getString("ScheduleSummary");     // 2: đúng định dạng Thứ - Phòng - Ca
+            row[3] = rs.getString("TeacherName");         // 3
+            row[4] = "";                                  // 4: giữ chỗ
+            row[5] = "";                                  // 5: giữ chỗ
+            row[6] = "";                                  // 6: giữ chỗ
+            row[7] = rs.getInt("CurrentStudentCount");    // 7
+            row[8] = rs.getInt("ClassGroupID");           // 8
+            row[9] = rs.getInt("minStudent");             // 9
+            row[10] = rs.getInt("isActive");              // 10
 
-                list.add(row);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            list.add(row);
         }
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-
+    return list;
+}
+        
     // Văn Thị Như - thêm lớp học kèm lịch học mẫu
     public int addClassGroupWithTemplates(ClassGroup group, List<ScheduleTemplate> templates) throws SQLException {
         Connection conn = null;

@@ -70,29 +70,14 @@
             </button>
         </div>
         <div class="flex flex-col md:flex-row gap-4 mb-6">
-            <input type="text" id="searchClass" placeholder="🔍 Tìm lớp..." class="form-control w-full md:w-1/4">
+            <input type="text" id="searchClass" placeholder="🔍 Tìm lớp..." class="form-control w-full md:w-1/2">
 
-            <select id="filterTeacher" class="form-control w-full md:w-1/4">
+            <select id="filterTeacher" class="form-control w-full md:w-1/2">
                 <option value="">🎓 Tất cả giáo viên</option>
                 <c:forEach var="t" items="${teacher}">
                     <option value="${t.name}">${t.name}</option>
                 </c:forEach>
-            </select>
-
-
-            <select id="filterWeekday" class="form-control w-full md:w-1/4">
-                <option value="">📅 Tất cả các ngày</option>
-                <c:forEach var="i" begin="1" end="7">
-                    <option value="${weekdays[i]}">${weekdays[i]}</option>
-                </c:forEach>
-            </select>
-
-            <select id="filterRoom" class="form-control w-full md:w-1/4">
-                <option value="">🏫 Tất cả phòng</option>
-                <c:forEach var="r" items="${rooms}">
-                    <option value="${r.name}">${r.name}</option>
-                </c:forEach>
-            </select>
+            </select>            
 
         </div>
 
@@ -100,9 +85,8 @@
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="grid grid-cols-12 bg-blue-100 p-4 border-b font-semibold text-gray-700 hidden md:grid">
                 <div class="col-span-2 flex items-center"><i class="fas fa-chalkboard mr-2 text-blue-600"></i> Tên lớp</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-blue-600"></i> Thứ</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-clock mr-2 text-blue-600"></i> Ca</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-door-open mr-2 text-blue-600"></i> Phòng</div>
+                <div class="col-span-3 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-blue-600"></i>Lịch học</div>
+
                 <div class="col-span-2 flex items-center justify-center"><i class="fas fa-user-tie mr-2 text-blue-600"></i> Giáo viên</div>
                 <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối thiểu</div>
 
@@ -126,19 +110,23 @@
                         <!-- Tên lớp -->
                         <div class="col-span-2 font-medium mb-2 md:mb-0">${c[0]}</div>
 
-                        <!-- Thứ học -->
-                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
-                            ${weekdays[c[6]]}
+                        <!-- Thời khóa biểu gộp: Thứ - Phòng - Ca -->
+                        <div class="col-span-3 text-gray-600 mb-2 md:mb-0 flex justify-center items-center text-center">
+                            <ul class="text-left list-disc ml-4">
+                                <c:forTokens var="line" items="${c[2]}" delims=";">
+                                    <c:set var="day" value="${fn:substringBefore(line, ' -')}"/>
+                                    <c:set var="rest" value="${fn:substringAfter(line, ' -')}"/>
+                                    <li>
+                                        <c:choose>
+                                            <c:when test="${day eq 'Thứ 1'}">Chủ nhật</c:when>
+                                            <c:otherwise>${day}</c:otherwise>
+                                        </c:choose>
+                                        - ${rest}
+                                    </li>
+                                </c:forTokens>
+                            </ul>
+
                         </div>
-
-                        <!-- Ca học -->
-                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
-                            ${fn:substring(c[4], 0, 5)} - ${fn:substring(c[5], 0, 5)}
-                        </div>
-
-                        <!-- Phòng -->
-                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[2]}</div>
-
                         <!-- Giáo viên -->
                         <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[3]}</div>
 
@@ -182,14 +170,13 @@
                                 </a>
                             </c:if>
 
-
-
+                            
                         </div>
                     </div>
                 </c:forEach>
 
             </div>
-            
+
 
         </div>
     </div>
@@ -197,89 +184,138 @@
 
 <div id="addClassModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative text-black modal-content-scrollable">
-
         <h2 class="text-xl font-bold mb-4">Thêm lớp học mới</h2>
-        <form action="admin?tab=classManagement&id=${selectedCourseId}" method="post">
+        <form id="addClassForm" action="admin?tab=classManagement&id=${selectedCourseId}" method="post">
             <input type="hidden" name="action" value="ADD_CLASSGROUP">
             <input type="hidden" name="tutoringClassId" value="${selectedCourseId}" />
-
-            <!-- Tên lớp -->
             <div class="mb-4">
                 <label for="classGroupName" class="block font-medium mb-1">Tên lớp</label>
                 <input type="text" id="classGroupName" name="classGroupName" class="w-full border rounded px-3 py-2" required
-       value="${groupModal.name != null ? groupModal.name : ''}">
-
+                       value="${groupModal.name != null ? groupModal.name : ''}">
             </div>
-
-            <!-- Sĩ số tối thiểu -->
             <div class="mb-4">
                 <label for="minStudent" class="block font-medium mb-1">Sĩ số tối thiểu</label>
                 <input type="number" id="minStudent" name="minStudent" class="w-full border rounded px-3 py-2" required
-       value="${groupModal.minStudent != null ? groupModal.minStudent : ''}">
-
-
+                       value="${groupModal.minStudent != null ? groupModal.minStudent : ''}">
             </div>
-
-            <!-- Sĩ số tối đa -->
             <div class="mb-4">
                 <label for="maxStudent" class="block font-medium mb-1">Sĩ số tối đa</label>
                 <input type="number" id="maxStudent" name="maxStudent" class="w-full border rounded px-3 py-2" required
-       value="${groupModal.maxStudent != null ? groupModal.maxStudent : ''}">
-
+                       value="${groupModal.maxStudent != null ? groupModal.maxStudent : ''}">
             </div>
-
-            <!-- Giáo viên -->
             <div class="mb-4">
                 <label for="teacherId" class="block font-medium mb-1">Giáo viên</label>
-                <select id="teacherId" name="teacherId" class="w-full border rounded px-3 py-2" required onchange="updateOptions()">
-    <option value="">-- Chọn --</option>
-    <c:forEach var="t" items="${teacher}">
-        <option value="${t.id}" ${groupModal.teachId == t.id ? 'selected' : ''}>${t.name}</option>
-    </c:forEach>
-</select>
-
-            </div>
-
-            <!-- Thứ học -->
-            <div class="mb-4">
-                <label for="dayOfWeek" class="block font-medium mb-1">Thứ học</label>
-                <select id="dayOfWeek" name="dayOfWeek" class="w-full border rounded px-3 py-2" required onchange="updateOptions()">
-
+                <select id="teacherId" name="teacherId" class="w-full border rounded px-3 py-2" required onchange="loadScheduleOptions()">
+                    <option value="">-- Chọn --</option>
+                    <c:forEach var="t" items="${teacher}">
+                        <option value="${t.id}" ${selectedTeacher == t.id ? 'selected' : ''}>${t.name}</option>
+                    </c:forEach>
                 </select>
             </div>
-
-            <!-- Ca học -->
-            <div class="mb-4">
-                <label for="shiftId" class="block font-medium mb-1">Ca học</label>
-                <select id="shiftId" name="shiftId" class="w-full border rounded px-3 py-2" required onchange="updateOptions()">
-
-                </select>
-            </div>
-
-            <!-- Phòng học -->
-            <div class="mb-4">
-                <label for="roomId" class="block font-medium mb-1">Phòng học</label>
-                <select id="roomId" name="roomId" class="w-full border rounded px-3 py-2" required onchange="updateOptions()">
-
-                </select>
+            <div id="scheduleContainer" class="mb-4">
+                <h3 class="font-medium mb-2">Lịch học</h3>
+                <div id="scheduleRows">
+                    <c:choose>
+                        <c:when test="${not empty selectedDay}">
+                            <c:set var="daysArr" value="${fn:split(selectedDay,',')}" />
+                            <c:set var="shiftsArr" value="${fn:split(selectedShift,',')}" />
+                            <c:set var="roomsArr" value="${fn:split(selectedRoom,',')}" />
+                            <c:forEach var="i" begin="0" end="${fn:length(daysArr)-1}">
+                                <div class="schedule-row flex gap-4 mb-2" data-index="${i}">
+                                    <div class="w-1/3">
+                                        <label class="block font-medium mb-1">Thứ</label>
+                                        <select name="dayOfWeek" class="day-select w-full border rounded px-3 py-2" required>
+                                            <option value="">-- Chọn --</option>
+                                            <c:forEach var="day" items="${weekdays}">
+                                                <option value="${day.key}" <c:if test="${daysArr[i] == day.key}">selected</c:if>>${day.value}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="w-1/3">
+                                        <label class="block font-medium mb-1">Ca</label>
+                                        <select name="shiftId" class="shift-select w-full border rounded px-3 py-2" required>
+                                            <option value="">-- Chọn --</option>
+                                            <c:forEach var="shift" items="${shifts}">
+                                                <option value="${shift.id}" <c:if test="${shiftsArr[i] == shift.id}">selected</c:if>>${shift.startTime} - ${shift.endTime}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="w-1/3">
+                                        <label class="block font-medium mb-1">Phòng</label>
+                                        <select name="roomId" class="room-select w-full border rounded px-3 py-2" required>
+                                            <option value="">-- Chọn --</option>
+                                            <c:forEach var="room" items="${rooms}">
+                                                <option value="${room.id}" <c:if test="${roomsArr[i] == room.id}">selected</c:if>>${room.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="text-red-600 hover:text-red-800 mt-6" onclick="removeScheduleRow(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- Luôn render 1 dòng lịch học mặc định -->
+                            <div class="schedule-row flex gap-4 mb-2" data-index="0">
+                                <div class="w-1/3">
+                                    <label class="block font-medium mb-1">Thứ</label>
+                                    <select name="dayOfWeek" class="day-select w-full border rounded px-3 py-2" required onchange="loadShiftOptions(this)">
+                                        <option value="">-- Chọn --</option>
+                                        <c:forEach var="day" items="${weekdays}">
+                                            <option value="${day.key}">${day.value}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="block font-medium mb-1">Ca</label>
+                                    <select name="shiftId" class="shift-select w-full border rounded px-3 py-2" required onchange="loadRoomOptions(this)">
+                                        <option value="">-- Chọn --</option>
+                                        <c:forEach var="shift" items="${shifts}">
+                                            <option value="${shift.id}">${shift.startTime} - ${shift.endTime}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="block font-medium mb-1">Phòng</label>
+                                    <select name="roomId" class="room-select w-full border rounded px-3 py-2" required>
+                                        <option value="">-- Chọn --</option>
+                                        <c:forEach var="room" items="${rooms}">
+                                            <option value="${room.id}">${room.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <button type="button" class="text-red-600 hover:text-red-800 mt-6" onclick="removeScheduleRow(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <button type="button" onclick="addScheduleRow()" class="mt-2 text-blue-600 hover:text-blue-800">
+                    <i class="fas fa-plus mr-1"></i> Thêm buổi học
+                </button>
             </div>
             <c:if test="${not empty errorAddClass}">
                 <div class="mb-4 px-4 py-2 rounded bg-red-100 text-red-700 border border-red-400">
                     <i class="fas fa-exclamation-circle mr-2"></i>${errorAddClass}
                 </div>
             </c:if>
-
-            <!-- Nút hành động -->
+            <c:if test="${not empty errorList}">
+                <div class="mb-4 px-4 py-2 rounded bg-red-100 text-red-700 border border-red-400">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <ul class="list-disc ml-6">
+                        <c:forEach var="error" items="${errorList}">
+                            <li>${error}</li>
+                            </c:forEach>
+                    </ul>
+                </div>
+            </c:if>
             <div class="flex justify-end gap-2 mt-6">
                 <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Hủy</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Thêm</button>               
+                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Thêm</button>
             </div>
-            
-
-            
         </form>
-            
-        <!-- Nút đóng -->
         <button onclick="closeAddClassModal()" class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl">×</button>
     </div>
 </div>
@@ -290,7 +326,8 @@
      data-selected-teacher="${selectedTeacher}"
      data-selected-day="${selectedDay}"
      data-selected-shift="${selectedShift}"
-     data-selected-room="${selectedRoom}">
+     data-selected-room="${selectedRoom}"
+     data-open-add="${openAddModal}">
 </div>
 
 <c:if test="${openAddModal == true}">
@@ -311,12 +348,21 @@
     <c:remove var="successMessage" scope="session" />
 </c:if>
 
+<c:if test="${modalError}">
+    <script>
+        window.addEventListener("DOMContentLoaded", function () {
+            openAddClassModal(); // Hàm JavaScript bạn đã dùng để mở modal
+        });
+    </script>
+</c:if>
+
+
 <!-- Toast thông báo -->
 <div id="toast" style="display: none;"
      class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 font-medium transition-all duration-300">
 </div>
 
-<script>
+<!--<script>
     function showToast(message) {
         const toast = document.getElementById("toast");
         if (!toast)
@@ -330,126 +376,30 @@
         }, 3000);
     }
 
-</script>
+</script>-->
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Gắn các sự kiện để lọc khi người dùng thay đổi input/select
-        document.getElementById("searchClass").addEventListener("input", applyFilters);
-        document.getElementById("filterTeacher").addEventListener("change", applyFilters);
-        document.getElementById("filterWeekday").addEventListener("change", applyFilters);
-        document.getElementById("filterRoom").addEventListener("change", applyFilters);
-    });
+    // Biến toàn cục để theo dõi số hàng lịch học
+    let scheduleIndex = 1;
 
-    console.log("JS loaded!");
-
-    const dataDiv = document.getElementById("js-data");
-    const contextPath = dataDiv.dataset.contextPath || "";
-    const courseId = dataDiv.dataset.courseId || "";
-
-    if (!courseId || isNaN(courseId) || courseId === "0") {
-        alert("Không tìm thấy courseId hợp lệ! Vui lòng tải lại trang hoặc kiểm tra URL.");
-        throw new Error("courseId không hợp lệ");
+// Hàm hiển thị thông báo toast
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        if (!toast)
+            return;
+        toast.textContent = message;
+        toast.style.display = "block";
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 3000);
     }
 
-    function openAddClassModal() {
-        console.log("Mở modal");
-        document.getElementById("addClassModal").classList.remove("hidden");
-
-        // Reset các select
-        ["teacherId", "dayOfWeek", "shiftId", "roomId"].forEach(id => {
-            const sel = document.getElementById(id);
-            sel.innerHTML = '<option value="">-- Chọn --</option>';
-        });
-
-        // Load giáo viên đúng chuyên môn
-        fetch(contextPath + "/ScheduleOptionsServlet?action=teachers&courseId=" + courseId)
-                .then(res => res.json())
-                .then(data => {
-                    updateSelect("teacherId", data.teachers);
-                    console.log("Loaded teachers:", data.teachers);
-                })
-                .catch(err => console.error("Lỗi load teacher:", err));
-    }
-
-    function closeAddClassModal() {
-        document.getElementById("addClassModal").classList.add("hidden");
-    }
-
-    function updateOptions(trigger) {
-        const teacherId = document.getElementById("teacherId").value;
-        const dayOfWeek = document.getElementById("dayOfWeek").value;
-        const shiftId = document.getElementById("shiftId").value;
-
-        if (trigger === "teacherId" && teacherId) {
-            // Chọn giáo viên xong → load thứ
-            fetch(contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + teacherId)
-                    .then(res => res.json())
-                    .then(data => updateSelect("dayOfWeek", data.days))
-                    .catch(err => console.error("Lỗi load days:", err));
-        }
-
-        if (trigger === "dayOfWeek" && teacherId && dayOfWeek) {
-            // Chọn thứ → load ca rảnh theo giáo viên + thứ
-            fetch(contextPath + "/ScheduleOptionsServlet?action=shifts&teacherId=" + teacherId + "&day=" + dayOfWeek)
-                    .then(res => res.json())
-                    .then(data => updateSelect("shiftId", data.shifts))
-                    .catch(err => console.error("Lỗi load shifts:", err));
-        }
-
-        if (trigger === "shiftId" && dayOfWeek && shiftId) {
-            // Chọn ca → load phòng trống theo thứ + ca
-            fetch(contextPath + "/ScheduleOptionsServlet?action=rooms&day=" + dayOfWeek + "&shift=" + shiftId)
-                    .then(res => res.json())
-                    .then(data => updateSelect("roomId", data.rooms))
-                    .catch(err => console.error("Lỗi load rooms:", err));
-        }
-    }
-
-    function updateSelect(id, options, keepValue = false) {
-        const select = document.getElementById(id);
-        const oldValue = select.value;
-        select.innerHTML = "";
-
-        const emptyOption = document.createElement("option");
-        emptyOption.value = "";
-        emptyOption.text = "-- Chọn --";
-        select.appendChild(emptyOption);
-
-        options.forEach(opt => {
-            const option = document.createElement("option");
-            option.value = opt.value;
-            option.text = opt.label;
-            select.appendChild(option);
-        });
-
-        if (keepValue && options.some(opt => opt.value === oldValue)) {
-            select.value = oldValue;
-        } else {
-            select.value = "";
-    }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("teacherId").addEventListener("change", () => updateOptions("teacherId"));
-        document.getElementById("dayOfWeek").addEventListener("change", () => updateOptions("dayOfWeek"));
-        document.getElementById("shiftId").addEventListener("change", () => updateOptions("shiftId"));
-    });
-
-    function confirmDeleteClass(classId) {
-        if (confirm('Bạn có chắc chắn muốn xóa lớp học này?')) {
-            alert('Xóa lớp: ' + classId);
-        }
-    }
-
+// Hàm chuẩn hóa chuỗi (xóa dấu, chuyển thành chữ thường)
     function normalize(str) {
-        return (str || "")
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .trim();
+        return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
 
+// Hàm áp dụng bộ lọc tìm kiếm và lọc lớp học
     function applyFilters() {
         const classKeyword = normalize(document.getElementById("searchClass").value);
         const teacher = normalize(document.getElementById("filterTeacher").value);
@@ -463,61 +413,485 @@
             const day = normalize(card.dataset.weekday);
             const roomName = normalize(card.dataset.room);
 
-            const matchClass = className.includes(classKeyword);
-            const matchTeacher = !teacher || teacherName === teacher;
-            const matchWeekday = !weekday || day === weekday;
-            const matchRoom = !room || roomName === room;
+            const matchClass = classKeyword === "" || className.includes(classKeyword);
+            const matchTeacher = teacher === "" || teacherName === teacher;
+            const matchWeekday = weekday === "" || day === weekday;
+            const matchRoom = room === "" || roomName === room;
 
             card.style.display = matchClass && matchTeacher && matchWeekday && matchRoom ? "grid" : "none";
         });
     }
-    // gửi lại dữ liệu phòng, ca, thứ vào form nếu form sai
-    document.addEventListener("DOMContentLoaded", function () {
-    const dataDiv = document.getElementById("js-data");
-const teacherId = dataDiv.dataset.selectedTeacher;
-const dayOfWeek = dataDiv.dataset.selectedDay;
-const shiftId = dataDiv.dataset.selectedShift;
-const roomId = dataDiv.dataset.selectedRoom;
 
+// Hàm thêm hàng lịch học mới
+    function addScheduleRow() {
+        const container = document.getElementById("scheduleRows");
+        if (!container) {
+            showToast("Không tìm thấy container lịch!");
+            return;
+        }
 
-    if ("${openAddModal}" === "true") {
-        document.getElementById("addClassModal").classList.remove("hidden");
+        const row = document.createElement("div");
+        row.className = "schedule-row flex gap-4 mb-2";
+        row.dataset.index = scheduleIndex;
 
-        // Gọi openAddClassModal nhưng giữ lại các giá trị
-        fetch(contextPath + "/ScheduleOptionsServlet?action=teachers&courseId=" + courseId)
-            .then(res => res.json())
-            .then(data => {
-                updateSelect("teacherId", data.teachers);
-                if (teacherId) document.getElementById("teacherId").value = teacherId;
+        row.innerHTML = `
+        <div class="w-1/3">
+            <label class="block font-medium mb-1">Thứ</label>
+            <select name="dayOfWeek" class="day-select w-full border rounded px-3 py-2" required onchange="loadShiftOptions(this)">
+                <option value="">-- Chọn --</option>
+            </select>
+        </div>
+        <div class="w-1/3">
+            <label class="block font-medium mb-1">Ca</label>
+            <select name="shiftId" class="shift-select w-full border rounded px-3 py-2" required onchange="loadRoomOptions(this)">
+                <option value="">-- Chọn --</option>
+            </select>
+        </div>
+        <div class="w-1/3">
+            <label class="block font-medium mb-1">Phòng</label>
+            <select name="roomId" class="room-select w-full border rounded px-3 py-2" required>
+                <option value="">-- Chọn --</option>
+            </select>
+        </div>
+        <button type="button" class="text-red-600 hover:text-red-800 mt-6" onclick="removeScheduleRow(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
 
-                if (teacherId) {
-                    fetch(contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + teacherId)
-                        .then(res => res.json())
-                        .then(data => {
-                            updateSelect("dayOfWeek", data.days);
-                            if (dayOfWeek) document.getElementById("dayOfWeek").value = dayOfWeek;
-
-                            if (dayOfWeek) {
-                                fetch(contextPath + "/ScheduleOptionsServlet?action=shifts&teacherId=" + teacherId + "&day=" + dayOfWeek)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        updateSelect("shiftId", data.shifts);
-                                        if (shiftId) document.getElementById("shiftId").value = shiftId;
-
-                                        if (shiftId) {
-                                            fetch(contextPath + "/ScheduleOptionsServlet?action=rooms&day=" + dayOfWeek + "&shift=" + shiftId)
-                                                .then(res => res.json())
-                                                .then(data => {
-                                                    updateSelect("roomId", data.rooms);
-                                                    if (roomId) document.getElementById("roomId").value = roomId;
-                                                });
-                                        }
-                                    });
-                            }
-                        });
-                }
-            });
+        container.appendChild(row);
+        loadOptionsForNewRow(row);
+        scheduleIndex++;
     }
-});
 
+// Hàm xóa hàng lịch học
+    function removeScheduleRow(button) {
+        const row = button.closest(".schedule-row");
+        if (document.querySelectorAll(".schedule-row").length > 1) {
+            row.remove();
+            updateAllDayOptions();
+            applyFilters();
+        } else {
+            showToast("Phải có ít nhất một buổi học!");
+        }
+    }
+
+// Hàm cập nhật tùy chọn cho dropdown
+    function updateSelect(select, options) {
+        if (!select)
+            return;
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">-- Chọn --</option>';
+        options.forEach(opt => {
+            const option = document.createElement("option");
+            option.value = opt.value;
+            option.text = opt.label;
+            if (opt.value === currentValue) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
+
+// Hàm cập nhật tất cả tùy chọn ngày
+    function updateAllDayOptions() {
+        document.querySelectorAll(".schedule-row").forEach(row => {
+            loadOptionsForNewRow(row);
+        });
+    }
+
+// Hàm tải tùy chọn cho hàng lịch học mới
+    function loadOptionsForNewRow(row) {
+        const teacherId = document.getElementById("teacherId").value;
+        const daySelect = row.querySelector(".day-select");
+        const currentDay = daySelect.value;
+
+        if (!teacherId) {
+            daySelect.innerHTML = '<option value="">-- Chọn --</option>';
+            row.querySelector(".shift-select").innerHTML = '<option value="">-- Chọn --</option>';
+            row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+            showToast("Vui lòng chọn giáo viên trước!");
+            return;
+        }
+
+        const usedDays = Array.from(document.querySelectorAll(".schedule-row"))
+                .filter(r => r !== row)
+                .map(r => r.querySelector(".day-select").value)
+                .filter(v => v);
+
+        let url = contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + encodeURIComponent(teacherId);
+        if (usedDays.length > 0) {
+            url += "&" + usedDays.map(d => "usedDays=" + encodeURIComponent(d)).join('&');
+        }
+
+        fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.days || data.days.length === 0) {
+                        showToast("Không còn ngày trống cho giáo viên!");
+                        daySelect.innerHTML = '<option value="">-- Không có ngày --</option>';
+                        row.querySelector(".shift-select").innerHTML = '<option value="">-- Chọn --</option>';
+                        row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                        return;
+                    }
+                    updateSelect(daySelect, data.days);
+                    if (currentDay && data.days.some(opt => opt.value === currentDay)) {
+                        daySelect.value = currentDay;
+                        loadShiftOptions(daySelect);
+                    }
+                })
+                .catch(err => {
+                    console.error("Lỗi load days:", err);
+                    showToast("Lỗi khi tải danh sách ngày!");
+                    daySelect.innerHTML = '<option value="">-- Lỗi tải ngày --</option>';
+                });
+    }
+
+// Hàm tải tùy chọn ca học
+    function loadShiftOptions(daySelect) {
+        const teacherId = document.getElementById("teacherId").value;
+        const day = daySelect.value;
+        const row = daySelect.closest(".schedule-row");
+        const shiftSelect = row.querySelector(".shift-select");
+        const currentShift = shiftSelect.value;
+
+        if (!teacherId || !day) {
+            shiftSelect.innerHTML = '<option value="">-- Chọn --</option>';
+            row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+            return;
+        }
+
+        let url = contextPath + "/ScheduleOptionsServlet?action=shifts"
+                + "&teacherId=" + encodeURIComponent(teacherId)
+                + "&day=" + encodeURIComponent(day);
+
+        fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.shifts || data.shifts.length === 0) {
+                        showToast("Không còn ca trống cho thứ " + day + "!");
+                        shiftSelect.innerHTML = '<option value="">-- Không có ca --</option>';
+                        row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                        return;
+                    }
+                    updateSelect(shiftSelect, data.shifts);
+                    if (currentShift && data.shifts.some(opt => opt.value === currentShift)) {
+                        shiftSelect.value = currentShift;
+                        loadRoomOptions(shiftSelect);
+                    } else if (currentShift) {
+                        row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                        showToast("Ca trước đó không còn khả dụng, vui lòng chọn ca khác!");
+                    }
+                })
+                .catch(err => {
+                    console.error("Lỗi load shifts:", err);
+                    showToast("Lỗi khi tải danh sách ca!");
+                    shiftSelect.innerHTML = '<option value="">-- Lỗi tải ca --</option>';
+                });
+    }
+
+// Hàm tải tùy chọn phòng
+    function loadRoomOptions(shiftSelect) {
+        const row = shiftSelect.closest(".schedule-row");
+        const day = row.querySelector(".day-select").value;
+        const shift = shiftSelect.value;
+        const roomSelect = row.querySelector(".room-select");
+        const currentRoom = roomSelect.value;
+
+        if (!day || !shift) {
+            roomSelect.innerHTML = '<option value="">-- Chọn --</option>';
+            return;
+        }
+
+        let url = contextPath + "/ScheduleOptionsServlet?action=rooms"
+                + "&day=" + encodeURIComponent(day)
+                + "&shift=" + encodeURIComponent(shift);
+
+        fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.rooms || data.rooms.length === 0) {
+                        showToast("Không còn phòng trống cho thứ " + day + " và ca " + shift + "!");
+                        roomSelect.innerHTML = '<option value="">-- Không có phòng --</option>';
+                        return;
+                    }
+                    updateSelect(roomSelect, data.rooms);
+                    if (currentRoom && data.rooms.some(opt => opt.value === currentRoom)) {
+                        roomSelect.value = currentRoom;
+                    } else if (currentRoom) {
+                        roomSelect.value = "";
+                        showToast("Phòng trước đó không còn khả dụng, vui lòng chọn phòng khác!");
+                    }
+                })
+                .catch(err => {
+                    console.error("Lỗi load rooms:", err);
+                    showToast("Lỗi khi tải danh sách phòng!");
+                    roomSelect.innerHTML = '<option value="">-- Lỗi tải phòng --</option>';
+                });
+    }
+
+// Hàm mở modal thêm lớp học
+    async function openAddClassModal() {
+        const modal = document.getElementById("addClassModal");
+        modal.classList.remove("hidden");
+
+        // Reset các hàng lịch học, giữ lại hàng đầu tiên nếu không có dữ liệu cũ
+        const scheduleRows = document.querySelectorAll(".schedule-row[data-index]");
+        scheduleRows.forEach((row, i) => {
+            if (i !== 0)
+                row.remove();
+        });
+        scheduleIndex = 1;
+
+        const teacherSelect = document.getElementById("teacherId");
+        const selectedTeacher = "${selectedTeacher}" || teacherSelect.dataset.selected;
+
+        // Tải danh sách giáo viên
+        try {
+            const res = await fetch(contextPath + "/ScheduleOptionsServlet?action=teachers&courseId=" + encodeURIComponent(courseId));
+            const data = await res.json();
+            if (data.teachers) {
+                updateSelect(teacherSelect, data.teachers);
+                if (selectedTeacher) {
+                    teacherSelect.value = selectedTeacher;
+                    loadScheduleOptions();
+                }
+            }
+        } catch (err) {
+            console.error("Lỗi load teacher:", err);
+            showToast("Lỗi khi tải danh sách giáo viên!");
+        }
+
+        // Khôi phục dữ liệu lịch học nếu có
+        const selectedDays = "${selectedDay}".split(",").filter(Boolean);
+        const selectedShifts = "${selectedShift}".split(",").filter(Boolean);
+        const selectedRooms = "${selectedRoom}".split(",").filter(Boolean);
+
+        if (selectedDays.length > 0) {
+            // Đảm bảo chỉ có đúng số dòng lịch học
+            const container = document.getElementById("scheduleRows");
+            // Xóa hết các dòng hiện tại
+            container.innerHTML = "";
+
+            // Thêm đúng số dòng lịch học đã nhập
+            for (let i = 0; i < selectedDays.length; i++) {
+                addScheduleRow();
+            }
+
+            // Khôi phục giá trị cho từng dòng, đảm bảo đổ options đủ các dropdown
+            const rows = document.querySelectorAll(".schedule-row");
+            for (let index = 0; index < rows.length; index++) {
+                const row = rows[index];
+                const daySel = row.querySelector(".day-select");
+                const shiftSel = row.querySelector(".shift-select");
+                const roomSel = row.querySelector(".room-select");
+
+                // Đổ options cho Thứ
+                await loadOptionsForNewRowAsync(row); // Đảm bảo options đầy đủ
+
+                // Chọn lại Thứ nếu có
+                if (selectedDays[index]) {
+                    daySel.value = selectedDays[index];
+                }
+
+                // Đổ options cho Ca
+                await loadShiftOptionsAsync(daySel);
+
+                // Chọn lại Ca nếu có
+                if (selectedShifts[index]) {
+                    shiftSel.value = selectedShifts[index];
+                }
+
+                // Đổ options cho Phòng
+                await loadRoomOptionsAsync(shiftSel);
+
+                // Chọn lại Phòng nếu có
+                if (selectedRooms[index]) {
+                    roomSel.value = selectedRooms[index];
+                }
+            }
+        }
+        document.querySelectorAll('.schedule-row').forEach(row => {
+            const daySelect = row.querySelector('.day-select');
+            if (daySelect && daySelect.value) {
+                loadShiftOptions(daySelect); // fetch lại Ca
+                const shiftSelect = row.querySelector('.shift-select');
+                if (shiftSelect && shiftSelect.value) {
+                    loadRoomOptions(shiftSelect); // fetch lại Phòng
+                }
+            }
+        });
+    }
+
+// Các phiên bản async cho load options (cần chỉnh lại các hàm này nếu dùng fetch)
+    async function loadOptionsForNewRowAsync(row) {
+        // ... giống như loadOptionsForNewRow nhưng trả về Promise, gọi fetch và resolve khi xong
+        // Ví dụ:
+        return new Promise(resolve => {
+            const teacherId = document.getElementById("teacherId").value;
+            const daySelect = row.querySelector(".day-select");
+            if (!teacherId) {
+                daySelect.innerHTML = '<option value="">-- Chọn --</option>';
+                row.querySelector(".shift-select").innerHTML = '<option value="">-- Chọn --</option>';
+                row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                resolve();
+                return;
+            }
+            const usedDays = Array.from(document.querySelectorAll(".schedule-row"))
+                    .filter(r => r !== row)
+                    .map(r => r.querySelector(".day-select").value)
+                    .filter(v => v);
+
+            let url = contextPath + "/ScheduleOptionsServlet?action=days&teacherId=" + encodeURIComponent(teacherId);
+            if (usedDays.length > 0) {
+                url += "&" + usedDays.map(d => "usedDays=" + encodeURIComponent(d)).join('&');
+            }
+
+            fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.days || data.days.length === 0) {
+                            daySelect.innerHTML = '<option value="">-- Không có ngày --</option>';
+                            row.querySelector(".shift-select").innerHTML = '<option value="">-- Chọn --</option>';
+                            row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                            resolve();
+                            return;
+                        }
+                        updateSelect(daySelect, data.days);
+                        resolve();
+                    })
+                    .catch(err => {
+                        daySelect.innerHTML = '<option value="">-- Lỗi tải ngày --</option>';
+                        resolve();
+                    });
+        });
+    }
+
+    async function loadShiftOptionsAsync(daySelect) {
+        return new Promise(resolve => {
+            const teacherId = document.getElementById("teacherId").value;
+            const day = daySelect.value;
+            const row = daySelect.closest(".schedule-row");
+            const shiftSelect = row.querySelector(".shift-select");
+            if (!teacherId || !day) {
+                shiftSelect.innerHTML = '<option value="">-- Chọn --</option>';
+                row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                resolve();
+                return;
+            }
+
+            let url = contextPath + "/ScheduleOptionsServlet?action=shifts"
+                    + "&teacherId=" + encodeURIComponent(teacherId)
+                    + "&day=" + encodeURIComponent(day);
+
+            fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.shifts || data.shifts.length === 0) {
+                            shiftSelect.innerHTML = '<option value="">-- Không có ca --</option>';
+                            row.querySelector(".room-select").innerHTML = '<option value="">-- Chọn --</option>';
+                            resolve();
+                            return;
+                        }
+                        updateSelect(shiftSelect, data.shifts);
+                        resolve();
+                    })
+                    .catch(err => {
+                        shiftSelect.innerHTML = '<option value="">-- Lỗi tải ca --</option>';
+                        resolve();
+                    });
+        });
+    }
+
+    async function loadRoomOptionsAsync(shiftSelect) {
+        return new Promise(resolve => {
+            const row = shiftSelect.closest(".schedule-row");
+            const day = row.querySelector(".day-select").value;
+            const shift = shiftSelect.value;
+            const roomSelect = row.querySelector(".room-select");
+            if (!day || !shift) {
+                roomSelect.innerHTML = '<option value="">-- Chọn --</option>';
+                resolve();
+                return;
+            }
+
+            let url = contextPath + "/ScheduleOptionsServlet?action=rooms"
+                    + "&day=" + encodeURIComponent(day)
+                    + "&shift=" + encodeURIComponent(shift);
+
+            fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.rooms || data.rooms.length === 0) {
+                            roomSelect.innerHTML = '<option value="">-- Không có phòng --</option>';
+                            resolve();
+                            return;
+                        }
+                        updateSelect(roomSelect, data.rooms);
+                        resolve();
+                    })
+                    .catch(err => {
+                        roomSelect.innerHTML = '<option value="">-- Lỗi tải phòng --</option>';
+                        resolve();
+                    });
+        });
+    }
+// Hàm đóng modal
+    function closeAddClassModal() {
+        document.getElementById("addClassModal").classList.add("hidden");
+        // Xóa query param openAddModal nếu có
+        const url = new URL(window.location.href);
+        url.searchParams.delete('openAddModal');
+        window.location.href = url.toString();
+    }
+
+// Hàm tải tùy chọn lịch học
+    function loadScheduleOptions() {
+        const teacherId = document.getElementById("teacherId").value;
+        if (!teacherId) {
+            document.querySelectorAll(".day-select, .shift-select, .room-select").forEach(select => {
+                select.innerHTML = '<option value="">-- Chọn --</option>';
+            });
+            return;
+        }
+
+        document.querySelectorAll(".schedule-row").forEach(row => {
+            loadOptionsForNewRow(row);
+        });
+    }
+
+// Hàm kiểm tra form trước khi gửi (có thể mở rộng để kiểm tra lịch trùng lặp)
+    function validateForm(callback) {
+        // Hiện tại chỉ cho qua, có thể thêm logic kiểm tra lịch trùng lặp
+        callback(true);
+    }
+
+// Sự kiện submit form
+    document.getElementById("addClassForm")?.addEventListener("submit", function (e) {
+        e.preventDefault();
+        validateForm(isValid => {
+            if (isValid)
+                this.submit();
+        });
+    });
+
+// Sự kiện khởi tạo
+    document.addEventListener("DOMContentLoaded", () => {
+        const dataDiv = document.getElementById("js-data");
+        window.contextPath = dataDiv.dataset.contextPath || "";
+        window.courseId = dataDiv.dataset.courseId || "";
+
+        const shouldOpenModal = dataDiv.dataset.openAdd === "true";
+        if (shouldOpenModal) {
+            openAddClassModal();
+        }
+
+        // Gắn sự kiện cho các bộ lọc
+        document.getElementById("searchClass")?.addEventListener("input", applyFilters);
+        document.getElementById("filterTeacher")?.addEventListener("change", applyFilters);
+        document.getElementById("filterWeekday")?.addEventListener("change", applyFilters);
+        document.getElementById("filterRoom")?.addEventListener("change", applyFilters);
+
+        // Gắn sự kiện cho dropdown giáo viên
+        document.getElementById("teacherId")?.addEventListener("change", loadScheduleOptions);
+    });
 </script>

@@ -117,6 +117,7 @@ public class TutoringClassDAO {
     
     // hàm tự động cập nhật khoá học từ sắp mở thành đang mở nếu đã đến ngày bắt đầu
     public void updateAutoActiveStatus() {
+        System.out.println("Gọi updateAutoActiveStatus()");
     String sql = """
         UPDATE TutoringClass
         SET isActive = CASE
@@ -126,9 +127,15 @@ public class TutoringClassDAO {
         END
         WHERE (isActive = 0 AND StartDate <= CAST(GETDATE() AS DATE))
            OR (isActive = 1 AND EndDate < CAST(GETDATE() AS DATE))
+                 USE eduraFINALFINALFINAL;
+                 SELECT * FROM TutoringClass WHERE isActive = 2
     """;
     try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.executeUpdate();
+        System.out.println("DB URL: " + conn.getMetaData().getURL());
+    int affected = ps.executeUpdate();
+    System.out.println("Update TutoringClass: " + affected + " rows updated");
+    
     } catch (Exception e) {
         e.printStackTrace();
     }

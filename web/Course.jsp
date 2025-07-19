@@ -1382,7 +1382,7 @@ Ngày update 23/6/2025-->
                                             <c:set var="teacher" value="${teacherNames[group.teachId]}" />
                                             <c:set var="start" value="${shiftStartTimes[group.shiftId]}" />
                                             <c:set var="end" value="${shiftEndTimes[group.shiftId]}" />
-                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${room}~${teacher}~${start}~${end}" />
+                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${teacher}" />
                                             <c:set var="groupStrings" value="${groupStrings}${groupString};" scope="page"/>
                                         </c:forEach>
                                     </c:if>
@@ -1407,9 +1407,7 @@ Ngày update 23/6/2025-->
                                                                 data-ishot="${tc.isHot}"
                                                                 data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
                                                                 data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
-
-                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
-                                                                data-duration="${durationMap[tc.tutoringClassID]}"
+                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"                                                          
                                                                 data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
@@ -1463,7 +1461,7 @@ Ngày update 23/6/2025-->
                                             <c:set var="teacher" value="${teacherNames[group.teachId]}" />
                                             <c:set var="start" value="${shiftStartTimes[group.shiftId]}" />
                                             <c:set var="end" value="${shiftEndTimes[group.shiftId]}" />
-                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${room}~${teacher}~${start}~${end}" />
+                                            <c:set var="groupString" value="${group.groupName}~${group.maxStudent}~${teacher}" />
                                             <c:set var="groupStrings" value="${groupStrings}${groupString};" scope="page"/>
                                         </c:forEach>
                                     </c:if>
@@ -1488,9 +1486,7 @@ Ngày update 23/6/2025-->
                                                                 data-ishot="${tc.isHot}"
                                                                 data-gradename="${empty gradeNames[tc.gradeID] ? 'Chưa xác định' : gradeNames[tc.gradeID]}"
                                                                 data-subject="${empty subjectNames[tc.subjectID] ? 'Chưa xác định' : subjectNames[tc.subjectID]}"
-
-                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"
-                                                                data-duration="${durationMap[tc.tutoringClassID]}"
+                                                                data-timerange="${empty timerangeMap[tc.tutoringClassID] ? 'Chưa xác định' : timerangeMap[tc.tutoringClassID]}"                                                          
                                                                 data-startdate="<fmt:formatDate value='${tc.startDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-enddate="<fmt:formatDate value='${tc.endDate}' pattern='dd/MM/yyyy'/>"
                                                                 data-tuition="${tc.price}"
@@ -1547,10 +1543,8 @@ Ngày update 23/6/2025-->
                                     <p><i class="fas fa-fire text-danger mr-2"></i><strong>Loại khóa học:</strong> <span id="modalIsHot"></span></p>
                                     <p><i class="fas fa-layer-group text-primary mr-2"></i><strong>Lớp:</strong> <span id="modalgradeName"></span></p>
                                     <p><i class="fas fa-book text-info mr-2"></i><strong>Môn học:</strong> <span id="modalSubjectName"></span></p>
-                                    <!--                                    <p><i class="fas fa-user-friends text-success mr-2"></i><strong>Sĩ số tối đa:</strong> <span id="modalMaxStudents"></span></p>-->
                                 </div>
-                                <div class="col-md-6">
-                                    <p><i class="fas fa-clock text-warning mr-2"></i><strong>Thời gian:</strong> <span id="modalDuration"></span></p>
+                                <div class="col-md-6">                
                                     <p><i class="fas fa-calendar-plus text-secondary mr-2"></i><strong>Ngày bắt đầu:</strong> <span id="modalStartDate"></span></p>
                                     <p><i class="fas fa-calendar-check text-secondary mr-2"></i><strong>Ngày kết thúc:</strong> <span id="modalEndDate"></span></p>
                                     <p><i class="fas fa-money-bill text-success mr-2"></i><strong>Học phí:</strong> <span id="modalTuitionFee"></span></p>
@@ -1568,9 +1562,7 @@ Ngày update 23/6/2025-->
                     </div>
                 </div>
             </div>
-            <!-- Courses End -->
-
-                     
+            <!-- Courses End -->                     
     </main>
 
     <footer class="site-footer" style="margin-top: 70px;">
@@ -1902,8 +1894,6 @@ Ngày update 23/6/2025-->
         function clean(value) {
             return (value && value !== "false") ? value : '';
         }
-
-
         window.showCourseDetail = function (btn) {
             const get = key => btn.getAttribute('data-' + key) || '';
 
@@ -1912,14 +1902,9 @@ Ngày update 23/6/2025-->
             document.getElementById('modalCourseDescrip').textContent = get('descrip') || 'Chưa có mô tả';
             document.getElementById('modalIsHot').textContent = (get('ishot') === "true" || get('ishot') === "1") ? "Nổi bật" : "Quanh năm";
             document.getElementById('modalgradeName').textContent = get('gradename') || 'Chưa xác định';
-            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';
-//            let maxStudents = get('maxstudents');
-//            document.getElementById('modalMaxStudents').textContent = maxStudents ? (maxStudents + " học sinh") : 'Chưa xác định';
-            document.getElementById('modalDuration').textContent = (get('duration') || 'Chưa xác định') + ' / 1 buổi';
+            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';            
             document.getElementById('modalStartDate').textContent = get('startdate') || 'Chưa xác định';
-            document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';
-
-            console.log("maxstudents = ", get('maxstudents'));
+            document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';            
 
             // Format học phí
             function formatMoneyVND(amount, isHot) {
@@ -1935,83 +1920,46 @@ Ngày update 23/6/2025-->
             // Gán link nút đăng ký
             document.getElementById('joinCourseBtn').href = 'login_register.jsp?redirect=course&courseId=' + (get('classid') || '');
 
-            // Ghi log kiểm tra
+            
             const container = document.getElementById('classGroupContent');
-            console.log("📌 DOM container:", container);
-
-            const classGroupsStr = get('classgroups');
-            console.log("📦 classGroupsStr raw:", classGroupsStr);
-
-
+            const classGroupsStr = get('classgroups');            
             let html = '<p>Chưa có nhóm lớp nào.</p>';
 
             if (classGroupsStr) {
-                const groupsArr = classGroupsStr.split(';').filter(Boolean);
-                console.log("📦 groupsArr parsed:", groupsArr);
-                console.log("📏 groupsArr.length:", groupsArr.length);
-
+                const groupsArr = classGroupsStr.split(';').filter(Boolean);                
                 if (groupsArr.length > 0) {
                     html = `
                 <h6>Danh sách nhóm lớp:</h6>
                 <table class="table table-bordered" style="width:100%">
                     <thead>
-                        <tr>
-                            
+                        <tr>                        
                             <th>Tên nhóm</th>
-                            <th>Sĩ số tối đa</th>
-                            <th>Phòng</th>
                             <th>Giáo viên</th>
-                            <th>Thứ trong tuần</th>
-                            <th>Bắt đầu</th>
-                            <th>Kết thúc</th>
+                            <th>Sĩ số tối đa</th>                                                                                                              
                         </tr>
                     </thead>
                     <tbody>`;
 
                     groupsArr.forEach((item, index) => {
                         const parts = item.split('~');
-                        while (parts.length < 7)
+                        while (parts.length < 3)
                             parts.push('');
                         function formatTime(str) {
                             if (!str || typeof str !== 'string')
                                 return '';
                             return str.length >= 5 ? str.substring(0, 5) : str;
                         }
-
-//                        const groupId = parts[0];
                         const groupName = parts[0];
-                        const maxStudent = parts[1];
-                        const room = parts[2];
-                        const teacher = parts[3];
-                        const thu = parts[4];
-                        const start = formatTime(parts[5]);
-                        const end = formatTime(parts[6]);
-
-                        // Log từng phần
-                        console.log(`🔍 Group ${index + 1} parts:`, parts);
-//                        console.log("📋 groupId:", groupId);
-                        console.log("📋 groupName:", groupName);
-                        console.log("📋 maxStudent:", maxStudent);
-                        console.log("📋 room:", room);
-                        console.log("📋 teacher:", teacher);
-                        console.log("📋 start:", start);
-                        console.log("📋 end:", end);
-
-
-
-
+                        const maxStudent = parts[1];                       
+                        const teacher = parts[2];                       
                         html += `
     <tr>
         
         <td>` + clean(groupName) + `</td>
-        <td>` + clean(maxStudent) + `</td>
-        <td>` + clean(room) + `</td>
-        <td>` + clean(teacher) + `</td>
-        <td>` + (thu === "null" ? "Chưa xếp lịch" : clean(thu)) + `</td>
-        <td>` + clean(start) + `</td>
-        <td>` + clean(end) + `</td>
+                <td>` + clean(teacher) + `</td>
+        <td>` + clean(maxStudent) + `</td>        
+                
     </tr>`;
-
                     });
 
                     html += `

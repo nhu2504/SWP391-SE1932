@@ -132,101 +132,187 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("weekdayMap", weekdayMap); // truyền cho JSP
             Set<Integer> addedClassIds = new HashSet<>();
 
-            for (TutoringClass tc : allTutoringClasses) {
-                int tutoringClassId = tc.getTutoringClassID();
-                if (addedClassIds.contains(tutoringClassId)) {
-                    continue;
-                }
-                addedClassIds.add(tutoringClassId);
+//            for (TutoringClass tc : allTutoringClasses) {
+//                int tutoringClassId = tc.getTutoringClassID();
+//                if (addedClassIds.contains(tutoringClassId)) {
+//                    continue;
+//                }
+//                addedClassIds.add(tutoringClassId);
+//
+//                // Sử dụng DAO mới đã cập nhật: mỗi group chỉ 1 dòng, có thêm trường ngày học                             
+//                 List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+//                StringBuilder sb = new StringBuilder();
+//
+//                String duration = "Chưa xác định";
+//                if (groupList != null && !groupList.isEmpty()) {
+//                    for (Object[] g : groupList) {
+//                        // g[0]=ClassGroupName, g[1]=MaxStudent, g[2]=RoomName, 
+//                        // g[3]=TeacherName, g[4]=StartTime, g[5]=EndTime, g[6]=StudyDate
+//                        // Tính thứ từ ngày học
+//                        String thu;
+//                        if (g[6] != null) {
+//                            int dayOfWeek = (int) g[6]; // giá trị từ DB
+//                            thu = weekdayMap.getOrDefault(dayOfWeek, "Không xác định");
+//                        } else {
+//                            thu = "null";
+//                        }
+//
+//                        sb//.append(g[0]).append("~") // groupId
+//                                .append(g[0]).append("~") // groupName
+//                                .append(g[1]).append("~") // maxStudent
+//                                .append(g[2]).append("~") // roomName
+//                                .append(g[3] != null ? g[3] : "Không xác định").append("~") // teacherName
+//                                .append(thu).append("~") // thứ trong tuần
+//                                .append(g[4] != null ? g[4] : "N/A").append("~") // startTime
+//                                .append(g[5] != null ? g[5] : "N/A").append(";"); // endTime
+//
+//                        // DEBUG: Log group details
+//                        System.out.println("DEBUG: TutoringClassID=" + tutoringClassId + ", GroupID=" + g[0]
+//                                + ", GroupName=" + g[1] + ", TeacherName=" + g[4]
+//                                + ", Thu=" + thu
+//                                + ", StartTime=" + g[5] + ", EndTime=" + g[6]);
+//                    }
+//
+//                    // Lấy duration từ ca đầu tiên
+//                    Object[] firstGroup = groupList.get(0);
+//
+//                    String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
+//                    String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
+//
+//                    try {
+//                        // Làm sạch chuỗi thời gian nếu có định dạng lạ như "00.0000000"
+//                        if (startStr != null && startStr.contains(".")) {
+//                            startStr = startStr.split("\\.")[0]; // lấy phần trước dấu chấm
+//                        }
+//                        if (endStr != null && endStr.contains(".")) {
+//                            endStr = endStr.split("\\.")[0];
+//                        }
+//
+//                        // Thêm giây nếu thiếu
+//                        if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
+//                            startStr += ":00";
+//                        }
+//                        if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
+//                            endStr += ":00";
+//                        }
+//
+//                        // Kiểm tra lần cuối
+//                        if (startStr != null && endStr != null
+//                                && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
+//                                && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
+//
+//                            Time startSqlTime = Time.valueOf(startStr);
+//                            Time endSqlTime = Time.valueOf(endStr);
+//
+//                            Shift shift = new Shift(startSqlTime, endSqlTime);
+//                            duration = shift.getDurationText();
+//
+//                            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+//                            System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startSqlTime)
+//                                    + ", End=" + fmt.format(endSqlTime) + ", Duration=" + duration);
+//                        } else {
+//                            System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
+//                        e.printStackTrace();
+//                    }
+//
+//                } else {
+//                    System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
+//                }
+//                groupStringMap.put(tutoringClassId, sb.toString());
+//                durationMap.put(tutoringClassId, duration);
+//                System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
+//                System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+//            }
 
-                // Sử dụng DAO mới đã cập nhật: mỗi group chỉ 1 dòng, có thêm trường ngày học
-                List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
-                StringBuilder sb = new StringBuilder();
+for (TutoringClass tc : allTutoringClasses) {
+    int tutoringClassId = tc.getTutoringClassID();
+    if (addedClassIds.contains(tutoringClassId)) {
+        continue;
+    }
+    addedClassIds.add(tutoringClassId);
 
-                String duration = "Chưa xác định";
-                if (groupList != null && !groupList.isEmpty()) {
-                    for (Object[] g : groupList) {
-                        // g[0]=ClassGroupName, g[1]=MaxStudent, g[2]=RoomName, 
-                        // g[3]=TeacherName, g[4]=StartTime, g[5]=EndTime, g[6]=StudyDate
-                        // Tính thứ từ ngày học
-                        String thu;
-                        if (g[6] != null) {
-                            int dayOfWeek = (int) g[6]; // giá trị từ DB
-                            thu = weekdayMap.getOrDefault(dayOfWeek, "Không xác định");
-                        } else {
-                            thu = "null";
-                        }
+    // Lấy danh sách class group (mỗi group 1 dòng, đã gộp lịch học)
+    List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+    StringBuilder sb = new StringBuilder();
+    String duration = "Chưa xác định";
 
-                        sb//.append(g[0]).append("~") // groupId
-                                .append(g[0]).append("~") // groupName
-                                .append(g[1]).append("~") // maxStudent
-                                .append(g[2]).append("~") // roomName
-                                .append(g[3] != null ? g[3] : "Không xác định").append("~") // teacherName
-                                .append(thu).append("~") // thứ trong tuần
-                                .append(g[4] != null ? g[4] : "N/A").append("~") // startTime
-                                .append(g[5] != null ? g[5] : "N/A").append(";"); // endTime
+    if (groupList != null && !groupList.isEmpty()) {
+        for (Object[] g : groupList) {
+            // g[0]: ClassGroupName
+            // g[1]: MaxStudent
+            // g[2]: ScheduleSummary (e.g., "Thứ 2 - Phòng A - 08:00-09:30; ...")
+            // g[3]: TeacherName
+            // g[4]: StartTime (dùng tính duration)
+            // g[5]: EndTime
 
-                        // DEBUG: Log group details
-                        System.out.println("DEBUG: TutoringClassID=" + tutoringClassId + ", GroupID=" + g[0]
-                                + ", GroupName=" + g[1] + ", TeacherName=" + g[4]
-                                + ", Thu=" + thu
-                                + ", StartTime=" + g[5] + ", EndTime=" + g[6]);
-                    }
+            sb
+                .append(g[0]).append("~")                        // groupName
+                .append(g[1]).append("~")                        // maxStudent
+//                .append(g[2] != null ? g[2] : "Không có lịch").append("~")  // lịch học gộp
+                .append(g[3] != null ? g[3] : "Không xác định").append(";"); // teacherName
 
-                    // Lấy duration từ ca đầu tiên
-                    Object[] firstGroup = groupList.get(0);
+            // DEBUG log
+            System.out.println("DEBUG: ClassGroup=" + g[0] +
+                               ", Max=" + g[1] +
+                               ", Lịch=" + g[2] +
+                               ", GV=" + g[3]);
+        }
 
-                    String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
-                    String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
+        // Tính duration từ ca đầu tiên (g[4], g[5])
+        Object[] firstGroup = groupList.get(0);
+        String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
+        String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
 
-                    try {
-                        // Làm sạch chuỗi thời gian nếu có định dạng lạ như "00.0000000"
-                        if (startStr != null && startStr.contains(".")) {
-                            startStr = startStr.split("\\.")[0]; // lấy phần trước dấu chấm
-                        }
-                        if (endStr != null && endStr.contains(".")) {
-                            endStr = endStr.split("\\.")[0];
-                        }
-
-                        // Thêm giây nếu thiếu
-                        if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
-                            startStr += ":00";
-                        }
-                        if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
-                            endStr += ":00";
-                        }
-
-                        // Kiểm tra lần cuối
-                        if (startStr != null && endStr != null
-                                && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
-                                && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
-
-                            Time startSqlTime = Time.valueOf(startStr);
-                            Time endSqlTime = Time.valueOf(endStr);
-
-                            Shift shift = new Shift(startSqlTime, endSqlTime);
-                            duration = shift.getDurationText();
-
-                            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
-                            System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startSqlTime)
-                                    + ", End=" + fmt.format(endSqlTime) + ", Duration=" + duration);
-                        } else {
-                            System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
-                        }
-
-                    } catch (Exception e) {
-                        System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
-                }
-                groupStringMap.put(tutoringClassId, sb.toString());
-                durationMap.put(tutoringClassId, duration);
-                System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
-                System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+        try {
+            if (startStr != null && startStr.contains(".")) {
+                startStr = startStr.split("\\.")[0];
             }
+            if (endStr != null && endStr.contains(".")) {
+                endStr = endStr.split("\\.")[0];
+            }
+
+            if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
+                startStr += ":00";
+            }
+            if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
+                endStr += ":00";
+            }
+
+            if (startStr != null && endStr != null
+                    && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
+                    && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
+
+                Time startTime = Time.valueOf(startStr);
+                Time endTime = Time.valueOf(endStr);
+                Shift shift = new Shift(startTime, endTime);
+                duration = shift.getDurationText();
+
+                SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+                System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startTime)
+                        + ", End=" + fmt.format(endTime) + ", Duration=" + duration);
+            } else {
+                System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    } else {
+        System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
+    }
+
+    // Đưa dữ liệu vào map
+    groupStringMap.put(tutoringClassId, sb.toString());
+    durationMap.put(tutoringClassId, duration);
+    System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
+    System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+}
+
 
             request.setAttribute("groupStringMap", groupStringMap);
             request.setAttribute("durationMap", durationMap);
