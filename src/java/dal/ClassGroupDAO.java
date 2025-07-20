@@ -36,8 +36,7 @@ public class ClassGroupDAO {
             FROM ClassGroup cg
             JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
             LEFT JOIN [User] u ON cg.TeacherID = u.UserID
-            WHERE tc.StartDate <= CAST(GETDATE() AS DATE)
-              AND tc.EndDate >= CAST(GETDATE() AS DATE)
+            WHERE cg.isActive=1;
         """;
         try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -55,58 +54,6 @@ public class ClassGroupDAO {
         }
         return list;
     }
-
-//    public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
-//        List<Object[]> list = new ArrayList<>();
-//        String sql = """
-//        SELECT 
-//            cg.ClassGroupID,
-//            cg.ClassGroupName,
-//            cg.MaxStudent,
-//            cg.minStudent,
-//            cg.isActive,
-//            r.roomName AS RoomName,
-//            u.FullName AS TeacherName,
-//            s.Start_time,
-//            s.End_time,
-//            st.DayOfWeek,
-//            (
-//                SELECT COUNT(*) 
-//                FROM ClassGroup_Student cgs 
-//                WHERE cgs.ClassGroupID = cg.ClassGroupID AND cgs.IsActive = 1
-//            ) AS CurrentStudentCount
-//        FROM ClassGroup cg
-//        LEFT JOIN ScheduleTemplate st ON st.ClassGroupID = cg.ClassGroupID
-//        LEFT JOIN Room r ON st.RoomID = r.id
-//        LEFT JOIN Shiftlearn s ON st.ShiftID = s.ShiftID
-//        LEFT JOIN [User] u ON cg.TeacherID = u.UserID
-//        WHERE cg.TutoringClassID = ?
-//    """;
-//
-//        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setInt(1, tutoringClassID);
-//            ResultSet rs = stmt.executeQuery();
-//            while (rs.next()) {
-//                Object[] row = new Object[11];
-//                row[0] = rs.getString("ClassGroupName");
-//                row[1] = rs.getInt("MaxStudent");
-//                row[2] = rs.getString("RoomName");
-//                row[3] = rs.getString("TeacherName");
-//                row[4] = rs.getString("Start_time");
-//                row[5] = rs.getString("End_time");
-//                row[6] = rs.getInt("DayOfWeek"); // vì không còn DateLearn
-//                row[7] = rs.getInt("CurrentStudentCount");
-//                row[8] = rs.getInt("ClassGroupID");
-//                row[9] = rs.getInt("minStudent");
-//                row[10] = rs.getInt("isActive");
-//
-//                list.add(row);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return list;
-//    }
     
     public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
     List<Object[]> list = new ArrayList<>();
@@ -229,7 +176,7 @@ public class ClassGroupDAO {
     }
 
     public ClassGroup getClassGroupById(int classGroupId) {
-        String sql = "SELECT ClassGroupID, ClassGroupName, TutoringClassID FROM ClassGroup WHERE ClassGroupID = ?";
+        String sql = "SELECT ClassGroupID, ClassGroupName, TutoringClassID, maxStudent FROM ClassGroup WHERE ClassGroupID = ?";
         try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, classGroupId);
             ResultSet rs = ps.executeQuery();
@@ -238,6 +185,8 @@ public class ClassGroupDAO {
                 cg.setClassGroupId(rs.getInt("ClassGroupID"));
                 cg.setName(rs.getString("ClassGroupName"));
                 cg.setToturID(rs.getInt("TutoringClassID"));
+                cg.setMaxStudent(rs.getInt("maxStudent"));
+                
                 return cg;
             }
         } catch (Exception e) {

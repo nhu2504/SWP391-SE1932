@@ -85,35 +85,40 @@ Ngày update 3/7/2025-->
 <form method="get" action="admin">
     <input type="hidden" name="tab" value="todaySchedule" />
 
-    <div class="form-group" style="width: 350px;">
-    <label>Chọn tuần:</label>
-    <select name="weekStart" onchange="this.form.submit()">
-        <c:forEach var="ws" items="${weekStartList}">
-            <fmt:formatDate var="wsFormatted" value="${ws}" pattern="yyyy-MM-dd"/>
-            <%
-                java.util.Date wsDate = (java.util.Date) pageContext.findAttribute("ws");
-                java.util.Date weDate = new java.util.Date(wsDate.getTime() + 6L * 24 * 60 * 60 * 1000);
-                pageContext.setAttribute("weDate", weDate);
-            %>
-            <option value="${wsFormatted}" ${ws eq selectedWeekStart ? 'selected' : ''}>
-                <fmt:formatDate value="${ws}" pattern="dd/MM/yyyy"/>
-                -
-                <fmt:formatDate value="${weDate}" pattern="dd/MM/yyyy"/>
-            </option>
-        </c:forEach>
-    </select>
-</div>
-
-    <div class="form-group d-flex align-items-end" style="gap: 10px;">
-        <div>
-            <label>Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
-            <input type="date" name="anyDate" value="${param.anyDate}" class="form-control"/>
+    <div class="flex flex-wrap items-end gap-4">
+        <!-- Chọn tuần -->
+        <div class="form-group" style="width: 350px;">
+            <label>Chọn tuần:</label>
+            <select name="weekStart" onchange="this.form.submit()" class="form-control w-full">
+                <c:forEach var="ws" items="${weekStartList}">
+                    <fmt:formatDate var="wsFormatted" value="${ws}" pattern="yyyy-MM-dd"/>
+                    <%
+                        java.util.Date wsDate = (java.util.Date) pageContext.findAttribute("ws");
+                        java.util.Date weDate = new java.util.Date(wsDate.getTime() + 6L * 24 * 60 * 60 * 1000);
+                        pageContext.setAttribute("weDate", weDate);
+                    %>
+                    <option value="${wsFormatted}" ${ws eq selectedWeekStart ? 'selected' : ''}>
+                        <fmt:formatDate value="${ws}" pattern="dd/MM/yyyy"/>
+                        -
+                        <fmt:formatDate value="${weDate}" pattern="dd/MM/yyyy"/>
+                    </option>
+                </c:forEach>
+            </select>
         </div>
-        <div>
-            <button type="submit" class="btn1" style="margin-bottom: 4px;">Xem</button>
+
+        <!-- Nhập ngày -->
+        <div class="form-group flex gap-2 items-end">
+            <div>
+                <label>Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
+                <input type="date" name="anyDate" value="${param.anyDate}" class="form-control"/>
+            </div>
+            <div>
+                <button type="submit" class="btn1 mb-1">Xem</button>
+            </div>
         </div>
     </div>
 </form>
+
 
 <table class="min-w-full text-sm mt-4">
     <thead>

@@ -13,42 +13,32 @@ Ngày update 3/7/2025-->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <!-- Tìm theo giáo viên -->
         <div>
-            <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-1">🔍 Tìm giáo viên:</label>
-            <input type="text" id="searchInput" placeholder="Nhập tên giáo viên..." class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400">
+            <input type="text" id="searchInput" placeholder="🔍 Tìm giáo viên..." 
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400" />
+        </div>
+        
+        <!-- Lọc theo lớp (loại trùng) -->
+        <div>
+            <input list="classOptions" id="classFilter" name="classFilter"
+                   placeholder="🏫 Tìm kiếm lớp..."
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400" />
+            <datalist id="classOptions">
+                <c:forEach var="className" items="${classNames}">
+                    <option value="${className}" />
+                </c:forEach>
+            </datalist>
         </div>
 
         <!-- Lọc theo môn -->
         <div>
-            <label for="subjectFilter" class="block text-sm font-medium text-gray-700 mb-1">📂 Lọc theo môn học:</label>
-            <select id="subjectFilter" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400">
-                <option value="">Tất cả môn học</option>
+            <select id="subjectFilter" 
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 text-gray-500">
+                <option value="">📂 Lọc theo môn học</option>
                 <c:forEach var="subject" items="${subjectList}">
                     <option value="${subject.subjectName}">${subject.subjectName}</option>
                 </c:forEach>
             </select>
-        </div>
-
-        <!-- Lọc theo lớp (loại trùng) -->
-        <div>
-    <label for="classFilter" class="block text-sm font-medium text-gray-700 mb-1">🏫 Lọc theo lớp:</label>
-
-    <!-- Ô nhập có gợi ý -->
-    <input list="classOptions" id="classFilter" name="classFilter"
-           placeholder="Nhập hoặc chọn lớp..."
-           class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400" />
-
-    <!-- Danh sách lớp để chọn khi nhập -->
-    <datalist id="classOptions">
-        <c:forEach var="className" items="${classNames}">
-            <option value="${className}" />
-        </c:forEach>
-    </datalist>
-</div>
-
-
-
-
-
+        </div>        
     </div>
 
     <!-- Bảng dữ liệu -->
@@ -92,56 +82,56 @@ Ngày update 3/7/2025-->
 
 <!-- JavaScript lọc -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const subjectFilter = document.getElementById("subjectFilter");
-    const classFilter = document.getElementById("classFilter");
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const subjectFilter = document.getElementById("subjectFilter");
+        const classFilter = document.getElementById("classFilter");
 
-    // Chuẩn hóa tiếng Việt: loại bỏ dấu và lowercase
-    function normalize(str) {
-        return (str || "")
-            .normalize("NFD")                   // Tách chữ và dấu
-            .replace(/[\u0300-\u036f]/g, "")   // Xóa dấu
-            .toLowerCase()
-            .trim();
-    }
+        // Chuẩn hóa tiếng Việt: loại bỏ dấu và lowercase
+        function normalize(str) {
+            return (str || "")
+                    .normalize("NFD")                   // Tách chữ và dấu
+                    .replace(/[\u0300-\u036f]/g, "")   // Xóa dấu
+                    .toLowerCase()
+                    .trim();
+        }
 
-    function filterGroups() {
-        const keyword = normalize(searchInput.value);
-        const selectedSubject = normalize(subjectFilter.value);
-        const selectedClass = normalize(classFilter.value);
+        function filterGroups() {
+            const keyword = normalize(searchInput.value);
+            const selectedSubject = normalize(subjectFilter.value);
+            const selectedClass = normalize(classFilter.value);
 
-        const groups = document.querySelectorAll(".teacher-group");
+            const groups = document.querySelectorAll(".teacher-group");
 
-        groups.forEach(group => {
-            const teacherName = normalize(group.dataset.teacher);
-            const rows = group.querySelectorAll(".schedule-row");
+            groups.forEach(group => {
+                const teacherName = normalize(group.dataset.teacher);
+                const rows = group.querySelectorAll(".schedule-row");
 
-            let matchFound = false;
+                let matchFound = false;
 
-            rows.forEach(row => {
-                const subject = normalize(row.dataset.subject);
-                const className = normalize(row.dataset.class);
+                rows.forEach(row => {
+                    const subject = normalize(row.dataset.subject);
+                    const className = normalize(row.dataset.class);
 
-                const matchesTeacher = teacherName.includes(keyword);
-                const matchesSubject = !selectedSubject || subject === selectedSubject;
-                const matchesClass = !selectedClass || className.includes(selectedClass);
+                    const matchesTeacher = teacherName.includes(keyword);
+                    const matchesSubject = !selectedSubject || subject === selectedSubject;
+                    const matchesClass = !selectedClass || className.includes(selectedClass);
 
-                if (matchesTeacher && matchesSubject && matchesClass) {
-                    row.style.display = "table-row";
-                    matchFound = true;
-                } else {
-                    row.style.display = "none";
-                }
+                    if (matchesTeacher && matchesSubject && matchesClass) {
+                        row.style.display = "table-row";
+                        matchFound = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                group.style.display = matchFound ? "" : "none";
             });
+        }
 
-            group.style.display = matchFound ? "" : "none";
-        });
-    }
-
-    // Gắn sự kiện lọc
-    searchInput.addEventListener("input", filterGroups);
-    subjectFilter.addEventListener("change", filterGroups);
-    classFilter.addEventListener("input", filterGroups);
-});
+        // Gắn sự kiện lọc
+        searchInput.addEventListener("input", filterGroups);
+        subjectFilter.addEventListener("change", filterGroups);
+        classFilter.addEventListener("input", filterGroups);
+    });
 </script>

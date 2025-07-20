@@ -16,9 +16,9 @@ Ngày update 3/7/2025-->
 
     <!-- Bộ lọc -->
     <div class="flex flex-col md:flex-row gap-4 mb-6">
-        <input type="text" id="searchClass" placeholder="🔍 Tìm lớp..." class="form-control w-full md:w-1/6">
+        <input type="text" id="searchClass" placeholder="🔍 Tìm lớp..." class="form-control w-full md:w-1/4">
 
-        <select id="filterTeacher" class="form-control w-full md:w-1/6">
+        <select id="filterTeacher" class="form-control w-full md:w-1/4">
             <option value="">🎓 Tất cả giáo viên</option>
             <c:forEach var="entry" items="${weeklySchedules}">
                 <c:if test="${not fn:contains(teacherSet, entry[3])}">
@@ -27,15 +27,8 @@ Ngày update 3/7/2025-->
                 </c:if>
             </c:forEach>
         </select>
-
-        <select id="filterWeekday" class="form-control w-full md:w-1/6">
-            <option value="">📅 Tất cả các ngày</option>
-            <c:forEach var="i" begin="1" end="7">
-                <option value="${weekdays[i]}">${weekdays[i]}</option>
-            </c:forEach>
-        </select>
-
-        <select id="filterSubject" class="form-control w-full md:w-1/6">
+        
+        <select id="filterSubject" class="form-control w-full md:w-1/4">
             <option value="">📘 Tất cả môn học</option>
             <c:forEach var="entry" items="${weeklySchedules}">
                 <c:if test="${not fn:contains(subjectSet, entry[7])}">
@@ -45,17 +38,7 @@ Ngày update 3/7/2025-->
             </c:forEach>
         </select>
 
-        <select id="filterRoom" class="form-control w-full md:w-1/6">
-            <option value="">🏫 Tất cả phòng</option>
-            <c:forEach var="entry" items="${weeklySchedules}">
-                <c:if test="${not fn:contains(roomSet, entry[4])}">
-                    <c:set var="roomSet" value="${roomSet}${entry[4]}," />
-                    <option value="${entry[4]}">${entry[4]}</option>
-                </c:if>
-            </c:forEach>
-        </select>
-
-        <select id="filterGrade" class="form-control w-full md:w-1/6">
+        <select id="filterGrade" class="form-control w-full md:w-1/4">
             <option value="">🏷️ Tất cả khối</option>
             <c:forEach var="entry" items="${weeklySchedules}">
                 <c:if test="${not fn:contains(gradeSet, entry[9])}">
@@ -89,15 +72,23 @@ Ngày update 3/7/2025-->
                 <div class="text-sm text-gray-700 mb-1">
                     🧑‍🏫 Giáo viên: ${entry[3]}
                 </div>
-                <div class="text-sm text-gray-700 mb-1">
-                    🏩 Phòng: ${entry[4]}
-                </div>
-                
-                <div class="text-sm text-gray-700 mb-1">
-                    📅 Thứ: ${weekdays[entry[0]]}
-                </div>
-                <div class="text-sm text-gray-700">
-                    ⏰ <fmt:formatDate value="${entry[5]}" pattern="HH:mm"/> - <fmt:formatDate value="${entry[6]}" pattern="HH:mm"/>
+
+
+                <div class="text-sm text-gray-700 mb-1 flex gap-1 flex-wrap">
+                    📅 Lịch học:
+                    <c:forTokens var="line" items="${entry[10]}" delims=";">
+                        <c:set var="day" value="${fn:substringBefore(line, ' -')}"/>
+                        <c:set var="temp" value="${fn:substringAfter(line, ' -')}"/>
+                        <c:set var="room" value="${fn:substringBefore(temp, ' -')}"/>
+                        <c:set var="time" value="${fn:substringAfter(temp, ' -')}"/>
+                        <li>
+                            <c:choose>
+                                <c:when test="${day eq 'Thứ 1'}">Chủ nhật</c:when>
+                                <c:otherwise>${day}</c:otherwise>
+                            </c:choose>
+                            - Phòng: ${room} - Thời gian: ${time}
+                        </li>
+                    </c:forTokens>
                 </div>
             </div>
         </c:forEach>
@@ -105,58 +96,45 @@ Ngày update 3/7/2025-->
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const searchClass = document.getElementById("searchClass");
-    const filterTeacher = document.getElementById("filterTeacher");
-    const filterWeekday = document.getElementById("filterWeekday");
-    const filterSubject = document.getElementById("filterSubject");
-    const filterRoom = document.getElementById("filterRoom");
-    const filterGrade = document.getElementById("filterGrade");
-    const cards = document.querySelectorAll(".card[data-class]");
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchClass = document.getElementById("searchClass");
+        const filterTeacher = document.getElementById("filterTeacher");        
+        const filterSubject = document.getElementById("filterSubject");
+        const filterGrade = document.getElementById("filterGrade");
+        const cards = document.querySelectorAll(".card[data-class]");
 
-    // Chuẩn hóa chuỗi: loại bỏ dấu tiếng Việt + lowercase
-    function normalize(str) {
-        return (str || "")
-            .normalize("NFD")                   // Tách chữ + dấu
-            .replace(/[\u0300-\u036f]/g, "")   // Xoá dấu
-            .toLowerCase()
-            .trim();
-    }
+        // Chuẩn hóa chuỗi: loại bỏ dấu tiếng Việt + lowercase
+        function normalize(str) {
+            return (str || "")
+                    .normalize("NFD")                   // Tách chữ + dấu
+                    .replace(/[\u0300-\u036f]/g, "")   // Xoá dấu
+                    .toLowerCase()
+                    .trim();
+        }
 
-    function applyFilters() {
-        const classKeyword = normalize(searchClass.value);
-        const teacher = normalize(filterTeacher.value);
-        const weekday = normalize(filterWeekday.value);
-        const subject = normalize(filterSubject.value);
-        const room = normalize(filterRoom.value);
-        const grade = normalize(filterGrade.value);
+        function applyFilters() {
+            const classKeyword = normalize(searchClass.value);
+            const teacher = normalize(filterTeacher.value);           
+            const subject = normalize(filterSubject.value);            
+            const grade = normalize(filterGrade.value);
+            cards.forEach(card => {
+                const className = normalize(card.dataset.class);
+                const teacherName = normalize(card.dataset.teacher);                
+                const subjectName = normalize(card.dataset.subject);               
+                const gradeName = normalize(card.dataset.grade);
+                const matchClass = className.includes(classKeyword);
+                const matchTeacher = !teacher || teacherName === teacher;                
+                const matchSubject = !subject || subjectName === subject;               
+                const matchGrade = !grade || gradeName === grade;
+                card.style.display = (matchClass && matchTeacher && matchSubject && matchGrade)
+                        ? "block"
+                        : "none";
+            });
+        }
 
-        cards.forEach(card => {
-            const className = normalize(card.dataset.class);
-            const teacherName = normalize(card.dataset.teacher);
-            const day = normalize(card.dataset.weekday);
-            const subjectName = normalize(card.dataset.subject);
-            const roomName = normalize(card.dataset.room);
-            const gradeName = normalize(card.dataset.grade);
-
-            const matchClass = className.includes(classKeyword);
-            const matchTeacher = !teacher || teacherName === teacher;
-            const matchWeekday = !weekday || day === weekday;
-            const matchSubject = !subject || subjectName === subject;
-            const matchRoom = !room || roomName === room;
-            const matchGrade = !grade || gradeName === grade;
-
-            card.style.display = (matchClass && matchTeacher && matchWeekday && matchSubject && matchRoom && matchGrade)
-                ? "block"
-                : "none";
-        });
-    }
-
-    searchClass.addEventListener("input", applyFilters);
-    filterTeacher.addEventListener("change", applyFilters);
-    filterWeekday.addEventListener("change", applyFilters);
-    filterSubject.addEventListener("change", applyFilters);
-    filterRoom.addEventListener("change", applyFilters);
-    filterGrade.addEventListener("change", applyFilters);
-});
+        searchClass.addEventListener("input", applyFilters);
+        filterTeacher.addEventListener("change", applyFilters);        
+        filterSubject.addEventListener("change", applyFilters);        
+        filterGrade.addEventListener("change", applyFilters);
+    });
 </script>

@@ -2,8 +2,10 @@
 import dal.BannerDAO;
 import dal.CenterInfoDAO;
 import dal.ClassGroupDAO;
+import dal.ClassGroup_StudentDAO;
 import dal.GradeDAO;
 import dal.PaymentDAO;
+import dal.ReportDAO;
 import dal.RoomDAO;
 import dal.ScheduleDAO;
 import dal.SchoolClassDAO;
@@ -33,11 +35,13 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import com.google.gson.Gson;
 
 @MultipartConfig
 @WebServlet("/admin")
@@ -57,6 +61,8 @@ public class AdminServlet extends HttpServlet {
     private final RoomDAO roomDAO = new RoomDAO();
     private final SchoolDAO schoolDAO = new SchoolDAO();
     private final SchoolClassDAO schoolClassDAO = new SchoolClassDAO();
+    private final ClassGroup_StudentDAO classGroup_studentDAO = new ClassGroup_StudentDAO();
+    private final ReportDAO reportDAO = new ReportDAO();
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private static final String EXTERNAL_IMG_DIR = "D:/data/images";  // Đường dẫn lưu ảnh khóa học
@@ -70,7 +76,6 @@ public class AdminServlet extends HttpServlet {
         }
         // Gọi cập nhật trạng thái tự động
         tutoringClassDAO.updateAutoActiveStatus();
-        
 
         // --- Lấy lại dữ liệu lỗi nếu có ---
         HttpSession ses = req.getSession();
@@ -99,6 +104,39 @@ public class AdminServlet extends HttpServlet {
 
             switch (tab) {
                 case "overview":
+
+                    String selectedYearStr = req.getParameter("selectedYear");
+                    int selectedYear = selectedYearStr != null ? Integer.parseInt(selectedYearStr) : LocalDate.now().getYear();
+                    req.setAttribute("selectedYear", selectedYear);
+
+// Lấy danh sách năm (ví dụ 2021 → hiện tại)
+                    List<Integer> yearList = reportDAO.getAvailableYears(); // Tạo DAO hàm này
+                    req.setAttribute("yearList", yearList);
+
+// Lấy dữ liệu tăng trưởng
+                    Map<Integer, Integer> classGrowth = reportDAO.getClassCountPerMonth(selectedYear);
+                    Map<Integer, Integer> studentGrowth = reportDAO.getStudentCountPerMonth(selectedYear);
+                    req.setAttribute("classGrowth", classGrowth);
+                    req.setAttribute("studentGrowth", studentGrowth);
+
+                    /// Nếu là AJAX request
+                    if ("XMLHttpRequest".equals(req.getHeader("X-Requested-With"))) {
+                        res.setContentType("application/json");
+                        res.setCharacterEncoding("UTF-8");
+
+                        Gson gson = new Gson();
+                        Map<String, Map<Integer, Integer>> responseMap = new HashMap<>();
+                        responseMap.put("classGrowth", classGrowth);
+                        responseMap.put("studentGrowth", studentGrowth);
+                        String jsonResponse = gson.toJson(responseMap);
+
+                        try (PrintWriter out = res.getWriter()) {
+                            out.print(jsonResponse);
+                            out.flush();
+                        }
+                        return;
+                    }
+
                     req.setAttribute("openClassCount", classGroupDAO.getOpeningClassGroupsByCourseDate().size());
                     req.setAttribute("totalTeachers", teacherDAO.getAllTeachers().size());
                     req.setAttribute("studentCount", studentDAO.getStudentCount());
@@ -275,44 +313,50 @@ public class AdminServlet extends HttpServlet {
                     }
                     break;
 
-                case "studentNotInClass": 
-    String groupIdRaw1 = req.getParameter("groupId");
-    String courseIdRaw2 = req.getParameter("id"); // ID khóa học để breadcrumb có tên khóa học
+                case "studentNotInClass":
+                    String groupIdRaw1 = req.getParameter("groupId");
+                    String courseIdRaw2 = req.getParameter("id"); // ID khóa học để breadcrumb có tên khóa học
 
-    if (groupIdRaw1 != null && !groupIdRaw1.isEmpty()) {
-        try {
-            int classGroupId = Integer.parseInt(groupIdRaw1);
-            int courseId = courseIdRaw2 != null && !courseIdRaw2.isEmpty() ? Integer.parseInt(courseIdRaw2) : -1;           
+                    if (groupIdRaw1 != null && !groupIdRaw1.isEmpty()) {
+                        try {
+                            int classGroupId = Integer.parseInt(groupIdRaw1);
+                            int courseId = courseIdRaw2 != null && !courseIdRaw2.isEmpty() ? Integer.parseInt(courseIdRaw2) : -1;
 
-            
-            List<User> students = studentDAO.getStudentsNotInClassGroupFullInfo(classGroupId);
-            req.setAttribute("students", students);
+                            List<User> students = studentDAO.getStudentsNotInClassGroupFullInfo(classGroupId);
+                            req.setAttribute("students", students);
 
-            // Lấy tên lớp
-            ClassGroup group = classGroupDAO.getClassGroupById(classGroupId);
-            req.setAttribute("selectedClassGroupId", classGroupId);
-            req.setAttribute("selectedClassGroupName", group != null ? group.getName() : "Không rõ");
+                            // Lấy tên lớp
+                            ClassGroup group = classGroupDAO.getClassGroupById(classGroupId);
+                            req.setAttribute("selectedClassGroupId", classGroupId);
+                            req.setAttribute("selectedClassGroupName", group != null ? group.getName() : "Không rõ");
 
-            // Lấy thông tin khóa học nếu có ID
-            if (courseId != -1) {
-                TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
-                if (course != null) {
-                    req.setAttribute("selectedCourseId", courseId);
-                    req.setAttribute("selectedCourseName", course.getClassName());
-                }
-            }
+                            // Lấy thông tin khóa học nếu có ID
+                            if (courseId != -1) {
+                                TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
+                                if (course != null) {
+                                    req.setAttribute("selectedCourseId", courseId);
+                                    req.setAttribute("selectedCourseName", course.getClassName());
+                                }
+                            }
+                            //groupIdRaw = req.getParameter("groupId");
+                            //int groupId = groupIdRaw != null ? Integer.parseInt(groupIdRaw) : -1;
 
-            // Truyền danh sách trường và lớp học
-            req.setAttribute("schools", schoolDAO.getAllSchools());
-            req.setAttribute("schoolClasses", schoolClassDAO.getAllSchoolClasses());
+                            int maxStudent = group.getMaxStudent();
+                            int currentStudentCount = classGroup_studentDAO.countStudentsInGroup(classGroupId);
 
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-    }
-    break;
+                            req.setAttribute("maxStudent", maxStudent);
+                            req.setAttribute("currentCount", currentStudentCount);
 
+                            // Truyền danh sách trường và lớp học
+                            req.setAttribute("schools", schoolDAO.getAllSchools());
+                            req.setAttribute("schoolClasses", schoolClassDAO.getAllSchoolClasses());
+                            req.setAttribute("maxStudent", group.getMaxStudent());
 
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
 
                 case "setting":
                     req.setAttribute("banners", bannerDAO.getAllBanners());
@@ -524,6 +568,62 @@ public class AdminServlet extends HttpServlet {
                     res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
                     return;
                 }
+            } else if ("ADD_STUDENT".equals(action)) {
+                String[] studentIds = req.getParameterValues("studentIds");
+                String classGroupIdRaw = req.getParameter("groupId");
+                String courseIdRaw = req.getParameter("id");
+
+                if (studentIds == null || studentIds.length == 0 || classGroupIdRaw == null) {
+                    setSuccessMessage(req, "❌ Thiếu tham số yêu cầu!");
+                    res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupIdRaw + "&id=" + (courseIdRaw != null ? courseIdRaw : ""));
+                    return;
+                }
+
+                int classGroupId;
+                try {
+                    classGroupId = Integer.parseInt(classGroupIdRaw);
+                } catch (NumberFormatException e) {
+                    setSuccessMessage(req, "❌ ID lớp không hợp lệ!");
+                    res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupIdRaw + "&id=" + (courseIdRaw != null ? courseIdRaw : ""));
+                    return;
+                }
+
+                ClassGroup group = classGroupDAO.getClassGroupById(classGroupId);
+                int maxStudent = group.getMaxStudent();
+                int currentStudentCount = classGroup_studentDAO.countStudentsInGroup(classGroupId);
+
+                if (currentStudentCount + studentIds.length > maxStudent) {
+                    setSuccessMessage(req, "❌ Vượt quá số lượng học sinh tối đa! Hiện tại: " + currentStudentCount + ", thêm: " + studentIds.length + ", tối đa: " + maxStudent);
+                    res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupId + "&id=" + (courseIdRaw != null ? courseIdRaw : ""));
+                    return;
+                }
+
+                boolean allSuccess = true;
+                List<String> errors = new ArrayList<>();
+
+                for (String sid : studentIds) {
+                    try {
+                        int studentId = Integer.parseInt(sid);
+                        boolean success = classGroup_studentDAO.addStudentToClassGroup(classGroupId, studentId);
+                        if (!success) {
+                            allSuccess = false;
+                            errors.add("Thêm học sinh ID " + studentId + " thất bại.");
+                        }
+                    } catch (NumberFormatException e) {
+                        allSuccess = false;
+                        errors.add("ID học sinh " + sid + " không hợp lệ.");
+                    }
+                }
+
+                if (allSuccess) {
+                    setSuccessMessage(req, "✔ Thêm học sinh thành công!");
+                } else {
+                    setSuccessMessage(req, "❌ Thêm học sinh thất bại: " + String.join(", ", errors));
+                }
+
+                String redirectUrl = "admin?tab=studentListInClass&groupId=" + classGroupId + "&id=" + (courseIdRaw != null ? courseIdRaw : "");
+                res.sendRedirect(redirectUrl);
+                return;
             }
 
         } catch (Exception e) {

@@ -83,17 +83,17 @@
 
         <!-- Classes List -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="grid grid-cols-12 bg-blue-100 p-4 border-b font-semibold text-gray-700 hidden md:grid">
-                <div class="col-span-2 flex items-center"><i class="fas fa-chalkboard mr-2 text-blue-600"></i> Tên lớp</div>
-                <div class="col-span-3 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-blue-600"></i>Lịch học</div>
+            <div class="grid grid-cols-12 p-4 border-b font-semibold text-gray-700 hidden md:grid" style="background-color: #FFF1F1;">
+                <div class="col-span-2 flex items-center"><i class="fas fa-chalkboard mr-2 text-[#FF6B6B]"></i> Tên lớp</div>
+                <div class="col-span-3 flex items-center justify-center"><i class="fas fa-calendar-day mr-2 text-[#FF6B6B]"></i>Lịch học</div>
 
-                <div class="col-span-2 flex items-center justify-center"><i class="fas fa-user-tie mr-2 text-blue-600"></i> Giáo viên</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối thiểu</div>
+                <div class="col-span-2 flex items-center justify-center"><i class="fas fa-user-tie mr-2 text-[#FF6B6B]"></i> Giáo viên</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-[#FF6B6B]"></i> Số HS tối thiểu</div>
 
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS tối đa</div>                             
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Số HS</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-blue-600"></i> Trạng thái</div>
-                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-cogs mr-2 text-blue-600"></i> Thao tác</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-[#FF6B6B]"></i> Số HS tối đa</div>                             
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-[#FF6B6B]"></i> Số HS</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-users mr-2 text-[#FF6B6B]"></i> Trạng thái</div>
+                <div class="col-span-1 flex items-center justify-center"><i class="fas fa-cogs mr-2 text-[#FF6B6B]"></i> Thao tác</div>
             </div>
 
 
@@ -115,15 +115,18 @@
                             <ul class="text-left list-disc ml-4">
                                 <c:forTokens var="line" items="${c[2]}" delims=";">
                                     <c:set var="day" value="${fn:substringBefore(line, ' -')}"/>
-                                    <c:set var="rest" value="${fn:substringAfter(line, ' -')}"/>
+                                    <c:set var="temp" value="${fn:substringAfter(line, ' -')}"/>
+                                    <c:set var="room" value="${fn:substringBefore(temp, ' -')}"/>
+                                    <c:set var="time" value="${fn:substringAfter(temp, ' -')}"/>
                                     <li>
                                         <c:choose>
                                             <c:when test="${day eq 'Thứ 1'}">Chủ nhật</c:when>
                                             <c:otherwise>${day}</c:otherwise>
                                         </c:choose>
-                                        - ${rest}
+                                        - Phòng: ${room} - Thời gian: ${time}
                                     </li>
                                 </c:forTokens>
+
                             </ul>
 
                         </div>
@@ -170,7 +173,7 @@
                                 </a>
                             </c:if>
 
-                            
+
                         </div>
                     </div>
                 </c:forEach>

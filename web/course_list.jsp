@@ -50,7 +50,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse bg-white rounded-lg shadow-sm">
                     <thead>
-                        <tr class="bg-blue-600 text-white">
+                        <tr style="background-color: #FFF1F1; color: black;">
                             <th class="p-4 text-left w-24">Ảnh</th>
                             <th class="p-4 text-left w-48">Tên</th>
                             <th class="p-4 text-left w-64">Mô Tả</th>
@@ -121,7 +121,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="p-4">
-                                    <a href="admin?tab=classManagement&id=${item.tutoringClassID}" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition">Xem</a>
+                                    <a href="admin?tab=classManagement&id=${item.tutoringClassID}" class="bg-green-500 text-white px-3 py-2 rounded-lg transition">Xem</a>
                                 </td>
                             </tr>
                         </c:forEach>

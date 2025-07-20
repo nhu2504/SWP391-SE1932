@@ -222,7 +222,7 @@ Ngày update 3/7/2025-->
             }
         </style>
     </head>
-    <body class="bg-gray-50">
+    <body class="bg-gray-50">       
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->

@@ -213,52 +213,60 @@ public class ScheduleDAO {
      * @return Danh sách Object[] chứa chi tiết từng lịch học
      */
     public List<Object[]> getWeeklySchedule() {
-        List<Object[]> list = new ArrayList<>();
-        String sql = """
-            SELECT 
-                st.DayOfWeek,
-                sl.ShiftID,
-                cg.ClassGroupName,
-                u.FullName,
-                r.RoomName,
-                sl.Start_time,
-                sl.End_time,
-                s.SubjectName,
-                tc.ClassName,
-                g.GradeName
-            FROM ScheduleTemplate st
-            JOIN ClassGroup cg ON st.ClassGroupID = cg.ClassGroupID
-            JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
-            JOIN Grade g ON tc.GradeID = g.GradeID
-            JOIN Subjects s ON tc.SubjectID = s.SubjectID
-            JOIN [User] u ON st.TeacherID = u.UserID
-            JOIN Room r ON st.RoomID = r.id
-            JOIN Shiftlearn sl ON st.ShiftID = sl.ShiftID
-            ORDER BY cg.ClassGroupName, st.DayOfWeek, sl.ShiftID
-        """;
+    List<Object[]> list = new ArrayList<>();
+    String sql = """
+        SELECT 
+            cg.ClassGroupName,
+            u.FullName,
+            (
+                SELECT STRING_AGG(
+                    N'Thứ ' + CAST(ISNULL(st2.DayOfWeek, 0) AS VARCHAR) + ' - ' +
+                    ISNULL(r2.roomName, N'Không rõ phòng') + ' - ' +
+                    ISNULL(CONVERT(VARCHAR(5), sl2.Start_time, 108), '??') + ' - ' +
+                    ISNULL(CONVERT(VARCHAR(5), sl2.End_time, 108), '??'),
+                    '; '
+                )
+                FROM ScheduleTemplate st2
+                JOIN Room r2 ON st2.RoomID = r2.id
+                JOIN ShiftLearn sl2 ON st2.ShiftID = sl2.ShiftID
+                WHERE st2.ClassGroupID = cg.ClassGroupID
+            ) AS ScheduleInfo,
+            s.SubjectName,
+            tc.ClassName,
+            g.GradeName
+        FROM ClassGroup cg
+        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+        JOIN Grade g ON tc.GradeID = g.GradeID
+        JOIN Subjects s ON tc.SubjectID = s.SubjectID
+        JOIN [User] u ON cg.TeacherID = u.UserID
+        ORDER BY cg.ClassGroupName
+    """;
 
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                list.add(new Object[]{
-                    rs.getInt("DayOfWeek"), // 0
-                    rs.getInt("ShiftID"), // 1
-                    rs.getString("ClassGroupName"), // 2
-                    rs.getString("FullName"), // 3
-                    rs.getString("RoomName"), // 4
-                    rs.getTime("Start_time"), // 5
-                    rs.getTime("End_time"), // 6
-                    rs.getString("SubjectName"), // 7
-                    rs.getString("ClassName"), // 8
-                    rs.getString("GradeName") // 9
-                });
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            list.add(new Object[]{
+                null,              // [0] DayOfWeek - để giữ đúng thứ tự Object[]
+                null,              // [1] ShiftID
+                rs.getString("ClassGroupName"), // [2]
+                rs.getString("FullName"),       // [3]
+                null,              // [4] RoomName
+                null,              // [5] Start_time
+                null,              // [6] End_time
+                rs.getString("SubjectName"),    // [7]
+                rs.getString("ClassName"),      // [8]
+                rs.getString("GradeName"),      // [9]
+                rs.getString("ScheduleInfo")    // bổ sung để hiển thị gộp
+            });
         }
-
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return list;
+}
 
     public List<ScheduleTemplate> getTemplatesByGroupId(int groupId) throws SQLException {
     List<ScheduleTemplate> list = new ArrayList<>();
