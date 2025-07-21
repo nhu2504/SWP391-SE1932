@@ -319,7 +319,7 @@ Ngày update 3/7/2025-->
 
                         <a href="listregister" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-user-check w-5"></i>
-                            <span>Phê duyệt tài khoản</span>
+                            <span>Tạo tài khoản</span>
                         </a>
                         <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-file w-5"></i>

@@ -130,6 +130,56 @@ public class RegisterDAO {
         return false;
     }
 }
+    public List<Register> getFilteredRegisters(Date fromDate, Date toDate, String status, String keyword) {
+    List<Register> list = new ArrayList<>();
+
+    StringBuilder sql = new StringBuilder("SELECT * FROM TutoringRegistrationPending WHERE 1=1");
+
+    if (fromDate != null) sql.append(" AND RegisterDate >= ?");
+    if (toDate != null) sql.append(" AND RegisterDate <= ?");
+    if (status != null && !status.equalsIgnoreCase("all")) sql.append(" AND ApprovalStatus = ?");
+    if (keyword != null && !keyword.trim().isEmpty()) sql.append(" AND LOWER(InterestCourses) LIKE ?");
+
+    sql.append(" ORDER BY CASE WHEN ApprovalStatus = 'Pending' THEN 0 ELSE 1 END, RegisterDate ASC");
+
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+        int idx = 1;
+        if (fromDate != null) ps.setDate(idx++, new java.sql.Date(fromDate.getTime()));
+        if (toDate != null) ps.setDate(idx++, new java.sql.Date(toDate.getTime()));
+        if (status != null && !status.equalsIgnoreCase("all")) ps.setString(idx++, status);
+        if (keyword != null && !keyword.trim().isEmpty()) ps.setString(idx++, "%" + keyword.toLowerCase() + "%");
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Register r = new Register();
+            r.setRegisID(rs.getInt("RegistrationPendingID"));
+            r.setFullName(rs.getString("FullName"));
+            r.setPhone(rs.getString("Phone"));
+            r.setEmail(rs.getString("Email"));
+            r.setRegisDate(rs.getDate("RegisterDate"));
+            r.setApprovalStatus(rs.getString("ApprovalStatus"));
+            r.setGender(rs.getString("Gender"));
+            r.setBirth(rs.getDate("BirthDate"));
+            r.setSchool(rs.getString("School"));
+            r.setAddress(rs.getString("AddressSchool"));
+            r.setClassAtSchool(rs.getString("Class"));
+            r.setParentPhone(rs.getString("ParentPhone"));
+            r.setParentEmail(rs.getString("ParentEmail"));
+            r.setConfirm(rs.getBoolean("Confirmed"));
+            r.setIdUserIntro(rs.getInt("UserIntro"));
+            r.setInterestCourses(rs.getString("InterestCourses"));
+            list.add(r);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+
 public static void main(String[] args) {
         RegisterDAO dao = new RegisterDAO();
         List<Register> list = dao.getListRegister();

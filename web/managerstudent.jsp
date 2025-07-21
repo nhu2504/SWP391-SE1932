@@ -433,9 +433,10 @@
                                             <td class="py-2 px-4 border">${ap.gender}</td>
                                             <td class="py-2 px-4 border">Trường THPT ${ap.schoolName}</td>
                                             <td class="py-2 px-4 border">${ap.schoolClassName}</td>
-                                            
+
                                             <td class="py-2 px-4 border">
-                                                <form action="updatestudentstatus" method="post" style="margin: 0;">
+                                                <form action="updatestudentstatus" method="post" style="margin: 0;"
+                                                      onsubmit="return confirmUpdate('${ap.name}')">
                                                     <input type="hidden" name="studentId" value="${ap.id}" />
                                                     <input type="hidden" name="currentStatus" value="${ap.status}" />
                                                     <button type="submit"
@@ -443,12 +444,10 @@
                                                             ${ap.status == 1 ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}">
                                                         ${ap.status == 1 ? 'Đang hoạt động' : 'Không hoạt động'}
                                                     </button>
+
                                                 </form>
                                             </td>
-                                            
 
-
-                                            </td>
 
 
                                         </tr>
@@ -548,6 +547,11 @@
                 }
             });
 
+        </script>
+        <script>
+            function confirmUpdate(studentName) {
+                return confirm("Bạn có chắc chắn muốn cập nhật trạng thái của học sinh " + studentName + " không?");
+            }
         </script>
 
 

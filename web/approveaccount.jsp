@@ -324,7 +324,7 @@
 
                         <a href="listregister" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-user-check w-5"></i>
-                            <span>Phê duyệt tài khoản</span>
+                            <span>Tạo tài khoản</span>
                         </a>
                         <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-file w-5"></i>
@@ -400,6 +400,30 @@
                 <div id="main-content">
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Phê duyệt tài khoản</h1>
+                    <form action="filterregister" method="get" class="flex flex-wrap gap-3 items-center justify-center mb-6">
+                        <div>
+                            <label>Ngày từ:</label>
+                            <input type="text" name="fromDate" value="${fromDate}" class="border rounded px-2 py-1" placeholder="dd/MM/yyyy"/>
+                        </div>
+                        <div>
+                            <label>Đến:</label>
+                            <input type="text" name="toDate" value="${toDate}" class="border rounded px-2 py-1" placeholder="dd/MM/yyyy"/>
+                        </div>
+                        <div>
+                            <label>Trạng thái:</label>
+                            <select name="status" class="border rounded px-2 py-1">
+                                <option value="all" ${status == 'all' ? 'selected' : ''}>Tất cả</option>
+                                <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Chưa tạo</option>
+                                <option value="Accepted" ${status == 'Accepted' ? 'selected' : ''}>Đã tạo</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Khoá học quan tâm:</label>
+                            <input type="text" name="keyword" value="${keyword}" class="border rounded px-2 py-1" placeholder="Nhập từ khóa để tìm"/>
+                        </div>
+                        <button type="submit" class="bg-indigo-500 text-white px-4 py-1 rounded hover:bg-indigo-600 transition">Lọc</button>
+                    </form>
+
                     <c:choose>
                         <c:when test="${not empty listRegis}">
                             <table class="min-w-full border border-gray-300 text-center text-sm">
@@ -436,11 +460,11 @@
                                             <td class="py-2 px-4 border">${ap.idUserIntro}</td>
                                             <td class="py-2 px-4 border">
                                                 <c:choose>
-                                                    
+
                                                     <c:when test="${ap.approvalStatus eq 'Pending'}">
                                                         <form method="post" action="acceptregister">
                                                             <input type="hidden" name="regisID" value="${ap.regisID}" />
-                                                            
+
                                                             <button type="submit"
                                                                     class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
                                                                 Tạo tài khoản
@@ -448,12 +472,12 @@
                                                         </form>
                                                     </c:when>
 
-                                                   
+
                                                     <c:when test="${ap.approvalStatus eq 'Accepted'}">
-                                                        <span class="text-green-600 font-semibold">Đã duyệt</span>
+                                                        <span class="text-green-600 font-semibold">Đã tạo</span>
                                                     </c:when>
 
-                                                    
+
                                                     <c:otherwise>
                                                         <span class="text-gray-500 italic">${ap.approvalStatus}</span>
                                                     </c:otherwise>
