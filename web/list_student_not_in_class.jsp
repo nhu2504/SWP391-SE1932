@@ -143,22 +143,25 @@
 <button id="addSelectedBtn"
         onclick="showConfirmModal()"
         class="fixed bottom-6 right-6 bg-blue-600 text-white px-6 py-3 rounded shadow-lg hover:bg-blue-700 z-50">
-    Thêm học sinh (0) đã chọn 
+    Thêm (0) học sinh đã chọn 
 </button>
 
 <!-- Modal xác nhận -->
-<div id="confirmModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg w-full max-w-lg">
-        <h2 class="text-xl font-bold mb-4">Xác nhận thêm học sinh</h2>
-        <ul id="selectedStudentList" class="list-disc pl-5 mb-4 text-gray-700">
+<div id="confirmModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-white p-6 rounded-lg w-full max-w-xl max-h-[80vh] overflow-y-auto shadow-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Xác nhận thêm học sinh</h2>
+        
+        <ul id="selectedStudentList" class="list-disc pl-5 mb-4 text-gray-700 space-y-1">
             <!-- Danh sách học sinh sẽ được thêm ở đây -->
         </ul>
-        <div class="flex justify-end gap-2">
-            <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Hủy</button>
-            <button onclick="submitSelectedStudents()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Xác nhận thêm</button>
+        
+        <div class="flex justify-end gap-3 mt-4">
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition">Hủy</button>
+            <button onclick="submitSelectedStudents()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Xác nhận thêm</button>
         </div>
     </div>
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -231,7 +234,7 @@
             // Cập nhật nút thêm
             const addBtn = document.getElementById("addSelectedBtn");
             if (addBtn) {
-                addBtn.textContent = "Thêm học sinh (" + checkedBoxes.length + ") đã chọn";
+                addBtn.textContent = "Thêm (" + checkedBoxes.length + ") học sinh đã chọn";
             }
             console.log("Updated textContent:", countDisplay.textContent); // Debug
             setTimeout(() => {

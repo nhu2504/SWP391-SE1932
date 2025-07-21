@@ -19,11 +19,14 @@ public class TutoringClassDAO {
      */
     public List<TutoringClass> getClasses(Boolean isHot) {
         List<TutoringClass> classes = new ArrayList<>();
-        String sql = """
-            SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID,
-                   StartDate, EndDate, Tuitionfee, GradeID, isActive
-            FROM TutoringClass
-        """;
+        String sql = "SELECT * FROM TutoringClass ORDER BY CASE isActive "
+                + "WHEN 0 THEN 1 " +
+                // Sắp mở
+                "WHEN 1 THEN 2 "
+                + // Đang mở             
+                "WHEN 2 THEN 3 "
+                + // Đã đóng
+                "ELSE 3 END";
 
         if (isHot != null) {
             sql += " WHERE isHot = ?";
@@ -114,11 +117,11 @@ public class TutoringClassDAO {
 
         return null;
     }
-    
+
     // hàm tự động cập nhật khoá học từ sắp mở thành đang mở nếu đã đến ngày bắt đầu
     public void updateAutoActiveStatus() {
         System.out.println("Gọi updateAutoActiveStatus()");
-    String sql = """
+        String sql = """
         UPDATE TutoringClass
         SET isActive = CASE
             WHEN isActive = 0 AND StartDate <= CAST(GETDATE() AS DATE) THEN 1
@@ -130,17 +133,16 @@ public class TutoringClassDAO {
                  USE eduraFINALFINALFINAL;
                  SELECT * FROM TutoringClass WHERE isActive = 2
     """;
-    try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.executeUpdate();
-        System.out.println("DB URL: " + conn.getMetaData().getURL());
-    int affected = ps.executeUpdate();
-    System.out.println("Update TutoringClass: " + affected + " rows updated");
-    
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+            System.out.println("DB URL: " + conn.getMetaData().getURL());
+            int affected = ps.executeUpdate();
+            System.out.println("Update TutoringClass: " + affected + " rows updated");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public int addTutoringClass(TutoringClass cls) {
         String sql = """
@@ -196,16 +198,15 @@ public class TutoringClassDAO {
     }
 
     public void deleteTutoringClass(int id) {
-    String sql = "UPDATE TutoringClass SET isActive = 0 WHERE TutoringClassID = ?";
+        String sql = "UPDATE TutoringClass SET isActive = 0 WHERE TutoringClassID = ?";
 
-    try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, id);
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        System.out.println("Lỗi khi ẩn (xóa mềm) lớp học: " + e.getMessage());
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi ẩn (xóa mềm) lớp học: " + e.getMessage());
+        }
     }
-}
-
 
     public List<TutoringClass> searchTutoringClassByName(String keyword) {
         List<TutoringClass> classes = new ArrayList<>();

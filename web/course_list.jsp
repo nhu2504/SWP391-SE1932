@@ -48,7 +48,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full border-collapse bg-white rounded-lg shadow-sm">
+                <table class="w-full min-w-[1000px] border-collapse bg-white rounded-lg shadow-sm text-sm">
                     <thead>
                         <tr style="background-color: #FFF1F1; color: black;">
                             <th class="p-4 text-left w-24">Ảnh</th>
@@ -60,6 +60,7 @@
                             <th class="p-4 text-left w-28">Bắt Đầu</th>
                             <th class="p-4 text-left w-28">Kết Thúc</th>
                             <th class="p-4 text-left w-28">Giá (VND)</th>
+                            <th class="p-3 text-left">Trạng thái</th>
                             <th class="p-4 text-left w-24">Hành Động</th>
                         </tr>
                     </thead>
@@ -118,6 +119,22 @@
                                     <c:choose>
                                         <c:when test="${item.isHot}"> / 1 khoá</c:when>
                                         <c:otherwise> / 1 buổi</c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="p-3">
+                                    <c:choose>
+                                        <c:when test="${item.isActive == 0}">
+                                            <span class="text-yellow-600 font-medium">Sắp mở</span>
+                                        </c:when>
+                                        <c:when test="${item.isActive == 1}">
+                                            <span class="text-green-600 font-medium">Đang mở</span>
+                                        </c:when>
+                                        <c:when test="${item.isActive == 2}">
+                                            <span class="text-gray-500 font-medium">Đã đóng</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-red-600 font-medium">Không rõ</span>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td class="p-4">

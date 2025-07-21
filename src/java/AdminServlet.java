@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import com.google.gson.Gson;
+import java.time.ZoneId;
 
 @MultipartConfig
 @WebServlet("/admin")
@@ -269,7 +270,7 @@ public class AdminServlet extends HttpServlet {
                     if (courseIdRaw != null && !courseIdRaw.isEmpty()) {
                         try {
                             int courseId = Integer.parseInt(courseIdRaw);
-                            prepareClassManagementData(req, courseId); // ✅ dùng lại hàm
+                            prepareClassManagementData(req, courseId); //dùng lại hàm
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -489,15 +490,30 @@ public class AdminServlet extends HttpServlet {
                 tutoringClassDAO.updateTutoringClass(tc);
             } else if ("DELETE".equals(action) && idStr != null) {
                 tutoringClassDAO.deleteTutoringClass(Integer.parseInt(idStr));
-            } else if ("SEARCH".equals(action)) {
-                String name = req.getParameter("name");
-                List<TutoringClass> result = tutoringClassDAO.searchTutoringClassByName(name);
-                req.setAttribute("tab", "courseManagement");
-                req.setAttribute("data", result);
-                req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
-                return;
+
             } else if ("ADD_CLASSGROUP".equals(action)) {
                 int tutoringClassId = Integer.parseInt(req.getParameter("tutoringClassId"));
+
+                TutoringClass tutoringClass = tutoringClassDAO.getTutoringClassDetail(tutoringClassId);
+
+                if (tutoringClass.getIsActive() == 2) {
+                    req.getSession().setAttribute("successMessage", "❌ Khóa học đã bị khóa. Không thể thêm lớp học.");
+                    res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
+                    return;
+                }
+
+// Nếu là khóa học nổi bật và đã được tạo hơn 1 tháng trước thì không cho thêm lớp
+                if (tutoringClass.isIsHot()) {
+                    Date date = tutoringClass.getStartDate(); // java.util.Date
+                    LocalDate startDate = ((java.sql.Date) date).toLocalDate();
+ // chuyển sang localdate
+                    if (startDate.plusMonths(1).isBefore(LocalDate.now())) {
+                        req.getSession().setAttribute("successMessage", "❌ Khóa học nổi bật đã mở hơn 1 tháng. Không thể thêm lớp học mới.");
+                        res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
+                        return;
+                    }
+                }
+
                 int teacherId = Integer.parseInt(req.getParameter("teacherId"));
                 ClassGroup group = new ClassGroup();
 
