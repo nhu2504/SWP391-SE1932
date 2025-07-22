@@ -747,7 +747,7 @@
                         <!-- ĐỔI MẬT KHẨU -->
                         <div class="section">
                             <h2>Thay đổi mật khẩu:</h2>
-                            <form action="changePassword" method="post">
+                            <form action="ChangePassStudent" method="post">
                                 <label>Mật Khẩu Cũ:</label>
                                 <input type="password" name="oldPassword">
 

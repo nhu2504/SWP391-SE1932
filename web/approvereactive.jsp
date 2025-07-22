@@ -400,7 +400,7 @@
                 <div id="main-content">
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Duyệt mở lại tài khoản</h1>
-                    
+
 
                     <c:choose>
                         <c:when test="${not empty listRequest}">
@@ -430,29 +430,21 @@
                                             <td class="py-2 px-4 border">${ap.dayRequest}</td>
                                             <td class="py-2 px-4 border">
                                                 <c:choose>
-
                                                     <c:when test="${ap.status eq 'Pending'}">
-                                                        <form method="post" action="acceptregister">
-                                                            <input type="hidden" name="regisID" value="${ap.regisID}" />
-
-                                                            <button type="submit"
-                                                                    class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
-                                                                Tạo tài khoản
-                                                            </button>
+                                                        <form action="approvereactive" method="post" onsubmit="return confirmApproval();">
+                                                            <input type="hidden" name="requestId" value="${ap.raId}" />
+                                                            <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
                                                         </form>
                                                     </c:when>
-
-
                                                     <c:when test="${ap.status eq 'Accepted'}">
-                                                        <span class="text-green-600 font-semibold">Đã tạo</span>
+                                                        <span style="color: green; font-weight: 600;">Đã duyệt</span>
                                                     </c:when>
-
-
                                                     <c:otherwise>
-                                                        <span class="text-gray-500 italic">${ap.status}</span>
+                                                        <span>${ap.status}</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
+
 
 
                                         </tr>
@@ -553,6 +545,11 @@
             });
 
         </script>
+        <script>
+    function confirmApproval() {
+        return confirm("Bạn có chắc chắn muốn phê duyệt yêu cầu này không?");
+    }
+</script>
 
 
 

@@ -3,31 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll_teacher;
+package controll;
 
-import dal.ScheduleDAO;
-import dal.ShiftLearnDAO;
-import entity.ScheduleJoin;
-import entity.Shift;
+import dal.RequestActiveDAO;
+import dal.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 /**
  *
  * @author NGOC ANH
  */
-public class ScheduleServlet extends HttpServlet {
+@WebServlet(name="ApproveReactive", urlPatterns={"/approvereactive"})
+public class ApproveReactive extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,10 +39,10 @@ public class ScheduleServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ScheduleServlet</title>");  
+            out.println("<title>Servlet ApproveReactive</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ScheduleServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ApproveReactive at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,34 +59,8 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Get session without creating a new one
-        if (session == null || session.getAttribute("userId") == null) {
-            // No session or userId, redirect to login page
-            response.sendRedirect("login_register.jsp");
-            return;
-        }
-
-        int userId = Integer.parseInt(session.getAttribute("userId").toString());
-        
-        ScheduleDAO dao = new ScheduleDAO();
-        ScheduleJoin nextSchedule = null;
-        try {
-            nextSchedule = dao.getNextScheduleByTeacher(userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Optionally, set an error attribute or redirect to an error page
-        }
-
-        // Set the nextSchedule in session scope for EL access
-        session.setAttribute("nextSchedule", nextSchedule);
-        request.getRequestDispatcher("teacherdashboard.jsp").forward(request, response);
-
-      
-      
-
-    }
-    
-    
+        processRequest(request, response);
+    } 
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -103,7 +72,28 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            response.sendRedirect("login_register.jsp");
+            return;
+        }
+        int userId = sessionUser.getId();
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserByID(userId);
+        if (user == null) {
+            request.setAttribute("error", "Không tìm thấy thông tin người dùng");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+            return;
+        }
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+
+        // Gọi DAO cập nhật trạng thái
+        RequestActiveDAO dao = new RequestActiveDAO();
+        dao.approveRequest(requestId);
+
+        // Chuyển hướng lại trang sau khi xử lý
+        response.sendRedirect("ListRequestActive");
     }
 
     /** 

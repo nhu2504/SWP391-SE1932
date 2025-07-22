@@ -78,7 +78,7 @@ public class ListRequestActive extends HttpServlet {
         RequestActiveDAO dao = new RequestActiveDAO();
         List<RequestActive> listRequest = dao.getListRequest();
         request.setAttribute("listRequest", listRequest);
-        request.getRequestDispatcher("approveaccount.jsp").forward(request, response);
+        request.getRequestDispatcher("approvereactive.jsp").forward(request, response);
     } 
 
     /** 

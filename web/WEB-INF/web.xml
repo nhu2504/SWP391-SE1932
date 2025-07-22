@@ -21,8 +21,102 @@
         <servlet-class>ShiftServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TeacherScheduleServlet</servlet-name>
-        <servlet-class>TeacherScheduleServlet</servlet-class>
+        <servlet-name>DashboardAttendServlet</servlet-name>
+        <servlet-class>controll_teacher.DashboardAttendServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>controll_teacher.UploadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ForgotPasswordServlet</servlet-name>
+        <servlet-class>controll.ForgotPasswordServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPass</servlet-name>
+        <servlet-class>controll.ResetPass</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCenterInfoServlet</servlet-name>
+        <servlet-class>UpdateCenterInforServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>UserProfile.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadProfileServlet</servlet-name>
+        <servlet-class>UserProfile.UploadProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShowScheduleServlet</servlet-name>
+        <servlet-class>controll_teacher.ShowScheduleServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetClassListServlet</servlet-name>
+        <servlet-class>controll_teacher.GetClassListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetListSubGrade</servlet-name>
+        <servlet-class>controll.GetListSubGrade</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ImagesLoaderServlet</servlet-name>
+        <servlet-class>controll.ImagesLoaderServlett</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetClassBySchoolServlet</servlet-name>
+        <servlet-class>controll_teacher.GetClassBySchoolServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetStudentListServlet</servlet-name>
+        <servlet-class>controll_teacher.GetStudentListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TakeAttendStudentServlet</servlet-name>
+        <servlet-class>controll_teacher.TakeAttendStudentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SubmitAttend</servlet-name>
+        <servlet-class>controll_teacher.SubmitAttend</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ChangePassServlet</servlet-name>
+        <servlet-class>UserProfile.ChangePassServlet</servlet-class>
+    </servlet>
+
+
+    <servlet>
+        <servlet-name>StudentProfileServlet</servlet-name>
+        <servlet-class>UserProfile.StudentProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StudentUpdateProfileServlet</servlet-name>
+        <servlet-class>UserProfile.StudentUpdateProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetClassesBySchool</servlet-name>
+        <servlet-class>UserProfile.GetClassesBySchool</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FileLoaderServlet</servlet-name>
+        <servlet-class>controll.FileLoaderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminProfileServlet</servlet-name>
+        <servlet-class>UserProfile.AdminProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminUpdateProfileServlet</servlet-name>
+        <servlet-class>UserProfile.AdminUpdateProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateNotificationServlet</servlet-name>
+        <servlet-class>controll.CreateNotificationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>AdminServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
@@ -56,15 +150,107 @@
         <servlet-name>ShiftServlet</servlet-name>
         <url-pattern>/shiftservlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetStudentListServlet</servlet-name>
+        <url-pattern>/getstudentlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TakeAttendStudentServlet</servlet-name>
+        <url-pattern>/takeattendancestudent</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SubmitAttend</servlet-name>
+        <url-pattern>/submitattend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangePassServlet</servlet-name>
+        <url-pattern>/changePassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StudentProfileServlet</servlet-name>
+        <url-pattern>/studentprofile</url-pattern>
+    </servlet-mapping>
+    <!--    <servlet-mapping>
+        <servlet-name>StudentUpdateProfileServlet</servlet-name>
+        <url-pattern>/studentupdateprofile</url-pattern>
+    </servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>GetClassesBySchool</servlet-name>
+        <url-pattern>/GetClassesBySchool</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileLoaderServlet</servlet-name>
+        <url-pattern>/fileloader</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminProfileServlet</servlet-name>
+        <url-pattern>/adminprofile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUpdateProfileServlet</servlet-name>
+        <url-pattern>/adminupdateprofile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateNotificationServlet</servlet-name>
+        <url-pattern>/createnotification</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
+
     <servlet-mapping>
-        <servlet-name>TeacherScheduleServlet</servlet-name>
-        <url-pattern>/teacherscheduleservlet</url-pattern>
+        <servlet-name>DashboardAttendServlet</servlet-name>
+        <url-pattern>/dashboardattendservlet</url-pattern>
     </servlet-mapping>
-    <session-config>
-        <session-timeout>60</session-timeout>
-        <!-- timeout 60 phút -->
-    </session-config>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordServlet</servlet-name>
+        <url-pattern>/forgotpassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPass</servlet-name>
+        <url-pattern>/resetpass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCenterInfoServlet</servlet-name>
+        <url-pattern>/UpdateCenterInfoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/profileservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadProfileServlet</servlet-name>
+        <url-pattern>/uploadprofile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShowScheduleServlet</servlet-name>
+        <url-pattern>/showschedule</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetClassListServlet</servlet-name>
+        <url-pattern>/getclasslist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetListSubGrade</servlet-name>
+        <url-pattern>/getlistsubgrade</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ImagesLoaderServlet</servlet-name>
+        <url-pattern>/imagesloaderservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetClassBySchoolServlet</servlet-name>
+        <url-pattern>/getclassbyschool</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
 </web-app>

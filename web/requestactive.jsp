@@ -683,6 +683,9 @@
                     Yêu cầu của bạn sẽ được phê duyệt trong khoảng thời gian 
                     muộn nhất là 24h. Vui lòng đăng nhập lại sau khoảng thời gian này.
                 </div>
+                <c:if test="${not empty mess}">
+                    <div >${mess} </div>
+                </c:if>
                 <button type="submit" class="forgot-submit-btn">Gửi yêu cầu</button>
             </form>
 
@@ -767,7 +770,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <c:if test="${not empty message}">
             <script>
-        alert("${message}");
+                alert("${message}");
             </script>
         </c:if>
 

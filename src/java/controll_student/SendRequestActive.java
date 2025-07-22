@@ -5,6 +5,8 @@
 package controll_student;
 
 import dal.RequestActiveDAO;
+import dal.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -74,8 +76,16 @@ public class SendRequestActive extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        UserDAO dao = new UserDAO();
+        String email = request.getParameter("email");
+        User u = dao.getUserByEmail(email);
+        if (u == null) {
+            request.setAttribute("mess", "Email không tồn tại");
+            request.getRequestDispatcher("requestactive.jsp").forward(request, response);
+            return;
+        }
         String name = "";
-    String email = "";
+    String email1 = "";
     String birthStr = "";
     String school = "";
     String classAtSchool = "";
@@ -83,16 +93,16 @@ public class SendRequestActive extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
 
             name = request.getParameter("name");
-            email = request.getParameter("email");
+            email1 = request.getParameter("email");
             birthStr = request.getParameter("birth");
             school = request.getParameter("school");
             classAtSchool = request.getParameter("classAtSchool");
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date birth = sdf.parse(birthStr);
 
-            RequestActiveDAO dao = new RequestActiveDAO();
-            boolean success = dao.insertRequest(name, email, birth, school, classAtSchool);
+            RequestActiveDAO ra = new RequestActiveDAO();
+            boolean success = ra.insertRequest(name, email1, birth, school, classAtSchool);
 
             if (success) {
                 request.setAttribute("message", "Gửi yêu cầu thành công!");

@@ -79,6 +79,17 @@ public class RequestActiveDAO {
 
         return list; // Trả về danh sách phòng học
     }
+    public void approveRequest(int requestId) {
+    String sql = "UPDATE RequestActive SET stt = 'Accepted' WHERE raID = ?";
+    try (Connection conn = new DBContext().connection; // Mở kết nối đến DB
+         PreparedStatement ps = conn.prepareStatement(sql);) {
+        ps.setInt(1, requestId);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
     public static void main(String[] args) {
         RequestActiveDAO dao = new RequestActiveDAO();
         List<RequestActive> list = dao.getListRequest();
