@@ -17,6 +17,8 @@ public class RequestActive {
     private Date birth;
     private String school;
     private String classAtSchool;
+    private String status;
+    private Date dayRequest;
 
     public RequestActive() {
     }
@@ -37,6 +39,34 @@ public class RequestActive {
         this.school = school;
         this.classAtSchool = classAtSchool;
     }
+
+    public RequestActive(int raId, String name, String email, Date birth, String school, String classAtSchool, String status, Date dayRequest) {
+        this.raId = raId;
+        this.name = name;
+        this.email = email;
+        this.birth = birth;
+        this.school = school;
+        this.classAtSchool = classAtSchool;
+        this.status = status;
+        this.dayRequest = dayRequest;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getDayRequest() {
+        return dayRequest;
+    }
+
+    public void setDayRequest(Date dayRequest) {
+        this.dayRequest = dayRequest;
+    }
+    
     
 
     public int getRaId() {

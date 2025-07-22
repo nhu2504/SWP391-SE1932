@@ -1,7 +1,12 @@
+<%-- 
+    Document   : approvereactive
+    Created on : Jul 22, 2025, 1:48:39 PM
+    Author     : NGOC ANH
+--%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!-- Văn Thị Như - HE181329 
-Ngày update 3/7/2025-->
+
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -393,29 +398,80 @@ Ngày update 3/7/2025-->
 
                 <!-- Main content area -->
                 <div id="main-content">
+
+                    <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Duyệt mở lại tài khoản</h1>
+                    
+
                     <c:choose>
-                        <c:when test="${tab eq 'setting'}">
-                            <jsp:include page="setting.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'todaySchedule'}">
-                            <jsp:include page="schedule_today.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'teacherSchedule'}">
-                            <jsp:include page="schedule_teacher.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'scheduleClass'}">
-                            <jsp:include page="schedule_class.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'paymentReport'}">
-                            <jsp:include page="payment_student.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'courseManagement'}">
-                            <jsp:include page="manager_tutoringClass.jsp" />
+                        <c:when test="${not empty listRequest}">
+                            <table class="min-w-full border border-gray-300 text-center text-sm">
+                                <thead class="bg-red-100 text-gray-700 font-semibold">
+                                    <tr>
+                                        <th class="py-2 px-4 border">STT</th>
+                                        <th class="py-2 px-4 border">Tên học sinh</th>
+                                        <th class="py-2 px-4 border">Email</th>
+                                        <th class="py-2 px-4 border">Ngày sinh</th>
+                                        <th class="py-2 px-4 border">Trường</th>
+                                        <th class="py-2 px-4 border">Lớp</th>
+                                        <th class="py-2 px-4 border">Ngày gửi yêu cầu</th>
+                                        <th class="py-2 px-4 border">Trạng thái</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white text-gray-800">
+                                    <c:forEach var="ap" items="${listRequest}" varStatus="loop">
+                                        <tr class="hover:bg-gray-100">
+                                            <td class="py-2 px-4 border">${loop.index + 1}</td>
+                                            <td class="py-2 px-4 border">${ap.name}</td>
+                                            <td class="py-2 px-4 border">${ap.email}</td>
+                                            <td class="py-2 px-4 border">${ap.birth}</td>
+                                            <td class="py-2 px-4 border">${ap.school}</td>
+                                            <td class="py-2 px-4 border">${ap.classAtSchool}</td>
+                                            <td class="py-2 px-4 border">${ap.dayRequest}</td>
+                                            <td class="py-2 px-4 border">
+                                                <c:choose>
+
+                                                    <c:when test="${ap.status eq 'Pending'}">
+                                                        <form method="post" action="acceptregister">
+                                                            <input type="hidden" name="regisID" value="${ap.regisID}" />
+
+                                                            <button type="submit"
+                                                                    class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+                                                                Tạo tài khoản
+                                                            </button>
+                                                        </form>
+                                                    </c:when>
+
+
+                                                    <c:when test="${ap.status eq 'Accepted'}">
+                                                        <span class="text-green-600 font-semibold">Đã tạo</span>
+                                                    </c:when>
+
+
+                                                    <c:otherwise>
+                                                        <span class="text-gray-500 italic">${ap.status}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+
+
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+
                         </c:when>
                         <c:otherwise>
-                            <jsp:include page="overview.jsp" />
+                            <div class="alert alert-warning text-center" role="alert">
+                                Không còn đơn nào.
+                            </div>
                         </c:otherwise>
                     </c:choose>
+
+
+
+
+
                 </div>
             </div>
         </div>
@@ -497,6 +553,8 @@ Ngày update 3/7/2025-->
             });
 
         </script>
+
+
 
     </body>
 </html>

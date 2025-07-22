@@ -326,9 +326,9 @@
                             <i class="fas fa-user-check w-5"></i>
                             <span>Tạo tài khoản</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="approvereactive.jsp" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-file w-5"></i>
-                            <span>Phê duyệt đơn</span>
+                            <span>Duyệt mở lại tài khoản</span>
                         </a>
 
                         <!-- Cài đặt hệ thống -->

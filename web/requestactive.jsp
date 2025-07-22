@@ -670,15 +670,15 @@
             <h2 class="forgot-title">Yêu cầu mở lại tài khoản đã dừng hoạt động</h2>
             <form action="sendrequestactive" method="post">
                 <label class="forgot-label">Nhập họ và tên:</label>
-                <input type="text" name="name" class="forgot-input" required />
+                <input type="text" name="name" class="forgot-input" value="${name}" required />
                 <label class="forgot-label">Nhập email:</label>
-                <input type="text" name="email" class="forgot-input" required />
+                <input type="text" name="email" class="forgot-input" value="${email}" required />
                 <label class="forgot-label">Nhập ngày sinh:</label>
-                <input type="date" name="birth" class="forgot-input" required />
+                <input type="date" name="birth" class="forgot-input" value="${birth}" required />
                 <label class="forgot-label">Nhập trường:</label>
-                <input type="text" name="school" class="forgot-input" required />
+                <input type="text" name="school" class="forgot-input" value="${school}"  required />
                 <label class="forgot-label">Nhập lớp:</label>
-                <input type="text" name="classAtSchool" class="forgot-input" required />
+                <input type="text" name="classAtSchool" class="forgot-input" value="${classAtSchool}" required />
                 <div class="forgot-desc">
                     Yêu cầu của bạn sẽ được phê duyệt trong khoảng thời gian 
                     muộn nhất là 24h. Vui lòng đăng nhập lại sau khoảng thời gian này.
