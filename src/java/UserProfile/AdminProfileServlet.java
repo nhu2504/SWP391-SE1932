@@ -6,11 +6,7 @@
 package UserProfile;
 
 import dal.RoleDAO;
-import dal.SchoolClassDAO;
-import dal.SchoolDAO;
 import dal.UserDAO;
-import entity.School;
-import entity.SchoolClass;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,10 +15,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 /**
  *
@@ -73,7 +67,7 @@ public class AdminProfileServlet extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(userId);
+        User user = userDAO.getUserById(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);

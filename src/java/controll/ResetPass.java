@@ -107,7 +107,7 @@ public class ResetPass extends HttpServlet {
 
         // Lấy user và cập nhật mật khẩu
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(tfp.getUserId());
+        User user = userDAO.getUserById(tfp.getUserId());
         if (user == null) {
             request.setAttribute("errorMessage", "Người dùng không tồn tại!");
             request.getRequestDispatcher("resetPass.jsp").forward(request, response);

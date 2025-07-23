@@ -106,7 +106,7 @@ public class RegisterDAO {
     }
 
     public boolean approveUserByProcedure(int regisID) {
-        String sql = "{call sp_ApprovePendingUser(?)}";
+        String sql = "{call sp_CreateAccount(?)}";
         try (Connection conn = new DBContext().connection; CallableStatement cs = conn.prepareCall(sql)) {
             cs.setInt(1, regisID);
             cs.execute();

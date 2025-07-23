@@ -19,10 +19,7 @@ CREATE TABLE Grade(
 	GradeID INT PRIMARY KEY IDENTITY,
 	GradeName NVARCHAR(10) not null
 )
-select * from Document
-select * from [user]
-select * from TeacherClass where userID = 2
-select * from TeacherSubjects where userID = 2
+
 -- 4. Lớp học trong trường (SchoolClass)
 CREATE TABLE SchoolClass (
     SchoolClassID INT PRIMARY KEY IDENTITY,
@@ -41,27 +38,25 @@ CREATE TABLE [User] (
     phone NVARCHAR(20),
     email NVARCHAR(50),
     pass NVARCHAR(50),
-	avatar NVARCHAR(50),    
+	avatar NVARCHAR(255),    
 	onlineStatus BIT DEFAULT 1,
 	created_at DATETIME DEFAULT GETDATE(),
 	Certi nvarchar(250),
 	Descrip nvarchar(500),
     SchoolID INT NULL,
-    SchoolClassID INT NULL,
 	roleID int not null,
 	isHot bit null,
 	ParentEmail nvarchar(50),
 	ParentPhone nvarchar(11),	  
     FOREIGN KEY (SchoolID) REFERENCES School(SchoolID),
-    FOREIGN KEY (SchoolClassID) REFERENCES SchoolClass(SchoolClassID),
 	FOREIGN KEY (roleID) REFERENCES roles(roleID)
 );
-ALTER TABLE [User] DROP CONSTRAINT FK__User__SchoolClas__440B1D61;
-ALTER TABLE [User]
-ALTER COLUMN avatar NVARCHAR(255);
+alter table [user]
+add SchoolClassID int null
+alter table [user]
+add constraint FK_Students_Classes 
+FOREIGN KEY (SchoolClassID) REFERENCES SchoolClass(SchoolClassID);
 
-
-ALTER TABLE [User] DROP COLUMN SchoolClassID;
 CREATE TABLE TeacherClass (
     UserID INT NOT NULL,
     SchoolClassID INT NOT NULL,
@@ -78,9 +73,6 @@ CREATE TABLE TokenForgetPassword(
 	userID int not null,
 	FOREIGN KEY (userID) REFERENCES [User](UserID),
 );
-ALTER TABLE TokenForgetPassword DROP COLUMN expTime;
-ALTER TABLE TokenForgetPassword ADD expTime DATETIME DEFAULT GETDATE();
-
 
 -- 6. Môn học (Subject)(Toán,Văn,Anh,Sử,Địa,Lí,Hóa,Sinh)
 CREATE TABLE Subjects (
@@ -104,8 +96,6 @@ CREATE TABLE Shiftlearn(
 	End_time time not null
 );
 
-select *from Schedule where userID = 3 and datelearn = '2025-06-25'
-select*from TutoringRegistrationPending
 --8.Room
 CREATE TABLE Room (
     id INT PRIMARY KEY IDENTITY,
@@ -123,9 +113,11 @@ CREATE TABLE TutoringClass (
     EndDate DATE,
 	Tuitionfee money,
 	GradeID INT,
+	isActive int default 0
     FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID),
 	FOREIGN KEY (GradeID) REFERENCES Grade(GradeID)
 );
+
 --10.Lớp học của các khóa học
 CREATE TABLE ClassGroup (
     ClassGroupID INT PRIMARY KEY IDENTITY,
@@ -133,6 +125,8 @@ CREATE TABLE ClassGroup (
     ClassGroupName NVARCHAR(100), 
     MaxStudent INT DEFAULT 30 CHECK (MaxStudent BETWEEN 1 AND 30),
     TeacherID INT,
+	isActive int default 0,
+	createAt datetime default getdate()
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID),
     FOREIGN KEY (TeacherID) REFERENCES [User](UserID)
 );
@@ -170,23 +164,18 @@ CREATE TABLE Document (
     UploadDate DATETIME DEFAULT GETDATE(),           
 	SubjectID INT,
 	GradeID INT,
+	PDFPath NVARCHAR(255),
+	ClassifyID INT,
     FOREIGN KEY (UploadedBy) REFERENCES [User](UserID),
 	FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID),
-	FOREIGN KEY (GradeID) REFERENCES Grade(GradeID)
+	FOREIGN KEY (GradeID) REFERENCES Grade(GradeID),
+	FOREIGN KEY (ClassifyID) REFERENCES Classify(ClassifyID)
 );
-ALTER TABLE Document
-ADD ClassifyID INT;
-
-ALTER TABLE Document
-ADD CONSTRAINT FK_Document_Classify
-FOREIGN KEY (ClassifyID) REFERENCES Classify(ClassifyID);
 
 create table Classify(
 	ClassifyID INT PRIMARY KEY IDENTITY,
 	TypeDoc nvarchar(255)
 );
-alter table Document
-add PDFPath NVARCHAR(255)
 
 -- 14. Thông báo (Notification)
 CREATE TABLE Notifications (
@@ -195,12 +184,12 @@ CREATE TABLE Notifications (
     Content NVARCHAR(MAX),
     CreatedAt DATETIME DEFAULT GETDATE(),
     TargetRole int, 
-	CreatedBy int
+	CreatedBy int,
+	isImportant bit,
+	isRead bit default 0
 	FOREIGN KEY (CreatedBy) REFERENCES [User](UserID),
 	FOREIGN KEY (TargetRole) REFERENCES roles(roleID)
 );
-alter table Notifications add isRead bit default 0;
-alter table Notifications add isImportant bit ;
 
 -- 15. Thanh toán (Payment)
 CREATE TABLE Payment (
@@ -209,10 +198,10 @@ CREATE TABLE Payment (
     TutoringClassID INT,
     Amount MONEY,
     PaymentDate DATE DEFAULT GETDATE(),
+	isPaid bit default 0
     FOREIGN KEY (UserID) REFERENCES [User](UserID),
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
-alter table Payment add isPaid bit default 0;
 
 --16. setting
 
@@ -244,8 +233,7 @@ create table banner(
 	CenterID INT,
 	FOREIGN KEY (CenterID) REFERENCES CenterInfo(CenterID)
 );
-select * from TutoringRegistrationPending
-select * from [user]
+
 --18.Đăng ký dành cho người chưa có tài khoản
 CREATE TABLE TutoringRegistrationPending (
     RegistrationPendingID INT PRIMARY KEY IDENTITY,
@@ -261,19 +249,12 @@ CREATE TABLE TutoringRegistrationPending (
     Class NVARCHAR(50),
     ParentPhone NVARCHAR(20),
     ParentEmail NVARCHAR(255),
-	
+	UserIntro INT NULL,
 	Confirmed BIT DEFAULT 0,
-	
+	InterestCourses nvarchar(255)
+	FOREIGN KEY (UserIntro) REFERENCES [User](UserID)
 );
--- Bước 1: Cho phép NULL
-ALTER TABLE TutoringRegistrationPending
-ALTER COLUMN UserIntro INT NULL;
 
--- Bước 2: Thêm FOREIGN KEY nếu chưa có
-ALTER TABLE TutoringRegistrationPending
-ADD CONSTRAINT FK_UserIntro FOREIGN KEY (UserIntro) REFERENCES [User](UserID);
-alter table TutoringRegistrationPending
-add InterestCourses nvarchar(255)
 
 --19.Bảng lịch học và lịch dạy
 CREATE TABLE Schedule (
@@ -323,27 +304,4 @@ CREATE TABLE TutoringRegistration (
     FOREIGN KEY (UserID) REFERENCES [User](UserID),
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
-select * from school
-select * from SchoolClass
-update [user]
-set avatar= '/WebApplication3/image-loader/team-5.jpg'
-where UserID = 6
-select * from teacherclass
-select * from [user]
-update [user]
-set SchoolID = 7
-where UserID in (5,11,15,18,21)
-update school set schoolname = N'Hà Thành' where schoolid = 1
-update school set schoolname = N'Xuân Đỉnh' where schoolid = 2
-update school set schoolname = N'Minh Khai' where schoolid = 3
-update school set schoolname = N'Thượng Cát' where schoolid = 4
-update school set schoolname = N'Tây Đô' where schoolid = 5
 
-SELECT * 
-FROM TutoringRegistrationPending
-ORDER BY 
-    CASE 
-        WHEN ApprovalStatus = 'Pending' THEN 0 
-        ELSE 1 
-    END,
-    RegisterDate ASC;

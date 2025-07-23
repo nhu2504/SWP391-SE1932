@@ -86,14 +86,7 @@
     </servlet>
 
 
-    <servlet>
-        <servlet-name>StudentProfileServlet</servlet-name>
-        <servlet-class>UserProfile.StudentProfileServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>StudentUpdateProfileServlet</servlet-name>
-        <servlet-class>UserProfile.StudentUpdateProfileServlet</servlet-class>
-    </servlet>
+    
     <servlet>
         <servlet-name>GetClassesBySchool</servlet-name>
         <servlet-class>UserProfile.GetClassesBySchool</servlet-class>
@@ -166,14 +159,7 @@
         <servlet-name>ChangePassServlet</servlet-name>
         <url-pattern>/changePassword</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StudentProfileServlet</servlet-name>
-        <url-pattern>/studentprofile</url-pattern>
-    </servlet-mapping>
-    <!--    <servlet-mapping>
-        <servlet-name>StudentUpdateProfileServlet</servlet-name>
-        <url-pattern>/studentupdateprofile</url-pattern>
-    </servlet-mapping>-->
+    
     <servlet-mapping>
         <servlet-name>GetClassesBySchool</servlet-name>
         <url-pattern>/GetClassesBySchool</url-pattern>

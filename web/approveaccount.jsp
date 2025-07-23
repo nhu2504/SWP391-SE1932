@@ -228,6 +228,20 @@
         </style>
     </head>
     <body class="bg-gray-50">
+        <c:if test="${not empty sessionScope.SuccessMessage}">
+    <script>
+        alert('${sessionScope.SuccessMessage}');
+    </script>
+    <c:remove var="SuccessMessage" scope="session"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.FailMessage}">
+    <script>
+        alert('${sessionScope.FailMessage}');
+    </script>
+    <c:remove var="FailMessage" scope="session"/>
+</c:if>
+
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
@@ -462,7 +476,7 @@
                                                 <c:choose>
 
                                                     <c:when test="${ap.approvalStatus eq 'Pending'}">
-                                                        <form method="post" action="acceptregister">
+                                                        <form method="post" action="acceptregister" onsubmit="return confirmCreate('${ap.fullName}')">
                                                             <input type="hidden" name="regisID" value="${ap.regisID}" />
 
                                                             <button type="submit"
@@ -583,7 +597,12 @@
             });
 
         </script>
-
+        <script>
+            function confirmCreate(name) {
+                return confirm("Bạn có chắc chắn muốn tạo tài khoản cho: " + name + " không?");
+            }
+        </script>
+        
 
 
     </body>

@@ -84,7 +84,7 @@ public class AcceptRegister extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(userId);
+        User user = userDAO.getUserById(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -108,8 +108,10 @@ public class AcceptRegister extends HttpServlet {
             if(!mail){
                 System.out.println("Gửi mail thất bại cho: "+newUser.getEmail());
             }
+            session.setAttribute("SuccessMessage", "Tạo tài khoản thành công");
         }else{
             System.out.println("Duyệt thất bại");
+            session.setAttribute("FailMessage", "Tạo tài khoản thất bại");
         }
 
         response.sendRedirect("listregister"); // quay lại trang danh sách

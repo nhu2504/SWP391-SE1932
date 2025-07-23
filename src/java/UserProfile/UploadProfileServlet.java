@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import java.util.List;
 @MultipartConfig
 public class UploadProfileServlet extends HttpServlet {
 
-    private UserDAO userDao = new UserDAO();
+    
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -129,7 +128,7 @@ public class UploadProfileServlet extends HttpServlet {
 
         if (part != null && part.getSize() > 0) {
             // Xóa ảnh cũ nếu có
-            String oldAvatarPath = userDao.getUserByID(userId).getAvatar(); 
+            String oldAvatarPath = userDao.getUserById(userId).getAvatar(); 
             if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
                 String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
                 File oldFile = new File(uploadDir, oldFileName);
@@ -150,7 +149,7 @@ public class UploadProfileServlet extends HttpServlet {
             avatarPath = request.getContextPath() + "/image-loader/" + randomFileName;
         } else {
             // Không upload ảnh mới → giữ nguyên ảnh cũ
-            avatarPath = userDao.getUserByID(userId).getAvatar();
+            avatarPath = userDao.getUserById(userId).getAvatar();
         }
 
         boolean ok1 = userDao.updateUser(userId, email, phone, avatarPath, certi, description, schoolId);
@@ -162,7 +161,7 @@ public class UploadProfileServlet extends HttpServlet {
         boolean ok3 = subjectDao.updateSubjectOfTeacherDAO(userId, subjectIds);
 
         if (ok1 && ok2 && ok3) {
-            User updatedUser = userDao.getUserByID(userId);
+            User updatedUser = userDao.getUserById(userId);
            
             request.getSession().setAttribute("user", updatedUser);
             session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");

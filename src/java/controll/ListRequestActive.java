@@ -69,7 +69,7 @@ public class ListRequestActive extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(userId);
+        User user = userDAO.getUserById(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);

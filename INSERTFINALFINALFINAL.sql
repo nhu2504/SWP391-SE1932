@@ -19,7 +19,7 @@ insert into School(SchoolName,AddressSchool)
 values
 (N'Tự Do',N'Tự Do');
 
-select * from School 
+select * from Schoolclass
 --3.Khối lớp 
 insert into Grade(GradeName)
 values
@@ -59,7 +59,8 @@ values
 (N'Lớp 12A',4,3),
 (N'Lớp 12B',4,3),
 (N'Lớp 12A',5,3),
-(N'Lớp 12B',5,3);;
+(N'Lớp 12B',5,3);
+
 insert into TeacherClass(UserID,SchoolClassID)
 values
 (2,1),
@@ -233,6 +234,17 @@ VALUES
     NULL, NULL,null
 )
 ;
+select * from [user]
+select * from school
+
+
+
+INSERT INTO [User] (
+    FullName, Gender, BirthDate, phone, email, pass, avatar,
+    Certi, Descrip, SchoolID, roleID, ParentEmail, ParentPhone,isHot,SchoolClassID
+)
+values
+
 
 -- 6. Môn học (Subject)(Toán,Văn,Anh,Sử,Địa,Lí,Hóa,Sinh)
 insert into Subjects(SubjectName,ImageSubject)

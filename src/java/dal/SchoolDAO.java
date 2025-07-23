@@ -37,6 +37,7 @@ public class SchoolDAO {
         }
         return schools;
     }
+    
 
     /**
      *  Lấy thông tin chi tiết một trường theo ID
@@ -108,4 +109,28 @@ public class SchoolDAO {
         }
         return 0;
     }
+    public School getSchoolByUserId(int userId) {
+    School school = null;
+    String sql = "SELECT s.SchoolName " +
+                 "FROM [User] u " +
+                 "JOIN School s ON u.SchoolID = s.SchoolID " +
+                 "WHERE u.UserID = ?";
+
+    try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            school = new School();
+            
+            school.setName(rs.getString("SchoolName"));
+            
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return school;
+}
+
 }

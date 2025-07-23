@@ -5,26 +5,25 @@
 
 package UserProfile;
 
+
 import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
-import java.io.File;
 
 
 /**
  *
  * @author NGOC ANH
  */
-@MultipartConfig
-public class AdminUpdateProfileServlet extends HttpServlet {
+@WebServlet(name="ChangePassStudent", urlPatterns={"/ChangePassStudent"})
+public class ChangePassStudent extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +40,10 @@ public class AdminUpdateProfileServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AdminUpdateProfileServlet</title>");  
+            out.println("<title>Servlet ChangePassStudent</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AdminUpdateProfileServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ChangePassStudent at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,7 +60,8 @@ public class AdminUpdateProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        
+        request.getRequestDispatcher("studentprofile.jsp").forward(request, response);
     } 
 
     /** 
@@ -73,81 +73,47 @@ public class AdminUpdateProfileServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
+         String oldPassword = request.getParameter("oldPassword");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
         HttpSession session = request.getSession(false);
+
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login");
             return;
         }
 
         User user = (User) session.getAttribute("user");
-        int userId = user.getId();
+        UserDAO userDAO = new UserDAO();
 
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        
-        
-        String description = request.getParameter("description");
-
-        
-        
-         UserDAO userDao = new UserDAO();
-
-        // Xử lý upload ảnh đại diện
-        Part part = request.getPart("avatarFile");
-
-        // Thư mục lưu ảnh ngoài project
-        String uploadDirPath = "D:/MyUploads/Images";
-        File uploadDir = new File(uploadDirPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+        // So sánh mật khẩu cũ (không mã hóa)
+        if (!user.getPassword().equals(oldPassword)) {
+            session.setAttribute("errorOldPass", "Mật khẩu cũ của bạn không đúng.");
+            response.sendRedirect("Studentprofile");
+            return;
         }
 
-        String avatarPath = null;
-        String randomFileName = null;
+        // Kiểm tra xác nhận lại mật khẩu mới
+        if (!newPassword.equals(confirmPassword)) {
+            session.setAttribute("errorConfirmPass", "Mật khẩu xác nhận không khớp.");
+            response.sendRedirect("Studentprofile");
+            return;
+        }
 
-        if (part != null && part.getSize() > 0) {
-            // Xóa ảnh cũ nếu có
-            String oldAvatarPath = userDao.getUserById(userId).getAvatar(); 
-            if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
-                String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
-                File oldFile = new File(uploadDir, oldFileName);
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
-            }
+        // Cập nhật mật khẩu mới 
+        boolean updated = userDAO.updatePassword(user.getId(), newPassword);
 
-            // Tạo tên ngẫu nhiên cho file
-            String fileExtension = part.getSubmittedFileName().substring(part.getSubmittedFileName().lastIndexOf("."));
-            randomFileName = java.util.UUID.randomUUID().toString() + fileExtension;
-
-            // Ghi file
-            File newFile = new File(uploadDir, randomFileName);
-            part.write(newFile.getAbsolutePath());
-
-            // Gán đường dẫn lưu DB
-            avatarPath = request.getContextPath() + "/image-loader/" + randomFileName;
+        if (updated) {
+            user.setPassword(newPassword);
+            session.setAttribute("user", user);
+            session.setAttribute("SuccessMessage", "Đổi mật khẩu thành công.");
+            response.sendRedirect("Studentprofile");
         } else {
-            // Không upload ảnh mới → giữ nguyên ảnh cũ
-            avatarPath = userDao.getUserById(userId).getAvatar();
+            session.setAttribute("errorUpdate", "Có lỗi xảy ra khi cập nhật mật khẩu.");
+            response.sendRedirect("Studentprofile");
         }
-
-        boolean ok1 = userDao.updateAdmin(userId, email, phone, avatarPath, description);
-
-        
-        if (ok1) {
-            User updatedUser = userDao.getUserById(userId);
-           
-            request.getSession().setAttribute("user", updatedUser);
-            session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
-        } else {
-            session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");
-        }
-
-
-
-        response.sendRedirect("adminprofile");
     }
 
     /** 

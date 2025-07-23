@@ -8,15 +8,12 @@ import dal.RoleDAO;
 import dal.SchoolClassDAO;
 import dal.SchoolDAO;
 import dal.SubjectDAO;
-import dal.TeacherClassDAO;
 import dal.UserDAO;
-import entity.Roles;
 import entity.School;
 import entity.SchoolClass;
 import entity.Subject;
 import entity.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +52,7 @@ public class ProfileServlet extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(userId);
+        User user = userDAO.getUserById(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);

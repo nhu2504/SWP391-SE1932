@@ -86,15 +86,15 @@ public class ChangePassServlet extends HttpServlet {
 
         // So sánh mật khẩu cũ (không mã hóa)
         if (!user.getPassword().equals(oldPassword)) {
-            request.setAttribute("errorOldPass", "Mật khẩu cũ của bạn không đúng.");
-            request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);
+            session.setAttribute("errorOldPass", "Mật khẩu cũ của bạn không đúng.");
+            response.sendRedirect("profileservlet");
             return;
         }
 
         // Kiểm tra xác nhận lại mật khẩu mới
         if (!newPassword.equals(confirmPassword)) {
-            request.setAttribute("errorConfirmPass", "Mật khẩu xác nhận không khớp.");
-            request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);
+            session.setAttribute("errorConfirmPass", "Mật khẩu xác nhận không khớp.");
+            response.sendRedirect("profileservlet");
             return;
         }
 
@@ -104,11 +104,11 @@ public class ChangePassServlet extends HttpServlet {
         if (updated) {
             user.setPassword(newPassword);
             session.setAttribute("user", user);
-            session.setAttribute("SuccessMessage", "✅ Đổi mật khẩu thành công.");
-            response.sendRedirect("uploadprofile");
+            session.setAttribute("SuccessMessage", "Đổi mật khẩu thành công.");
+            response.sendRedirect("profileservlet");
         } else {
-            request.setAttribute("errorUpdate", "Có lỗi xảy ra khi cập nhật mật khẩu.");
-            request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);
+            session.setAttribute("errorUpdate", "Có lỗi xảy ra khi cập nhật mật khẩu.");
+            response.sendRedirect("profileservlet");
         }
     }
 
