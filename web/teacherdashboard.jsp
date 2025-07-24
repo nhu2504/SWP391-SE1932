@@ -600,7 +600,7 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="Home.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="home" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
             <h3 class="schedule-title text-center w-100 m-0">Bảng Điều Khiển</h3>

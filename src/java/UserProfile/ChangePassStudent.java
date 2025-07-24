@@ -3,11 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controll;
+package UserProfile;
 
-import dal.TokenForgetPassDAO;
+
 import dal.UserDAO;
-import entity.TokenForgetPass;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,13 +15,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 
 /**
  *
  * @author NGOC ANH
  */
-@WebServlet(name = "ResetPass", urlPatterns = {"/resetpass"})
-public class ResetPass extends HttpServlet {
+@WebServlet(name="ChangePassStudent", urlPatterns={"/ChangePassStudent"})
+public class ChangePassStudent extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +40,10 @@ public class ResetPass extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ResetPass</title>");  
+            out.println("<title>Servlet ChangePassStudent</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ResetPass at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ChangePassStudent at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,14 +60,8 @@ public class ResetPass extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String token = request.getParameter("token");
-        if (token == null || token.isEmpty()) {
-            request.setAttribute("errorMessage", "Link đặt lại mật khẩu không hợp lệ!");
-            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
-            return;
-        }
-        request.setAttribute("token", token); // giữ lại token cho form POST
-        request.getRequestDispatcher("resetPass.jsp").forward(request, response);
+        
+        request.getRequestDispatcher("studentprofile.jsp").forward(request, response);
     } 
 
     /** 
@@ -79,51 +74,46 @@ public class ResetPass extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       String token = request.getParameter("token");
+         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        if (token == null || token.isEmpty()) {
-            request.setAttribute("errorMessage", "Link đặt lại mật khẩu không hợp lệ!");
-            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
             return;
         }
 
-        if (newPassword == null || confirmPassword == null || !newPassword.equals(confirmPassword)) {
-            request.setAttribute("errorMessage", "Mật khẩu và mật khẩu xác nhận không trùng nhau!");
-            request.setAttribute("token", token); // giữ lại token cho lần submit lại
-            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
-            return;
-        }
-
-        // Kiểm tra token hợp lệ
-        TokenForgetPassDAO tfpDAO = new TokenForgetPassDAO();
-        TokenForgetPass tfp = tfpDAO.getByToken(token);
-        if (tfp == null || tfp.isIsUsed() || tfp.isExpired()) {
-            request.setAttribute("errorMessage", "Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn!");
-            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
-            return;
-        }
-
-        // Lấy user và cập nhật mật khẩu
+        User user = (User) session.getAttribute("user");
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserById(tfp.getUserId());
-        if (user == null) {
-            request.setAttribute("errorMessage", "Người dùng không tồn tại!");
-            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
+
+        // So sánh mật khẩu cũ (không mã hóa)
+        if (!user.getPassword().equals(oldPassword)) {
+            session.setAttribute("errorOldPass", "Mật khẩu cũ của bạn không đúng.");
+            response.sendRedirect("Studentprofile");
             return;
         }
 
-        // Nếu cần mã hóa mật khẩu, hãy hash tại đây!
-        boolean updated = userDAO.updatePassword(user.getId(), newPassword);
-        if (updated) {
-            tfpDAO.markTokenUsed(token); // Đánh dấu token đã dùng
-            request.setAttribute("successMessage", "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.");
-        } else {
-            request.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật mật khẩu.");
+        // Kiểm tra xác nhận lại mật khẩu mới
+        if (!newPassword.equals(confirmPassword)) {
+            session.setAttribute("errorConfirmPass", "Mật khẩu xác nhận không khớp.");
+            response.sendRedirect("Studentprofile");
+            return;
         }
-        request.getRequestDispatcher("resetPass.jsp").forward(request, response);
-    
+
+        // Cập nhật mật khẩu mới 
+        boolean updated = userDAO.updatePassword(user.getId(), newPassword);
+
+        if (updated) {
+            user.setPassword(newPassword);
+            session.setAttribute("user", user);
+            session.setAttribute("SuccessMessage", "Đổi mật khẩu thành công.");
+            response.sendRedirect("Studentprofile");
+        } else {
+            session.setAttribute("errorUpdate", "Có lỗi xảy ra khi cập nhật mật khẩu.");
+            response.sendRedirect("Studentprofile");
+        }
     }
 
     /** 

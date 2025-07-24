@@ -3,34 +3,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package UserProfile;
+package controll;
 
-import dal.RoleDAO;
-import dal.SchoolClassDAO;
-import dal.SchoolDAO;
-import dal.SubjectDAO;
-import dal.TeacherClassDAO;
+import dal.RegisterDAO;
 import dal.UserDAO;
-import entity.School;
-import entity.SchoolClass;
-import entity.TeacherClass;
+import entity.Register;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
-
 
 /**
  *
  * @author NGOC ANH
  */
-public class StudentProfileServlet extends HttpServlet {
+@WebServlet(name="ManagerStudent", urlPatterns={"/managerstudent"})
+public class ManagerStudent extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -47,10 +41,10 @@ public class StudentProfileServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet StudentProfileServlet</title>");  
+            out.println("<title>Servlet ManagerStudent</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet StudentProfileServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ManagerStudent at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -67,7 +61,6 @@ public class StudentProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -76,63 +69,16 @@ public class StudentProfileServlet extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByID(userId);
-        
+        User user = userDAO.getUserById(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);
             return;
         }
-        SchoolDAO schoolDAO = new SchoolDAO();
-        SchoolClassDAO scdao = new SchoolClassDAO();
         
-        // Lấy danh sách tất cả trường
-        List<School> allSchools = schoolDAO.getAllSchools();
-        
-
-        // Trường đã chọn
-        Integer schoolIdSelected = user.getSchoolID();
-        
-
-        // Lấy danh sách lớp tương ứng với trường đang học
-        List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(schoolIdSelected);
-        request.setAttribute("allClasses", allClasses);
-
-        // Lấy lớp hiện tại của người dùng
-        request.setAttribute("classIdOfUser", user.getSchoolClassId());
-
-        
-        
-        // Lấy tên trường của user
-        String schoolName = schoolDAO.getSchoolNameById(user.getSchoolID());
-
-        // Lấy tên vai trò
-        RoleDAO roleDAO = new RoleDAO();
-        String roleName = roleDAO.getRoleNameByID(user.getRoleID());
-        if (roleName == null) {
-            roleName = "Unknown";
-        }
-
-        Map<String, String> roleNameViMap = Map.of(
-                "admin", "Quản trị viên",
-                "teacher", "Giáo viên",
-                "student", "Học sinh",
-                "manager", "Quản lý",
-                "Unknown", "Không xác định"
-        );
-        String roleNameVi = roleNameViMap.getOrDefault(roleName, "Không xác định");
-
-        // Set các attribute cho JSP
-        request.setAttribute("user", user);
-        request.setAttribute("schoolName", schoolName);
-        request.setAttribute("roleNameVi", roleNameVi);
-        request.setAttribute("allSchools", allSchools);
-        
-        
-        request.setAttribute("schoolIdSelected", user.getSchoolID());
-
-        request.getRequestDispatcher("studentprofile.jsp").forward(request, response);
-    
+        List<User> student = userDAO.getStudent();
+        request.setAttribute("student", student);
+        request.getRequestDispatcher("managerstudent.jsp").forward(request, response);
     } 
 
     /** 

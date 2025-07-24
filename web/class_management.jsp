@@ -61,7 +61,7 @@
 
         <!-- Header -->
         <div class="flex justify-end mb-8">
-    <button onclick="openAddCourseModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+    <button onclick="openAddClassModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
         <i class="fas fa-plus mr-2"></i> Thêm lớp học mới
     </button>
 </div>

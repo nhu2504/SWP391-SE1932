@@ -22,6 +22,6 @@
     <body>
         <h1>Gửi Đăng kí thành công</h1>
         <p>Vui lòng chờ quản lý phê duyệt và chú ý email của bạn.</p>
-        <a href="Home.jsp">Quay về trang chủ</a>
+        <a href="home">Quay về trang chủ</a>
     </body>
 </html>

@@ -611,7 +611,24 @@
             </script>
             <c:remove var="SuccessMessage" scope="session"/>
         </c:if>
-
+            <c:if test="${not empty sessionScope.errorConfirmPass}">
+            <script>
+                alert('${sessionScope.errorConfirmPass}');
+            </script>
+            <c:remove var="errorConfirmPass" scope="session"/>
+        </c:if>
+            <c:if test="${not empty sessionScope.errorOldPass}">
+            <script>
+                alert('${sessionScope.errorOldPass}');
+            </script>
+            <c:remove var="errorOldPass" scope="session"/>
+        </c:if>
+            <c:if test="${not empty sessionScope.errorUpdate}">
+            <script>
+                alert('${sessionScope.errorUpdate}');
+            </script>
+            <c:remove var="errorUpdate" scope="session"/>
+        </c:if>
         <c:if test="${not empty sessionScope.FailMessage}">
             <script>
                 alert('${sessionScope.FailMessage}');
@@ -784,14 +801,14 @@
 
                                 <button type="submit" class="btn">Đổi Mật Khẩu</button>
                             </form>
-                            <c:if test="${not empty errorOldPass}">
-                                <div style="color:red;">${errorOldPass}</div>
+                            <c:if test="${not empty sessionScope.errorOldPass}">
+                                <div style="color:red;">${sessionScope.errorOldPass}</div>
                             </c:if>
-                            <c:if test="${not empty errorConfirmPass}">
-                                <div style="color:red;">${errorConfirmPass}</div>
+                            <c:if test="${not empty sessionScope.errorConfirmPass}">
+                                <div style="color:red;">${sessionScope.errorConfirmPass}</div>
                             </c:if>
-                            <c:if test="${not empty errorUpdate}">
-                                <div style="color:red;">${errorUpdate}</div>
+                            <c:if test="${not empty sessionScope.errorUpdate}">
+                                <div style="color:red;">${sessionScope.errorUpdate}</div>
                             </c:if>
                             <c:if test="${not empty sessionScope.SuccessMessage}">
                                 <div style="color:green;">${sessionScope.SuccessMessage}</div>

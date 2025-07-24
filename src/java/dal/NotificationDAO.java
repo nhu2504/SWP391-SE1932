@@ -78,4 +78,32 @@ public class NotificationDAO {
         }
         return null;
     }
+    public int createNotification(String title, String content, int createdBy, boolean isImportant) {
+    String sql = "INSERT INTO Notifications (Title, Content, CreatedBy, isImportant) VALUES (?, ?, ?, ?)";
+    try (Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setInt(3, createdBy);
+        ps.setBoolean(4, isImportant);
+        ps.executeUpdate();
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) return rs.getInt(1);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return -1;
+}
+
+public void addRecipient(int notiId, int userId) {
+    String sql = "INSERT INTO NotificationRecipients (NotificationID, ReceiverUserID) VALUES (?, ?)";
+    try (Connection conn = new DBContext().connection;
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, notiId);
+        ps.setInt(2, userId);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }

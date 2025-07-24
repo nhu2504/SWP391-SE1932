@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package UserProfile;
 
 import dal.RoleDAO;
@@ -14,7 +15,9 @@ import entity.SchoolClass;
 import entity.Subject;
 import entity.User;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,14 +31,36 @@ import java.util.stream.Collectors;
  *
  * @author NGOC ANH
  */
-public class ProfileServlet extends HttpServlet {
-
-    
+@WebServlet(name="StudentProfile", urlPatterns={"/Studentprofile"})
+public class StudentProfile extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet StudentProfile</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet StudentProfile at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -43,7 +68,7 @@ public class ProfileServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -60,7 +85,7 @@ public class ProfileServlet extends HttpServlet {
         }
         SchoolDAO schoolDAO = new SchoolDAO();
         SchoolClassDAO scdao = new SchoolClassDAO();
-        SubjectDAO subjectDAO = new SubjectDAO();
+        
 
         // Lấy tất cả trường học để hiển thị select
         List<School> allSchools = schoolDAO.getAllSchools();
@@ -69,31 +94,21 @@ public class ProfileServlet extends HttpServlet {
         List<SchoolClass> allClasses = scdao.getAllClassesBySchoolId(user.getSchoolID());
         // Nếu muốn lấy toàn bộ lớp hệ thống: List<SchoolClass> allClasses = classDAO.getAllClasses();
 
-        // Lấy tất cả chuyên môn
-        List<Subject> allSubjects = subjectDAO.getAllSubjects();
-
         // Lấy danh sách lớp và chuyên môn của user (để tick checkbox)
         List<SchoolClass> userSchoolClasses = user.getSchoolClasses() != null ? user.getSchoolClasses() : new ArrayList<>();
-        List<Subject> userSubjects = user.getSubjects() != null ? user.getSubjects() : new ArrayList<>();
-
+        
 
         List<String> classIdsOfUser = userSchoolClasses.stream()
         .map(sc -> String.valueOf(sc.getSchoolClassID()))
         .collect(Collectors.toList());
 
-List<String> subjectIdsOfUser = userSubjects.stream()
-        .map(sub -> String.valueOf(sub.getSubjectId()))
-        .collect(Collectors.toList());
+
         // Xâu tên lớp và chuyên môn cho hiển thị thông tin nhanh
         String classSchoolNames = (userSchoolClasses != null && !userSchoolClasses.isEmpty())
                 ? userSchoolClasses.stream().map(SchoolClass::getClassName).reduce((a, b) -> a + ", " + b).orElse("")
                 : "Tự do";
 
-        String subjectNames = (userSubjects != null && !userSubjects.isEmpty())
-                ? userSubjects.stream().map(Subject::getSubjectName).reduce((a, b) -> a + ", " + b).orElse("")
-                : "Chưa có chuyên môn";
-
-        
+       
         // Lấy tên trường của user
         String schoolName = schoolDAO.getSchoolNameById(user.getSchoolID());
 
@@ -117,22 +132,21 @@ List<String> subjectIdsOfUser = userSubjects.stream()
         request.setAttribute("user", user);
         request.setAttribute("schoolName", schoolName);
         request.setAttribute("classSchoolNames", classSchoolNames);
-        request.setAttribute("subjectNames", subjectNames);
+        
         request.setAttribute("roleNameVi", roleNameVi);
 
         request.setAttribute("allSchools", allSchools);
         request.setAttribute("allClasses", allClasses);
-        request.setAttribute("allSubjects", allSubjects);
+        
         request.setAttribute("classIdsOfUser", classIdsOfUser);
-        request.setAttribute("subjectIdsOfUser", subjectIdsOfUser);
+        
         request.setAttribute("schoolIdSelected", user.getSchoolID());
 
-        request.getRequestDispatcher("teacherprofile.jsp").forward(request, response);
-    }
+        request.getRequestDispatcher("studentprofile.jsp").forward(request, response);
+    } 
 
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -140,13 +154,12 @@ List<String> subjectIdsOfUser = userSubjects.stream()
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    throws ServletException, IOException {
+        processRequest(request, response);
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

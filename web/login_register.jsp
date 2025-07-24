@@ -819,6 +819,10 @@
                         <div class="form-group">
                             <a href="requestPass.jsp">Quên mật khẩu?</a>
                         </div>
+                        <div class="form-group">
+                            <a href="requestactive.jsp">Gửi yêu cầu mở lại tài khoản</a>
+                        </div>
+                        
                         <br />
                         <% if (request.getAttribute("error") != null) { %>
                         <span class="error-message"><%= request.getAttribute("error") %></span>
@@ -841,7 +845,7 @@
                 </div>
                 <!-- Đăng ký học -->
                 <div class="form-container">
-                    <h2>Đăng ký học</h2>
+                    <h2>Đăng ký tư vấn</h2>
                     <form action="register" method="post"  enctype="multipart/form-data">
                         <div class="form-group">
                             <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
@@ -865,13 +869,18 @@
                             <input type="date" name="dob" />
                         </div>
                         <div class="form-group schoolclass sc">
-                            <input type="text" name="school" placeholder="Trường" required/>
+                            <label>Trường THPT</label>
+                            <input type="text" name="school" placeholder="Chỉ nhập tên trường của bạn. Ví dụ: Hà Thành" required/>
                         </div>
                         <div class="form-group schoolclass sc">
                             <input type="text" name="schoolAddress" placeholder="Địa Chỉ" required/>
                         </div>
                         <div class="form-group schoolclass cl">
-                            <input type="text" name="classAtSchool" placeholder="Lớp" required/>
+                            <label>Lớp</label>
+                            <input type="text" name="classAtSchool" placeholder="Ví dụ: 10A" required/>
+                        </div>
+                        <div class="form-group schoolclass sc">
+                            <input type="text" name="interestCourses" placeholder="Khóa học mong muốn" required/>
                         </div>
                         <div class="form-group">
                             <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />
@@ -893,7 +902,7 @@
                         <span class="error-message"><%= request.getAttribute("error1") %></span>
                         <% } %>
                         <br />
-                        <button type="submit">Gửi yêu cầu đăng kí học</button>
+                        <button type="submit">Gửi yêu cầu tư vấn</button>
                     </form>
                 </div>
             </div>

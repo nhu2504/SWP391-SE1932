@@ -2,27 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controll_teacher;
+package controll_student;
 
-import dal.AttendanceDAO;
-import dal.ClassGroup_StudentDAO;
+import dal.RequestActiveDAO;
+import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author NGOC ANH
  */
-public class SubmitAttend extends HttpServlet {
+@WebServlet(name = "SendRequestActive", urlPatterns = {"/sendrequestactive"})
+public class SendRequestActive extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +41,10 @@ public class SubmitAttend extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SubmitAttend</title>");
+            out.println("<title>Servlet SendRequestActive</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SubmitAttend at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SendRequestActive at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,48 +76,52 @@ public class SubmitAttend extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login_register.jsp");
+        UserDAO dao = new UserDAO();
+        String email = request.getParameter("email");
+        User u = dao.getUserByEmail(email);
+        if (u == null) {
+            request.setAttribute("mess", "Email không tồn tại");
+            request.getRequestDispatcher("requestactive.jsp").forward(request, response);
             return;
         }
-        int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
-        ClassGroup_StudentDAO classGroupDAO = new ClassGroup_StudentDAO();
-        AttendanceDAO attendanceDAO = new AttendanceDAO();
-        List<User> students = classGroupDAO.getStudentsByClassGroupId(classGroupId);
-        Map<Integer, Boolean> attendanceMap = new HashMap<>();
-        for (User s : students) {
-            String param = request.getParameter("status_" + s.getId());
-            if (param != null) {
-                boolean isPresent = "1".equals(param);
-                attendanceMap.put(s.getId(), isPresent);
-            }
-        }
+        String name = "";
+    String email1 = "";
+    String birthStr = "";
+    String school = "";
+    String classAtSchool = "";
         try {
-            attendanceDAO.saveAttendance(classGroupId, attendanceMap);
+            request.setCharacterEncoding("UTF-8");
 
-            // Gửi lại dữ liệu về cho trang JSP
-            request.setAttribute("students", students);
-            request.setAttribute("classGroupId", classGroupId);
-            request.setAttribute("attendanceMap", attendanceMap);
-            request.setAttribute("attendSuccess", true); // Flag để hiện alert nếu muốn
+            name = request.getParameter("name");
+            email1 = request.getParameter("email");
+            birthStr = request.getParameter("birth");
+            school = request.getParameter("school");
+            classAtSchool = request.getParameter("classAtSchool");
 
-            request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date birth = sdf.parse(birthStr);
+
+            RequestActiveDAO ra = new RequestActiveDAO();
+            boolean success = ra.insertRequest(name, email1, birth, school, classAtSchool);
+
+            if (success) {
+                request.setAttribute("message", "Gửi yêu cầu thành công!");
+            } else {
+                request.setAttribute("message", "Có lỗi xảy ra khi gửi yêu cầu.");
+            }
 
         } catch (Exception e) {
+            request.setAttribute("message", "Lỗi: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi lưu vào database: " + e.getMessage());
-            request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
         }
+        request.setAttribute("name", name);
+        request.setAttribute("email", email);
+        request.setAttribute("birth", birthStr);
+        request.setAttribute("school", school);
+        request.setAttribute("classAtSchool", classAtSchool);
 
-//        try {
-//            attendanceDAO.saveAttendance(classGroupId, attendanceMap);
-//            // Chuyển hướng 
-//             response.sendRedirect("attendancestudent.jsp?attendSuccess=true");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.getWriter().println("Lỗi lưu vào database: " + e.getMessage());
-//        }
+        request.getRequestDispatcher("requestactive.jsp").forward(request, response);
+
     }
 
     /**

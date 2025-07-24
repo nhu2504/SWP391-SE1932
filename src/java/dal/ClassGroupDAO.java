@@ -258,7 +258,7 @@ public class ClassGroupDAO {
                 cg.setToturID(rs.getInt("TutoringClassID"));
                 cg.setName(rs.getString("ClassGroupName"));
                 cg.setMaxStudent(rs.getInt("MaxStudent"));
-
+                
                 cg.setCurrentStudentCount(rs.getInt("StudentCount"));
                 cg.setRoomName(rs.getString("RoomName"));
                 list.add(cg);
@@ -270,7 +270,8 @@ public class ClassGroupDAO {
 
         return list;
     }
-
+    
+    
     public List<ClassGroup> getTodayClasses(int teacherId) throws SQLException {
         List<ClassGroup> list = new ArrayList<>();
         String query = "SELECT cg.ClassGroupName\n"
@@ -328,7 +329,7 @@ public class ClassGroupDAO {
                 + "ELSE "
                 + "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) "
                 + "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
+try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
             ps.setInt(3, userID);

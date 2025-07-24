@@ -3,24 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package UserProfile;
+package controll;
 
+import com.google.gson.Gson;
+import dal.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import entity.User;
-import dal.UserDAO;
+import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
-
-public class ChangePassServlet extends HttpServlet {
+@WebServlet(name="GetUserByRole", urlPatterns={"/getuserbyrole"})
+public class GetUserByRole extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +39,10 @@ public class ChangePassServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ChangePassServlet</title>");  
+            out.println("<title>Servlet GetUserByRole</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ChangePassServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet GetUserByRole at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +59,17 @@ public class ChangePassServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String role = request.getParameter("role");
+        if (role != null) {
+            int roleID = Integer.parseInt(role);
+            UserDAO dao = new UserDAO();
+            List<User> users = dao.getUsersByRole(roleID);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(users);
+            response.setContentType("application/json");
+            response.getWriter().write(json);
+        }
     } 
 
     /** 
@@ -70,46 +82,7 @@ public class ChangePassServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-         String oldPassword = request.getParameter("oldPassword");
-        String newPassword = request.getParameter("newPassword");
-        String confirmPassword = request.getParameter("confirmPassword");
-
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        User user = (User) session.getAttribute("user");
-        UserDAO userDAO = new UserDAO();
-
-        // So sánh mật khẩu cũ (không mã hóa)
-        if (!user.getPassword().equals(oldPassword)) {
-            session.setAttribute("errorOldPass", "Mật khẩu cũ của bạn không đúng.");
-            response.sendRedirect("profileservlet");
-            return;
-        }
-
-        // Kiểm tra xác nhận lại mật khẩu mới
-        if (!newPassword.equals(confirmPassword)) {
-            session.setAttribute("errorConfirmPass", "Mật khẩu xác nhận không khớp.");
-            response.sendRedirect("profileservlet");
-            return;
-        }
-
-        // Cập nhật mật khẩu mới 
-        boolean updated = userDAO.updatePassword(user.getId(), newPassword);
-
-        if (updated) {
-            user.setPassword(newPassword);
-            session.setAttribute("user", user);
-            session.setAttribute("SuccessMessage", "Đổi mật khẩu thành công.");
-            response.sendRedirect("profileservlet");
-        } else {
-            session.setAttribute("errorUpdate", "Có lỗi xảy ra khi cập nhật mật khẩu.");
-            response.sendRedirect("profileservlet");
-        }
+        processRequest(request, response);
     }
 
     /** 

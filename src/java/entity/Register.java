@@ -26,6 +26,7 @@ public class Register {
     private String parentEmail;
     private int idUserIntro;
     private boolean confirm;
+    private String interestCourses;
 
     public Register() {
     }
@@ -62,6 +63,15 @@ public class Register {
         this.idUserIntro = idUserIntro;
         this.confirm = confirm;
     }
+
+    public String getInterestCourses() {
+        return interestCourses;
+    }
+
+    public void setInterestCourses(String interestCourses) {
+        this.interestCourses = interestCourses;
+    }
+    
 
     public int getRegisID() {
         return regisID;

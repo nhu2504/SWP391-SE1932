@@ -1,6 +1,7 @@
 package dal;
 
 import dal.DBContext;
+import entity.SchoolClass;
 import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -224,32 +225,37 @@ public class StudentDAO {
         return students;
     }
 
-    // Ngọc Anh
-    public boolean updateSchoolClassDAO(int userId, int classId) {
-        String deleteSql = "DELETE FROM TeacherClass WHERE UserID = ?";
-        String insertSql = "INSERT INTO TeacherClass (UserID, SchoolClassID) VALUES (?, ?)";
+    //ngoc anh
 
-        try (Connection conn = new DBContext().connection) {
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql); PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-
-                deleteStmt.setInt(1, userId);
-                deleteStmt.executeUpdate();
-
-                insertStmt.setInt(1, userId);
-                insertStmt.setInt(2, classId);
-                insertStmt.executeUpdate();
-
-                conn.commit();
-                return true;
-            } catch (Exception e) {
-                conn.rollback();
-                e.printStackTrace();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public boolean updateStudentClass(int userId, int newClassId) {
+    String sql = "UPDATE TeacherClass SET SchoolClassID = ? WHERE UserID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, newClassId);
+        ps.setInt(2, userId);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
         return false;
     }
+}
+
+    public SchoolClass getSchoolClassByStudentID(int studentId) throws Exception {
+    String sql = "SELECT sc.SchoolClassID, sc.ClassName, sc.SchoolID FROM TeacherClass tc \n" +
+"                 JOIN SchoolClass sc ON tc.SchoolClassID = sc.SchoolClassID \n" +
+"                 WHERE tc.UserID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, studentId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            SchoolClass sc = new SchoolClass();
+            sc.setSchoolClassID(rs.getInt("SchoolClassID"));
+            sc.setClassName(rs.getString("ClassName"));
+            sc.setSchoolID(rs.getInt("SchoolID"));
+            return sc;
+        }
+    }
+    return null;
+}
 }

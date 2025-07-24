@@ -583,6 +583,7 @@ ps.setDate(2, sqlDate);
 
 
 //ngocah
+
     public List<ScheduleJoin> getSchedulesByWeek(int userId, Date startOfWeek, Date endOfWeek) throws SQLException {
         List<ScheduleJoin> list = new ArrayList<>();
         String sql = "SELECT s.ScheduleID, s.DateLearn, sl.Start_time,sl.End_time ,"
@@ -830,5 +831,6 @@ ps.setDate(2, sqlDate);
         }
 
     }
+
 
 }

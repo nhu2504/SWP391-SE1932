@@ -611,7 +611,24 @@
             </script>
             <c:remove var="SuccessMessage" scope="session"/>
         </c:if>
-
+        <c:if test="${not empty sessionScope.errorConfirmPass}">
+            <script>
+                alert('${sessionScope.errorConfirmPass}');
+            </script>
+            <c:remove var="errorConfirmPass" scope="session"/>
+        </c:if>
+        <c:if test="${not empty sessionScope.errorOldPass}">
+            <script>
+                alert('${sessionScope.errorOldPass}');
+            </script>
+            <c:remove var="errorOldPass" scope="session"/>
+        </c:if>
+        <c:if test="${not empty sessionScope.errorUpdate}">
+            <script>
+                alert('${sessionScope.errorUpdate}');
+            </script>
+            <c:remove var="errorUpdate" scope="session"/>
+        </c:if>
         <c:if test="${not empty sessionScope.FailMessage}">
             <script>
                 alert('${sessionScope.FailMessage}');
@@ -698,7 +715,7 @@
                             <p><strong>Id người dùng:</strong> ${user.id}</p>
                             <p><strong>Vai trò:</strong> ${roleNameVi}</p>
 
-                            <form action="studentupdateprofile" method="post" enctype="multipart/form-data">
+                            <form action="updatestudentprofile" method="post" enctype="multipart/form-data" id="profileForm">
                                 <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
                                 <input type="file" name="avatarFile" accept="image/*" style="margin-top:10px;">
 
@@ -710,26 +727,13 @@
 
 
 
-                                <select id="schoolDropdown" name="schoolId">
-                                    <c:forEach var="s" items="${allSchools}">
-                                        <option value="${s.schoolID}" ${s.schoolID == schoolIdSelected ? 'selected' : ''}>
-                                            ${s.name}
-                                        </option>
-                                    </c:forEach>
-                                </select>
+                                <label>Trường đang học:</label>
+                                
 
-                                <select id="classDropdown" name="classId">
-                                    <c:forEach var="c" items="${allClasses}">
-                                        <option value="${c.schoolClassID}" ${c.schoolClassID == classIdOfUser ? 'selected' : ''}>
-                                            ${c.className}
-                                        </option>
-                                    </c:forEach>
-                                </select>
-                                <label>Email phụ huynh</label>
-                                <input type="text" name="emailparent" value="${user.email}">
+                                <br/>
+                                <label>Lớp đang học:</label>
+                                
 
-                                <label>Số điện thoại</label>
-                                <input type="text" name="phoneparent" value="${user.phone}">
 
                                 <label>Mô tả</label>
                                 <textarea name="description" rows="5" cols="57" maxlength="1000">${user.descrip}</textarea>
@@ -747,7 +751,7 @@
                         <!-- ĐỔI MẬT KHẨU -->
                         <div class="section">
                             <h2>Thay đổi mật khẩu:</h2>
-                            <form action="changePassword" method="post">
+                            <form action="ChangePassStudent" method="post">
                                 <label>Mật Khẩu Cũ:</label>
                                 <input type="password" name="oldPassword">
 
@@ -759,18 +763,7 @@
 
                                 <button type="submit" class="btn">Đổi Mật Khẩu</button>
                             </form>
-                            <c:if test="${not empty errorOldPass}">
-                                <div style="color:red;">${errorOldPass}</div>
-                            </c:if>
-                            <c:if test="${not empty errorConfirmPass}">
-                                <div style="color:red;">${errorConfirmPass}</div>
-                            </c:if>
-                            <c:if test="${not empty errorUpdate}">
-                                <div style="color:red;">${errorUpdate}</div>
-                            </c:if>
-                            <c:if test="${not empty sessionScope.SuccessMessage}">
-                                <div style="color:green;">${sessionScope.SuccessMessage}</div>
-                            </c:if>
+
                         </div>
 
                     </div>
@@ -856,28 +849,7 @@
     <!-- <script src="js/custom.js"></script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-                document.getElementById("schoolDropdown").addEventListener("change", function () {
-                    let schoolId = this.value;
-
-                    fetch("GetClassesBySchoolServlet?schoolId=" + schoolId)
-                            .then(response => response.json())
-                            .then(data => {
-                                let classDropdown = document.getElementById("classDropdown");
-                                classDropdown.innerHTML = "";
-                                data.forEach(cls => {
-                                    let option = document.createElement("option");
-                                    option.value = cls.schoolClassID;
-                                    option.text = cls.className;
-                                    classDropdown.appendChild(option);
-                                });
-                            })
-                            .catch(error => {
-                                console.error("Lỗi khi tải lớp học: ", error);
-                            });
-                });
-    </script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
 </body>
 </html>

@@ -1,7 +1,12 @@
+<%-- 
+    Document   : managerstudent
+    Created on : Jul 18, 2025, 11:19:53 PM
+    Author     : NGOC ANH
+--%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!-- Văn Thị Như - HE181329 
-Ngày update 3/7/2025-->
+
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -222,19 +227,17 @@ Ngày update 3/7/2025-->
             }
         </style>
     </head>
-    <body class="bg-gray-50">       
+    <body class="bg-gray-50">
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
                 <div class="col-lg-4 text-start pl-0">
                     <div class="logo-container d-flex align-items-center justify-content-start position-relative">
-                        <a href="${pageContext.request.contextPath}/home">
-                            <img src="${pageContext.request.contextPath}/LogoServlet"
-                                 alt="Logo Trung Tâm"
-                                 class="logo-image">
-                        </a>
+                        <img src="${pageContext.request.contextPath}/LogoServlet"
+                             alt="Logo Trung Tâm"
+                             class="logo-image"
+                             >
                     </div>
-
                     <h6 class="slogan mb-0 mt-2 d-flex align-items-center small">
                         ${centerName}
                     </h6>
@@ -278,37 +281,47 @@ Ngày update 3/7/2025-->
             <div class="sidebar w-64 bg-white shadow-md relative md:relative z-50 flex flex-col">
                 <!-- Khu vực scrollable: toàn bộ menu -->
                 <div class="p-4 overflow-y-auto flex-1">
+                    <div class="mb-6">
+                        <div class="relative">
+                            <input type="text" placeholder="Tìm kiếm..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                        </div>
+                    </div>
 
                     <div class="space-y-1">
-                        <a href="${pageContext.request.contextPath}/admin" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-indigo-700" data-group="groupOverview">
+                        <a href="${pageContext.request.contextPath}/admin" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-indigo-700">
                             <i class="fas fa-tachometer-alt w-5"></i>
                             <span>Tổng quan</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="student">
+                        <a href="managerstudent" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-users w-5"></i>
                             <span>Quản lý học sinh</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="teacher">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-chalkboard-teacher w-5"></i>
                             <span>Quản lý giáo viên</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=courseManagement" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="courseManagement">
+                        <a href="${pageContext.request.contextPath}/admin?tab=courseManagement" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-book w-5"></i>
                             <span>Quản lý khoá học</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=courseList" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-group="classManagementGroup">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-calendar-alt w-5"></i>
-                            <span>Quản lí lớp học</span>
+                            <span>Lịch học</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="payment">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-money-bill-wave w-5"></i>
                             <span>Quản lý học phí</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="report">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Báo cáo thống kê</span>
                         </a>
-                        
+                        <a href="createnotification.jsp" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                            <i class="fas fa-bell w-5"></i>
+                            <span>Gửi thông báo</span>
+                        </a>
+
                         <a href="listregister" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-user-check w-5"></i>
                             <span>Tạo tài khoản</span>
@@ -319,7 +332,7 @@ Ngày update 3/7/2025-->
                         </a>
 
                         <!-- Cài đặt hệ thống -->
-                        <a href="${pageContext.request.contextPath}/admin?tab=setting" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="setting">
+                        <a href="${pageContext.request.contextPath}/admin?tab=setting" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-cog w-5"></i>
                             <span>Cài đặt</span>
                         </a>
@@ -385,42 +398,75 @@ Ngày update 3/7/2025-->
 
                 <!-- Main content area -->
                 <div id="main-content">
-                    <c:choose>
-                        <c:when test="${tab eq 'setting'}">
-                            <jsp:include page="setting.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'todaySchedule'}">
-                            <jsp:include page="schedule_today.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'teacherSchedule'}">
-                            <jsp:include page="schedule_teacher.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'scheduleClass'}">
-                            <jsp:include page="schedule_class.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'paymentReport'}">
-                            <jsp:include page="payment_student.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'courseManagement'}">
-                            <jsp:include page="manager_tutoringClass.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'courseList'}">
-                            <jsp:include page="course_list.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'classManagement'}">
-                            <jsp:include page="class_management.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'studentListInClass'}">
-                            <jsp:include page="list_student.jsp" />
-                        </c:when>
-                        <c:when test="${tab eq 'studentNotInClass'}">
-                            <jsp:include page="list_student_not_in_class.jsp" />
-                        </c:when>
 
+                    <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Quản lý học sinh</h1>
+                    <c:choose>
+                        <c:when test="${not empty student}">
+                            <table class="min-w-full border border-gray-300 text-center text-sm">
+                                <thead class="bg-red-100 text-gray-700 font-semibold">
+                                    <tr>
+                                        <th class="py-2 px-4 border">STT</th>
+                                        <th class="py-2 px-4 border">ID học sinh</th>
+                                        <th class="py-2 px-4 border">Tên học sinh</th>
+                                        <th class="py-2 px-4 border">Ảnh học sinh</th>
+                                        <th class="py-2 px-4 border">Email</th>
+                                        <th class="py-2 px-4 border">Số điện thoại</th>
+                                        <th class="py-2 px-4 border">Ngày sinh</th>
+                                        <th class="py-2 px-4 border">Giới tính</th>
+                                        <th class="py-2 px-4 border">Trường</th>
+                                        <th class="py-2 px-4 border">Lớp</th>
+
+                                        <th class="py-2 px-4 border">Trạng thái</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white text-gray-800">
+                                    <c:forEach var="ap" items="${student}" varStatus="loop">
+                                        <tr class="hover:bg-gray-100">
+                                            <td class="py-2 px-4 border">${loop.index + 1}</td>
+                                            <td class="py-2 px-4 border">${ap.id}</td>
+                                            <td class="py-2 px-4 border">${ap.name}</td>
+                                            <td class="py-2 px-4 border"><img class="avatar" src="images/${ap.avatar}" alt="avatar" /></td>
+                                            <td class="py-2 px-4 border">${ap.email}</td>
+                                            <td class="py-2 px-4 border">${ap.phone}</td>
+                                            <td class="py-2 px-4 border">${ap.birth}</td>
+                                            <td class="py-2 px-4 border">${ap.gender}</td>
+                                            <td class="py-2 px-4 border">Trường THPT ${ap.schoolName}</td>
+                                            <td class="py-2 px-4 border">${ap.schoolClassName}</td>
+
+                                            <td class="py-2 px-4 border">
+                                                <form action="updatestudentstatus" method="post" style="margin: 0;"
+                                                      onsubmit="return confirmUpdate('${ap.name}')">
+                                                    <input type="hidden" name="studentId" value="${ap.id}" />
+                                                    <input type="hidden" name="currentStatus" value="${ap.status}" />
+                                                    <button type="submit"
+                                                            class="px-2 py-1 rounded text-white font-semibold
+                                                            ${ap.status == 1 ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}">
+                                                        ${ap.status == 1 ? 'Đang hoạt động' : 'Không hoạt động'}
+                                                    </button>
+
+                                                </form>
+                                            </td>
+
+
+
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+
+                        </c:when>
                         <c:otherwise>
-                            <jsp:include page="overview.jsp" />
+                            <div class="alert alert-warning text-center" role="alert">
+                                Không có học sinh nào.
+                            </div>
                         </c:otherwise>
                     </c:choose>
+
+
+
+
+
                 </div>
             </div>
         </div>
@@ -481,57 +527,34 @@ Ngày update 3/7/2025-->
 
         <script>
             $(document).ready(function () {
+//                $('.sidebar-settings-toggle').on('click', function (e) {
+//                    e.preventDefault();
+//                    var submenu = $(this).closest('.sidebar-item.group').find('.submenu-settings');
+//                    submenu.slideToggle(200);
+//                    $(this).find('.fa-chevron-down').toggleClass('fa-chevron-up');
+//                });
+
                 const tab = new URLSearchParams(window.location.search).get("tab") || "overview";
 
-                // Cập nhật tiêu đề
-                const titleMap = {
-                    "setting": "Cài đặt",
-                    "todaySchedule": "Tổng quan > Lịch học hôm nay",
-                    "teacherSchedule": "Tổng quan > Lịch dạy giáo viên",
-                    "scheduleClass": "Tổng quan > Lịch học lớp tuần này",
-                    "courseManagement": "Quản lí khoá học",
-                    "classManagement": "Quản lí lớp học",
-                    "courseList": "Quản lí lớp học",
-                    "studentListInClass": "Quản lí lớp học",
-                    "studentNotInClass": "Quản lí lớp học",
-                    "overview": "Tổng quan"
-                };
-                $('#main-title').text(titleMap[tab] || "Tổng quan");
+                // Set tiêu đề chính theo tab
+                if (tab === "setting") {
+                    $('#main-title').text("Cài đặt");
 
-                // Các nhóm tab thuộc cùng menu "Quản lí lớp học"
-                const classTabGroup = ["courseList", "classManagement", "studentListInClass", "studentNotInClass"];
-                const groupOverview = ["overview", "teacherSchedule", "todaySchedule", "scheduleClass"];
-
-                $(".sidebar-item").each(function () {
-                    const group = $(this).data("group");
-                    const isMatch = (
-                            (group === "classManagementGroup" && classTabGroup.includes(tab)) ||
-                            ($(this).data("tab") === tab)
-                            );
-
-                    if (isMatch) {
-                        $(this).addClass("active text-indigo-700");
-                    } else {
-                        $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
-                    }
-                });
-
-                $(".sidebar-item").each(function () {
-                    const group = $(this).data("group");
-                    const isMatch = (
-                            (group === "groupOverview" && groupOverview.includes(tab)) ||
-                            ($(this).data("tab") === tab)
-                            );
-
-                    if (isMatch) {
-                        $(this).addClass("active text-indigo-700");
-                    } else {
-                        $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
-                    }
-                });
+                } else if (tab === "todaySchedule") {
+                    $('#main-title').text("Tổng quan > Lịch học hôm nay");
+                } else {
+                    $('#main-title').text("Tổng quan");
+                }
             });
 
         </script>
+        <script>
+            function confirmUpdate(studentName) {
+                return confirm("Bạn có chắc chắn muốn cập nhật trạng thái của học sinh " + studentName + " không?");
+            }
+        </script>
+
+
 
     </body>
 </html>

@@ -1,14 +1,12 @@
 <%-- 
-    Document   : teacherdashboard
-    Created on : May 24, 2025, 11:31:10 PM
-    Author     : DO NGOC ANH HE180661
+    Document   : requestactive
+    Created on : Jul 22, 2025, 12:37:45 AM
+    Author     : NGOC ANH
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page import="entity.ScheduleJoin"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="entity.User" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -498,56 +496,116 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
-
-            .class-row {
+            /* Popup nền mờ */
+            .forgot-password-modal {
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.13);
                 display: flex;
                 align-items: center;
-                margin-bottom: 6px;
+                justify-content: center;
             }
-
-            .class-name {
-                flex: 1; /* Tên lớp chiếm phần lớn còn lại */
-                padding-right: 10px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .action-btn {
-                min-width: 50px; /* đảm bảo chiều rộng đồng đều */
+            .forgot-password-content {
+                background: #fff;
+                border-radius: 10px;
+                padding: 32px 36px 32px 36px;
+                box-shadow: 0 0 20px 0 rgba(0,0,0,0.14);
+                position: relative;
+                width: 80%; /* Chiếm 80% chiều rộng trang */
+                max-width: 1000px; /* Không vượt quá 1000px */
+                min-width: 400px;  /* Không quá nhỏ */
+                margin: 40px auto; /* Căn giữa và cách trên dưới */
                 text-align: center;
-                margin-left: 10px;
-                color: #007bff;
-                text-decoration: underline;
+            }
+            .close-forgot-btn {
+                position: absolute;
+                top: 14px;
+                right: 18px;
+                font-size: 28px;
+                color: #EC6F69;
                 cursor: pointer;
+                font-weight: bold;
+                z-index: 10;
+                transition: color 0.2s;
             }
-            .search-box {
-                display: flex;
-                align-items: center;
-                background-color: white;
-                border: 1px solid #ccc;
-                border-radius: 999px;
-                padding: 5px 10px;
-                gap: 8px;
+            .close-forgot-btn:hover {
+                color: #333;
             }
-
-            .search-box input {
-                border: none;
+            .forgot-title {
+                color: #FF6B6B;
+                font-size: 32px;
+                font-weight: bold;
+                margin-bottom: 14px;
+                margin-top: 0;
+            }
+            .forgot-label {
+                display: block;
+                text-align: left;
+                font-weight: 600;
+                margin-bottom: 6px;
+                font-size: 16px;
+            }
+            .forgot-input {
+                width: 100%;
+                border-radius: 20px;
+                border: 2px solid #FF6B6B;
+                padding: 10px 16px;
+                margin-bottom: 15px;
+                font-size: 18px;
                 outline: none;
-                background-color: transparent;
+                transition: border-color 0.2s;
+            }
+            .forgot-input:focus {
+                border-color: #EC6F69;
+            }
+            .forgot-desc {
+                color: #333;
                 font-size: 14px;
+                margin-bottom: 22px;
+                text-align: left;
             }
-
-            .search-box button {
+            .forgot-submit-btn {
+                display: block;
+                margin: 0 auto;
+                background: #FF6B6B;
+                color: #fff;
                 border: none;
-                background: transparent;
+                border-radius: 999px;
+                padding: 10px 36px;
+                font-size: 18px;
+                font-weight: 600;
                 cursor: pointer;
-                padding: 0;
-                outline: none;
+                box-shadow: 0 2px 8px rgba(255,107,107,0.10);
+                transition: background 0.2s;
+            }
+            .forgot-submit-btn:hover {
+                background: #EC6F69;
+            }
+            @media (max-width: 500px) {
+                .forgot-password-content {
+                    padding: 20px 8vw;
+                    width: 95vw;
+                }
+            }
+            .forgot-password-content {
+
+                justify-content: center;
+                align-items: center;
+                margin-left: 450px;
             }
 
-            .search-box i {
-                color: gray;
+            .forgot-password-content {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            .alert alert-info{
+                margin-top: 5px;
             }
 
 
@@ -559,7 +617,7 @@
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
                 <div class="col-lg-3 text-center">
-                    <a href="home" class="text-decoration-none">
+                    <a href="Home.jsp" class="text-decoration-none">
                         <div class="logo-container">
                             <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
                                  onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
@@ -600,182 +658,121 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="home" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="Home.jsp" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Bảng Điều Khiển</h3>
+
         </div>
 
-        <div >
-            <div class="row">
-                <div class="col-md-3 sidebar">
-                    <%
-                        User user = (User) session.getAttribute("user");
-                    %>
 
+        <div class="forgot-password-content">
 
-                    <div class="avatar">
-                        <img src="${user.avatar}" alt="Avatar" class="avatar-img avatar">
-                    </div>
-                    <div class="username">${user.name}</div>
-
-                    <a href="Studentprofile"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
-                    <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
-                    <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
-                    
-                    <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            <h2 class="forgot-title">Yêu cầu mở lại tài khoản đã dừng hoạt động</h2>
+            <form action="sendrequestactive" method="post">
+                <label class="forgot-label">Nhập họ và tên:</label>
+                <input type="text" name="name" class="forgot-input" value="${name}" required />
+                <label class="forgot-label">Nhập email:</label>
+                <input type="text" name="email" class="forgot-input" value="${email}" required />
+                <label class="forgot-label">Nhập ngày sinh:</label>
+                <input type="date" name="birth" class="forgot-input" value="${birth}" required />
+                <label class="forgot-label">Nhập trường:</label>
+                <input type="text" name="school" class="forgot-input" value="${school}"  required />
+                <label class="forgot-label">Nhập lớp:</label>
+                <input type="text" name="classAtSchool" class="forgot-input" value="${classAtSchool}" required />
+                <div class="forgot-desc">
+                    Yêu cầu của bạn sẽ được phê duyệt trong khoảng thời gian 
+                    muộn nhất là 24h. Vui lòng đăng nhập lại sau khoảng thời gian này.
                 </div>
+                <c:if test="${not empty mess}">
+                    <div >${mess} </div>
+                </c:if>
+                <button type="submit" class="forgot-submit-btn">Gửi yêu cầu</button>
+            </form>
 
-                <!-- Main -->
-                <div class="col-md-9 main">
-                    <div class="grid">
-                        <div class="infor-sche">
-                            <a href="showschedulestudent">
+        </div>
 
-                                <div class="card">
-                                    <i class="fas fa-calendar-alt"></i> Lịch học
 
-                                    <div>
-                                        <strong>Sắp diễn ra:</strong><br>
-                                        <c:choose>
-                                            <c:when test="${not empty sessionScope.nextSchedule}">
-                                                <span>${sessionScope.nextSchedule.classGroupName}</span><br>
-                                                <span>Thời gian: 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.startTime}" pattern="HH:mm"/> - <fmt:formatDate value="${sessionScope.nextSchedule.endTime}" pattern="HH:mm"/>
-                                                </span><br>
-                                                <span>Phòng: ${sessionScope.nextSchedule.roomName}</span><br>
-                                                <span>Ngày: 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.dateLearn}" pattern="dd/MM/yyyy"/>
-                                                </span>
-                                                <br>
-                                                <span>Giáo viên: ${sessionScope.nextSchedule.teacherName}</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span>Không có lịch học sắp tới.</span>
-                                            </c:otherwise>
-                                        </c:choose>
+        <footer class="site-footer">
+            <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
+                <div class="row pt-5">
+                    <div class="col-lg-5 col-md-12 mb-5">
+                        <a href="" class="text-decoration-none">
 
-                                    </div>
+                            <div class="logo-container">
+                                <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
+                                     onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
 
-                                </div></a>
-                        </div>
-                        <div class="attend">
+                            </div>
+                            <div class="slogan-group text-left mt-2">
 
-                            <div class="card">
-                                <a href="#">
-                                    <i class="fas fa-calendar-check"></i>Xem Điểm Danh
-                                </a>
-                                <div>
-                                    
+                                <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
+                                <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
+                                <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
+                            </div>
+
+                        </a>
+                    </div>
+                    <div class="col-lg-7 col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
+
+                                <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
+                                <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
+                                <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
+                                <div class="d-flex justify-content-start mt-4">
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
                                 </div>
                             </div>
+                            <div class="col-md-6 mb-5">
+                                <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
+                                <div class="d-flex flex-column justify-content-start">
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
+                                        <i class="fa fa-angle-right mr-2"></i>Trang Chủ
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
+                                        <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
+                                        <i class="fa fa-angle-right mr-2"></i>Khoá Học
+                                    </a>
+                                    <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
+                                        <i class="fa fa-angle-right mr-2"></i>Giáo Viên
+                                    </a>
 
-                        </div>
-                        <div class="header-container">
 
-                            <a href="#"> <div class="card">
-                                    <i class="fas fa-users"></i> Danh sách lớp đang học</a>
-
-
-
-                            <div class="search-box">
-                                <input type="text" placeholder="Tìm kiếm lớp">
-                                <button><i class="fas fa-search"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <a href="#"><i class="fas fa-cloud-upload-alt"></i> Xem học phí</a>
-                        
 
-                    </div>
-                        <div class="card">
-                        <a href="#"><i class="fas fa-cloud-upload-alt"></i> Đăng ký lớp học mới</a>
-                        
 
-                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="site-footer">
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white py-0 px-sm-3 px-lg-5" style="margin-top: 0px;">
-            <div class="row pt-5">
-                <div class="col-lg-5 col-md-12 mb-5">
-                    <a href="" class="text-decoration-none">
-
-                        <div class="logo-container">
-                            <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
-                                 onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
-
-                        </div>
-                        <div class="slogan-group text-left mt-2">
-
-                            <p class="slogan">Edura – Kết nối tri thức, chắp cánh tương lai.</p>
-                            <p class="slogan">Edura – Hỗ trợ giáo viên, nâng tầm học sinh.</p>
-                            <p class="slogan">Edura – Nơi tri thức hội tụ, ước mơ thăng hoa.</p>
-                        </div>
-
-                    </a>
-                </div>
-                <div class="col-lg-7 col-md-12">
-                    <div class="row">
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Thông Tin Liên Hệ</h5>
-
-                            <p><i class="fa fa-map-marker-alt mr-2"></i><small>${address}</small></p>
-                            <p><i class="fa fa-phone-alt mr-2"></i><small>${phone}</small></p>
-                            <p><i class="fa fa-envelope mr-2"></i><small>${email}</small></p>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-5">
-                            <h5 class="text-primary text-uppercase mb-4" style="letter-spacing: 5px;">Khám Phá EDURA</h5>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/home">
-                                    <i class="fa fa-angle-right mr-2"></i>Trang Chủ
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/about">
-                                    <i class="fa fa-angle-right mr-2"></i>Giới Thiệu
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/course">
-                                    <i class="fa fa-angle-right mr-2"></i>Khoá Học
-                                </a>
-                                <a class="text-white mb-2" href="${pageContext.request.contextPath}/teacher">
-                                    <i class="fa fa-angle-right mr-2"></i>Giáo Viên
-                                </a>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
             </div>
+            <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
 
-        </div>
-        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a> 
-
-    </footer>
+        </footer>
 
 
-    <!-- JAVASCRIPT FILES -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- <script src="js/owl.carousel.min.js"></script>
-    <!-- <script src="js/counter.js"></script> -->
-    <!-- <script src="js/custom.js"></script> -->
+        <!-- JAVASCRIPT FILES -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- <script src="js/owl.carousel.min.js"></script>
+        <!-- <script src="js/counter.js"></script> -->
+        <!-- <script src="js/custom.js"></script> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <c:if test="${not empty message}">
+            <script>
+                alert("${message}");
+            </script>
+        </c:if>
 
-    
-</body>
+    </body>
 </html>

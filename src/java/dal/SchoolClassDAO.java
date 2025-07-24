@@ -62,7 +62,7 @@ public class SchoolClassDAO {
     
     public List<SchoolClass> getAllClassesBySchoolId(int schoolId) {
     List<SchoolClass> list = new ArrayList<>();
-    String sql = "SELECT schoolClassID, className, schoolID, gradeID FROM SchoolClass WHERE schoolID = ?";
+    String sql = "SELECT schoolClassID, className, schoolID FROM SchoolClass WHERE schoolID = ?";
     try (Connection conn = new DBContext().connection;
          PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setInt(1, schoolId);
@@ -71,8 +71,8 @@ public class SchoolClassDAO {
                 SchoolClass sc = new SchoolClass(
                     rs.getInt("SchoolClassID"),
                     rs.getString("ClassName"),
-                    rs.getInt("SchoolID"),
-                    rs.getInt("GradeID")
+                    rs.getInt("SchoolID")
+                   
                 );
                 list.add(sc);
             }
@@ -82,33 +82,42 @@ public class SchoolClassDAO {
     }
     return list;
 }
+    public SchoolClass getSchoolByUserId(int userId) {
+    SchoolClass sc = null;
+    String sql = "SELECT s.ClassName " +
+                 "FROM [User] u " +
+                 "JOIN School s ON u.SchoolClassID = s.SchoolClassID " +
+                 "WHERE u.UserID = ?";
+
+    try (Connection conn = new DBContext().connection;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            sc = new SchoolClass();
+            
+            sc.setClassName(rs.getString("SchoolName"));
+            
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return sc;
+}
     //test lấy dữ liệu
     public static void main(String[] args) {
-//        SchoolClassDAO sd = new SchoolClassDAO();
-//                int sID = 2; 
-//                SchoolClass s = sd.getSchoolClassByID(sID);
-//    
-//    if (s != null) {
-//        System.out.println("Lớp tìm thấy: " + s.toString());
-//    } else {
-//        System.out.println("Không tìm thấy lớp với ID: " + sID);
-//    }
-
-        SchoolClassDAO dao = new SchoolClassDAO();
-
-        int schoolId = 1; // Thay bằng ID trường học có thật trong cơ sở dữ liệu
+SchoolClassDAO dao = new SchoolClassDAO();
+        int schoolId = 1; // thay đổi ID theo dữ liệu thật trong DB
 
         List<SchoolClass> classes = dao.getAllClassesBySchoolId(schoolId);
 
+        for (SchoolClass sc : classes) {
+            System.out.println(sc);
+        }
+
         if (classes.isEmpty()) {
-            System.out.println("Không có lớp nào thuộc trường có ID = " + schoolId);
-        } else {
-            System.out.println("Danh sách các lớp thuộc trường ID = " + schoolId + ":");
-            for (SchoolClass sc : classes) {
-                System.out.println(" - Lớp ID: " + sc.getSchoolClassID()
-                        + ", Tên lớp: " + sc.getClassName()
-                        + ", GradeID: " + sc.getGradeID());
-            }
+            System.out.println("Không có lớp nào cho schoolID = " + schoolId);
         }
     }
     

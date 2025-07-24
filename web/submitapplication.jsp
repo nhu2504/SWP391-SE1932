@@ -1,14 +1,15 @@
 <%-- 
-    Document   : teacherdashboard
-    Created on : May 24, 2025, 11:31:10 PM
-    Author     : DO NGOC ANH HE180661
+    Document   : submitapplication
+    Created on : Jul 9, 2025, 11:44:20 PM
+    Author     : NGOC ANH
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page import="entity.ScheduleJoin"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="entity.User" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,7 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>EDURA System</title>
+        <title>Tạo đơn</title>
 
         <!-- CSS FILES -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -499,67 +500,117 @@
                 transition: color 0.3s ease;
             }
 
-            .class-row {
+            .container {
                 display: flex;
-                align-items: center;
-                margin-bottom: 6px;
+                justify-content: space-between;
+                gap: 50px;
             }
-
-            .class-name {
-                flex: 1; /* Tên lớp chiếm phần lớn còn lại */
-                padding-right: 10px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            .section {
+                flex: 1;
             }
-
-            .action-btn {
-                min-width: 50px; /* đảm bảo chiều rộng đồng đều */
-                text-align: center;
-                margin-left: 10px;
-                color: #007bff;
-                text-decoration: underline;
-                cursor: pointer;
+            h2 {
+                margin-bottom: 20px;
             }
-            .search-box {
-                display: flex;
-                align-items: center;
-                background-color: white;
-                border: 1px solid #ccc;
+            label {
+                display: block;
+                margin-top: 15px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 90%;
+                padding: 10px;
+                border: 2px solid black;
                 border-radius: 999px;
-                padding: 5px 10px;
-                gap: 8px;
-            }
-
-            .search-box input {
-                border: none;
-                outline: none;
-                background-color: transparent;
                 font-size: 14px;
             }
-
-            .search-box button {
+            .avatar {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .avatar img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                border: 2px solid black;
+            }
+            .btn {
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #f8b6b6;
                 border: none;
-                background: transparent;
+                border-radius: 999px;
                 cursor: pointer;
-                padding: 0;
-                outline: none;
+                font-weight: bold;
+            }
+            .btn:hover {
+                background-color: #f29494;
+            }
+            .sidebar a.active {
+                background-color: #ffcad4;
+                border-radius: 10px;
+                font-weight: bold;
+            }
+            /*css cho phần tải avata*/
+            .avatar {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                margin-bottom: 24px;
             }
 
-            .search-box i {
-                color: gray;
+            .avatar-img {
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #ccc;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                flex-shrink: 0;
             }
 
+            .avatar form {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .avatar form input[type="file"] {
+                font-size: 1rem;
+                padding: 6px 8px;
+                width: 220px;
+                max-width: 60vw;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+            }
+
+            .avatar form .btn {
+                background: #f8b6b6;
+                border: none;
+                border-radius: 999px;
+                padding: 8px 22px;
+                font-weight: bold;
+                color: #222;
+                transition: background 0.2s;
+                margin-left: 8px;
+            }
+
+            .avatar form .btn:hover {
+                background: #f29494;
+                color: #fff;
+            }
 
         </style>
     </head>
 
     <body id="top">
+        
         <div class="container-fluid d-none d-lg-block top-header">
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
                 <div class="col-lg-3 text-center">
-                    <a href="home" class="text-decoration-none">
+                    <a href="Home.jsp" class="text-decoration-none">
                         <div class="logo-container">
                             <img src="${pageContext.request.contextPath}/LogoServlet" alt="Logo Trung Tâm" class="logo-image"
                                  onerror="this.src='${pageContext.request.contextPath}/images/fallback.png';" />
@@ -600,10 +651,10 @@
             </div>
         </div>
         <div class="container-fluid schedule-title-container navbar position-relative">
-            <a href="home" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
+            <a href="dashboardattendservlet" class="btn btn-primary position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);">
                 <i class="bi bi-arrow-left"></i>
             </a>
-            <h3 class="schedule-title text-center w-100 m-0">Bảng Điều Khiển</h3>
+            <h3 class="schedule-title text-center w-100 m-0">Tạo đơn</h3>
         </div>
 
         <div >
@@ -619,81 +670,18 @@
                     </div>
                     <div class="username">${user.name}</div>
 
-                    <a href="Studentprofile"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
+
+                    <a href="profileservlet" class="active"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                     <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
+
                     <a href="#"><i class="fas fa-paper-plane"></i> Tạo đơn</a>
-                    
                     <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
 
                 <!-- Main -->
                 <div class="col-md-9 main">
-                    <div class="grid">
-                        <div class="infor-sche">
-                            <a href="showschedulestudent">
+                   
 
-                                <div class="card">
-                                    <i class="fas fa-calendar-alt"></i> Lịch học
-
-                                    <div>
-                                        <strong>Sắp diễn ra:</strong><br>
-                                        <c:choose>
-                                            <c:when test="${not empty sessionScope.nextSchedule}">
-                                                <span>${sessionScope.nextSchedule.classGroupName}</span><br>
-                                                <span>Thời gian: 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.startTime}" pattern="HH:mm"/> - <fmt:formatDate value="${sessionScope.nextSchedule.endTime}" pattern="HH:mm"/>
-                                                </span><br>
-                                                <span>Phòng: ${sessionScope.nextSchedule.roomName}</span><br>
-                                                <span>Ngày: 
-                                                    <fmt:formatDate value="${sessionScope.nextSchedule.dateLearn}" pattern="dd/MM/yyyy"/>
-                                                </span>
-                                                <br>
-                                                <span>Giáo viên: ${sessionScope.nextSchedule.teacherName}</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span>Không có lịch học sắp tới.</span>
-                                            </c:otherwise>
-                                        </c:choose>
-
-                                    </div>
-
-                                </div></a>
-                        </div>
-                        <div class="attend">
-
-                            <div class="card">
-                                <a href="#">
-                                    <i class="fas fa-calendar-check"></i>Xem Điểm Danh
-                                </a>
-                                <div>
-                                    
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="header-container">
-
-                            <a href="#"> <div class="card">
-                                    <i class="fas fa-users"></i> Danh sách lớp đang học</a>
-
-
-
-                            <div class="search-box">
-                                <input type="text" placeholder="Tìm kiếm lớp">
-                                <button><i class="fas fa-search"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <a href="#"><i class="fas fa-cloud-upload-alt"></i> Xem học phí</a>
-                        
-
-                    </div>
-                        <div class="card">
-                        <a href="#"><i class="fas fa-cloud-upload-alt"></i> Đăng ký lớp học mới</a>
-                        
-
-                    </div>
                 </div>
             </div>
         </div>
@@ -777,5 +765,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     
+
 </body>
 </html>

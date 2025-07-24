@@ -2,27 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controll_teacher;
+package controll;
 
-import dal.AttendanceDAO;
-import dal.ClassGroup_StudentDAO;
+import dal.RegisterDAO;
+import dal.UserDAO;
+import dal.reset;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author NGOC ANH
  */
-public class SubmitAttend extends HttpServlet {
+@WebServlet(name = "AcceptRegister", urlPatterns = {"/acceptregister"})
+public class AcceptRegister extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +41,10 @@ public class SubmitAttend extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SubmitAttend</title>");
+            out.println("<title>Servlet AcceptRegister</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SubmitAttend at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AcceptRegister at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,48 +76,45 @@ public class SubmitAttend extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
+        HttpSession session = request.getSession();
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
             response.sendRedirect("login_register.jsp");
             return;
         }
-        int classGroupId = Integer.parseInt(request.getParameter("classGroupId"));
-        ClassGroup_StudentDAO classGroupDAO = new ClassGroup_StudentDAO();
-        AttendanceDAO attendanceDAO = new AttendanceDAO();
-        List<User> students = classGroupDAO.getStudentsByClassGroupId(classGroupId);
-        Map<Integer, Boolean> attendanceMap = new HashMap<>();
-        for (User s : students) {
-            String param = request.getParameter("status_" + s.getId());
-            if (param != null) {
-                boolean isPresent = "1".equals(param);
-                attendanceMap.put(s.getId(), isPresent);
+        int userId = sessionUser.getId();
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserById(userId);
+        if (user == null) {
+            request.setAttribute("error", "Không tìm thấy thông tin người dùng");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+            return;
+        }
+        int regisID = Integer.parseInt(request.getParameter("regisID"));
+   
+
+        RegisterDAO dao = new RegisterDAO();
+        boolean update = dao.updateStatus(regisID, "Accepted");
+        boolean approve = dao.approveUserByProcedure(regisID);
+        User newUser = userDAO.getLatestUserInfo();
+        
+        if(update&&approve){
+            reset rs = new reset();
+            boolean mail =rs.sendApprovalEmail(
+                    
+                    newUser.getEmail(),
+                    newUser.getPassword(), 
+                    newUser.getName());
+            if(!mail){
+                System.out.println("Gửi mail thất bại cho: "+newUser.getEmail());
             }
-        }
-        try {
-            attendanceDAO.saveAttendance(classGroupId, attendanceMap);
-
-            // Gửi lại dữ liệu về cho trang JSP
-            request.setAttribute("students", students);
-            request.setAttribute("classGroupId", classGroupId);
-            request.setAttribute("attendanceMap", attendanceMap);
-            request.setAttribute("attendSuccess", true); // Flag để hiện alert nếu muốn
-
-            request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Lỗi lưu vào database: " + e.getMessage());
-            request.getRequestDispatcher("attendancestudent.jsp").forward(request, response);
+            session.setAttribute("SuccessMessage", "Tạo tài khoản thành công");
+        }else{
+            System.out.println("Duyệt thất bại");
+            session.setAttribute("FailMessage", "Tạo tài khoản thất bại");
         }
 
-//        try {
-//            attendanceDAO.saveAttendance(classGroupId, attendanceMap);
-//            // Chuyển hướng 
-//             response.sendRedirect("attendancestudent.jsp?attendSuccess=true");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.getWriter().println("Lỗi lưu vào database: " + e.getMessage());
-//        }
+        response.sendRedirect("listregister"); // quay lại trang danh sách
     }
 
     /**

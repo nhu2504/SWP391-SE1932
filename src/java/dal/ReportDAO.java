@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author i
+ * ngày update 20/7/2025
+ * @author Như
  */
 public class ReportDAO {
     public Map<Integer, Integer> getClassCountPerMonth(int year) {
