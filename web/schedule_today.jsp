@@ -85,35 +85,27 @@ Ngày update 3/7/2025-->
 <form method="get" action="admin">
     <input type="hidden" name="tab" value="todaySchedule" />
 
-    <div class="flex flex-wrap items-end gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Chọn tuần -->
-        <div class="form-group" style="width: 350px;">
-            <label>Chọn tuần:</label>
-            <select name="weekStart" onchange="this.form.submit()" class="form-control w-full">
+        <div>
+            <label class="block font-semibold mb-1">Chọn tuần:</label>
+            <select name="weekStart" onchange="this.form.submit()" class="w-full border rounded px-3 py-2">
                 <c:forEach var="ws" items="${weekStartList}">
-                    <fmt:formatDate var="wsFormatted" value="${ws}" pattern="yyyy-MM-dd"/>
-                    <%
-                        java.util.Date wsDate = (java.util.Date) pageContext.findAttribute("ws");
-                        java.util.Date weDate = new java.util.Date(wsDate.getTime() + 6L * 24 * 60 * 60 * 1000);
-                        pageContext.setAttribute("weDate", weDate);
-                    %>
-                    <option value="${wsFormatted}" ${ws eq selectedWeekStart ? 'selected' : ''}>
-                        <fmt:formatDate value="${ws}" pattern="dd/MM/yyyy"/>
-                        -
-                        <fmt:formatDate value="${weDate}" pattern="dd/MM/yyyy"/>
+                    <option value="${ws}" ${ws.toString() == selectedWeekStart.toString() ? 'selected' : ''}>
+                        ${weekDisplayMap[ws]}
                     </option>
+
                 </c:forEach>
             </select>
+
         </div>
 
         <!-- Nhập ngày -->
-        <div class="form-group flex gap-2 items-end">
-            <div>
-                <label>Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
-                <input type="date" name="anyDate" value="${param.anyDate}" class="form-control"/>
-            </div>
-            <div>
-                <button type="submit" class="btn1 mb-1">Xem</button>
+        <div>
+            <label class="block font-semibold mb-1">Hoặc nhập ngày bất kỳ trong tuần muốn xem:</label>
+            <div class="flex gap-2">
+                <input type="date" name="anyDate" value="${param.anyDate}" class="border rounded px-3 py-2 w-full"/>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Xem</button>
             </div>
         </div>
     </div>
@@ -124,9 +116,9 @@ Ngày update 3/7/2025-->
     <thead>
         <tr>
             <th>Ca học</th>
-            <c:forEach var="day" items="${weekOrder}">
-                <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
-                <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
+                <c:forEach var="day" items="${weekOrder}">
+                    <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
+                    <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
                 <th class="${wDate == tDate ? 'today' : ''}">
                     <c:out value="${weekdays[day]}" default="Thứ ${day}" />
                 </th>
@@ -134,9 +126,9 @@ Ngày update 3/7/2025-->
         </tr>
         <tr>
             <th></th>
-            <c:forEach var="day" items="${weekOrder}">
-                <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
-                <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
+                <c:forEach var="day" items="${weekOrder}">
+                    <fmt:formatDate var="wDate" value="${weekdayDates[day]}" pattern="yyyy-MM-dd"/>
+                    <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
                 <th class="${wDate == tDate ? 'today' : ''}">
                     <fmt:formatDate value="${weekdayDates[day]}" pattern="dd/MM/yyyy"/>
                 </th>
@@ -158,11 +150,11 @@ Ngày update 3/7/2025-->
                     <fmt:formatDate var="tDate" value="${todayDate}" pattern="yyyy-MM-dd"/>
                     <td class="${wDate == tDate ? 'today' : ''}">
                         <c:forEach var="entry" items="${weeklySchedules}">
-                            <c:if test="${entry[0] == day && entry[1] == shift.id}">
+                            <c:if test="${entry[1] == day && entry[2] == shift.id}">
                                 <div class="mb-2">
-                                    <strong>${entry[2]}</strong><br/>
-                                    GV: ${entry[3]}<br/>
-                                    Phòng: ${entry[4]}
+                                    <strong>${entry[3]}</strong><br/>
+                                    GV: ${entry[4]}<br/>
+                                    Phòng: ${entry[5]}
                                 </div>
                             </c:if>
                         </c:forEach>

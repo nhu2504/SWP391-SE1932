@@ -64,7 +64,7 @@
 
         <div>
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-gray-700">Danh Sách Học Sinh</h2>
+                <h2 class="text-xl font-semibold text-gray-700">Danh Sách Học Sinh Ngoài Lớp</h2>
                 <div>
                     <span id="selectedCount" class="text-sm text-blue-600 font-medium">
                     Đã chọn: 0 học sinh

@@ -78,7 +78,7 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("documents", documentDAO.getDocumentsByGradeAndSubject(gradeId, subjectId));
 
             // 4. Danh sách tất cả khóa học
-            request.setAttribute("classes", tutoringClassDAO.getClasses(null));
+            request.setAttribute("classes", tutoringClassDAO.getTutoringClassesByHotAndStatus(null));
 
             // 5. Banner và các thông số trung tâm
             request.setAttribute("banners", bannerDAO.getAllBanners());
@@ -242,24 +242,10 @@ for (TutoringClass tc : allTutoringClasses) {
 
     if (groupList != null && !groupList.isEmpty()) {
         for (Object[] g : groupList) {
-            // g[0]: ClassGroupName
-            // g[1]: MaxStudent
-            // g[2]: ScheduleSummary (e.g., "Thứ 2 - Phòng A - 08:00-09:30; ...")
-            // g[3]: TeacherName
-            // g[4]: StartTime (dùng tính duration)
-            // g[5]: EndTime
-
             sb
                 .append(g[0]).append("~")                        // groupName
                 .append(g[1]).append("~")                        // maxStudent
-//                .append(g[2] != null ? g[2] : "Không có lịch").append("~")  // lịch học gộp
                 .append(g[3] != null ? g[3] : "Không xác định").append(";"); // teacherName
-
-            // DEBUG log
-            System.out.println("DEBUG: ClassGroup=" + g[0] +
-                               ", Max=" + g[1] +
-                               ", Lịch=" + g[2] +
-                               ", GV=" + g[3]);
         }
 
         // Tính duration từ ca đầu tiên (g[4], g[5])

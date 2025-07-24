@@ -9,7 +9,6 @@ import entity.Option;
 import entity.ScheduleJoin;
 import entity.ScheduleStu;
 import entity.ScheduleTemplate;
-import java.beans.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
@@ -17,17 +16,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  *
@@ -128,54 +124,67 @@ public class ScheduleDAO {
      *
      * @param weekStart ngày bắt đầu của tuần cần lấy lịch (java.sql.Date)
      * @return Danh sách Object[] chứa thông tin lịch học từng lớp trong tuần đó
-     */
+     */    
     public List<Object[]> getWeeklyScheduleByWeek(Date weekStart) {
-        List<Object[]> list = new ArrayList<>();
-        String sql = """
-            SELECT 
-                st.DayOfWeek,
-                sl.ShiftID,
-                cg.ClassGroupName,
-                u.FullName,
-                r.RoomName,
-                sl.Start_time,
-                sl.End_time
-            FROM ScheduleTemplate st
-            JOIN ClassGroup cg ON st.ClassGroupID = cg.ClassGroupID
-            JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
-            JOIN [User] u ON st.TeacherID = u.UserID
-            JOIN Room r ON st.RoomID = r.id
-            JOIN Shiftlearn sl ON st.ShiftID = sl.ShiftID
-            WHERE (tc.StartDate <= ? AND tc.EndDate >= ?)
-            ORDER BY st.DayOfWeek, sl.ShiftID
-        """;
+    List<Object[]> list = new ArrayList<>();
+    String sql = """
+        SELECT 
+            s.DateLearn,
+            s.ShiftID,
+            cg.ClassGroupName,
+            u.FullName,
+            r.RoomName,
+            sl.Start_time,
+            sl.End_time
+        FROM Schedule s
+        JOIN ClassGroup cg ON s.ClassGroupID = cg.ClassGroupID
+        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+        JOIN [User] u ON s.UserID = u.UserID
+        JOIN Room r ON s.RoomID = r.id
+        JOIN Shiftlearn sl ON s.ShiftID = sl.ShiftID
+        WHERE s.DateLearn BETWEEN ? AND ?
+        ORDER BY s.DateLearn, sl.Start_time
+    """;
 
-        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setDate(1, new java.sql.Date(weekStart.getTime()));
+        // Tính ngày cuối tuần (Thứ 7)
+        Date weekEnd = new Date(weekStart.getTime() + 6L * 24 * 60 * 60 * 1000);
 
-            Date weekEnd = new Date(weekStart.getTime() + 6L * 24 * 60 * 60 * 1000);
-            ps.setDate(2, new java.sql.Date(weekEnd.getTime()));
+        ps.setDate(1, new java.sql.Date(weekStart.getTime()));
+        ps.setDate(2, new java.sql.Date(weekEnd.getTime()));
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Object[]{
-                        rs.getInt("DayOfWeek"),
-                        rs.getInt("ShiftID"),
-                        rs.getString("ClassGroupName"),
-                        rs.getString("FullName"),
-                        rs.getString("RoomName"),
-                        rs.getTime("Start_time"),
-                        rs.getTime("End_time")
-                    });
-                }
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Date dateLearn = rs.getDate("DateLearn");
+
+                // Tính DayOfWeek theo format của bạn (1 = CN, 2 = Thứ 2, ..., 7 = Thứ 7)
+                LocalDate localDate = ((java.sql.Date) dateLearn).toLocalDate(); // ✅ đơn giản
+
+                int dayOfWeek = localDate.getDayOfWeek().getValue(); // 1 (Thứ 2) -> 7 (Chủ nhật)
+                // Chuyển về format của bạn: 1 = Chủ nhật, 2-7 = Thứ 2 -> Thứ 7
+                int dayOfWeekFormatted = (dayOfWeek % 7) + 1;
+
+                list.add(new Object[]{
+                    dateLearn,
+                    dayOfWeekFormatted,
+                    rs.getInt("ShiftID"),
+                    rs.getString("ClassGroupName"),
+                    rs.getString("FullName"),
+                    rs.getString("RoomName"),
+                    rs.getTime("Start_time"),
+                    rs.getTime("End_time")
+                });
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
+
 
     /**
      * Lấy danh sách ngày đầu tuần (từ tuần hiện tại, 4 tuần trước, 5 tuần sau)
@@ -212,62 +221,58 @@ public class ScheduleDAO {
      *
      * @return Danh sách Object[] chứa chi tiết từng lịch học
      */
-    public List<Object[]> getWeeklySchedule() {
-    List<Object[]> list = new ArrayList<>();
-    String sql = """
-        SELECT 
-            cg.ClassGroupName,
-            u.FullName,
-            (
-                SELECT STRING_AGG(
-                    N'Thứ ' + CAST(ISNULL(st2.DayOfWeek, 0) AS VARCHAR) + ' - ' +
-                    ISNULL(r2.roomName, N'Không rõ phòng') + ' - ' +
-                    ISNULL(CONVERT(VARCHAR(5), sl2.Start_time, 108), '??') + ' - ' +
-                    ISNULL(CONVERT(VARCHAR(5), sl2.End_time, 108), '??'),
-                    '; '
-                )
-                FROM ScheduleTemplate st2
-                JOIN Room r2 ON st2.RoomID = r2.id
-                JOIN ShiftLearn sl2 ON st2.ShiftID = sl2.ShiftID
-                WHERE st2.ClassGroupID = cg.ClassGroupID
-            ) AS ScheduleInfo,
-            s.SubjectName,
-            tc.ClassName,
-            g.GradeName
-        FROM ClassGroup cg
-        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
-        JOIN Grade g ON tc.GradeID = g.GradeID
-        JOIN Subjects s ON tc.SubjectID = s.SubjectID
-        JOIN [User] u ON cg.TeacherID = u.UserID
-        ORDER BY cg.ClassGroupName
-    """;
-
-    try (Connection conn = new DBContext().connection;
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-            list.add(new Object[]{
-                null,              // [0] DayOfWeek - để giữ đúng thứ tự Object[]
-                null,              // [1] ShiftID
-                rs.getString("ClassGroupName"), // [2]
-                rs.getString("FullName"),       // [3]
-                null,              // [4] RoomName
-                null,              // [5] Start_time
-                null,              // [6] End_time
-                rs.getString("SubjectName"),    // [7]
-                rs.getString("ClassName"),      // [8]
-                rs.getString("GradeName"),      // [9]
-                rs.getString("ScheduleInfo")    // bổ sung để hiển thị gộp
-            });
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
+//    public List<Object[]> getWeeklySchedule() {
+//    List<Object[]> list = new ArrayList<>();
+//    String sql = """
+//        SELECT 
+//            cg.ClassGroupName,
+//            u.FullName,
+//            s.SubjectName,
+//            g.GradeName,
+//            STRING_AGG(
+//                N'Thứ ' + CAST(DATEPART(WEEKDAY, sc.DateLearn) AS VARCHAR) + ' - ' +
+//                ISNULL(r2.roomName, N'Không rõ phòng') + ' - ' +
+//                ISNULL(CONVERT(VARCHAR(5), sl2.Start_time, 108), '??') + ' - ' +
+//                ISNULL(CONVERT(VARCHAR(5), sl2.End_time, 108), '??'),
+//                '; '
+//            ) AS ScheduleDetails
+//        FROM Schedule sc
+//        JOIN ClassGroup cg ON sc.ClassGroupID = cg.ClassGroupID
+//        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+//        JOIN Subjects s ON tc.SubjectID = s.SubjectID
+//        JOIN Grade g ON tc.GradeID = g.GradeID
+//        JOIN [User] u ON cg.TeacherID = u.UserID
+//        JOIN ShiftLearn sl2 ON sc.ShiftID = sl2.ShiftID
+//        JOIN Room r2 ON sc.RoomID = r2.id
+//        WHERE sc.DateLearn BETWEEN 
+//              DATEADD(DAY, -DATEPART(WEEKDAY, GETDATE()) + 2, CAST(GETDATE() AS DATE)) AND 
+//              DATEADD(DAY, 8 - DATEPART(WEEKDAY, GETDATE()), CAST(GETDATE() AS DATE))
+//        GROUP BY cg.ClassGroupName, u.FullName, s.SubjectName, g.GradeName
+//        ORDER BY cg.ClassGroupName;
+//    """;
+//
+//    try (Connection conn = new DBContext().connection;
+//         PreparedStatement ps = conn.prepareStatement(sql);
+//         ResultSet rs = ps.executeQuery()) {
+//
+//        while (rs.next()) {
+//            Object[] data = new Object[5];
+//            data[0] = rs.getString("ClassGroupName");
+//            data[1] = rs.getString("FullName");
+//            data[2] = rs.getString("SubjectName");
+//            data[3] = rs.getString("GradeName");
+//            data[4] = rs.getString("ScheduleDetails");
+//            list.add(data);
+//        }
+//
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//    }
+//
+//    return list;
+//}
+//
+//
     public List<ScheduleTemplate> getTemplatesByGroupId(int groupId) throws SQLException {
     List<ScheduleTemplate> list = new ArrayList<>();
     String sql = "SELECT DayOfWeek, ShiftID, RoomID, TeacherID FROM ScheduleTemplate WHERE ClassGroupID = ?";
@@ -285,6 +290,61 @@ public class ScheduleDAO {
             list.add(t);
         }
     }
+    return list;
+}
+public List<Object[]> getWeeklySchedule(LocalDate weekStart) {
+    List<Object[]> list = new ArrayList<>();
+    String sql = """
+        SELECT 
+            cg.ClassGroupName,
+            u.FullName,
+            s.SubjectName,
+            g.GradeName,
+            STRING_AGG(
+                N'Thứ ' + CAST(DATEPART(WEEKDAY, sc.DateLearn) AS VARCHAR) + ' - ' +
+                ISNULL(r2.roomName, N'Không rõ phòng') + ' - ' +
+                ISNULL(CONVERT(VARCHAR(5), sl2.Start_time, 108), '??') + ' - ' +
+                ISNULL(CONVERT(VARCHAR(5), sl2.End_time, 108), '??'),
+                '; '
+            ) AS ScheduleDetails
+        FROM Schedule sc
+        JOIN ClassGroup cg ON sc.ClassGroupID = cg.ClassGroupID
+        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+        JOIN Subjects s ON tc.SubjectID = s.SubjectID
+        JOIN Grade g ON tc.GradeID = g.GradeID
+        JOIN [User] u ON cg.TeacherID = u.UserID
+        JOIN ShiftLearn sl2 ON sc.ShiftID = sl2.ShiftID
+        JOIN Room r2 ON sc.RoomID = r2.id
+        WHERE sc.DateLearn BETWEEN ? AND DATEADD(DAY, 6, ?)
+        GROUP BY cg.ClassGroupName, u.FullName, s.SubjectName, g.GradeName
+        ORDER BY cg.ClassGroupName;
+    """;
+
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        
+java.sql.Date sqlDate = java.sql.Date.valueOf(weekStart);
+ps.setDate(1, sqlDate);
+ps.setDate(2, sqlDate);
+
+ // để tính ngày kết thúc (start + 6)
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Object[] data = new Object[5];
+            data[0] = rs.getString("ClassGroupName");
+            data[1] = rs.getString("FullName");
+            data[2] = rs.getString("SubjectName");
+            data[3] = rs.getString("GradeName");
+            data[4] = rs.getString("ScheduleDetails");
+            list.add(data);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
     return list;
 }
 
@@ -471,6 +531,53 @@ public class ScheduleDAO {
         }
         return list;
     }
+    
+    public int getRemainingScheduleCount(int groupId, Date fromDate) {
+    int count = 0;
+    String sql = """
+        SELECT COUNT(*) FROM Schedule
+        WHERE ClassGroupID = ? AND DateLearn >= ?
+    """;
+
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, groupId);
+        ps.setDate(2, new java.sql.Date(fromDate.getTime()));
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return count;
+}
+    
+    public Date getLastScheduleDate(int groupId) {
+    Date lastDate = null;
+    String sql = """
+        SELECT MAX(DateLearn) FROM Schedule
+        WHERE ClassGroupID = ?
+    """;
+
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, groupId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                lastDate = rs.getDate(1);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lastDate;
+}
+
+
     
     
 

@@ -14,15 +14,12 @@
 
 
     <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Quản lý Khoá Học</h1>
+        <div class="flex justify-end mb-8">
+    <button onclick="openAddCourseModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+        <i class="fas fa-plus mr-2"></i> Thêm khoá học mới
+    </button>
+</div>
 
-            </div>
-            <button onclick="openAddCourseModal()" class="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-plus mr-2"></i> Thêm khoá học mới
-            </button>
-        </div>
         <div class="flex flex-col md:flex-row gap-4 mb-6">
             <input type="text" id="searchClass" placeholder="🔍 Tìm khoá..." class="form-control w-full md:w-1/3">
 

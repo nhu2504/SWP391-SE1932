@@ -61,7 +61,7 @@ Ngày update 3/7/2025-->
             <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-gray-500 text-sm font-medium">Khóa học</div>
+                        <div class="text-gray-500 text-sm font-medium">Khóa học đang mở</div>
                         <div class="text-3xl font-bold mt-1">${classesCount}</div>
 
                     </div>
@@ -81,20 +81,20 @@ Ngày update 3/7/2025-->
 
             <!-- Growth Chart -->
             <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="font-semibold text-lg">Tăng trưởng số lượng</h2>
-        <form id="yearFormGrowth" class="flex items-center gap-2">
-            <input type="hidden" name="tab" value="overview">
-            <label for="yearSelectGrowth" class="font-semibold">Chọn năm:</label>
-            <select name="selectedYear" id="yearSelectGrowth" class="border px-2 py-1 rounded" onchange="updateGrowthChart(this.value)">
-                <c:forEach var="year" items="${yearList}">
-                    <option value="${year}" ${year == selectedYear ? 'selected' : ''}>${year}</option>
-                </c:forEach>
-            </select>
-        </form>
-    </div>
-    <canvas id="growthChart" height="250"></canvas>
-</div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-lg">Tăng trưởng số lượng</h2>
+                    <form id="yearFormGrowth" class="flex items-center gap-2">
+                        <input type="hidden" name="tab" value="overview">
+                        <label for="yearSelectGrowth" class="font-semibold">Chọn năm:</label>
+                        <select name="selectedYear" id="yearSelectGrowth" class="border px-2 py-1 rounded" onchange="updateGrowthChart(this.value)">
+                            <c:forEach var="year" items="${yearList}">
+                                <option value="${year}" ${year == selectedYear ? 'selected' : ''}>${year}</option>
+                            </c:forEach>
+                        </select>
+                    </form>
+                </div>
+                <canvas id="growthChart" height="250"></canvas>
+            </div>
 
         </div>
         <!-- Second row widgets -->
@@ -132,35 +132,42 @@ Ngày update 3/7/2025-->
             <!-- Teacher Schedule -->
             <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-semibold text-lg">Lịch dạy giáo viên</h2>
+                    <h2 class="font-semibold text-lg">Lịch dạy giáo viên hôm nay</h2>
                     <a href="${pageContext.request.contextPath}/admin?tab=teacherSchedule" class="text-blue-500 text-sm">Xem tất cả</a>
                 </div>
 
                 <div class="space-y-4">
                     <c:if test="${not empty teacherSchedules}">
-                        <c:set var="firstTeacher" value="${teacherSchedules[0][0]}" />
-                        <div class="border-l-4 border-blue-500 pl-3 mb-2">
-                            <div class="font-medium">${firstTeacher}</div>
-
-                            <c:forEach var="entry" items="${teacherSchedules}">
-                                <c:if test="${entry[0] eq firstTeacher}">
-                                    <div class="text-sm text-gray-500">
-
-                                        ${weekdays[entry[3]]}: ${entry[1]} ${entry[2]}
-                                        (<fmt:formatDate value="${entry[4]}" pattern="HH:mm"/> - 
-                                        <fmt:formatDate value="${entry[5]}" pattern="HH:mm"/>)
-                                    </div>
-                                </c:if>
-                            </c:forEach>
-
-                        </div> <!-- Đóng khối lịch của 1 giáo viên -->
+                        <c:set var="currentTeacher" value="" />
+                        <c:forEach var="entry" items="${teacherSchedules}">
+                            <c:if test="${entry[0] ne currentTeacher}">
+                                <c:set var="currentTeacher" value="${entry[0]}" />
+                                <!-- Hiển thị tên giáo viên -->
+                                <div class="border-l-4 border-blue-500 pl-3">
+                                    <div class="font-medium mb-1">${currentTeacher}</div>
+                                    <!-- Lặp lại lịch cho giáo viên này -->
+                                    <c:forEach var="subEntry" items="${teacherSchedules}">
+                                        <c:if test="${subEntry[0] eq currentTeacher}">
+                                            <div class="text-sm text-gray-500">
+                                                ${weekdays[subEntry[3]]} - Môn ${subEntry[1]} - Lớp ${subEntry[2]} -
+                                                Thời gian: <fmt:formatDate value="${subEntry[4]}" pattern="HH:mm"/> - 
+                                                <fmt:formatDate value="${subEntry[5]}" pattern="HH:mm"/>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </c:if>
+                    <c:if test="${empty teacherSchedules}">
+                        <div class="text-gray-500 text-sm">Không có lịch dạy hôm nay.</div>
                     </c:if>
                 </div>
             </div>
             <!-- Class Schedule -->
             <div class="card bg-white rounded-lg shadow p-6 hover:shadow-md transition duration-300">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-semibold text-lg">Lịch học lớp</h2>
+                    <h2 class="font-semibold text-lg">Lịch học lớp tuần này</h2>
                     <a href="${pageContext.request.contextPath}/admin?tab=scheduleClass" class="text-blue-500 text-sm">Xem tất cả</a>
                 </div>
 
@@ -168,24 +175,24 @@ Ngày update 3/7/2025-->
                     <c:forEach var="entry" items="${weeklySchedules}" varStatus="loop">
                         <c:if test="${param.showAll eq 'true' || loop.index lt 3}">
                             <div class="border-l-4 pl-3" style="border-color: #6366f1;">
-                                <div class="font-medium text-base">${entry[2]}</div>                                
-                                <div class="text-sm text-gray-500">Giáo viên: ${entry[3]}</div>
+                                <div class="font-medium text-base">${entry[0]}</div>                                
+                                <div class="text-sm text-gray-500">Giáo viên: ${entry[1]}</div>
                                 <div class="text-sm text-gray-500">Lịch học:
-                                <c:forTokens var="line" items="${entry[10]}" delims=";">
-                        <c:set var="day" value="${fn:substringBefore(line, ' -')}"/>
-                        <c:set var="temp" value="${fn:substringAfter(line, ' -')}"/>
-                        <c:set var="room" value="${fn:substringBefore(temp, ' -')}"/>
-                        <c:set var="time" value="${fn:substringAfter(temp, ' -')}"/>
-                        <li>
-                            <c:choose>
-                                <c:when test="${day eq 'Thứ 1'}">Chủ nhật</c:when>
-                                <c:otherwise>${day}</c:otherwise>
-                            </c:choose>
-                            - Phòng: ${room} - Thời gian: ${time}
-                        </li>
-                    </c:forTokens>
+                                    <c:forTokens var="line" items="${entry[4]}" delims=";">
+                                        <c:set var="day" value="${fn:substringBefore(line, ' -')}"/>
+                                        <c:set var="temp" value="${fn:substringAfter(line, ' -')}"/>
+                                        <c:set var="room" value="${fn:substringBefore(temp, ' -')}"/>
+                                        <c:set var="time" value="${fn:substringAfter(temp, ' -')}"/>
+                                        <li>
+                                            <c:choose>
+                                                <c:when test="${day eq 'Thứ 1'}">Chủ nhật</c:when>
+                                                <c:otherwise>${day}</c:otherwise>
+                                            </c:choose>
+                                            - Phòng: ${room} - Thời gian: ${time}
+                                        </li>
+                                    </c:forTokens>
                                 </div>
-                                
+
                             </div>
                         </c:if>
                     </c:forEach>

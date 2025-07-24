@@ -1044,13 +1044,14 @@ Ngày update 23/6/2025-->
             <div class="row align-items-center py-0 px-xl-5">
                 <!-- Logo -->
                 <div class="col-lg-4 text-center">
-                    <div class="logo-container d-flex align-items-center justify-content-center position-relative">
-                        <img src="${pageContext.request.contextPath}/LogoServlet"
-                             alt="Logo Trung Tâm"
-                             class="logo-image"
-                             style="max-height:120px;max-width:100%;"/>
-
+                    <div class="logo-container d-flex align-items-center justify-content-start position-relative">
+                        <a href="${pageContext.request.contextPath}/admin">
+                            <img src="${pageContext.request.contextPath}/LogoServlet"
+                                 alt="Logo Trung Tâm"
+                                 class="logo-image">
+                        </a>
                     </div>
+
                     <h6 class="slogan mb-0 ml-2 d-flex align-items-center small">
                         ${centerName}
 
@@ -1722,10 +1723,10 @@ Ngày update 23/6/2025-->
                                     <p><i class="fas fa-fire text-danger mr-2"></i><strong>Loại khóa học:</strong> <span id="modalIsHot"></span></p>
                                     <p><i class="fas fa-layer-group text-primary mr-2"></i><strong>Lớp:</strong> <span id="modalgradeName"></span></p>
                                     <p><i class="fas fa-book text-info mr-2"></i><strong>Môn học:</strong> <span id="modalSubjectName"></span></p>
-                                    
+
                                 </div>
                                 <div class="col-md-6">
-                                    
+
                                     <p><i class="fas fa-calendar-plus text-secondary mr-2"></i><strong>Ngày bắt đầu:</strong> <span id="modalStartDate"></span></p>
                                     <p><i class="fas fa-calendar-check text-secondary mr-2"></i><strong>Ngày kết thúc:</strong> <span id="modalEndDate"></span></p>
                                     <p><i class="fas fa-money-bill text-success mr-2"></i><strong>Học phí:</strong> <span id="modalTuitionFee"></span></p>
@@ -2319,7 +2320,7 @@ Ngày update 23/6/2025-->
             document.getElementById('modalCourseDescrip').textContent = get('descrip') || 'Chưa có mô tả';
             document.getElementById('modalIsHot').textContent = (get('ishot') === "true" || get('ishot') === "1") ? "Nổi bật" : "Quanh năm";
             document.getElementById('modalgradeName').textContent = get('gradename') || 'Chưa xác định';
-            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';            
+            document.getElementById('modalSubjectName').textContent = get('subject') || 'Chưa xác định';
             document.getElementById('modalStartDate').textContent = get('startdate') || 'Chưa xác định';
             document.getElementById('modalEndDate').textContent = get('enddate') || 'Chưa xác định';
 
@@ -2350,7 +2351,7 @@ Ngày update 23/6/2025-->
             let html = '<p>Chưa có nhóm lớp nào.</p>';
 
             if (classGroupsStr) {
-                const groupsArr = classGroupsStr.split(';').filter(Boolean);                
+                const groupsArr = classGroupsStr.split(';').filter(Boolean);
                 if (groupsArr.length > 0) {
                     html = `
                 <h6>Danh sách nhóm lớp:</h6>
@@ -2374,8 +2375,8 @@ Ngày update 23/6/2025-->
                             return str.length >= 5 ? str.substring(0, 5) : str;
                         }
                         const groupName = parts[0];
-                        const maxStudent = parts[1];                       
-                        const teacher = parts[2];                       
+                        const maxStudent = parts[1];
+                        const teacher = parts[2];
                         html += `
     <tr>
         

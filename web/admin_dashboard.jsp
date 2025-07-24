@@ -228,11 +228,13 @@ Ngày update 3/7/2025-->
                 <!-- Logo -->
                 <div class="col-lg-4 text-start pl-0">
                     <div class="logo-container d-flex align-items-center justify-content-start position-relative">
-                        <img src="${pageContext.request.contextPath}/LogoServlet"
-                             alt="Logo Trung Tâm"
-                             class="logo-image"
-                             >
+                        <a href="${pageContext.request.contextPath}/home">
+                            <img src="${pageContext.request.contextPath}/LogoServlet"
+                                 alt="Logo Trung Tâm"
+                                 class="logo-image">
+                        </a>
                     </div>
+
                     <h6 class="slogan mb-0 mt-2 d-flex align-items-center small">
                         ${centerName}
                     </h6>
@@ -276,45 +278,39 @@ Ngày update 3/7/2025-->
             <div class="sidebar w-64 bg-white shadow-md relative md:relative z-50 flex flex-col">
                 <!-- Khu vực scrollable: toàn bộ menu -->
                 <div class="p-4 overflow-y-auto flex-1">
-                    <div class="mb-6">
-                        <div class="relative">
-                            <input type="text" placeholder="Tìm kiếm..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-                        </div>
-                    </div>
 
                     <div class="space-y-1">
-                        <a href="${pageContext.request.contextPath}/admin" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-indigo-700" data-group="groupOverview">
                             <i class="fas fa-tachometer-alt w-5"></i>
                             <span>Tổng quan</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="student">
                             <i class="fas fa-users w-5"></i>
                             <span>Quản lý học sinh</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="teacher">
                             <i class="fas fa-chalkboard-teacher w-5"></i>
                             <span>Quản lý giáo viên</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=courseManagement" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin?tab=courseManagement" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="courseManagement">
                             <i class="fas fa-book w-5"></i>
                             <span>Quản lý khoá học</span>
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin?tab=courseList" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin?tab=courseList" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-group="classManagementGroup">
                             <i class="fas fa-calendar-alt w-5"></i>
                             <span>Quản lí lớp học</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="payment">
                             <i class="fas fa-money-bill-wave w-5"></i>
                             <span>Quản lý học phí</span>
                         </a>
-                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="report">
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Báo cáo thống kê</span>
                         </a>
 
                         <!-- Cài đặt hệ thống -->
-                        <a href="${pageContext.request.contextPath}/admin?tab=setting" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
+                        <a href="${pageContext.request.contextPath}/admin?tab=setting" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700" data-tab="setting">
                             <i class="fas fa-cog w-5"></i>
                             <span>Cài đặt</span>
                         </a>
@@ -411,7 +407,7 @@ Ngày update 3/7/2025-->
                         <c:when test="${tab eq 'studentNotInClass'}">
                             <jsp:include page="list_student_not_in_class.jsp" />
                         </c:when>
-                        
+
                         <c:otherwise>
                             <jsp:include page="overview.jsp" />
                         </c:otherwise>
@@ -476,24 +472,54 @@ Ngày update 3/7/2025-->
 
         <script>
             $(document).ready(function () {
-//                $('.sidebar-settings-toggle').on('click', function (e) {
-//                    e.preventDefault();
-//                    var submenu = $(this).closest('.sidebar-item.group').find('.submenu-settings');
-//                    submenu.slideToggle(200);
-//                    $(this).find('.fa-chevron-down').toggleClass('fa-chevron-up');
-//                });
-
                 const tab = new URLSearchParams(window.location.search).get("tab") || "overview";
 
-                // Set tiêu đề chính theo tab
-                if (tab === "setting") {
-                    $('#main-title').text("Cài đặt");
+                // Cập nhật tiêu đề
+                const titleMap = {
+                    "setting": "Cài đặt",
+                    "todaySchedule": "Tổng quan > Lịch học hôm nay",
+                    "teacherSchedule": "Tổng quan > Lịch dạy giáo viên",
+                    "scheduleClass": "Tổng quan > Lịch học lớp tuần này",
+                    "courseManagement": "Quản lí khoá học",
+                    "classManagement": "Quản lí lớp học",
+                    "courseList": "Quản lí lớp học",
+                    "studentListInClass": "Quản lí lớp học",
+                    "studentNotInClass": "Quản lí lớp học",
+                    "overview": "Tổng quan"
+                };
+                $('#main-title').text(titleMap[tab] || "Tổng quan");
 
-                } else if (tab === "todaySchedule") {
-                    $('#main-title').text("Tổng quan > Lịch học hôm nay");
-                } else {
-                    $('#main-title').text("Tổng quan");
-                }
+                // Các nhóm tab thuộc cùng menu "Quản lí lớp học"
+                const classTabGroup = ["courseList", "classManagement", "studentListInClass", "studentNotInClass"];
+                const groupOverview = ["overview", "teacherSchedule", "todaySchedule", "scheduleClass"];
+
+                $(".sidebar-item").each(function () {
+                    const group = $(this).data("group");
+                    const isMatch = (
+                            (group === "classManagementGroup" && classTabGroup.includes(tab)) ||
+                            ($(this).data("tab") === tab)
+                            );
+
+                    if (isMatch) {
+                        $(this).addClass("active text-indigo-700");
+                    } else {
+                        $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
+                    }
+                });
+
+                $(".sidebar-item").each(function () {
+                    const group = $(this).data("group");
+                    const isMatch = (
+                            (group === "groupOverview" && groupOverview.includes(tab)) ||
+                            ($(this).data("tab") === tab)
+                            );
+
+                    if (isMatch) {
+                        $(this).addClass("active text-indigo-700");
+                    } else {
+                        $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
+                    }
+                });
             });
 
         </script>

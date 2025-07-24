@@ -17,9 +17,10 @@ public class TutoringClassDAO {
      * @param isHot true: lớp nổi bật, false: lớp thường, null: tất cả
      * @return danh sách lớp học
      */
-    public List<TutoringClass> getClasses(Boolean isHot) {
+    public List<TutoringClass> getClasses() {
         List<TutoringClass> classes = new ArrayList<>();
-        String sql = "SELECT * FROM TutoringClass ORDER BY CASE isActive "
+        String sql = "SELECT * FROM TutoringClass "
+                + "ORDER BY CASE isActive "
                 + "WHEN 0 THEN 1 " +
                 // Sắp mở
                 "WHEN 1 THEN 2 "
@@ -27,17 +28,7 @@ public class TutoringClassDAO {
                 "WHEN 2 THEN 3 "
                 + // Đã đóng
                 "ELSE 3 END";
-
-        if (isHot != null) {
-            sql += " WHERE isHot = ?";
-        }
-
         try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            if (isHot != null) {
-                ps.setBoolean(1, isHot);
-            }
-
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 TutoringClass cls = new TutoringClass();
@@ -61,19 +52,62 @@ public class TutoringClassDAO {
 
         return classes;
     }
+    
+    public List<TutoringClass> getTutoringClassesByHotAndStatus(Boolean isHot) {
+    List<TutoringClass> classes = new ArrayList<>();
+        String sql = """
+            SELECT TutoringClassID, ClassName, ImageTutoring, Descrip, isHot, SubjectID,
+                   StartDate, EndDate, Tuitionfee, GradeID
+            FROM TutoringClass
+                     WHERE isActive IN (0, 1)
+        """;
+
+        if (isHot != null) {
+            sql += " AND isHot = ?";
+        }
+
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (isHot != null) {
+                ps.setBoolean(1, isHot);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TutoringClass cls = new TutoringClass();
+                cls.setTutoringClassID(rs.getInt("TutoringClassID"));
+                cls.setClassName(rs.getString("ClassName"));
+                cls.setImage(rs.getString("ImageTutoring"));
+                cls.setDescrip(rs.getString("Descrip"));
+                cls.setIsHot(rs.getBoolean("isHot"));
+                cls.setSubjectID(rs.getInt("SubjectID"));
+                cls.setStartDate(rs.getDate("StartDate"));
+                cls.setEndDate(rs.getDate("EndDate"));
+                cls.setPrice(rs.getDouble("Tuitionfee"));
+                cls.setGradeID(rs.getInt("GradeID"));
+                classes.add(cls);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy danh sách lớp học: " + e.getMessage());
+        }
+
+        return classes;
+}
+
 
     /**
      * Lấy danh sách lớp học nổi bật (isHot = true)
      */
     public List<TutoringClass> getFeaturedTutoringClasses() {
-        return getClasses(true);
+        return getTutoringClassesByHotAndStatus(true);
     }
 
     /**
      * Lấy danh sách lớp học dài hạn (isHot = false)
      */
     public List<TutoringClass> getYearRoundTutoringClasses() {
-        return getClasses(false);
+        return getTutoringClassesByHotAndStatus(false);
     }
 
     /**
@@ -143,12 +177,17 @@ public class TutoringClassDAO {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * 
+     * @return OUTPUT INSERTED.TutoringClassID trả về id của khoá mới thêm
+     */
 
     public int addTutoringClass(TutoringClass cls) {
         String sql = """
         INSERT INTO TutoringClass 
         (ClassName, ImageTutoring, Descrip, isHot, SubjectID, StartDate, EndDate, Tuitionfee, GradeID)
-        OUTPUT INSERTED.TutoringClassID
+        OUTPUT INSERTED.TutoringClassID  
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
@@ -159,7 +198,7 @@ public class TutoringClassDAO {
             ps.setBoolean(4, cls.isIsHot());
             ps.setInt(5, cls.getSubjectID());
             ps.setDate(6, new java.sql.Date(cls.getStartDate().getTime()));
-            ps.setDate(7, new java.sql.Date(cls.getEndDate().getTime()));
+            ps.setDate(7, new java.sql.Date(cls.getEndDate().getTime())); // chuyển từ util sang sql phù hợp với PreparedStatement
             ps.setDouble(8, cls.getPrice());
             ps.setInt(9, cls.getGradeID());
 
@@ -170,7 +209,7 @@ public class TutoringClassDAO {
         } catch (SQLException e) {
             System.out.println("Lỗi thêm lớp học: " + e.getMessage());
         }
-        return -1; // hoặc ném exception nếu muốn kiểm soát lỗi nghiêm ngặt hơn
+        return -1; 
     }
 
     public void updateTutoringClass(TutoringClass cls) {

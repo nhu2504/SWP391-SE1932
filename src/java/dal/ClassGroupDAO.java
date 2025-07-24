@@ -97,14 +97,11 @@ public class ClassGroupDAO {
             row[0] = rs.getString("ClassGroupName");      // 0
             row[1] = rs.getInt("MaxStudent");             // 1
             row[2] = rs.getString("ScheduleSummary");     // 2: đúng định dạng Thứ - Phòng - Ca
-            row[3] = rs.getString("TeacherName");         // 3
-            row[4] = "";                                  // 4: giữ chỗ
-            row[5] = "";                                  // 5: giữ chỗ
-            row[6] = "";                                  // 6: giữ chỗ
-            row[7] = rs.getInt("CurrentStudentCount");    // 7
-            row[8] = rs.getInt("ClassGroupID");           // 8
-            row[9] = rs.getInt("minStudent");             // 9
-            row[10] = rs.getInt("isActive");              // 10
+            row[3] = rs.getString("TeacherName");         // 3                               
+            row[4] = rs.getInt("CurrentStudentCount");    // 4
+            row[5] = rs.getInt("ClassGroupID");           // 5
+            row[6] = rs.getInt("minStudent");             // 6
+            row[7] = rs.getInt("isActive");              // 7
 
             list.add(row);
         }
@@ -204,6 +201,35 @@ public class ClassGroupDAO {
             e.printStackTrace();
         }
     }
+    
+    public List<ClassGroup> getActiveClassGroups() {
+    List<ClassGroup> list = new ArrayList<>();
+    String sql = """
+        SELECT cg.ClassGroupID, cg.ClassGroupName, cg.TutoringClassID, cg.MaxStudent, cg.TeacherID, cg.minStudent
+        FROM ClassGroup cg
+        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
+        WHERE cg.isActive = 1 AND tc.StartDate <= GETDATE() AND tc.EndDate >= GETDATE()
+    """;
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            ClassGroup group = new ClassGroup();
+            group.setClassGroupId(rs.getInt("ClassGroupID"));
+            group.setName(rs.getString("ClassGroupName"));
+            group.setToturID(rs.getInt("TutoringClassID"));
+            group.setMaxStudent(rs.getInt("MaxStudent"));
+            group.setTeachId(rs.getInt("TeacherID"));
+            group.setMinStudent(rs.getInt("minStudent"));
+            list.add(group);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
 
     // Ngọc Anh
     public List<ClassGroup> getAllClassGroupByUserId(int userId) {

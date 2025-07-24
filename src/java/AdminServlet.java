@@ -42,8 +42,15 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import com.google.gson.Gson;
+import java.time.DayOfWeek;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
+/**
+ * Ngày update: 23/07/2025 Người viết: Văn Thị Như
+ *
+ */
 @MultipartConfig
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
@@ -57,7 +64,6 @@ public class AdminServlet extends HttpServlet {
     private final ScheduleDAO scheduleDAO = new ScheduleDAO();
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final ShiftLearnDAO shiftLearnDAO = new ShiftLearnDAO();
-    private final PaymentDAO paymentDAO = new PaymentDAO();
     private final GradeDAO gradeDAO = new GradeDAO();
     private final RoomDAO roomDAO = new RoomDAO();
     private final SchoolDAO schoolDAO = new SchoolDAO();
@@ -77,8 +83,18 @@ public class AdminServlet extends HttpServlet {
         }
         // Gọi cập nhật trạng thái tự động
         tutoringClassDAO.updateAutoActiveStatus();
+        
+        // Tự động mở rộng lịch học nếu còn thiếu
+        List<ClassGroup> activeGroups = classGroupDAO.getActiveClassGroups();
+        for (ClassGroup group : activeGroups) {
+            try {
+                autoExtendScheduleIfNeeded(group.getClassGroupId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-        // --- Lấy lại dữ liệu lỗi nếu có ---
+        // Lấy lại dữ liệu lỗi nếu có 
         HttpSession ses = req.getSession();
         if (ses.getAttribute("modalError") != null) {
             req.setAttribute("modalError", ses.getAttribute("modalError"));
@@ -102,7 +118,6 @@ public class AdminServlet extends HttpServlet {
                 req.setAttribute("email", center.getEmail());
                 req.setAttribute("website", center.getWebsite());
             }
-
             switch (tab) {
                 case "overview":
 
@@ -110,11 +125,11 @@ public class AdminServlet extends HttpServlet {
                     int selectedYear = selectedYearStr != null ? Integer.parseInt(selectedYearStr) : LocalDate.now().getYear();
                     req.setAttribute("selectedYear", selectedYear);
 
-// Lấy danh sách năm (ví dụ 2021 → hiện tại)
-                    List<Integer> yearList = reportDAO.getAvailableYears(); // Tạo DAO hàm này
+                    // Lấy danh sách năm (năm hoạt động → hiện tại)
+                    List<Integer> yearList = reportDAO.getAvailableYears();
                     req.setAttribute("yearList", yearList);
 
-// Lấy dữ liệu tăng trưởng
+                    // Lấy dữ liệu tăng trưởng
                     Map<Integer, Integer> classGrowth = reportDAO.getClassCountPerMonth(selectedYear);
                     Map<Integer, Integer> studentGrowth = reportDAO.getStudentCountPerMonth(selectedYear);
                     req.setAttribute("classGrowth", classGrowth);
@@ -137,21 +152,18 @@ public class AdminServlet extends HttpServlet {
                         }
                         return;
                     }
+                    LocalDate weekStart1 = LocalDate.now().with(DayOfWeek.MONDAY);
 
                     req.setAttribute("openClassCount", classGroupDAO.getOpeningClassGroupsByCourseDate().size());
                     req.setAttribute("totalTeachers", teacherDAO.getAllTeachers().size());
                     req.setAttribute("studentCount", studentDAO.getStudentCount());
-                    req.setAttribute("classesCount", tutoringClassDAO.getClasses(null).size());
+                    req.setAttribute("classesCount", tutoringClassDAO.getTutoringClassesByHotAndStatus(null).size());
                     req.setAttribute("todaySchedules", scheduleDAO.getTodaySchedules());
                     req.setAttribute("studentCounts", studentDAO.getStudentCountPerSubject());
-                    req.setAttribute("teacherSchedules", teacherDAO.getTeacherSchedules());
+                    req.setAttribute("teacherSchedules", teacherDAO.getTeacherSchedulesToday());
                     req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
-                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule());
-                    int paidPercent = paymentDAO.getPaidPercentage();
-                    req.setAttribute("percentPaid", paidPercent);
-                    req.setAttribute("percentUnpaid", 100 - paidPercent);
-                    List<Object[]> unpaidList = paymentDAO.getUnpaidCountPerClassList();
-                    req.setAttribute("paymentSummaries", unpaidList);
+                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule(weekStart1));
+
                     break;
                 case "courseManagement":
                     String idRaw = req.getParameter("id");
@@ -166,63 +178,134 @@ public class AdminServlet extends HttpServlet {
                         }
                     }
 
-                    req.setAttribute("data", tutoringClassDAO.getClasses(null));
+                    req.setAttribute("data", tutoringClassDAO.getClasses());
                     req.setAttribute("subjects", subjectDAO.getAllSubjects());
                     req.setAttribute("grades", gradeDAO.getAllGrades());
 
                     break;
-                case "paymentReport":
-                    req.setAttribute("paymentDetails", paymentDAO.getDetailedPaymentPerClass());
-                    break;
+
                 case "scheduleClass":
-                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule());
+                    Map.Entry<List<LocalDate>, Map<LocalDate, String>> scheduleData = generateWeekStartListAndMap();
+                    req.setAttribute("weekStartList", scheduleData.getKey());
+                    req.setAttribute("weekDisplayMap", scheduleData.getValue());
+
+                    String weekStartStr = req.getParameter("weekStart");
+                    LocalDate weekStart = (weekStartStr != null && !weekStartStr.isEmpty())
+                            ? LocalDate.parse(weekStartStr)
+                            : LocalDate.now().with(DayOfWeek.MONDAY);
+
+                    req.setAttribute("now", LocalDate.now());
+                    req.setAttribute("selectedWeekStart", weekStart);
+                    req.setAttribute("weeklySchedules", scheduleDAO.getWeeklySchedule(weekStart));
                     req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
                     break;
                 case "teacherSchedule":
-                    List<Object[]> teacherSchedules = teacherDAO.getTeacherSchedules();
-                    Map<String, List<Object[]>> teacherScheduleMap = new LinkedHashMap<>();
-                    for (Object[] row : teacherSchedules) {
-                        String teacher = (String) row[0];
-                        Object[] schedule = {row[1], row[2], row[3], row[4], row[5]};
-                        teacherScheduleMap.computeIfAbsent(teacher, k -> new ArrayList<>()).add(schedule);
-                    }
-                    req.setAttribute("teacherScheduleMap", teacherScheduleMap);
-                    req.setAttribute("subjectList", subjectDAO.getAllSubjects());
-                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
-                    break;
-                case "todaySchedule":
-                    try {
-                    LocalDate weekStartDate;
-                    String weekStartStr = req.getParameter("weekStart");
+                try {
+                    Map.Entry<List<LocalDate>, Map<LocalDate, String>> teacherData = generateWeekStartListAndMap();
+                    req.setAttribute("weekStartList", teacherData.getKey());
+                    req.setAttribute("weekDisplayMap", teacherData.getValue());
+
                     String anyDateStr = req.getParameter("anyDate");
+                    weekStartStr = req.getParameter("weekStart");
+                    LocalDate weekStartDate;
+
                     if (anyDateStr != null && !anyDateStr.isEmpty()) {
-                        LocalDate anyDate = LocalDate.parse(anyDateStr);
-                        weekStartDate = anyDate.with(java.time.DayOfWeek.MONDAY);
+                        weekStartDate = LocalDate.parse(anyDateStr).with(DayOfWeek.MONDAY);
                         req.setAttribute("anyDate", anyDateStr);
                     } else if (weekStartStr != null && !weekStartStr.isEmpty()) {
                         weekStartDate = LocalDate.parse(weekStartStr);
                     } else {
-                        weekStartDate = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+                        weekStartDate = LocalDate.now().with(DayOfWeek.MONDAY);
                     }
-                    Date weekStartUtil = Date.from(weekStartDate.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
+
+                    Date weekStartUtil = java.sql.Date.valueOf(weekStartDate);
+                    Date weekEndUtil = java.sql.Date.valueOf(weekStartDate.plusDays(6));
+                    List<Object[]> teacherSchedules = teacherDAO.getTeacherSchedulesBetween(weekStartUtil, weekEndUtil);
+
+                    Map<String, List<Object[]>> teacherScheduleMap = new LinkedHashMap<>();
+                    for (Object[] row : teacherSchedules) {
+                        String teacherName = (String) row[0];
+                        Object[] schedule = {row[1], row[2], row[3], row[4], row[5]};
+                        teacherScheduleMap.computeIfAbsent(teacherName, k -> new ArrayList<>()).add(schedule);
+                    }
+
+                    Map<Integer, Date> weekDates = new LinkedHashMap<>();
+                    for (int i = 0; i < 7; i++) {
+                        LocalDate date = weekStartDate.plusDays(i);
+                        int weekday = date.getDayOfWeek().getValue(); // 1–7
+                        int adjusted = (weekday == 7) ? 8 : weekday + 1; // 2–8
+                        weekDates.put(adjusted, java.sql.Date.valueOf(date));
+                    }
+
+                    List<Integer> weekOrder = Arrays.asList(2, 3, 4, 5, 6, 7, 8);
+                    LocalDate today = LocalDate.now();
+                    Date todaySql = java.sql.Date.valueOf(today);
+                    Integer highlightIndex = null;
+
+                    for (Map.Entry<Integer, Date> entry : weekDates.entrySet()) {
+                        if (entry.getValue().equals(todaySql)) {
+                            highlightIndex = entry.getKey();
+                            break;
+                        }
+                    }
+
+                    req.setAttribute("highlightColumnIndex", highlightIndex);
+                    req.setAttribute("todayDate", todaySql);
+                    req.setAttribute("teacherScheduleMap", teacherScheduleMap);
+                    req.setAttribute("weekDates", weekDates);
+                    req.setAttribute("weekOrder", weekOrder);
                     req.setAttribute("selectedWeekStart", weekStartUtil);
-                    req.setAttribute("weekStartList", scheduleDAO.getWeekStartList());
+                    req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
+                    req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
+                    req.setAttribute("subjectList", subjectDAO.getAllSubjects());
+
+                } catch (Exception e) {
+                    throw new ServletException("Lỗi xử lý lịch giáo viên theo tuần/ngày", e);
+                }
+                break;
+
+                case "todaySchedule":
+                try {
+                    Map.Entry<List<LocalDate>, Map<LocalDate, String>> todayData = generateWeekStartListAndMap();
+                    req.setAttribute("weekStartList", todayData.getKey());
+                    req.setAttribute("weekDisplayMap", todayData.getValue());
+
+                    String anyDateStr = req.getParameter("anyDate");
+                    weekStartStr = req.getParameter("weekStart");
+                    LocalDate weekStartDate;
+
+                    if (anyDateStr != null && !anyDateStr.isEmpty()) {
+                        weekStartDate = LocalDate.parse(anyDateStr).with(DayOfWeek.MONDAY);
+                        req.setAttribute("anyDate", anyDateStr);
+                    } else if (weekStartStr != null && !weekStartStr.isEmpty()) {
+                        weekStartDate = LocalDate.parse(weekStartStr);
+                    } else {
+                        weekStartDate = LocalDate.now().with(DayOfWeek.MONDAY);
+                    }
+
+                    Date weekStartUtil = java.sql.Date.valueOf(weekStartDate);
+                    req.setAttribute("selectedWeekStart", weekStartUtil);
                     req.setAttribute("shifts", shiftLearnDAO.getAllShifts());
                     req.setAttribute("weeklySchedules", scheduleDAO.getWeeklyScheduleByWeek(weekStartUtil));
+
                     Map<Integer, Date> weekdayDates = new LinkedHashMap<>();
-                    for (int i = 2; i <= 7; i++) {
-                        weekdayDates.put(i, Date.from(weekStartDate.plusDays(i - 2).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    for (int i = 0; i < 7; i++) {
+                        LocalDate date = weekStartDate.plusDays(i);
+                        int weekday = i == 6 ? 1 : i + 2;
+                        weekdayDates.put(weekday, java.sql.Date.valueOf(date));
                     }
-                    weekdayDates.put(1, Date.from(weekStartDate.plusDays(6).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+
                     req.setAttribute("weekdays", scheduleDAO.getWeekdayMap());
                     req.setAttribute("weekdayDates", weekdayDates);
-                    req.setAttribute("todayDate", Date.from(LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    req.setAttribute("todayDate", java.sql.Date.valueOf(LocalDate.now()));
+
                 } catch (Exception e) {
                     throw new ServletException("Invalid date", e);
                 }
                 break;
+
                 case "courseList":
-                    req.setAttribute("data", tutoringClassDAO.getClasses(null));
+                    req.setAttribute("data", tutoringClassDAO.getClasses());
                     req.setAttribute("subjects", subjectDAO.getAllSubjects());
                     req.setAttribute("grades", gradeDAO.getAllGrades());
                     break;
@@ -339,8 +422,6 @@ public class AdminServlet extends HttpServlet {
                                     req.setAttribute("selectedCourseName", course.getClassName());
                                 }
                             }
-                            //groupIdRaw = req.getParameter("groupId");
-                            //int groupId = groupIdRaw != null ? Integer.parseInt(groupIdRaw) : -1;
 
                             int maxStudent = group.getMaxStudent();
                             int currentStudentCount = classGroup_studentDAO.countStudentsInGroup(classGroupId);
@@ -502,11 +583,11 @@ public class AdminServlet extends HttpServlet {
                     return;
                 }
 
-// Nếu là khóa học nổi bật và đã được tạo hơn 1 tháng trước thì không cho thêm lớp
+                // Nếu là khóa học nổi bật và đã được tạo hơn 1 tháng trước thì không cho thêm lớp
                 if (tutoringClass.isIsHot()) {
                     Date date = tutoringClass.getStartDate(); // java.util.Date
                     LocalDate startDate = ((java.sql.Date) date).toLocalDate();
- // chuyển sang localdate
+                    // chuyển sang localdate
                     if (startDate.plusMonths(1).isBefore(LocalDate.now())) {
                         req.getSession().setAttribute("successMessage", "❌ Khóa học nổi bật đã mở hơn 1 tháng. Không thể thêm lớp học mới.");
                         res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
@@ -545,7 +626,7 @@ public class AdminServlet extends HttpServlet {
                     // Nếu lỗi lịch học
                     if (days == null || shifts == null || rooms == null || days.length != shifts.length || shifts.length != rooms.length || days.length == 0) {
                         prepareClassManagementData(req, tutoringClassId);
-                        setFormData(req, group, days, shifts, rooms); // <--- sửa: luôn truyền lại days, shifts, rooms
+                        setFormData(req, group, days, shifts, rooms); // luôn truyền lại days, shifts, rooms
                         req.setAttribute("errorAddClass", "Vui lòng chọn ít nhất một buổi học hợp lệ.");
                         req.getRequestDispatcher("/admin_dashboard.jsp").forward(req, res);
                         return;
@@ -658,7 +739,6 @@ public class AdminServlet extends HttpServlet {
         tc.setSubjectID(Integer.parseInt(req.getParameter("subject")));
         tc.setStartDate(sdf.parse(req.getParameter("startDate")));
         tc.setEndDate(sdf.parse(req.getParameter("endDate")));
-//        tc.setPrice(Double.parseDouble(req.getParameter("price")));
         String priceRaw = req.getParameter("price");
         double price = -1;
 
@@ -706,13 +786,7 @@ public class AdminServlet extends HttpServlet {
         return tc;
     }
 
-    private LocalDate getNextDate(LocalDate fromDate, int dow) {
-        int javaDow = dow == 1 ? 7 : dow - 1; // Java: 1=Monday,...7=Sunday; DB: 1=Sunday
-        int currentJavaDow = fromDate.getDayOfWeek().getValue(); // 1=Monday,...7=Sunday
-        int daysToAdd = (javaDow - currentJavaDow + 7) % 7;
-        return fromDate.plusDays(daysToAdd == 0 ? 7 : daysToAdd); // tránh chọn hôm nay
-    }
-
+    // hàm gửi thông báo 
     private void setSuccessMessage(HttpServletRequest req, String message) {
         HttpSession session = req.getSession();
         session.setAttribute("successMessage", message);
@@ -724,8 +798,8 @@ public class AdminServlet extends HttpServlet {
         List<Object[]> classGroups = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
 
         classGroups.sort((a, b) -> {
-            boolean canActivateA = (Integer) a[10] == 0 && (Integer) a[7] >= (Integer) a[9];
-            boolean canActivateB = (Integer) b[10] == 0 && (Integer) b[7] >= (Integer) b[9];
+            boolean canActivateA = (Integer) a[7] == 0 && (Integer) a[4] >= (Integer) a[6];
+            boolean canActivateB = (Integer) b[7] == 0 && (Integer) b[4] >= (Integer) b[6];
             return Boolean.compare(canActivateB, canActivateA);
         });
 
@@ -769,6 +843,71 @@ public class AdminServlet extends HttpServlet {
         req.setAttribute("openAddModal", true);
         req.setAttribute("tab", "classManagement");
         req.setAttribute("id", String.valueOf(group.getToturID()));
+    }
+
+    // tự động tạo thêm lịch học khi còn dưới 3 buổi và chưa hết thời gian học
+    public void autoExtendScheduleIfNeeded(int groupId) throws Exception {
+        Date today = new Date();
+        int remaining = scheduleDAO.getRemainingScheduleCount(groupId, today);
+
+        if (remaining < 3) {
+            Date lastDate = scheduleDAO.getLastScheduleDate(groupId);
+            if (lastDate == null) {
+                lastDate = today;
+            }
+
+            ClassGroup cg = classGroupDAO.getClassGroupById(groupId);
+            if (cg == null) {
+                return;
+            }
+
+            int classId = cg.getToturID();
+            TutoringClass cls = tutoringClassDAO.getTutoringClassDetail(classId);
+            if (cls == null || cls.getEndDate() == null) {
+                return;
+            }
+
+            // Tính ngày bắt đầu mới
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(lastDate);
+            cal.add(Calendar.DATE, 1);
+            Date nextStart = cal.getTime();
+
+            if (nextStart.after(cls.getEndDate())) {
+                System.out.println("Không thể tạo thêm lịch vì đã quá EndDate.");
+                return;
+            }
+
+            List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
+            scheduleDAO.insertSchedulesFromTemplate(groupId, templates, nextStart, 10); // nên để hàm này kiểm soát EndDate
+            System.out.println("▶ Kiểm tra tự động mở rộng lịch học cho groupId = " + groupId);
+            System.out.println("Số buổi còn lại: " + remaining);
+            System.out.println("Ngày cuối lịch học hiện tại: " + lastDate);
+            System.out.println("Ngày bắt đầu tạo mới: " + nextStart);
+            System.out.println("EndDate của lớp: " + cls.getEndDate());
+            System.out.println("Template có " + templates.size() + " buổi");
+
+        }
+    }
+
+    // tự động sinh thêm tuần để chọn với tổng 9 tuần 4 tuần trước và 4 tuần sau tuần hiện tại
+    private Map.Entry<List<LocalDate>, Map<LocalDate, String>> generateWeekStartListAndMap() {
+        List<LocalDate> weekStartList = new ArrayList<>();
+        Map<LocalDate, String> weekDisplayMap = new LinkedHashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        LocalDate currentMonday = LocalDate.now().with(DayOfWeek.MONDAY);
+        int weeksBefore = 4;
+        int weeksAfter = 4;
+
+        for (int i = -weeksBefore; i <= weeksAfter; i++) {
+            LocalDate start = currentMonday.plusWeeks(i);
+            LocalDate end = start.plusDays(6);
+            weekStartList.add(start);
+            weekDisplayMap.put(start, start.format(formatter) + " - " + end.format(formatter));
+        }
+
+        return Map.entry(weekStartList, weekDisplayMap);
     }
 
 }

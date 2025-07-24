@@ -48,7 +48,7 @@
         <!-- Danh sách khóa học -->
         <div>
            <div class="flex items-center justify-between mb-6">
-    <h2 class="text-xl font-semibold text-gray-700">Danh Sách Học Sinh</h2>
+    <h2 class="text-xl font-semibold text-gray-700">Danh Sách Học Sinh Trong Lớp</h2>
     <a href="admin?tab=studentNotInClass&groupId=${param.groupId}&id=${param.id}"
    class="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
     <i class="fas fa-user-plus mr-2"></i> Thêm học sinh mới

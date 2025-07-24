@@ -60,15 +60,11 @@
         </nav>
 
         <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Quản lý Lớp Học</h1>
-                <p class="text-gray-600">Khóa học: <span class="font-semibold">${selectedCourseName}</span></p>
-            </div>
-            <button onclick="openAddClassModal()" class="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-plus mr-2"></i> Thêm lớp mới
-            </button>
-        </div>
+        <div class="flex justify-end mb-8">
+    <button onclick="openAddCourseModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+        <i class="fas fa-plus mr-2"></i> Thêm lớp học mới
+    </button>
+</div>
         <div class="flex flex-col md:flex-row gap-4 mb-6">
             <input type="text" id="searchClass" placeholder="🔍 Tìm lớp..." class="form-control w-full md:w-1/2">
 
@@ -126,32 +122,30 @@
                                         - Phòng: ${room} - Thời gian: ${time}
                                     </li>
                                 </c:forTokens>
-
                             </ul>
-
                         </div>
+                        
                         <!-- Giáo viên -->
                         <div class="col-span-2 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[3]}</div>
 
                         <!-- Số HS tối thiểu -->
-                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[9]}</div>
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[6]}</div>
 
                         <!-- Số HS tối đa -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[1]}</div>
 
                         <!-- Số HS hiện tại -->
-                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[7]}</div>
+                        <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">${c[4]}</div>
 
                         <!-- Trạng thái -->
                         <div class="col-span-1 text-gray-600 mb-2 md:mb-0 flex justify-center items-center">
                             <c:choose>
-                                <c:when test="${c[10] == 0}">Đang chờ</c:when>
-                                <c:when test="${c[10] == 1}">Đang học</c:when>
-                                <c:when test="${c[10] == 2}">Đã đóng</c:when>
+                                <c:when test="${c[7] == 0}">Đang chờ</c:when>
+                                <c:when test="${c[7] == 1}">Đang học</c:when>
+                                <c:when test="${c[7] == 2}">Đã đóng</c:when>
                                 <c:otherwise>Không rõ</c:otherwise>
                             </c:choose>
                         </div>
-
 
                         <!-- Thao tác -->
                         <div class="col-span-1 flex items-center justify-center space-x-2">
@@ -161,25 +155,23 @@
                             <button disabled class="text-red-600 hover:text-red-800" title="Xóa lớp học">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <a href="admin?tab=studentListInClass&groupId=${c[8]}&id=${selectedCourseId}"
+                            <a href="admin?tab=studentListInClass&groupId=${c[5]}&id=${selectedCourseId}"
 
                                class="text-green-600 hover:text-green-800" title="Xem danh sách học sinh">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <c:if test="${c[10] == 0 && c[7] >= c[9]}">
-                                <a href="admin?tab=classManagement&action=activateGroup&groupId=${c[8]}&id=${selectedCourseId}"
+                            <c:if test="${c[7] == 0 && c[4] >= c[6]}">
+                                <a href="admin?tab=classManagement&action=activateGroup&groupId=${c[5]}&id=${selectedCourseId}"
                                    class="text-orange-600 hover:text-orange-800" title="Kích hoạt lớp học">
                                     <i class="fas fa-toggle-on"></i>
                                 </a>
                             </c:if>
-
 
                         </div>
                     </div>
                 </c:forEach>
 
             </div>
-
 
         </div>
     </div>
@@ -365,22 +357,6 @@
      class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 font-medium transition-all duration-300">
 </div>
 
-<!--<script>
-    function showToast(message) {
-        const toast = document.getElementById("toast");
-        if (!toast)
-            return;
-
-        toast.textContent = message;
-        toast.style.display = "block";
-
-        setTimeout(() => {
-            toast.style.display = "none";
-        }, 3000);
-    }
-
-</script>-->
-
 <script>
     // Biến toàn cục để theo dõi số hàng lịch học
     let scheduleIndex = 1;
@@ -405,23 +381,18 @@
 // Hàm áp dụng bộ lọc tìm kiếm và lọc lớp học
     function applyFilters() {
         const classKeyword = normalize(document.getElementById("searchClass").value);
-        const teacher = normalize(document.getElementById("filterTeacher").value);
-        const weekday = normalize(document.getElementById("filterWeekday").value);
-        const room = normalize(document.getElementById("filterRoom").value);
+        const teacher = normalize(document.getElementById("filterTeacher").value);       
         const cards = document.querySelectorAll(".card[data-class]");
 
         cards.forEach(card => {
             const className = normalize(card.dataset.class);
-            const teacherName = normalize(card.dataset.teacher);
-            const day = normalize(card.dataset.weekday);
-            const roomName = normalize(card.dataset.room);
+            const teacherName = normalize(card.dataset.teacher);           
 
             const matchClass = classKeyword === "" || className.includes(classKeyword);
             const matchTeacher = teacher === "" || teacherName === teacher;
-            const matchWeekday = weekday === "" || day === weekday;
-            const matchRoom = room === "" || roomName === room;
+            
 
-            card.style.display = matchClass && matchTeacher && matchWeekday && matchRoom ? "grid" : "none";
+            card.style.display = matchClass && matchTeacher ? "grid" : "none";
         });
     }
 
@@ -890,9 +861,7 @@
 
         // Gắn sự kiện cho các bộ lọc
         document.getElementById("searchClass")?.addEventListener("input", applyFilters);
-        document.getElementById("filterTeacher")?.addEventListener("change", applyFilters);
-        document.getElementById("filterWeekday")?.addEventListener("change", applyFilters);
-        document.getElementById("filterRoom")?.addEventListener("change", applyFilters);
+        document.getElementById("filterTeacher")?.addEventListener("change", applyFilters);        
 
         // Gắn sự kiện cho dropdown giáo viên
         document.getElementById("teacherId")?.addEventListener("change", loadScheduleOptions);
