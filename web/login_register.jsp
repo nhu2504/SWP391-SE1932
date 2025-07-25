@@ -848,13 +848,13 @@
                     <h2>Đăng ký tư vấn</h2>
                     <form action="register" method="post"  enctype="multipart/form-data">
                         <div class="form-group">
-                            <input type="text" name="fullName" placeholder="Họ và Tên"  required/>
+                            <input type="text" name="fullName" placeholder="Họ và Tên" value="${fullName}" required/>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="email" placeholder="Email" required />
+                            <input type="text" name="email" placeholder="Email" value="${email1}" required />
                         </div>
                         <div class="form-group">
-                            <input type="text" name="phone" placeholder="Số điện thoại" required />
+                            <input type="text" name="phone" placeholder="Số điện thoại" value="${phone1}" required />
                         </div>
                         <div class="form-group">
                             <label>Giới tính</label><br/>
@@ -866,30 +866,30 @@
                         </div>
                         <div class="form-group">
                             <label>Ngày sinh</label>
-                            <input type="date" name="dob" />
+                            <input type="date" name="dob" value="${dob}" required/>
                         </div>
                         <div class="form-group schoolclass sc">
                             <label>Trường THPT</label>
-                            <input type="text" name="school" placeholder="Chỉ nhập tên trường của bạn. Ví dụ: Hà Thành" required/>
+                            <input type="text" name="school" value="${school}" placeholder="Chỉ nhập tên trường của bạn. Ví dụ: Hà Thành" required/>
                         </div>
                         <div class="form-group schoolclass sc">
-                            <input type="text" name="schoolAddress" placeholder="Địa Chỉ" required/>
+                            <input type="text" name="schoolAddress" value="${schoolAddress}" placeholder="Địa Chỉ" required/>
                         </div>
                         <div class="form-group schoolclass cl">
                             <label>Lớp</label>
-                            <input type="text" name="classAtSchool" placeholder="Ví dụ: 10A" required/>
+                            <input type="text" name="classAtSchool" value="${classAtSchool}" placeholder="Ví dụ: 10A" required/>
                         </div>
                         <div class="form-group schoolclass sc">
-                            <input type="text" name="interestCourses" placeholder="Khóa học mong muốn" required/>
+                            <input type="text" name="interestCourses" value="${interestCourses}" placeholder="Khóa học mong muốn" required/>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="phonepar" placeholder="Số điện thoại người giám hộ"  />
+                            <input type="text" name="phonepar" value="${phonepar}" placeholder="Số điện thoại người giám hộ"  />
                         </div>
                         <div class="form-group">
-                            <input type="text" name="emailpar" placeholder="Email người giám hộ"  />
+                            <input type="text" name="emailpar" value="${emailpar}" placeholder="Email người giám hộ"  />
                         </div>
                         <div class="form-group">
-                            <input type="text" name="userIntro" placeholder="ID người giới thiệu"  />
+                            <input type="text" name="userIntro" value="${userIntro}" placeholder="ID người giới thiệu"  />
                         </div>
                         <div class="form-footer">
                             <input type="checkbox" name="verifi" required/>

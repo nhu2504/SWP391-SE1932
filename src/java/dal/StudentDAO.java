@@ -1,6 +1,8 @@
 package dal;
 
 import dal.DBContext;
+import entity.SchoolClass;
+import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +27,9 @@ public class StudentDAO {
      * chấm trong chuỗi certi) - Ngày comment gần nhất
      *
      * @return Danh sách Map đại diện cho học sinh, mỗi Map chứa thông tin như
-     * tên, avatar, chứng chỉ, đánh giá...
+     * tên, avatar, chứng chỉ, đánh giá... Danh sách là 1 list chứa nhiều học
+     * sinh, 1 học sinh là 1 map và string là key, object là value và dùng
+     * object vì dùng kiểu dữ liệu j cx đc ví dụ int, string,date, ... đều đc
      */
     public List<Map<String, Object>> getTopStudents() {
         List<Map<String, Object>> students = new ArrayList<>();
@@ -114,32 +118,144 @@ public class StudentDAO {
         return list;
     }
 
-    // Ngọc Anh
-    public boolean updateSchoolClassDAO(int userId, int classId) {
-        String deleteSql = "DELETE FROM TeacherClass WHERE UserID = ?";
-        String insertSql = "INSERT INTO TeacherClass (UserID, SchoolClassID) VALUES (?, ?)";
+    public List<User> getStudentsByClassGroup(int classGroupID) {
+        List<User> list = new ArrayList<>();
+        String sql = """
+    SELECT 
+        u.UserID,
+        u.FullName,
+        u.Gender,
+        u.BirthDate,
+        u.Phone,
+        u.Email,
+        u.ParentPhone,
+        u.ParentEmail,
+        u.avatar,            
+        u.SchoolID,
+        sch.SchoolName,
+        u.SchoolClassID,
+        sc.ClassName
+    FROM 
+        ClassGroup_Student cs
+    JOIN 
+        [User] u ON cs.StudentID = u.UserID
+    LEFT JOIN 
+        School sch ON u.SchoolID = sch.SchoolID
+    LEFT JOIN 
+        SchoolClass sc ON u.SchoolClassID = sc.SchoolClassID
+    WHERE 
+        u.roleID = 3 AND cs.ClassGroupID = ?
+    ORDER BY 
+        u.FullName
+""";
 
-        try (Connection conn = new DBContext().connection) {
-            conn.setAutoCommit(false);
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql); PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+            ps.setInt(1, classGroupID);
 
-                deleteStmt.setInt(1, userId);
-                deleteStmt.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setId(rs.getInt("UserID"));
+                    u.setName(rs.getString("FullName"));
+                    u.setGender(rs.getString("Gender"));
+                    u.setBirth(rs.getDate("BirthDate"));
+                    u.setPhone(rs.getString("Phone"));
+                    u.setEmail(rs.getString("Email"));
+                    u.setParentPhone(rs.getString("ParentPhone"));
+                    u.setParentEmail(rs.getString("ParentEmail"));
+                    u.setAvatar(rs.getString("avatar"));
+                    u.setSchoolID(rs.getInt("SchoolID"));
+                    u.setSchoolClassId(rs.getInt("SchoolClassID"));
+                    u.setSchoolName(rs.getString("SchoolName"));            // ✅ tên trường
+                    u.setSchoolClassName(rs.getString("ClassName"));
 
-                insertStmt.setInt(1, userId);
-                insertStmt.setInt(2, classId);
-                insertStmt.executeUpdate();
-
-                conn.commit();
-                return true;
-            } catch (Exception e) {
-                conn.rollback();
-                e.printStackTrace();
+                    // Nếu bạn cần thêm EnrollDate hoặc IsActive, có thể tạo subclass hoặc lưu vào Map
+                    list.add(u);
+                }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return list;
+    }
+
+    // Như
+    public List<User> getStudentsNotInClassGroupFullInfo(int classGroupId) {
+        List<User> students = new ArrayList<>();
+        String sql = """
+        SELECT u.UserID, u.FullName, u.Gender, u.BirthDate, u.Phone, u.Email, u.Avatar,
+               s.SchoolName, sc.ClassName, sc.SchoolClassID, s.SchoolID
+        FROM [User] u
+        LEFT JOIN School s ON u.SchoolID = s.SchoolID
+        LEFT JOIN SchoolClass sc ON u.SchoolClassID = sc.SchoolClassID
+        WHERE u.RoleID = 3
+        AND NOT EXISTS (
+            SELECT 1 FROM ClassGroup_Student cs
+            WHERE cs.ClassGroupID = ? AND cs.StudentID = u.UserID
+        )
+        """;
+
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, classGroupId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("UserID"));
+                u.setName(rs.getString("FullName"));
+                u.setGender(rs.getString("Gender"));
+                u.setBirth(rs.getDate("BirthDate"));
+                u.setPhone(rs.getString("Phone"));
+                u.setEmail(rs.getString("Email"));
+                u.setAvatar(rs.getString("Avatar"));
+                u.setSchoolID(rs.getInt("SchoolID"));
+                u.setSchoolName(rs.getString("SchoolName"));
+                u.setSchoolClassName(rs.getString("ClassName"));
+                u.setSchoolClassId(rs.getInt("SchoolClassID"));
+
+                students.add(u);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return students;
+    }
+
+    //ngoc anh
+
+    public boolean updateStudentClass(int userId, int newClassId) {
+    String sql = "UPDATE TeacherClass SET SchoolClassID = ? WHERE UserID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, newClassId);
+        ps.setInt(2, userId);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
         return false;
     }
+}
+
+    public SchoolClass getSchoolClassByStudentID(int studentId) throws Exception {
+    String sql = "SELECT sc.SchoolClassID, sc.ClassName, sc.SchoolID FROM TeacherClass tc \n" +
+"                 JOIN SchoolClass sc ON tc.SchoolClassID = sc.SchoolClassID \n" +
+"                 WHERE tc.UserID = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, studentId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            SchoolClass sc = new SchoolClass();
+            sc.setSchoolClassID(rs.getInt("SchoolClassID"));
+            sc.setClassName(rs.getString("ClassName"));
+            sc.setSchoolID(rs.getInt("SchoolID"));
+            return sc;
+        }
+    }
+    return null;
+}
 }

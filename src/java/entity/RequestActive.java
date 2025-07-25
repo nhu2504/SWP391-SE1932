@@ -22,6 +22,7 @@ public class RequestActive {
 
     public RequestActive() {
     }
+    
 
     public RequestActive(int raId, String name, String email, Date birth, String school, String classAtSchool) {
         this.raId = raId;

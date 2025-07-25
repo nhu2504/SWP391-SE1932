@@ -196,3 +196,11 @@ null, null, 1, 3, null, null,0, 2),
 (N'Lê Văn Trường', N'Nam', '2007-07-15', '0885509283', 'levantruong99@gmail.com', 'levantruong99', '/WebApplication3/image-loader/avatamacdinh.jpg', null, null, 4, 3, null, null, 0, 17),
 (N'Trần Thị Thu', N'Nữ', '2007-08-22', '0872442567', 'tranthithu100@gmail.com', 'tranthithu100', '/WebApplication3/image-loader/avatamacdinh.jpg', null, null, 2, 3, null, null, 0, 14)
 ;
+
+insert into TutoringClass(ClassName,ImageTutoring,Descrip,isHot,SubjectID,StartDate,EndDate,Tuitionfee,GradeID)
+values
+(N'Toán cơ bản 11','cat-17.jpg',N'Toán cơ bản',0,1,'2024-03-10','2025-03-10',100000,2)
+select * from [user]
+select * from classgroup
+select ClassName from SchoolClass where SchoolClassID = 12
+select * from TutoringClass

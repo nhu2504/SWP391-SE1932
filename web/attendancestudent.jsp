@@ -498,6 +498,10 @@
                 line-height: 1.4;
                 transition: color 0.3s ease;
             }
+            .avatar1{
+                width: 100px;
+        height: 130px;
+            }
 
 
         </style>
@@ -594,7 +598,7 @@
                                 <tr>
                                     <th scope="row">${loop.index + 1}</th>
                                     <td>${s.name}</td>
-                                    <td><img class="avatar" src="images/${s.avatar}" alt="avatar" /></td>
+                                    <td><img class="avatar1" src="${s.avatar}" alt="avatar" /></td>
                                     <td>
                                         <input type="radio" name="status_${s.id}" value="0"
                                                <c:if test="${attendanceMap[s.id] == false}">checked</c:if> 

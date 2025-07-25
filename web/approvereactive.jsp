@@ -400,7 +400,23 @@
                 <div id="main-content">
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Duyệt mở lại tài khoản</h1>
-
+                    <form action="filterrequestactive" method="get" class="flex flex-wrap gap-3 items-center justify-center mb-6">
+                        
+                        <div>
+                            <label>Trạng thái:</label>
+                            <select name="status" class="border rounded px-2 py-1">
+                                <option value="all" ${status == 'all' ? 'selected' : ''}>Tất cả</option>
+                                <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Chưa duyệt</option>
+                                <option value="Accepted" ${status == 'Accepted' ? 'selected' : ''}>Đã duyệt</option>
+                            </select>
+                        </div>
+                           
+                        <div>
+                            <label>Tên người dùng:</label>
+                            <input type="text" name="keyword" value="${keyword}" class="border rounded px-2 py-1" placeholder="Nhập tên để tìm"/>
+                        </div>
+                        <button type="submit" class="bg-indigo-500 text-white px-4 py-1 rounded hover:bg-indigo-600 transition">Lọc</button>
+                    </form>
 
                     <c:choose>
                         <c:when test="${not empty listRequest}">

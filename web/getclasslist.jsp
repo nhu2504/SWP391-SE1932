@@ -589,7 +589,7 @@
                                     <tr>
                                         <th scope="col">STT</th>
                                         <th scope="col">Tên lớp</th>
-                                        <th scope="col">Phòng học</th>
+                                        
                                         <th scope="col">Số học sinh hiện tại</th>
                                         <th scope="col">Xem học sinh trong lớp</th>
                                     </tr>
@@ -599,7 +599,7 @@
                                         <tr>
                                             <th scope="row">${loop.index + 1}</th>
                                             <td>${cg.name}</td>
-                                            <td>${cg.roomName}</td>
+                                            
                                             <td>${cg.currentStudentCount}</td>
                                             <td>
                                                 <a href="getstudentlist?classGroupId=${cg.classGroupId}" class="btn btn-info btn-sm">

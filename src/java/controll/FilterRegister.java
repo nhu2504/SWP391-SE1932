@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,32 +59,20 @@ public class FilterRegister extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String from = request.getParameter("fromDate");
-        String to = request.getParameter("toDate");
+        
         String status = request.getParameter("status");
+        String name = request.getParameter("name");
         String keyword = request.getParameter("keyword");
-
-        Date fromDate = null;
-        Date toDate = null;
-
-        try {
-            if (from != null && !from.isEmpty()) {
-                fromDate = sdf.parse(from);
-            }
-            if (to != null && !to.isEmpty()) {
-                toDate = sdf.parse(to);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
+        
 
         RegisterDAO dao = new RegisterDAO();
-        List<Register> listRegis = dao.getFilteredRegisters(fromDate, toDate, status, keyword);
+        List<Register> listRegis = dao.getFilteredRegisters(status, keyword, name);
 
         request.setAttribute("listRegis", listRegis);
-        request.setAttribute("fromDate", from);
-        request.setAttribute("toDate", to);
+        
         request.setAttribute("status", status);
+        request.setAttribute("name", name);
         request.setAttribute("keyword", keyword);
         request.getRequestDispatcher("approveaccount.jsp").forward(request, response);
     } 

@@ -89,6 +89,52 @@ public class RequestActiveDAO {
         e.printStackTrace();
     }
 }
+    public List<RequestActive> filterRequests(String keyword, String status) {
+    List<RequestActive> list = new ArrayList<>();
+    String sql = "SELECT * FROM RequestActive WHERE 1=1";
+
+    if (keyword != null && !keyword.isEmpty()) {
+        sql += " AND LOWER(NameStudent) LIKE ?";
+    }
+
+    if (status != null && !status.equals("all")) {
+        sql += " AND stt = ?";
+    }
+
+    try (Connection conn = new DBContext().connection; // Mở kết nối đến DB
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        int index = 1;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            ps.setString(index++, "%" + keyword.toLowerCase() + "%"); // tìm gần đúng, không phân biệt hoa thường
+        }
+
+        if (status != null && !status.equals("all")) {
+            ps.setString(index++, status); // ví dụ: "Pending"
+        }
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            RequestActive r = new RequestActive(
+                rs.getInt("raID"),
+                rs.getString("NameStudent"),
+                rs.getString("email"),
+                rs.getDate("Birth"),
+                rs.getString("School"),
+                rs.getString("Class"),
+                rs.getString("stt"),
+                    rs.getDate("DateRequest")
+            );
+            list.add(r);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+
 
     public static void main(String[] args) {
         RequestActiveDAO dao = new RequestActiveDAO();

@@ -130,15 +130,20 @@ public class RegisterDAO {
         return false;
     }
 }
-    public List<Register> getFilteredRegisters(Date fromDate, Date toDate, String status, String keyword) {
+    public List<Register> getFilteredRegisters(String status, String keyword, String nameKeyword) {
     List<Register> list = new ArrayList<>();
 
     StringBuilder sql = new StringBuilder("SELECT * FROM TutoringRegistrationPending WHERE 1=1");
 
-    if (fromDate != null) sql.append(" AND RegisterDate >= ?");
-    if (toDate != null) sql.append(" AND RegisterDate <= ?");
-    if (status != null && !status.equalsIgnoreCase("all")) sql.append(" AND ApprovalStatus = ?");
-    if (keyword != null && !keyword.trim().isEmpty()) sql.append(" AND LOWER(InterestCourses) LIKE ?");
+    if (status != null && !status.equalsIgnoreCase("all")) {
+        sql.append(" AND ApprovalStatus = ?");
+    }
+    if (keyword != null && !keyword.trim().isEmpty()) {
+        sql.append(" AND LOWER(InterestCourses) LIKE ?");
+    }
+    if (nameKeyword != null && !nameKeyword.trim().isEmpty()) {
+        sql.append(" AND LOWER(FullName) LIKE ?");
+    }
 
     sql.append(" ORDER BY CASE WHEN ApprovalStatus = 'Pending' THEN 0 ELSE 1 END, RegisterDate ASC");
 
@@ -146,10 +151,15 @@ public class RegisterDAO {
          PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
         int idx = 1;
-        if (fromDate != null) ps.setDate(idx++, new java.sql.Date(fromDate.getTime()));
-        if (toDate != null) ps.setDate(idx++, new java.sql.Date(toDate.getTime()));
-        if (status != null && !status.equalsIgnoreCase("all")) ps.setString(idx++, status);
-        if (keyword != null && !keyword.trim().isEmpty()) ps.setString(idx++, "%" + keyword.toLowerCase() + "%");
+        if (status != null && !status.equalsIgnoreCase("all")) {
+            ps.setString(idx++, status);
+        }
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ps.setString(idx++, "%" + keyword.toLowerCase() + "%");
+        }
+        if (nameKeyword != null && !nameKeyword.trim().isEmpty()) {
+            ps.setString(idx++, "%" + nameKeyword.toLowerCase() + "%");
+        }
 
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
@@ -179,6 +189,22 @@ public class RegisterDAO {
 
     return list;
 }
+    
+    public boolean isEmailExist(String email) {
+    String sql = "SELECT COUNT(*) FROM [User] WHERE email = ?";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 
 public static void main(String[] args) {
         RegisterDAO dao = new RegisterDAO();

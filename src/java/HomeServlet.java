@@ -12,13 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.Year;
-import java.time.format.TextStyle;
 import java.util.*;
 import java.sql.Time;
 
@@ -37,12 +33,13 @@ public class HomeServlet extends HttpServlet {
     private final RoomDAO roomDAO = new RoomDAO();
     private final ShiftLearnDAO shiftDAO = new ShiftLearnDAO();
     private final ClassGroupDAO classGroupDAO = new ClassGroupDAO();
+    private final ScheduleDAO scheduleDAO = new ScheduleDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // 1. ThĂ´ng tin trung tĂ¢m
+            // 1. Thông tin trung tâm
             CenterInfo info = centerInfoDAO.getCenterInfo(1);
             if (info != null) {
                 request.setAttribute("centerName", info.getNameCenter());
@@ -52,13 +49,13 @@ public class HomeServlet extends HttpServlet {
                 request.setAttribute("descripCenter", info.getDescrip());
             }
 
-            // 2. Khá»‘i lá»›p vĂ  mĂ´n há»c
+            // 2. Khối lớp và môn học
             List<Grade> grades = gradeDAO.getAllGrades();
             List<Subject> subjects = subjectDAO.getSubjectsWithClassCount();
             request.setAttribute("grades", grades);
             request.setAttribute("subjects", subjects);
 
-            // Map tra cá»©u tĂªn khá»‘i vĂ  tĂªn mĂ´n
+            // Map tra cứu tên khối và tên môn
             Map<Integer, String> gradeNames = new HashMap<>();
             for (Grade g : grades) {
                 gradeNames.put(g.getGradeID(), g.getGradeName());
@@ -71,15 +68,15 @@ public class HomeServlet extends HttpServlet {
             }
             request.setAttribute("subjectNames", subjectNames);
 
-            // 3. TĂ i liá»‡u theo khá»‘i vĂ  mĂ´n
+            // 3. Tài liệu theo khối và môn
             int gradeId = parseIntOrDefault(request.getParameter("gradeId"), 0);
             int subjectId = parseIntOrDefault(request.getParameter("subjectId"), 0);
             request.setAttribute("documents", documentDAO.getDocumentsByGradeAndSubject(gradeId, subjectId));
 
-            // 4. Danh sĂ¡ch táº¥t cáº£ khĂ³a há»c
-            request.setAttribute("classes", tutoringClassDAO.getClasses(null));
+            // 4. Danh sách tất cả khóa học
+            request.setAttribute("classes", tutoringClassDAO.getTutoringClassesByHotAndStatus(null));
 
-            // 5. Banner vĂ  cĂ¡c thĂ´ng sá»‘ trung tĂ¢m
+            // 5. Banner và các thông số trung tâm
             request.setAttribute("banners", bannerDAO.getAllBanners());
             int establishmentYear = centerInfoDAO.getYearOfWork();
             int yearsActive = Year.now().getValue() - establishmentYear;
@@ -87,16 +84,16 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("studentCount", studentDAO.getStudentCount());
             request.setAttribute("partnerSchoolsCount", schoolDAO.getPartnerSchoolsCount());
 
-            // 6. KhĂ³a há»c ná»•i báº­t vĂ  quanh nÄƒm
+            // 6. Khóa học nổi bật và quanh năm
             List<TutoringClass> featuredTutoringClasses = tutoringClassDAO.getFeaturedTutoringClasses();
             List<TutoringClass> yearRoundTutoringClasses = tutoringClassDAO.getYearRoundTutoringClasses();
             request.setAttribute("featuredTutoringClasses", featuredTutoringClasses);
             request.setAttribute("yearRoundTutoringClasses", yearRoundTutoringClasses);
 
-            // Táº¡o formatter cho giá» phĂºt
+            // Tạo formatter cho giờ phút
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-            // 7. Láº¥y shift list (giá» báº¯t Ä‘áº§u/káº¿t thĂºc)
+            // 7. Lấy shift list (giờ bắt đầu/kết thúc)
             List<Shift> allShifts = shiftDAO.getAllShifts();
             Map<Integer, String> shiftStartTimes = new HashMap<>();
             Map<Integer, String> shiftEndTimes = new HashMap<>();
@@ -108,7 +105,7 @@ public class HomeServlet extends HttpServlet {
 
                 shiftStartTimes.put(s.getId(), formattedStart);
                 shiftEndTimes.put(s.getId(), formattedEnd);
-                shiftMap.put(s.getId(), s); // váº«n giá»¯ nguyĂªn vĂ¬ Ä‘Ă¢y lĂ  Ä‘á»‘i tÆ°á»£ng Shift
+                shiftMap.put(s.getId(), s); // vẫn giữ nguyên vì đây là đối tượng Shift
             }
 
             request.setAttribute("shiftStartTimes", shiftStartTimes);
@@ -120,116 +117,189 @@ public class HomeServlet extends HttpServlet {
             for (Shift s : allShifts) {
                 System.out.printf("  ShiftID=%d, Start=%s, End=%s, DurationText=%s\n", s.getId(), s.getStartTime(), s.getEndTime(), s.getDurationText());
             }
-//
+            //
             List<TutoringClass> allTutoringClasses = new ArrayList<>();
             allTutoringClasses.addAll(tutoringClassDAO.getFeaturedTutoringClasses());
             allTutoringClasses.addAll(tutoringClassDAO.getYearRoundTutoringClasses());
 
             Map<Integer, String> groupStringMap = new HashMap<>();
             Map<Integer, String> durationMap = new HashMap<>();
+            Map<Integer, String> weekdayMap = scheduleDAO.getWeekdayMap(); // gọi hàm bạn đã viết
+            request.setAttribute("weekdayMap", weekdayMap); // truyền cho JSP
             Set<Integer> addedClassIds = new HashSet<>();
 
-            for (TutoringClass tc : allTutoringClasses) {
-                int tutoringClassId = tc.getTutoringClassID();
-                if (addedClassIds.contains(tutoringClassId)) {
-                    continue;
-                }
-                addedClassIds.add(tutoringClassId);
+//            for (TutoringClass tc : allTutoringClasses) {
+//                int tutoringClassId = tc.getTutoringClassID();
+//                if (addedClassIds.contains(tutoringClassId)) {
+//                    continue;
+//                }
+//                addedClassIds.add(tutoringClassId);
+//
+//                // Sử dụng DAO mới đã cập nhật: mỗi group chỉ 1 dòng, có thêm trường ngày học                             
+//                 List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+//                StringBuilder sb = new StringBuilder();
+//
+//                String duration = "Chưa xác định";
+//                if (groupList != null && !groupList.isEmpty()) {
+//                    for (Object[] g : groupList) {
+//                        // g[0]=ClassGroupName, g[1]=MaxStudent, g[2]=RoomName, 
+//                        // g[3]=TeacherName, g[4]=StartTime, g[5]=EndTime, g[6]=StudyDate
+//                        // Tính thứ từ ngày học
+//                        String thu;
+//                        if (g[6] != null) {
+//                            int dayOfWeek = (int) g[6]; // giá trị từ DB
+//                            thu = weekdayMap.getOrDefault(dayOfWeek, "Không xác định");
+//                        } else {
+//                            thu = "null";
+//                        }
+//
+//                        sb//.append(g[0]).append("~") // groupId
+//                                .append(g[0]).append("~") // groupName
+//                                .append(g[1]).append("~") // maxStudent
+//                                .append(g[2]).append("~") // roomName
+//                                .append(g[3] != null ? g[3] : "Không xác định").append("~") // teacherName
+//                                .append(thu).append("~") // thứ trong tuần
+//                                .append(g[4] != null ? g[4] : "N/A").append("~") // startTime
+//                                .append(g[5] != null ? g[5] : "N/A").append(";"); // endTime
+//
+//                        // DEBUG: Log group details
+//                        System.out.println("DEBUG: TutoringClassID=" + tutoringClassId + ", GroupID=" + g[0]
+//                                + ", GroupName=" + g[1] + ", TeacherName=" + g[4]
+//                                + ", Thu=" + thu
+//                                + ", StartTime=" + g[5] + ", EndTime=" + g[6]);
+//                    }
+//
+//                    // Lấy duration từ ca đầu tiên
+//                    Object[] firstGroup = groupList.get(0);
+//
+//                    String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
+//                    String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
+//
+//                    try {
+//                        // Làm sạch chuỗi thời gian nếu có định dạng lạ như "00.0000000"
+//                        if (startStr != null && startStr.contains(".")) {
+//                            startStr = startStr.split("\\.")[0]; // lấy phần trước dấu chấm
+//                        }
+//                        if (endStr != null && endStr.contains(".")) {
+//                            endStr = endStr.split("\\.")[0];
+//                        }
+//
+//                        // Thêm giây nếu thiếu
+//                        if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
+//                            startStr += ":00";
+//                        }
+//                        if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
+//                            endStr += ":00";
+//                        }
+//
+//                        // Kiểm tra lần cuối
+//                        if (startStr != null && endStr != null
+//                                && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
+//                                && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
+//
+//                            Time startSqlTime = Time.valueOf(startStr);
+//                            Time endSqlTime = Time.valueOf(endStr);
+//
+//                            Shift shift = new Shift(startSqlTime, endSqlTime);
+//                            duration = shift.getDurationText();
+//
+//                            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+//                            System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startSqlTime)
+//                                    + ", End=" + fmt.format(endSqlTime) + ", Duration=" + duration);
+//                        } else {
+//                            System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
+//                        e.printStackTrace();
+//                    }
+//
+//                } else {
+//                    System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
+//                }
+//                groupStringMap.put(tutoringClassId, sb.toString());
+//                durationMap.put(tutoringClassId, duration);
+//                System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
+//                System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+//            }
 
-                // Sá»­ dá»¥ng DAO má»›i Ä‘Ă£ cáº­p nháº­t: má»—i group chá»‰ 1 dĂ²ng, cĂ³ thĂªm trÆ°á»ng ngĂ y há»c
-                List<Object[]> groupList = classGroupDAO.getClassGroupsWithRoomAndShift(tutoringClassId);
-                StringBuilder sb = new StringBuilder();
+for (TutoringClass tc : allTutoringClasses) {
+    int tutoringClassId = tc.getTutoringClassID();
+    if (addedClassIds.contains(tutoringClassId)) {
+        continue;
+    }
+    addedClassIds.add(tutoringClassId);
 
-                String duration = "ChÆ°a xĂ¡c Ä‘á»‹nh";
-                if (groupList != null && !groupList.isEmpty()) {
-                    for (Object[] g : groupList) {
-                        // g[0]=ClassGroupName, g[1]=MaxStudent, g[2]=RoomName, 
-                        // g[3]=TeacherName, g[4]=StartTime, g[5]=EndTime, g[6]=StudyDate
-                        // TĂ­nh thá»© tá»« ngĂ y há»c
-                        String thu;
-                        if (g[6] != null) {
-                            LocalDate date = ((java.sql.Date) g[6]).toLocalDate();
-                            DayOfWeek dow = date.getDayOfWeek();
-                            thu = dow.getDisplayName(TextStyle.FULL, new Locale("vi", "VN"));
-                        } else {
-                            thu = "null";
-                        }
+    // Lấy danh sách class group (mỗi group 1 dòng, đã gộp lịch học)
+    List<Object[]> groupList = classGroupDAO.getClassGroupDetailsWithStudentCount(tutoringClassId);
+    StringBuilder sb = new StringBuilder();
+    String duration = "Chưa xác định";
 
-                        sb//.append(g[0]).append("~") // groupId
-                                .append(g[0]).append("~") // groupName
-                                .append(g[1]).append("~") // maxStudent
-                                .append(g[2]).append("~") // roomName
-                                .append(g[3] != null ? g[3] : "KhĂ´ng xĂ¡c Ä‘á»‹nh").append("~") // teacherName
-                                .append(thu).append("~") // thá»© trong tuáº§n
-                                .append(g[4] != null ? g[4] : "N/A").append("~") // startTime
-                                .append(g[5] != null ? g[5] : "N/A").append(";"); // endTime
+    if (groupList != null && !groupList.isEmpty()) {
+        for (Object[] g : groupList) {
+            sb
+                .append(g[0]).append("~")                        // groupName
+                .append(g[1]).append("~")                        // maxStudent
+                .append(g[3] != null ? g[3] : "Không xác định").append(";"); // teacherName
+        }
 
-                        // DEBUG: Log group details
-                        System.out.println("DEBUG: TutoringClassID=" + tutoringClassId + ", GroupID=" + g[0]
-                                + ", GroupName=" + g[1] + ", TeacherName=" + g[4]
-                                + ", Thu=" + thu
-                                + ", StartTime=" + g[5] + ", EndTime=" + g[6]);
-                    }
+        // Tính duration từ ca đầu tiên (g[4], g[5])
+        Object[] firstGroup = groupList.get(0);
+        String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
+        String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
 
-                    // Láº¥y duration tá»« ca Ä‘áº§u tiĂªn
-                    Object[] firstGroup = groupList.get(0);
-
-                    String startStr = firstGroup[4] != null ? firstGroup[4].toString().trim() : null;
-                    String endStr = firstGroup[5] != null ? firstGroup[5].toString().trim() : null;
-
-                    try {
-                        // LĂ m sáº¡ch chuá»—i thá»i gian náº¿u cĂ³ Ä‘á»‹nh dáº¡ng láº¡ nhÆ° "00.0000000"
-                        if (startStr != null && startStr.contains(".")) {
-                            startStr = startStr.split("\\.")[0]; // láº¥y pháº§n trÆ°á»›c dáº¥u cháº¥m
-                        }
-                        if (endStr != null && endStr.contains(".")) {
-                            endStr = endStr.split("\\.")[0];
-                        }
-
-                        // ThĂªm giĂ¢y náº¿u thiáº¿u
-                        if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
-                            startStr += ":00";
-                        }
-                        if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
-                            endStr += ":00";
-                        }
-
-                        // Kiá»ƒm tra láº§n cuá»‘i
-                        if (startStr != null && endStr != null
-                                && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
-                                && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
-
-                            Time startSqlTime = Time.valueOf(startStr);
-                            Time endSqlTime = Time.valueOf(endStr);
-
-                            Shift shift = new Shift(startSqlTime, endSqlTime);
-                            duration = shift.getDurationText();
-
-                            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
-                            System.out.println("DEBUG: Shift Ä‘áº§u tiĂªn: Start=" + fmt.format(startSqlTime)
-                                    + ", End=" + fmt.format(endSqlTime) + ", Duration=" + duration);
-                        } else {
-                            System.out.println("DEBUG âŒ Dá»¯ liá»‡u thá»i gian khĂ´ng há»£p lá»‡: Start=" + startStr + ", End=" + endStr);
-                        }
-
-                    } catch (Exception e) {
-                        System.err.println("âŒ Lá»—i khi parse thá»i gian: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    System.out.println("DEBUG: KHĂ”NG cĂ³ group nĂ o cho TutoringClassID = " + tutoringClassId);
-                }
-                groupStringMap.put(tutoringClassId, sb.toString());
-                durationMap.put(tutoringClassId, duration);
-                System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
-                System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+        try {
+            if (startStr != null && startStr.contains(".")) {
+                startStr = startStr.split("\\.")[0];
             }
+            if (endStr != null && endStr.contains(".")) {
+                endStr = endStr.split("\\.")[0];
+            }
+
+            if (startStr != null && startStr.matches("\\d{2}:\\d{2}")) {
+                startStr += ":00";
+            }
+            if (endStr != null && endStr.matches("\\d{2}:\\d{2}")) {
+                endStr += ":00";
+            }
+
+            if (startStr != null && endStr != null
+                    && startStr.matches("\\d{2}:\\d{2}:\\d{2}")
+                    && endStr.matches("\\d{2}:\\d{2}:\\d{2}")) {
+
+                Time startTime = Time.valueOf(startStr);
+                Time endTime = Time.valueOf(endStr);
+                Shift shift = new Shift(startTime, endTime);
+                duration = shift.getDurationText();
+
+                SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+                System.out.println("DEBUG: Shift đầu tiên: Start=" + fmt.format(startTime)
+                        + ", End=" + fmt.format(endTime) + ", Duration=" + duration);
+            } else {
+                System.out.println("DEBUG ❌ Dữ liệu thời gian không hợp lệ: Start=" + startStr + ", End=" + endStr);
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi parse thời gian: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    } else {
+        System.out.println("DEBUG: KHÔNG có group nào cho TutoringClassID = " + tutoringClassId);
+    }
+
+    // Đưa dữ liệu vào map
+    groupStringMap.put(tutoringClassId, sb.toString());
+    durationMap.put(tutoringClassId, duration);
+    System.out.println("DEBUG: groupStringMap[" + tutoringClassId + "] = " + sb.toString());
+    System.out.println("DEBUG: durationMap[" + tutoringClassId + "] = " + duration);
+}
+
 
             request.setAttribute("groupStringMap", groupStringMap);
             request.setAttribute("durationMap", durationMap);
 
-            // 10. CĂ¡c map tra cá»©u tĂªn phĂ²ng, giĂ¡o viĂªn
+            // 10. Các map tra cứu tên phòng, giáo viên
             Map<Integer, String> roomNames = new HashMap<>();
             for (Room r : roomDAO.getAllRooms()) {
                 roomNames.put(r.getId(), r.getName());
@@ -242,7 +312,7 @@ public class HomeServlet extends HttpServlet {
             }
             request.setAttribute("teacherNames", teacherNames);
 
-            // DEBUG: roomNames vĂ  teacherNames
+            // DEBUG: roomNames và teacherNames
             System.out.println("DEBUG: roomNames:");
             for (Map.Entry<Integer, String> entry : roomNames.entrySet()) {
                 System.out.println("  RoomID=" + entry.getKey() + ", Name=" + entry.getValue());
@@ -252,46 +322,26 @@ public class HomeServlet extends HttpServlet {
                 System.out.println("  TeacherID=" + entry.getKey() + ", Name=" + entry.getValue());
             }
 
-            // 11. GiĂ¡o viĂªn & trÆ°á»ng liĂªn káº¿t
+            // 11. Giáo viên & trường liên kết
             List<User> teachers = teacherDAO.getAllTeachers();
             request.setAttribute("teachers", teachers);
             Map<Integer, String> teacherSchoolNames = new HashMap<>();
             for (User teacher : teachers) {
                 String schoolName = schoolDAO.getSchoolNameById(teacher.getSchoolID());
-                teacherSchoolNames.put(teacher.getId(), (schoolName == null || schoolName.trim().isEmpty()) ? "GiĂ¡o viĂªn cá»§a Edura" : schoolName);
+                teacherSchoolNames.put(teacher.getId(), (schoolName == null || schoolName.trim().isEmpty()) ? "Giáo viên của Edura" : schoolName);
             }
             request.setAttribute("teacherSchoolNames", teacherSchoolNames);
 
-            // 12. Há»c sinh ná»•i báº­t vĂ  trÆ°á»ng liĂªn káº¿t
+            // 12. Học sinh nổi bật và trường liên kết
             request.setAttribute("students", studentDAO.getTopStudents());
             request.setAttribute("schools", schoolDAO.getAllSchools());
 
-            // 13. Náº¿u cĂ³ courseId: láº¥y chi tiáº¿t khĂ³a há»c (TutoringClass vĂ  List<ClassGroup>)
-            String courseIdParam = request.getParameter("courseId");
-            TutoringClass selectedTutoringClass = null;
-            List<ClassGroup> selectedClassGroups = new ArrayList<>();
-            String selectedGradeName = "";
-
-            if (courseIdParam != null) {
-                int tutoringClassID = parseIntOrDefault(courseIdParam, -1);
-                if (tutoringClassID > 0) {
-                    selectedTutoringClass = tutoringClassDAO.getTutoringClassDetail(tutoringClassID);
-                    if (selectedTutoringClass != null) {
-                        // Láº¤Y GROUP ÄĂNG Tá»ª CLASSGROUPDAO
-                        selectedClassGroups = classGroupDAO.getClassGroupsByTutoringClassId(tutoringClassID);
-                        selectedGradeName = gradeNames.get(selectedTutoringClass.getGradeID());
-                    }
-                }
-            }
-            request.setAttribute("selectedTutoringClass", selectedTutoringClass);
-            request.setAttribute("selectedClassGroups", selectedClassGroups);
-            request.setAttribute("selectedGradeName", selectedGradeName);
-            // Äiá»u hÆ°á»›ng Ä‘áº¿n JSP
+            // Điều hướng đến JSP
             forwardToJsp(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lá»—i: " + e.getMessage());
+            request.setAttribute("error", "Lỗi: " + e.getMessage());
             forwardToJsp(request, response);
         }
     }
@@ -333,5 +383,4 @@ public class HomeServlet extends HttpServlet {
             return def;
         }
     }
-
 }

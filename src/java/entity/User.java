@@ -62,19 +62,22 @@ private int schoolClassId;
         this.parentEmail = parentEmail;
         this.parentPhone = parentPhone;
     }
- 
+    
+
     public User(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
+    
 
     public User(String email,String name,  String avatar) {
          this.email = email;
         this.name = name;
         this.avatar = avatar;
     }
+    
 
     public User(int id, String email, String password, int roleID) {
         this.id = id;
@@ -89,11 +92,16 @@ private int schoolClassId;
         this.roleID = roleID;
     }
 
+    
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
        
     }
+
+    
+    
 
     public User(int id, String name, String gender, String phone, String email, String avatar, int status, String certi, String descrip) {
         this.id = id;
@@ -139,6 +147,7 @@ private int schoolClassId;
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
     }
+    
 
     public List<SchoolClass> getSchoolClasses() {
         return schoolClasses;
@@ -189,6 +198,8 @@ private int schoolClassId;
     public void setRoleID(int roleID) {
         this.roleID = roleID;
     }
+
+    
 
     public String getName() {
         return name;
@@ -292,5 +303,8 @@ private int schoolClassId;
     public String toString() {
         return "User{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", birth=" + birth + ", phone=" + phone + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", status=" + status + ", createDate=" + createDate + ", certi=" + certi + ", descrip=" + descrip + ", schoolID=" + schoolID + ", schoolClasses=" + schoolClasses + ", roleID=" + roleID + ", isHot=" + isHot + ", parentEmail=" + parentEmail + ", parentPhone=" + parentPhone + '}';
     }
+
+   
+    
 
 }

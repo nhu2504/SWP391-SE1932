@@ -239,6 +239,7 @@ select * from school
 
 
 
+
 INSERT INTO [User] (
     FullName, Gender, BirthDate, phone, email, pass, avatar,
     Certi, Descrip, SchoolID, roleID, ParentEmail, ParentPhone,isHot,SchoolClassID
@@ -271,7 +272,10 @@ values
 ('15:10:00', '17:10:00'),
 ('17:20:00', '19:20:00'),
 ('19:30:00', '21:30:00');
-
+select * from TutoringClass
+select * from [user]
+select * from teacherclass
+update TutoringClass set isActive = 1 
 --8.Room
 insert into Room(roomName)
 values

@@ -79,16 +79,17 @@ public class SendRequestActive extends HttpServlet {
         UserDAO dao = new UserDAO();
         String email = request.getParameter("email");
         User u = dao.getUserByEmail(email);
-        if (u == null) {
-            request.setAttribute("mess", "Email không tồn tại");
-            request.getRequestDispatcher("requestactive.jsp").forward(request, response);
-            return;
-        }
+        
         String name = "";
     String email1 = "";
     String birthStr = "";
     String school = "";
     String classAtSchool = "";
+    if (u == null) {
+            request.setAttribute("mess", "Email của bạn chưa tồn tại trong hệ thống.");
+            request.getRequestDispatcher("requestactive.jsp").forward(request, response);
+            return;
+        }
         try {
             request.setCharacterEncoding("UTF-8");
 

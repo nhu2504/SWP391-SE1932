@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
+import dal.CenterInfoDAO;
 import dal.UserDAO;
+import entity.CenterInfo;
 
 import entity.User;
 
@@ -16,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.util.List;
+
 
 /**
  *
@@ -63,6 +65,16 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
+        CenterInfo center = centerInfoDAO.getCenterInfo(1);
+            if (center != null) {
+                request.setAttribute("centerName", center.getNameCenter());
+                request.setAttribute("descripCenter", center.getDescrip());
+                request.setAttribute("address", center.getAddress());
+                request.setAttribute("phone", center.getPhone());
+                request.setAttribute("email", center.getEmail());
+                request.setAttribute("website", center.getWebsite());
+            }
             request.getRequestDispatcher("login_register.jsp").forward(request, response);
     }
 

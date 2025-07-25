@@ -400,6 +400,8 @@
                 <div id="main-content">
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Quản lý học sinh</h1>
+                    
+
                     <c:choose>
                         <c:when test="${not empty student}">
                             <table class="min-w-full border border-gray-300 text-center text-sm">

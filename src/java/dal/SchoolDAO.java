@@ -37,7 +37,6 @@ public class SchoolDAO {
         }
         return schools;
     }
-    
 
     /**
      *  Lấy thông tin chi tiết một trường theo ID
@@ -109,6 +108,8 @@ public class SchoolDAO {
         }
         return 0;
     }
+    
+    // nanh
     public School getSchoolByUserId(int userId) {
     School school = null;
     String sql = "SELECT s.SchoolName " +
@@ -132,5 +133,4 @@ public class SchoolDAO {
 
     return school;
 }
-
 }

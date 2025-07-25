@@ -73,10 +73,12 @@ public class RegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   @Override
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String mess = "";
+        RegisterDAO rd = new RegisterDAO();
+
         try {
             String fName = request.getParameter("fullName");
             String email = request.getParameter("email");
@@ -88,7 +90,7 @@ public class RegisterServlet extends HttpServlet {
             String fullSchoolName = "Trường THPT " + rawName;
 
             String address = request.getParameter("schoolAddress");
-            
+
             String rawClass = request.getParameter("classAtSchool"); // "12A1"
             String fullClassName = "Lớp " + rawClass;
             String interestCourses = request.getParameter("interestCourses");
@@ -114,6 +116,8 @@ public class RegisterServlet extends HttpServlet {
             }
             if (!email.matches("^[A-Za-z0-9]+@(.+)$")) {
                 mess = "Email không hợp lệ";
+            } else if (rd.isEmailExist(email)) {
+                mess = "Email này đã được đăng ký, vui lòng dùng email khác";
             } else if (!phone.matches("^0\\d{9}$")) {
                 mess = "Số điện thoại không hợp lệ ";
             }
@@ -127,16 +131,31 @@ public class RegisterServlet extends HttpServlet {
                 mess = "Ngày sinh không hợp lệ";
             }
 
+            
             if (!mess.isEmpty()) {
                 request.setAttribute("error1", mess);
+
+                // Gửi lại dữ liệu đã nhập
+                request.setAttribute("fullName", fName);
+                request.setAttribute("email1", email);
+                request.setAttribute("phone1", phone);
+                request.setAttribute("gender", gender);
+                request.setAttribute("dob", birth);
+                request.setAttribute("school", rawName);
+                request.setAttribute("schoolAddress", address);
+                request.setAttribute("classAtSchool", rawClass);
+                request.setAttribute("interestCourses", interestCourses);
+                request.setAttribute("phonepar", parentPhone);
+                request.setAttribute("emailpar", parentEmail);
+                request.setAttribute("userIntro", userIntroStr);
+
                 request.getRequestDispatcher("login_register.jsp").forward(request, response);
                 return;
             }
 
-            RegisterDAO rd = new RegisterDAO();
             boolean success = rd.register(fName, phone, email, gender,
                     birthDate, fullSchoolName, address, fullClassName, parentPhone,
-                    parentEmail, userIntro, confirm,interestCourses);
+                    parentEmail, userIntro, confirm, interestCourses);
 
             if (success) {
                 request.getRequestDispatcher("SuccessRegister.jsp").forward(request, response);

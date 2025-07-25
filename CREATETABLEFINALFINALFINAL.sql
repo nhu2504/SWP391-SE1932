@@ -56,7 +56,7 @@ add SchoolClassID int null
 alter table [user]
 add constraint FK_Students_Classes 
 FOREIGN KEY (SchoolClassID) REFERENCES SchoolClass(SchoolClassID);
-
+select * from [user]
 CREATE TABLE TeacherClass (
     UserID INT NOT NULL,
     SchoolClassID INT NOT NULL,
@@ -130,6 +130,11 @@ CREATE TABLE ClassGroup (
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID),
     FOREIGN KEY (TeacherID) REFERENCES [User](UserID)
 );
+alter table ClassGroup 
+add minStudent int
+
+alter table ClassGroup 
+add MaxStudent int
 
 -- 11. Điểm danh của lớp (Attendance)
 CREATE TABLE Attendance (
@@ -187,6 +192,7 @@ CREATE TABLE Notifications (
 	CreatedBy int,
 	isImportant bit,
 	isRead bit default 0
+	TargetRole INT
 	FOREIGN KEY (CreatedBy) REFERENCES [User](UserID),
 	FOREIGN KEY (TargetRole) REFERENCES roles(roleID)
 );
@@ -304,4 +310,13 @@ CREATE TABLE TutoringRegistration (
     FOREIGN KEY (UserID) REFERENCES [User](UserID),
     FOREIGN KEY (TutoringClassID) REFERENCES TutoringClass(TutoringClassID)
 );
-
+create table RequestActive(
+	raID INT PRIMARY KEY IDENTITY,
+	NameStudent nvarchar(100),
+	email nvarchar(50),
+	Birth DATE,
+	School nvarchar(100),
+	Class nvarchar(30),
+	stt NVARCHAR(20) DEFAULT 'Pending',
+	DateRequest DATETIME DEFAULT GETDATE()
+);

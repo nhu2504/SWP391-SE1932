@@ -76,4 +76,41 @@ public class ClassGroup_StudentDAO {
         }
     }
 
+    
+    //như
+    public boolean addStudentToClassGroup(int classGroupId, int studentId) {
+        String sql = "INSERT INTO ClassGroup_Student (ClassGroupID, StudentID, EnrollDate) " +
+                     "VALUES (?, ?, GETDATE())";
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classGroupId);
+            ps.setInt(2, studentId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public int countStudentsInGroup(int classGroupId) {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM ClassGroup_Student WHERE ClassGroupID = ?";
+    
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setInt(1, classGroupId);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    return count;
+}
+
+
 }

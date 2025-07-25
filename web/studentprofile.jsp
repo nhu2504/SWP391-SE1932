@@ -728,11 +728,10 @@
 
 
                                 <label>Trường đang học:</label>
-                                
-
-                                <br/>
+                                <input type="text" value="${schoolName}" readonly style="background-color: #f0f0f0; border-radius: 8px; padding: 8px; width: 90%; border: 1px solid #ccc;">
+                                <br>
                                 <label>Lớp đang học:</label>
-                                
+                                <input type="text" value="${schoolclassName}" readonly style="background-color: #f0f0f0; border-radius: 8px; padding: 8px; width: 90%; border: 1px solid #ccc;">
 
 
                                 <label>Mô tả</label>
@@ -850,6 +849,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
 </body>
 </html>

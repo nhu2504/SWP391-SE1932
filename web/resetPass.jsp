@@ -595,6 +595,7 @@
                 justify-content: center;
                 align-items: center;
                 margin-left: 720px;
+                margin-bottom:20px;
             }
 
             .reset-container {

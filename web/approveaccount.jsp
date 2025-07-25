@@ -415,14 +415,7 @@
 
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">Phê duyệt tài khoản</h1>
                     <form action="filterregister" method="get" class="flex flex-wrap gap-3 items-center justify-center mb-6">
-                        <div>
-                            <label>Ngày từ:</label>
-                            <input type="text" name="fromDate" value="${fromDate}" class="border rounded px-2 py-1" placeholder="dd/MM/yyyy"/>
-                        </div>
-                        <div>
-                            <label>Đến:</label>
-                            <input type="text" name="toDate" value="${toDate}" class="border rounded px-2 py-1" placeholder="dd/MM/yyyy"/>
-                        </div>
+                        
                         <div>
                             <label>Trạng thái:</label>
                             <select name="status" class="border rounded px-2 py-1">
@@ -430,6 +423,10 @@
                                 <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Chưa tạo</option>
                                 <option value="Accepted" ${status == 'Accepted' ? 'selected' : ''}>Đã tạo</option>
                             </select>
+                        </div>
+                            <div>
+                            <label>Tìm theo tên:</label>
+                            <input type="text" name="name" value="${name}" class="border rounded px-2 py-1" placeholder="Nhập tên học sinh"/>
                         </div>
                         <div>
                             <label>Khoá học quan tâm:</label>

@@ -11,6 +11,7 @@ import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.io.File;
  *
  * @author NGOC ANH
  */
+@MultipartConfig
 @WebServlet(name="UpdateStudentProfile", urlPatterns={"/updatestudentprofile"})
 public class UpdateStudentProfile extends HttpServlet {
    
@@ -72,83 +74,78 @@ public class UpdateStudentProfile extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        User user = (User) session.getAttribute("user");
-        int userId = user.getId();
-
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        int schoolId = Integer.parseInt(request.getParameter("school"));
-        int schoolClassId = Integer.parseInt(request.getParameter("schoolClass"));
-        String description = request.getParameter("description");
-
-        
-        
-         UserDAO userDao = new UserDAO();
-
-        // Xử lý upload ảnh đại diện
-        Part part = request.getPart("avatarFile");
-
-        // Thư mục lưu ảnh ngoài project
-        String uploadDirPath = "D:/MyUploads/Images";
-        File uploadDir = new File(uploadDirPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        String avatarPath = null;
-        String randomFileName = null;
-
-        if (part != null && part.getSize() > 0) {
-            // Xóa ảnh cũ nếu có
-            String oldAvatarPath = userDao.getUserById(userId).getAvatar(); 
-            if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
-                String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
-                File oldFile = new File(uploadDir, oldFileName);
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
-            }
-
-            // Tạo tên ngẫu nhiên cho file
-            String fileExtension = part.getSubmittedFileName().substring(part.getSubmittedFileName().lastIndexOf("."));
-            randomFileName = java.util.UUID.randomUUID().toString() + fileExtension;
-
-            // Ghi file
-            File newFile = new File(uploadDir, randomFileName);
-            part.write(newFile.getAbsolutePath());
-
-            // Gán đường dẫn lưu DB
-            avatarPath = request.getContextPath() + "/image-loader/" + randomFileName;
-        } else {
-            // Không upload ảnh mới → giữ nguyên ảnh cũ
-            avatarPath = userDao.getUserById(userId).getAvatar();
-        }
-
-        boolean update = userDao.updateStudentProfile(userId, email, phone, avatarPath, description, schoolId, schoolClassId);
-
-        
-
-        if (update) {
-            User updatedUser = userDao.getUserById(userId);
-           
-            request.getSession().setAttribute("user", updatedUser);
-            session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
-        } else {
-            session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");
-        }
-
-
-
-        response.sendRedirect("Studentprofile");
+    HttpSession session = request.getSession(false);
+    if (session == null || session.getAttribute("user") == null) {
+        response.sendRedirect("login");
+        return;
     }
+
+    User user = (User) session.getAttribute("user");
+    int userId = user.getId();
+
+    String email = request.getParameter("email");
+    String phone = request.getParameter("phone");
+    String description = request.getParameter("description");
+
+    // Giữ nguyên nếu trống/null
+    if (email == null || email.trim().isEmpty()) {
+        email = user.getEmail();
+    }
+    if (phone == null || phone.trim().isEmpty()) {
+        phone = user.getPhone();
+    }
+    if (description == null) {
+        description = user.getDescrip();
+    }
+
+    UserDAO userDao = new UserDAO();
+
+    // Upload ảnh
+    Part part = request.getPart("avatarFile");
+    String uploadDirPath = "D:/MyUploads/Images";
+    File uploadDir = new File(uploadDirPath);
+    if (!uploadDir.exists()) {
+        uploadDir.mkdirs();
+    }
+
+    String avatarPath;
+    if (part != null && part.getSize() > 0) {
+        // Xóa ảnh cũ nếu có
+        String oldAvatarPath = user.getAvatar();
+        if (oldAvatarPath != null && oldAvatarPath.contains("/image-loader/")) {
+            String oldFileName = oldAvatarPath.substring((request.getContextPath() + "/image-loader/").length());
+            File oldFile = new File(uploadDir, oldFileName);
+            if (oldFile.exists()) {
+                oldFile.delete();
+            }
+        }
+
+        // Lưu file mới
+        String fileExtension = part.getSubmittedFileName().substring(part.getSubmittedFileName().lastIndexOf("."));
+        String randomFileName = java.util.UUID.randomUUID().toString() + fileExtension;
+        File newFile = new File(uploadDir, randomFileName);
+        part.write(newFile.getAbsolutePath());
+
+        avatarPath = request.getContextPath() + "/image-loader/" + randomFileName;
+    } else {
+        avatarPath = user.getAvatar(); // giữ nguyên ảnh cũ
+    }
+
+    boolean update = userDao.updateStudentProfile(userId, email, phone, avatarPath, description);
+
+    if (update) {
+        User updatedUser = userDao.getUserById(userId);
+        session.setAttribute("user", updatedUser);
+        session.setAttribute("SuccessMessage", "Đã lưu thay đổi thành công.");
+    } else {
+        session.setAttribute("FailMessage", "Thay đổi chưa được lưu. Đã xảy ra lỗi.");
+    }
+
+    response.sendRedirect("Studentprofile");
+}
+
 
     /** 
      * Returns a short description of the servlet.

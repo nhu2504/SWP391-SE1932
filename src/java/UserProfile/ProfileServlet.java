@@ -52,7 +52,7 @@ public class ProfileServlet extends HttpServlet {
         }
         int userId = sessionUser.getId();
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserById(userId);
+        User user = userDAO.getUserByID(userId);
         if (user == null) {
             request.setAttribute("error", "Không tìm thấy thông tin người dùng");
             request.getRequestDispatcher("error.jsp").forward(request, response);

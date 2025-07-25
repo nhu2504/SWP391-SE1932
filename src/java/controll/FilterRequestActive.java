@@ -5,10 +5,8 @@
 
 package controll;
 
-import dal.CenterInfoDAO;
-import dal.UserDAO;
-import entity.CenterInfo;
-import entity.User;
+import dal.RequestActiveDAO;
+import entity.RequestActive;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,15 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  *
  * @author NGOC ANH
  */
-@WebServlet(name="ManagerStudent", urlPatterns={"/managerstudent"})
-public class ManagerStudent extends HttpServlet {
+@WebServlet(name="FilterRequestActive", urlPatterns={"/filterrequestactive"})
+public class FilterRequestActive extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +38,10 @@ public class ManagerStudent extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ManagerStudent</title>");  
+            out.println("<title>Servlet FilterRequestActive</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ManagerStudent at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet FilterRequestActive at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,34 +58,21 @@ public class ManagerStudent extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        CenterInfoDAO centerInfoDAO = new CenterInfoDAO();
-        CenterInfo center = centerInfoDAO.getCenterInfo(1);
-            if (center != null) {
-                request.setAttribute("centerName", center.getNameCenter());
-                request.setAttribute("descripCenter", center.getDescrip());
-                request.setAttribute("address", center.getAddress());
-                request.setAttribute("phone", center.getPhone());
-                request.setAttribute("email", center.getEmail());
-                request.setAttribute("website", center.getWebsite());
-            }
-        HttpSession session = request.getSession();
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            response.sendRedirect("login_register.jsp");
-            return;
-        }
-        int userId = sessionUser.getId();
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserById(userId);
-        if (user == null) {
-            request.setAttribute("error", "Không tìm thấy thông tin người dùng");
-            request.getRequestDispatcher("error.jsp").forward(request, response);
-            return;
-        }
+        String status = request.getParameter("status");
         
-        List<User> student = userDAO.getStudent();
-        request.setAttribute("student", student);
-        request.getRequestDispatcher("managerstudent.jsp").forward(request, response);
+        String keyword = request.getParameter("keyword");
+        
+        
+
+        RequestActiveDAO dao = new RequestActiveDAO();
+        List<RequestActive> listRequest = dao.filterRequests(keyword, status);
+
+        request.setAttribute("listRequest", listRequest);
+        
+        request.setAttribute("status", status);
+        
+        request.setAttribute("keyword", keyword);
+        request.getRequestDispatcher("approvereactive.jsp").forward(request, response);
     } 
 
     /** 

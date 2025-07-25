@@ -105,19 +105,39 @@ public class SchoolClassDAO {
 
     return sc;
 }
+     // Như
+    public List<SchoolClass> getAllSchoolClasses() {
+    List<SchoolClass> list = new ArrayList<>();
+    String sql = "SELECT schoolClassID, className, schoolID, gradeID FROM SchoolClass";
+    try (Connection conn = new DBContext().connection;
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+            SchoolClass sc = new SchoolClass(
+                rs.getInt("SchoolClassID"),
+                rs.getString("ClassName"),
+                rs.getInt("SchoolID"),
+                rs.getInt("GradeID")
+            );
+            list.add(sc);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
     //test lấy dữ liệu
     public static void main(String[] args) {
 SchoolClassDAO dao = new SchoolClassDAO();
-        int schoolId = 1; // thay đổi ID theo dữ liệu thật trong DB
-
-        List<SchoolClass> classes = dao.getAllClassesBySchoolId(schoolId);
-
-        for (SchoolClass sc : classes) {
-            System.out.println(sc);
-        }
-
-        if (classes.isEmpty()) {
-            System.out.println("Không có lớp nào cho schoolID = " + schoolId);
+        int testId = 12; // Thay đổi ID tùy theo dữ liệu có trong database
+        String className = dao.getSchoolClassNameById(testId);
+        if (className != null && !className.isEmpty()) {
+            System.out.println("Class name for ID " + testId + ": " + className);
+        } else {
+            System.out.println("No class found for ID " + testId);
         }
     }
+    
+   
+
 }
