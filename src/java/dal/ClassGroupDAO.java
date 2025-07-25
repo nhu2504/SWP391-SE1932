@@ -54,10 +54,10 @@ public class ClassGroupDAO {
         }
         return list;
     }
-    
+
     public List<Object[]> getClassGroupDetailsWithStudentCount(int tutoringClassID) {
-    List<Object[]> list = new ArrayList<>();
-    String sql = """
+        List<Object[]> list = new ArrayList<>();
+        String sql = """
         SELECT 
             cg.ClassGroupID,
             cg.ClassGroupName,
@@ -70,9 +70,12 @@ public class ClassGroupDAO {
                 SELECT COUNT(*) 
                 FROM ClassGroup_Student cgs 
                 WHERE cgs.ClassGroupID = cg.ClassGroupID
-            ) AS CurrentStudentCount
+            ) AS CurrentStudentCount,
+            tc.StartDate,
+            tc.EndDate
         FROM ClassGroup cg
         LEFT JOIN [User] u ON cg.TeacherID = u.UserID
+        JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
         OUTER APPLY (
             SELECT STRING_AGG(
                 N'Thứ ' + CAST(ISNULL(st.DayOfWeek, 0) AS VARCHAR) + ' - ' +
@@ -89,28 +92,29 @@ public class ClassGroupDAO {
         WHERE cg.TutoringClassID = ?;
     """;
 
-    try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, tutoringClassID);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            Object[] row = new Object[11];
-            row[0] = rs.getString("ClassGroupName");      // 0
-            row[1] = rs.getInt("MaxStudent");             // 1
-            row[2] = rs.getString("ScheduleSummary");     // 2: đúng định dạng Thứ - Phòng - Ca
-            row[3] = rs.getString("TeacherName");         // 3                               
-            row[4] = rs.getInt("CurrentStudentCount");    // 4
-            row[5] = rs.getInt("ClassGroupID");           // 5
-            row[6] = rs.getInt("minStudent");             // 6
-            row[7] = rs.getInt("isActive");              // 7
-
-            list.add(row);
+        try (Connection conn = new DBContext().connection; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, tutoringClassID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Object[] row = new Object[11];
+                row[0] = rs.getString("ClassGroupName");      // 0
+                row[1] = rs.getInt("MaxStudent");             // 1
+                row[2] = rs.getString("ScheduleSummary");     // 2: đúng định dạng Thứ - Phòng - Ca
+                row[3] = rs.getString("TeacherName");         // 3                               
+                row[4] = rs.getInt("CurrentStudentCount");    // 4
+                row[5] = rs.getInt("ClassGroupID");           // 5
+                row[6] = rs.getInt("minStudent");             // 6
+                row[7] = rs.getInt("isActive");              // 7
+                row[8] = rs.getDate("StartDate");             // 8 
+                row[9] = rs.getDate("EndDate");
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
-        
+
     // Văn Thị Như - thêm lớp học kèm lịch học mẫu
     public int addClassGroupWithTemplates(ClassGroup group, List<ScheduleTemplate> templates) throws SQLException {
         Connection conn = null;
@@ -183,7 +187,7 @@ public class ClassGroupDAO {
                 cg.setName(rs.getString("ClassGroupName"));
                 cg.setToturID(rs.getInt("TutoringClassID"));
                 cg.setMaxStudent(rs.getInt("maxStudent"));
-                
+
                 return cg;
             }
         } catch (Exception e) {
@@ -201,35 +205,32 @@ public class ClassGroupDAO {
             e.printStackTrace();
         }
     }
-    
+
     public List<ClassGroup> getActiveClassGroups() {
-    List<ClassGroup> list = new ArrayList<>();
-    String sql = """
+        List<ClassGroup> list = new ArrayList<>();
+        String sql = """
         SELECT cg.ClassGroupID, cg.ClassGroupName, cg.TutoringClassID, cg.MaxStudent, cg.TeacherID, cg.minStudent
         FROM ClassGroup cg
         JOIN TutoringClass tc ON cg.TutoringClassID = tc.TutoringClassID
         WHERE cg.isActive = 1 AND tc.StartDate <= GETDATE() AND tc.EndDate >= GETDATE()
     """;
-    try (Connection conn = new DBContext().connection;
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
-        while (rs.next()) {
-            ClassGroup group = new ClassGroup();
-            group.setClassGroupId(rs.getInt("ClassGroupID"));
-            group.setName(rs.getString("ClassGroupName"));
-            group.setToturID(rs.getInt("TutoringClassID"));
-            group.setMaxStudent(rs.getInt("MaxStudent"));
-            group.setTeachId(rs.getInt("TeacherID"));
-            group.setMinStudent(rs.getInt("minStudent"));
-            list.add(group);
+            while (rs.next()) {
+                ClassGroup group = new ClassGroup();
+                group.setClassGroupId(rs.getInt("ClassGroupID"));
+                group.setName(rs.getString("ClassGroupName"));
+                group.setToturID(rs.getInt("TutoringClassID"));
+                group.setMaxStudent(rs.getInt("MaxStudent"));
+                group.setTeachId(rs.getInt("TeacherID"));
+                group.setMinStudent(rs.getInt("minStudent"));
+                list.add(group);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
-
 
     // Ngọc Anh
     public List<ClassGroup> getAllClassGroupByUserId(int userId) {
@@ -258,7 +259,7 @@ public class ClassGroupDAO {
                 cg.setToturID(rs.getInt("TutoringClassID"));
                 cg.setName(rs.getString("ClassGroupName"));
                 cg.setMaxStudent(rs.getInt("MaxStudent"));
-                
+
                 cg.setCurrentStudentCount(rs.getInt("StudentCount"));
                 cg.setRoomName(rs.getString("RoomName"));
                 list.add(cg);
@@ -270,8 +271,7 @@ public class ClassGroupDAO {
 
         return list;
     }
-    
-    
+
     public List<ClassGroup> getTodayClasses(int teacherId) throws SQLException {
         List<ClassGroup> list = new ArrayList<>();
         String query = "SELECT cg.ClassGroupName\n"
@@ -329,7 +329,7 @@ public class ClassGroupDAO {
                 + "ELSE "
                 + "INSERT INTO Payment (UserID, TutoringClassID, Amount, PaymentDate) "
                 + "SELECT ?, ?, Tuitionfee, GETDATE() FROM TutoringClass WHERE TutoringClassID = ?";
-try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection conn = new DBContext().connection; PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, tutoringClassID);
             ps.setInt(2, userID);
             ps.setInt(3, userID);

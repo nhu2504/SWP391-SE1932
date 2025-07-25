@@ -1026,6 +1026,14 @@ Ngày update 23/6/2025-->
                 border-top-right-radius: 0.3rem;
             }
 
+            .team-item .img-fluid {
+                width: 200px;
+                height: 350px;
+                object-fit: cover;
+                border-style: none;
+                vertical-align: middle;
+            }
+
         </style>
     </head>
     <body id="top">
@@ -1479,35 +1487,35 @@ Ngày update 23/6/2025-->
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="js/owl.carousel.min.js"></script>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>        
 
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const backTopBtn = document.querySelector('.back-top-icon');
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            const backTopBtn = document.querySelector('.back-top-icon');
 
-                if (backTopBtn) {
-                    // Hiển thị/ẩn nút khi cuộn
-                    window.addEventListener('scroll', () => {
-                        if (window.scrollY > 300) {
-                            backTopBtn.classList.add('visible');
-                        } else {
-                            backTopBtn.classList.remove('visible');
-                        }
-                    });
+                                            if (backTopBtn) {
+                                                // Hiển thị/ẩn nút khi cuộn
+                                                window.addEventListener('scroll', () => {
+                                                    if (window.scrollY > 300) {
+                                                        backTopBtn.classList.add('visible');
+                                                    } else {
+                                                        backTopBtn.classList.remove('visible');
+                                                    }
+                                                });
 
-                    // Cuộn mượt khi bấm
-                    backTopBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        window.scrollTo({top: 0, behavior: 'smooth'});
-                    });
-                } else {
-                    console.error('Back to Top button not found');
-                }
-            });
+                                                // Cuộn mượt khi bấm
+                                                backTopBtn.addEventListener('click', (e) => {
+                                                    e.preventDefault();
+                                                    window.scrollTo({top: 0, behavior: 'smooth'});
+                                                });
+                                            } else {
+                                                console.error('Back to Top button not found');
+                                            }
+                                        });
         </script>
-        
+
         <script>
             $(document).ready(function () {
                 // Debug tất cả grade-link
@@ -1740,7 +1748,7 @@ Ngày update 23/6/2025-->
                 });
             });
         </script>        
-        
+
         <!-- JavaScript để khởi tạo Owl Carousel -->
         <script>
             $(document).ready(function () {
@@ -1822,7 +1830,7 @@ Ngày update 23/6/2025-->
                 $('#teacherDetailModal').modal('hide');
             }
         </script>
-                
+
         <script>
             $(document).ready(function () {
                 const $navbarVertical = $('#navbar-vertical');

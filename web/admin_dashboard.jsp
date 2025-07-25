@@ -308,7 +308,7 @@ Ngày update 3/7/2025-->
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Báo cáo thống kê</span>
                         </a>
-                        
+
                         <a href="listregister" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-user-check w-5"></i>
                             <span>Tạo tài khoản</span>
@@ -503,32 +503,21 @@ Ngày update 3/7/2025-->
                 const groupOverview = ["overview", "teacherSchedule", "todaySchedule", "scheduleClass"];
 
                 $(".sidebar-item").each(function () {
+                    const tabAttr = $(this).data("tab");
                     const group = $(this).data("group");
-                    const isMatch = (
+
+                    const isMatch =
                             (group === "classManagementGroup" && classTabGroup.includes(tab)) ||
-                            ($(this).data("tab") === tab)
-                            );
-
-                    if (isMatch) {
-                        $(this).addClass("active text-indigo-700");
-                    } else {
-                        $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
-                    }
-                });
-
-                $(".sidebar-item").each(function () {
-                    const group = $(this).data("group");
-                    const isMatch = (
                             (group === "groupOverview" && groupOverview.includes(tab)) ||
-                            ($(this).data("tab") === tab)
-                            );
+                            (tabAttr === tab);
 
                     if (isMatch) {
-                        $(this).addClass("active text-indigo-700");
+                        $(this).addClass("active text-indigo-700").removeClass("text-gray-600");
                     } else {
                         $(this).removeClass("active text-indigo-700").addClass("text-gray-600");
                     }
                 });
+
             });
 
         </script>

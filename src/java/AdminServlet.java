@@ -15,14 +15,9 @@ import dal.StudentDAO;
 import dal.SubjectDAO;
 import dal.TeacherDAO;
 import dal.TutoringClassDAO;
-import dal.UserDAO;
 import entity.CenterInfo;
 import entity.ClassGroup;
 import entity.ScheduleTemplate;
-import entity.School;
-import entity.SchoolClass;
-import entity.Shift;
-import entity.Subject;
 import entity.TutoringClass;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -43,9 +38,7 @@ import java.time.LocalDate;
 import java.util.*;
 import com.google.gson.Gson;
 import java.time.DayOfWeek;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 
 /**
  * Ngày update: 23/07/2025 Người viết: Văn Thị Như
@@ -83,7 +76,7 @@ public class AdminServlet extends HttpServlet {
         }
         // Gọi cập nhật trạng thái tự động
         tutoringClassDAO.updateAutoActiveStatus();
-        
+
         // Tự động mở rộng lịch học nếu còn thiếu
         List<ClassGroup> activeGroups = classGroupDAO.getActiveClassGroups();
         for (ClassGroup group : activeGroups) {
@@ -335,14 +328,21 @@ public class AdminServlet extends HttpServlet {
                         try {
                             int groupId = Integer.parseInt(req.getParameter("groupId"));
                             int courseId = Integer.parseInt(req.getParameter("id"));
-                            classGroupDAO.activateClassGroup(groupId);
-                            // Tạo lịch học
+                            
+                            // Lấy ngày bắt đầu khoá học
                             TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
-                            List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
-                            int sessionCount = 10;
-                            Date today = new Date(); // ngày kích hoạt
-                            scheduleDAO.insertSchedulesFromTemplate(groupId, templates, today, sessionCount);
-                            setSuccessMessage(req, "✔ Kích hoạt lớp học thành công!");
+                            Date startDate = course.getStartDate();
+                            Date today = new Date();
+
+                            if (startDate != null && startDate.after(today)) {
+                                setSuccessMessage(req, "❌ Không thể kích hoạt lớp vì khóa học chưa bắt đầu!");
+                            } else {
+                                List<ScheduleTemplate> templates = scheduleDAO.getTemplatesByGroupId(groupId);
+                                int sessionCount = 10;
+                                scheduleDAO.insertSchedulesFromTemplate(groupId, templates, today, sessionCount);
+                                classGroupDAO.activateClassGroup(groupId);
+                                setSuccessMessage(req, "✔ Kích hoạt lớp học thành công!");
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -353,7 +353,7 @@ public class AdminServlet extends HttpServlet {
                     if (courseIdRaw != null && !courseIdRaw.isEmpty()) {
                         try {
                             int courseId = Integer.parseInt(courseIdRaw);
-                            prepareClassManagementData(req, courseId); //dùng lại hàm
+                            prepareClassManagementData(req, courseId); //dùng lại hàm lấy dữu liệu
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -643,6 +643,15 @@ public class AdminServlet extends HttpServlet {
                     }
                     // Không cần validate lại vì ScheduleOptionsServlet đã xử lý
                     int classGroupId = classGroupDAO.addClassGroupWithTemplates(group, templates);
+                    HttpSession ses = req.getSession();
+                    ses.removeAttribute("modalError");
+                    ses.removeAttribute("groupModal");
+                    ses.removeAttribute("selectedTeacher");
+                    ses.removeAttribute("selectedDay");
+                    ses.removeAttribute("selectedShift");
+                    ses.removeAttribute("selectedRoom");
+                    ses.removeAttribute("errorList");
+
                     req.getSession().setAttribute("successMessage", "✔ Thêm lớp học thành công!");
                     res.sendRedirect("admin?tab=classManagement&id=" + tutoringClassId);
                     return;
@@ -675,6 +684,22 @@ public class AdminServlet extends HttpServlet {
                     res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupIdRaw + "&id=" + (courseIdRaw != null ? courseIdRaw : ""));
                     return;
                 }
+                
+                // ✅ Kiểm tra ngày kết thúc của khóa học
+    int courseId = Integer.parseInt(courseIdRaw);
+    TutoringClass course = tutoringClassDAO.getTutoringClassDetail(courseId);
+    if (course == null) {
+        setSuccessMessage(req, "❌ Không tìm thấy khóa học!");
+        res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupIdRaw + "&id=" + courseIdRaw);
+        return;
+    }
+
+    java.sql.Date endDate = (java.sql.Date) course.getEndDate();
+    if (endDate != null && endDate.before(java.sql.Date.valueOf(LocalDate.now()))) {
+        setSuccessMessage(req, "❌ Khóa học đã kết thúc, không thể thêm học sinh!");
+        res.sendRedirect("admin?tab=studentListInClass&groupId=" + classGroupIdRaw + "&id=" + courseIdRaw);
+        return;
+    }
 
                 int classGroupId;
                 try {

@@ -3,6 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="selectedCourseId" value="${param.id}" />
+<%
+    java.util.Date now = new java.util.Date();
+    request.setAttribute("today", new java.sql.Date(now.getTime()));
+%>
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -160,7 +165,7 @@
                                class="text-green-600 hover:text-green-800" title="Xem danh sách học sinh">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <c:if test="${c[7] == 0 && c[4] >= c[6]}">
+                            <c:if test="${c[7] == 0 && c[4] >= c[6] && c[8] != null && c[8] >= today}">
                                 <a href="admin?tab=classManagement&action=activateGroup&groupId=${c[5]}&id=${selectedCourseId}"
                                    class="text-orange-600 hover:text-orange-800" title="Kích hoạt lớp học">
                                     <i class="fas fa-toggle-on"></i>
